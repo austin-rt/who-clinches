@@ -1,0 +1,157 @@
+import mongoose, { Schema, Document } from "mongoose";
+
+export interface IGame extends Document {
+  espnId: string;
+  date: string;
+  week: number | null;
+  season: number;
+  sport: string;
+  league: string;
+  state: "pre" | "in" | "post";
+  completed: boolean;
+  conferenceGame: boolean;
+  neutralSite: boolean;
+  home: {
+    teamId: string;
+    abbrev: string;
+    score: number | null;
+    rank: number | null;
+  };
+  away: {
+    teamId: string;
+    abbrev: string;
+    score: number | null;
+    rank: number | null;
+  };
+  odds: {
+    favoriteTeamId: string | null;
+    spread: number | null;
+    overUnder: number | null;
+  };
+  lastUpdated: Date;
+}
+
+const GameSchema = new Schema<IGame>(
+  {
+    espnId: {
+      type: String,
+      required: true,
+      unique: true,
+      index: true,
+    },
+    date: {
+      type: String,
+      required: true,
+    },
+    week: {
+      type: Number,
+      default: null,
+    },
+    season: {
+      type: Number,
+      required: true,
+    },
+    sport: {
+      type: String,
+      required: true,
+      default: "football",
+    },
+    league: {
+      type: String,
+      required: true,
+      default: "college-football",
+    },
+    state: {
+      type: String,
+      enum: ["pre", "in", "post"],
+      required: true,
+    },
+    completed: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+    conferenceGame: {
+      type: Boolean,
+      required: true,
+      index: true,
+    },
+    neutralSite: {
+      type: Boolean,
+      default: false,
+    },
+    home: {
+      teamId: {
+        type: String,
+        required: true,
+        index: true,
+      },
+      abbrev: {
+        type: String,
+        required: true,
+      },
+      score: {
+        type: Number,
+        default: null,
+      },
+      rank: {
+        type: Number,
+        default: null,
+      },
+    },
+    away: {
+      teamId: {
+        type: String,
+        required: true,
+        index: true,
+      },
+      abbrev: {
+        type: String,
+        required: true,
+      },
+      score: {
+        type: Number,
+        default: null,
+      },
+      rank: {
+        type: Number,
+        default: null,
+      },
+    },
+    odds: {
+      favoriteTeamId: {
+        type: String,
+        default: null,
+      },
+      spread: {
+        type: Number,
+        default: null,
+      },
+      overUnder: {
+        type: Number,
+        default: null,
+      },
+    },
+    lastUpdated: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Compound indexes as specified in tech spec
+GameSchema.index({
+  sport: 1,
+  league: 1,
+  conferenceGame: 1,
+  season: 1,
+  week: 1,
+});
+GameSchema.index({ state: 1, completed: 1 });
+GameSchema.index({ sport: 1, league: 1 });
+
+export default mongoose.models.Game ||
+  mongoose.model<IGame>("Game", GameSchema);
