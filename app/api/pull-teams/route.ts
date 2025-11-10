@@ -51,14 +51,45 @@ export const POST = async (request: NextRequest) => {
     for (const teamAbbrev of teamsToQuery) {
       try {
         console.log(`[API] Fetching ${teamAbbrev}...`);
+        
+        // Fetch team basic info from site API
         const teamData = await client.getTeam(teamAbbrev);
-        teamResponses.push({ abbreviation: teamAbbrev, data: teamData });
+        
+        // Fetch detailed records from core API (if we have team ID)
+        let recordData = null;
+        if (teamData?.team?.id) {
+          try {
+            const currentSeason = new Date().getFullYear();
+            recordData = await client.getTeamRecords(
+              teamData.team.id,
+              currentSeason,
+              2 // Regular season
+            );
+            console.log(`[API] Fetched records for ${teamAbbrev}`);
+          } catch (recordError) {
+            console.warn(
+              `[API] Failed to fetch records for ${teamAbbrev}:`,
+              recordError
+            );
+            // Continue without record data - will use site API fallback
+          }
+        }
 
-        // Rate limiting - be nice to ESPN
+        teamResponses.push({
+          abbreviation: teamAbbrev,
+          data: teamData,
+          recordData: recordData || undefined,
+        });
+
+        // Rate limiting - be nice to ESPN (2 calls per team now)
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
         console.error(`[API] Failed to fetch ${teamAbbrev}:`, error);
-        teamResponses.push({ abbreviation: teamAbbrev, data: null });
+        teamResponses.push({
+          abbreviation: teamAbbrev,
+          data: null,
+          recordData: undefined,
+        });
       }
     }
 
