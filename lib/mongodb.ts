@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
 
 // Build MongoDB URI dynamically from environment variables
-const MONGODB_BASE = process.env.MONGODB_BASE;
+const MONGODB_USER = process.env.MONGODB_USER;
+const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
+const MONGODB_HOST = process.env.MONGODB_HOST;
 const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME;
 
 // Determine database name from environment
 // Priority: MONGODB_DB (explicit) > VERCEL_ENV (Vercel deployments)
 const MONGODB_DB = process.env.MONGODB_DB || process.env.VERCEL_ENV;
 
-if (!MONGODB_BASE || !MONGODB_APP_NAME) {
+if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_HOST || !MONGODB_APP_NAME) {
   throw new Error(
-    "Please define MONGODB_BASE and MONGODB_APP_NAME environment variables"
+    "Please define MONGODB_USER, MONGODB_PASSWORD, MONGODB_HOST, and MONGODB_APP_NAME environment variables"
   );
 }
 
@@ -25,7 +27,7 @@ if (!MONGODB_DB) {
   throw new Error("Unable to determine database name from environment");
 }
 
-const MONGODB_URI = `${MONGODB_BASE}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}`;
+const MONGODB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}`;
 
 console.log(`[MongoDB] Connecting to database: ${MONGODB_DB}`);
 
