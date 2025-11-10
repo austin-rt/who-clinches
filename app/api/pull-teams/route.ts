@@ -2,59 +2,76 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Team from "@/lib/models/Team";
 import ErrorModel from "@/lib/models/Error";
-import {
-  espnClient,
-  createESPNClient,
-  ESPNTeamResponse,
-} from "@/lib/espn-client";
-import { reshapeTeamsData, SEC_TEAMS } from "@/lib/reshape-teams";
+import { createESPNClient } from "@/lib/espn-client";
+import { reshapeTeamsData } from "@/lib/reshape-teams";
 import { TeamDataResponse } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 interface PullTeamsRequest {
-  sport?: string; // Optional: defaults to 'football'
-  league?: string; // Optional: defaults to 'college-football'
-  teams?: string[]; // Optional: specific teams, defaults to SEC_TEAMS
+  sport: string;
+  league: string;
+  conferenceId?: number; // Optional: if not provided, must provide teams
+  teams?: string[]; // Optional: specific teams, overrides conferenceId
 }
 
 interface PullTeamsResponse {
   upserted: number;
   lastUpdated: string;
   errors?: string[];
-  logs?: string[];
 }
 
 export const POST = async (request: NextRequest) => {
   try {
     await dbConnect();
 
-    const body: PullTeamsRequest = await request.json().catch(() => ({}));
+    const body: PullTeamsRequest = await request.json();
 
-    const sport = body.sport || "football";
-    const league = body.league || "college-football";
-    const teamsToQuery = body.teams || SEC_TEAMS;
+    // Validate required fields
+    if (!body.sport || !body.league) {
+      return NextResponse.json(
+        {
+          error: "Missing required fields: sport and league are required",
+        },
+        { status: 400 }
+      );
+    }
 
-    console.log(`[API] Starting ESPN teams pull for ${sport}/${league}`);
-    console.log(
-      `[API] Querying ${teamsToQuery.length} teams: ${teamsToQuery.join(", ")}`
-    );
+    if (!body.teams && !body.conferenceId) {
+      return NextResponse.json(
+        {
+          error:
+            "Must provide either 'teams' (array of team abbreviations) or 'conferenceId' (number)",
+        },
+        { status: 400 }
+      );
+    }
 
-    // Create appropriate ESPN client for sport/league
-    const client =
-      body.sport || body.league ? createESPNClient(sport, league) : espnClient;
+    const { sport, league, conferenceId, teams } = body;
+
+    // Create ESPN client for sport/league
+    const client = createESPNClient(sport, league);
+
+    // Fetch teams list from ESPN (either specific teams or all conference teams)
+    let teamsToQuery: string[];
+    if (teams) {
+      teamsToQuery = teams;
+    } else if (conferenceId) {
+      teamsToQuery = await client.getConferenceTeams(conferenceId);
+    } else {
+      // This shouldn't happen due to validation above, but TypeScript needs it
+      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    }
 
     // Fetch all teams from ESPN (with rate limiting)
     const teamResponses: TeamDataResponse[] = [];
 
     for (const teamAbbrev of teamsToQuery) {
       try {
-        console.log(`[API] Fetching ${teamAbbrev}...`);
-        
         // Fetch team basic info from site API
         const teamData = await client.getTeam(teamAbbrev);
-        
+
         // Fetch detailed records from core API (if we have team ID)
         let recordData = null;
         if (teamData?.team?.id) {
@@ -65,12 +82,7 @@ export const POST = async (request: NextRequest) => {
               currentSeason,
               2 // Regular season
             );
-            console.log(`[API] Fetched records for ${teamAbbrev}`);
-          } catch (recordError) {
-            console.warn(
-              `[API] Failed to fetch records for ${teamAbbrev}:`,
-              recordError
-            );
+          } catch {
             // Continue without record data - will use site API fallback
           }
         }
@@ -83,8 +95,7 @@ export const POST = async (request: NextRequest) => {
 
         // Rate limiting - be nice to ESPN (2 calls per team now)
         await new Promise((resolve) => setTimeout(resolve, 500));
-      } catch (error) {
-        console.error(`[API] Failed to fetch ${teamAbbrev}:`, error);
+      } catch {
         teamResponses.push({
           abbreviation: teamAbbrev,
           data: null,
@@ -93,22 +104,15 @@ export const POST = async (request: NextRequest) => {
       }
     }
 
-    console.log(`[API] Fetched ${teamResponses.length} team responses`);
-
     // Reshape team data
-    const reshapeResult = reshapeTeamsData(teamResponses);
-    const { teams: reshapedTeams, logs } = reshapeResult;
+    const reshapedTeams = reshapeTeamsData(teamResponses);
 
-    if (!reshapedTeams) {
-      console.log("[API] No teams returned from reshape");
+    if (!reshapedTeams || reshapedTeams.length === 0) {
       return NextResponse.json({
         upserted: 0,
         lastUpdated: new Date().toISOString(),
-        logs: logs,
       });
     }
-
-    console.log(`[API] Reshaped ${reshapedTeams.length} teams`);
 
     // Write teams to database using upsert
     let upsertedCount = 0;
@@ -130,17 +134,10 @@ export const POST = async (request: NextRequest) => {
         if (result.upsertedCount > 0 || result.modifiedCount > 0) {
           upsertedCount++;
         }
-
-        console.log(
-          `[DB] ${result.upsertedCount > 0 ? "Created" : "Updated"} team: ${
-            teamData.displayName
-          } (${teamData.abbreviation})`
-        );
       } catch (error) {
         const errorMsg = `Failed to upsert team ${teamData._id}: ${
           error instanceof Error ? error.message : String(error)
         }`;
-        console.error(`[DB] ${errorMsg}`);
         errors.push(errorMsg);
       }
     }
@@ -148,15 +145,8 @@ export const POST = async (request: NextRequest) => {
     const response: PullTeamsResponse = {
       upserted: upsertedCount,
       lastUpdated: new Date().toISOString(),
-      logs: logs, // Include reshape logs in response
       ...(errors.length > 0 && { errors }),
     };
-
-    console.log(
-      `[API] Database write completed: ${upsertedCount}/${
-        reshapedTeams?.length || 0
-      } teams upserted`
-    );
 
     return NextResponse.json(response, {
       headers: {
@@ -164,7 +154,6 @@ export const POST = async (request: NextRequest) => {
       },
     });
   } catch (error) {
-    console.error("[API] Pull teams endpoint error:", error);
 
     // Log error to database
     try {
@@ -175,8 +164,8 @@ export const POST = async (request: NextRequest) => {
         error: error instanceof Error ? error.message : String(error),
         stackTrace: error instanceof Error ? error.stack || "" : "",
       });
-    } catch (logError) {
-      console.error("[API] Failed to log error to database:", logError);
+    } catch {
+      // Failed to log error to database
     }
 
     return NextResponse.json(

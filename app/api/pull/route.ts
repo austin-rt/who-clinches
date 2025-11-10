@@ -2,25 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
 import ErrorModel from "@/lib/models/Error";
-import { espnClient, createESPNClient } from "@/lib/espn-client";
-import { reshapeScoreboardData } from "@/lib/reshape";
+import { createESPNClient } from "@/lib/espn-client";
+import { reshapeScoreboardData } from "@/lib/reshape-games";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 interface PullRequest {
+  sport: string;
+  league: string;
   season: number;
   conferenceId: number;
   week?: number; // Optional: specific week, otherwise pulls current week
-  sport?: string; // Optional: defaults to 'football'
-  league?: string; // Optional: defaults to 'college-football'
 }
 
 interface PullResponse {
   upserted: number;
   lastUpdated: string;
   errors?: string[];
-  logs?: string[];
 }
 
 export const POST = async (request: NextRequest) => {
@@ -30,56 +29,46 @@ export const POST = async (request: NextRequest) => {
     const body: PullRequest = await request.json();
 
     // Validate request
-    if (!body.season || !body.conferenceId) {
+    if (!body.sport || !body.league || !body.season || !body.conferenceId) {
       return NextResponse.json(
         {
-          error: "Missing required fields: season, conferenceId",
+          error:
+            "Missing required fields: sport, league, season, and conferenceId are required",
           code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
     }
 
-    const sport = body.sport || "football";
-    const league = body.league || "college-football";
+    const { sport, league, season, conferenceId, week } = body;
 
-    console.log(
-      `[API] Starting ESPN pull for ${sport}/${league} season ${body.season}, conference ${body.conferenceId}`
-    );
-
-    // Create appropriate ESPN client for sport/league
-    const client =
-      body.sport || body.league ? createESPNClient(sport, league) : espnClient;
+    // Create ESPN client for sport/league
+    const client = createESPNClient(sport, league);
 
     // Fetch data from ESPN
     const espnResponse = await client.getScoreboard({
-      groups: body.conferenceId,
-      season: body.season,
-      week: body.week,
+      groups: conferenceId,
+      season: season,
+      week: week,
     });
 
     if (!espnResponse.events || espnResponse.events.length === 0) {
-      console.log("[API] No events returned from ESPN");
       return NextResponse.json({
         upserted: 0,
         lastUpdated: new Date().toISOString(),
       });
     }
 
-    // Reshape ESPN data (return logs for inspection)
+    // Reshape ESPN data
     const reshapeResult = reshapeScoreboardData(espnResponse, sport, league);
-    const { games: reshapedGames, logs } = reshapeResult;
+    const { games: reshapedGames } = reshapeResult;
 
-    if (!reshapedGames) {
-      console.log("[API] No games returned from reshape");
+    if (!reshapedGames || reshapedGames.length === 0) {
       return NextResponse.json({
         upserted: 0,
         lastUpdated: new Date().toISOString(),
-        logs: logs,
       });
     }
-
-    console.log(`[API] Reshaped ${reshapedGames.length} games`);
 
     // Write games to database using upsert
     let upsertedCount = 0;
@@ -101,17 +90,10 @@ export const POST = async (request: NextRequest) => {
         if (result.upsertedCount > 0 || result.modifiedCount > 0) {
           upsertedCount++;
         }
-
-        console.log(
-          `[DB] ${result.upsertedCount > 0 ? "Created" : "Updated"} game: ${
-            gameData.away.abbrev
-          } @ ${gameData.home.abbrev}`
-        );
       } catch (error) {
         const errorMsg = `Failed to upsert game ${gameData.espnId}: ${
           error instanceof Error ? error.message : String(error)
         }`;
-        console.error(`[DB] ${errorMsg}`);
         errors.push(errorMsg);
       }
     }
@@ -119,15 +101,8 @@ export const POST = async (request: NextRequest) => {
     const response: PullResponse = {
       upserted: upsertedCount,
       lastUpdated: new Date().toISOString(),
-      logs: logs, // Include reshape logs in response
       ...(errors.length > 0 && { errors }),
     };
-
-    console.log(
-      `[API] Database write completed: ${upsertedCount}/${
-        reshapedGames?.length || 0
-      } games upserted`
-    );
 
     return NextResponse.json(response, {
       headers: {
@@ -135,7 +110,6 @@ export const POST = async (request: NextRequest) => {
       },
     });
   } catch (error) {
-    console.error("[API] Pull endpoint error:", error);
 
     // Log error to database
     try {
@@ -146,8 +120,8 @@ export const POST = async (request: NextRequest) => {
         error: error instanceof Error ? error.message : String(error),
         stackTrace: error instanceof Error ? error.stack || "" : "",
       });
-    } catch (logError) {
-      console.error("[API] Failed to log error to database:", logError);
+    } catch {
+      // Failed to log error to database
     }
 
     return NextResponse.json(
