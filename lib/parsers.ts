@@ -3,8 +3,7 @@
  * Transform ESPN API responses into our database schema format
  */
 
-import { ESPNEvent, ESPNCompetition, ESPNCompetitor } from "./espn-client";
-import { IGame } from "./models/Game";
+import { ESPNEvent } from "./espn-client";
 
 export interface ParsedGame {
   espnId: string;
@@ -40,11 +39,11 @@ export interface ParsedGame {
 /**
  * Parse ESPN event into our game format
  */
-export function parseESPNEvent(
+export const parseESPNEvent = (
   event: ESPNEvent,
   sport: string = "football",
   league: string = "college-football"
-): ParsedGame | null {
+): ParsedGame | null => {
   try {
     const competition = event.competitions[0];
     if (!competition) {
@@ -137,16 +136,16 @@ export function parseESPNEvent(
     console.error(`[Parser] Failed to parse event ${event.id}:`, error);
     return null;
   }
-}
+};
 
 /**
  * Parse multiple ESPN events
  */
-export function parseESPNEvents(
+export const parseESPNEvents = (
   events: ESPNEvent[],
   sport: string = "football",
   league: string = "college-football"
-): ParsedGame[] {
+): ParsedGame[] => {
   const parsedGames: ParsedGame[] = [];
 
   for (const event of events) {
@@ -160,12 +159,14 @@ export function parseESPNEvents(
     `[Parser] Parsed ${parsedGames.length}/${events.length} events successfully`
   );
   return parsedGames;
-}
+};
 
 /**
  * Parse ESPN game summary response (different structure than scoreboard)
  */
-export function parseESPNGameSummary(summary: any): ParsedGame | null {
+export const parseESPNGameSummary = (summary: {
+  header?: { competitions?: import("./espn-client").ESPNCompetition[] };
+}): ParsedGame | null => {
   try {
     // Game summary has competition data at .header.competitions[0] instead of .competitions[0]
     const competition = summary.header?.competitions?.[0];
@@ -185,12 +186,12 @@ export function parseESPNGameSummary(summary: any): ParsedGame | null {
     console.error("[Parser] Failed to parse game summary:", error);
     return null;
   }
-}
+};
 
 /**
  * Validate parsed game data before database insertion
  */
-export function validateParsedGame(game: ParsedGame): boolean {
+export const validateParsedGame = (game: ParsedGame): boolean => {
   const required = [
     "espnId",
     "date",
@@ -203,9 +204,12 @@ export function validateParsedGame(game: ParsedGame): boolean {
   ];
 
   for (const field of required) {
-    const value = field
-      .split(".")
-      .reduce((obj, key) => obj?.[key], game as any);
+    const value = field.split(".").reduce((obj: unknown, key: string) => {
+      if (obj && typeof obj === "object" && key in obj) {
+        return (obj as Record<string, unknown>)[key];
+      }
+      return undefined;
+    }, game as unknown);
     if (value === undefined || value === null || value === "") {
       console.warn(`[Parser] Missing required field: ${field}`);
       return false;
@@ -219,4 +223,4 @@ export function validateParsedGame(game: ParsedGame): boolean {
   }
 
   return true;
-}
+};
