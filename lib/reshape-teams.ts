@@ -3,7 +3,11 @@
  * Transform raw ESPN team data into our desired format
  */
 
-import { ESPNTeamResponse, ESPNTeamLogo } from "./espn-client";
+import {
+  ESPNTeamResponse,
+  ESPNTeamLogo,
+  ESPNCoreRecordResponse,
+} from "./espn-client";
 import {
   ReshapedTeam,
   TeamRecord,
@@ -37,7 +41,8 @@ export { SEC_TEAMS };
  * Reshape ESPN team response into our team format
  */
 export const reshapeTeamData = (
-  espnTeamResponse: ESPNTeamResponse
+  espnTeamResponse: ESPNTeamResponse,
+  coreRecordResponse?: ESPNCoreRecordResponse
 ): { team: ReshapedTeam | null; logs: string[] } => {
   const logs: string[] = [];
 
@@ -58,14 +63,53 @@ export const reshapeTeamData = (
       team.logos?.find((l: ESPNTeamLogo) => l.width >= 500) || team.logos?.[0];
     logs.push(`   Logo: ${logo?.href ? "Found" : "Missing"}`);
 
-    // Parse records
+    // Parse records from core API if available
     let record: TeamRecord = {};
-    if (espnTeamResponse.team.record?.items) {
-      const recordItem = espnTeamResponse.team.record.items[0]; // Overall record
-      if (recordItem) {
-        logs.push(`   Overall Record: ${recordItem.summary}`);
+    if (coreRecordResponse?.items) {
+      const items = coreRecordResponse.items;
 
-        // Extract specific record types and stats
+      // Find each record type
+      const overallRecord = items.find((item) => item.type === "total");
+      const homeRecord = items.find((item) => item.type === "homerecord");
+      const awayRecord = items.find((item) => item.type === "awayrecord");
+      const confRecord = items.find((item) => item.type === "vsconf");
+
+      logs.push(`   Overall Record: ${overallRecord?.summary || "N/A"}`);
+      logs.push(`   Conference Record: ${confRecord?.summary || "N/A"}`);
+      logs.push(`   Home Record: ${homeRecord?.summary || "N/A"}`);
+      logs.push(`   Away Record: ${awayRecord?.summary || "N/A"}`);
+
+      // Extract stats from overall record
+      const stats = overallRecord?.stats || [];
+      const getStatValue = (name: string) =>
+        stats.find((s) => s.name === name)?.value;
+
+      record = {
+        overall: overallRecord?.summary,
+        conference: confRecord?.summary || null,
+        home: homeRecord?.summary || null,
+        away: awayRecord?.summary || null,
+        stats: {
+          wins: getStatValue("wins"),
+          losses: getStatValue("losses"),
+          winPercent: getStatValue("winPercent"),
+          pointsFor: getStatValue("pointsFor"),
+          pointsAgainst: getStatValue("pointsAgainst"),
+          pointDifferential: getStatValue("pointDifferential"),
+          avgPointsFor: getStatValue("avgPointsFor"),
+          avgPointsAgainst: getStatValue("avgPointsAgainst"),
+        },
+      };
+
+      logs.push(`   Win %: ${record.stats?.winPercent?.toFixed(3) || "N/A"}`);
+      logs.push(`   Points For: ${record.stats?.pointsFor || "N/A"}`);
+      logs.push(`   Points Against: ${record.stats?.pointsAgainst || "N/A"}`);
+    } else if (espnTeamResponse.team.record?.items) {
+      // Fallback to site API record (overall only)
+      const recordItem = espnTeamResponse.team.record.items[0];
+      if (recordItem) {
+        logs.push(`   Overall Record: ${recordItem.summary} (site API)`);
+
         const stats = recordItem.stats || [];
         const getStatValue = (name: string) =>
           stats.find((s: { name: string; value: number }) => s.name === name)
@@ -73,7 +117,7 @@ export const reshapeTeamData = (
 
         record = {
           overall: recordItem.summary,
-          conference: null, // We'll need to get this from games data or separate query
+          conference: null,
           home: null,
           away: null,
           stats: {
@@ -87,10 +131,6 @@ export const reshapeTeamData = (
             avgPointsAgainst: getStatValue("avgPointsAgainst"),
           },
         };
-
-        logs.push(`   Win %: ${record.stats?.winPercent || "N/A"}`);
-        logs.push(`   Points For: ${record.stats?.pointsFor || "N/A"}`);
-        logs.push(`   Points Against: ${record.stats?.pointsAgainst || "N/A"}`);
       }
     }
 
@@ -155,7 +195,7 @@ export const reshapeTeamsData = (
   logs.push("=====================================");
   logs.push(`📊 Processing ${teamResponses.length} teams`);
 
-  teamResponses.forEach(({ abbreviation, data }, index) => {
+  teamResponses.forEach(({ abbreviation, data, recordData }, index) => {
     logs.push(`\n🏈 Team ${index + 1}: ${abbreviation}`);
 
     if (!data) {
@@ -163,7 +203,7 @@ export const reshapeTeamsData = (
       return;
     }
 
-    const result = reshapeTeamData(data);
+    const result = reshapeTeamData(data, recordData || undefined);
     result.logs.forEach((log: string) => logs.push(`   ${log}`));
 
     if (result.team) {
