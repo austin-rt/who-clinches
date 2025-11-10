@@ -3,49 +3,10 @@ import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
 import Team from "@/lib/models/Team";
 import { MongoQuery, GameLean, TeamLean } from "@/lib/types";
+import { GamesResponse, TeamMetadata, ApiErrorResponse } from "@/lib/api-types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface GameResponse {
-  events: Array<{
-    espnId: string;
-    date: string;
-    week: number | null;
-    season: number;
-    sport: string;
-    league: string;
-    state: "pre" | "in" | "post";
-    completed: boolean;
-    conferenceGame: boolean;
-    neutralSite: boolean;
-    home: {
-      teamEspnId: string;
-      abbrev: string;
-      score: number | null;
-      rank: number | null;
-    };
-    away: {
-      teamEspnId: string;
-      abbrev: string;
-      score: number | null;
-      rank: number | null;
-    };
-    odds: {
-      favoriteTeamEspnId: string | null;
-      spread: number | null;
-      overUnder: number | null;
-    };
-    lastUpdated: Date;
-  }>;
-  teams: Array<{
-    id: string;
-    abbrev: string;
-    displayName: string;
-    logo: string;
-  }>;
-  lastUpdated: string;
-}
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -97,15 +58,13 @@ export const GET = async (request: NextRequest) => {
       if (to) query.date.$lte = to;
     }
 
-    console.log("[API] Games query:", query);
-
     // Fetch games with lean mode (no hydration)
     const gamesRaw = await Game.find(query)
       .lean()
       .sort({ date: 1, week: 1 })
       .exec();
 
-    // Type assertion - we know our schema matches GameLean exactly
+    // Type annotation - we know our schema matches GameLean exactly
     const games: GameLean[] = gamesRaw.map(
       (game): GameLean => ({
         _id: String(game._id),
@@ -146,8 +105,6 @@ export const GET = async (request: NextRequest) => {
       })
     );
 
-    console.log(`[API] Found ${games.length} games`);
-
     // Extract unique team IDs from games
     const teamIds = new Set<string>();
     for (const game of games) {
@@ -176,10 +133,7 @@ export const GET = async (request: NextRequest) => {
       })
     );
 
-    const teamMap: Record<
-      string,
-      { id: string; abbrev: string; displayName: string; logo: string }
-    > = {};
+    const teamMap: Record<string, TeamMetadata> = {};
     for (const team of teams) {
       teamMap[team._id] = {
         id: team._id,
@@ -193,21 +147,20 @@ export const GET = async (request: NextRequest) => {
     const hasLiveGames = games.some((game) => game.state === "in");
     const cacheMaxAge = hasLiveGames ? 10 : 60; // 10s for live games, 60s otherwise
 
-    const response: GameResponse = {
-      events: games,
-      teams: Object.values(teamMap),
-      lastUpdated: new Date().toISOString(),
-    };
-
-    return NextResponse.json(response, {
-      headers: {
-        "Cache-Control": `public, s-maxage=${cacheMaxAge}`,
+    return NextResponse.json<GamesResponse>(
+      {
+        events: games,
+        teams: Object.values(teamMap),
+        lastUpdated: new Date().toISOString(),
       },
-    });
+      {
+        headers: {
+          "Cache-Control": `public, s-maxage=${cacheMaxAge}`,
+        },
+      }
+    );
   } catch (error) {
-    console.error("[API] Games endpoint error:", error);
-
-    return NextResponse.json(
+    return NextResponse.json<ApiErrorResponse>(
       {
         error:
           error instanceof Error ? error.message : "Unknown error occurred",
