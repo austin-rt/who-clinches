@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Get current branch
+branch=$(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3)
+
+# Only tail logs for main and develop branches
+if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
+  echo "🚀 Pushed to $branch - waiting for Vercel deployment..."
+  echo "📋 Tailing deployment logs (press Ctrl+C to exit)..."
+  
+  # Wait a few seconds for deployment to start
+  sleep 5
+  
+  # Tail the latest deployment logs
+  npx vercel logs --follow
+fi
+
