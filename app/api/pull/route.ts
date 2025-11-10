@@ -3,7 +3,7 @@ import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
 import ErrorModel from "@/lib/models/Error";
 import { espnClient, createESPNClient } from "@/lib/espn-client";
-import { parseESPNEvents, validateParsedGame } from "@/lib/parsers";
+import { reshapeScoreboardData } from "@/lib/reshape";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -20,9 +20,10 @@ interface PullResponse {
   upserted: number;
   lastUpdated: string;
   errors?: string[];
+  logs?: string[];
 }
 
-export async function POST(request: NextRequest) {
+export const POST = async (request: NextRequest) => {
   try {
     await dbConnect();
 
@@ -65,43 +66,68 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Parse ESPN events
-    const parsedGames = parseESPNEvents(espnResponse.events, sport, league);
-    const validGames = parsedGames.filter(validateParsedGame);
+    // Reshape ESPN data (return logs for inspection)
+    const reshapeResult = reshapeScoreboardData(espnResponse, sport, league);
+    const { games: reshapedGames, logs } = reshapeResult;
 
-    console.log(
-      `[API] Parsed ${validGames.length}/${parsedGames.length} valid games`
-    );
+    if (!reshapedGames) {
+      console.log("[API] No games returned from reshape");
+      return NextResponse.json({
+        upserted: 0,
+        lastUpdated: new Date().toISOString(),
+        logs: logs,
+      });
+    }
 
-    // Upsert games to database
-    let upsertCount = 0;
+    console.log(`[API] Reshaped ${reshapedGames.length} games`);
+
+    // Write games to database using upsert
+    let upsertedCount = 0;
     const errors: string[] = [];
 
-    for (const gameData of validGames) {
+    for (const gameData of reshapedGames) {
       try {
-        await Game.findOneAndUpdate({ espnId: gameData.espnId }, gameData, {
-          upsert: true,
-          new: true,
-          lean: true, // Use lean mode as specified in tech spec
-        });
-        upsertCount++;
+        const result = await Game.updateOne(
+          { espnId: gameData.espnId }, // Find by ESPN ID
+          {
+            $set: {
+              ...gameData,
+              lastUpdated: new Date(),
+            },
+          },
+          { upsert: true } // Create if doesn't exist, update if it does
+        );
+
+        if (result.upsertedCount > 0 || result.modifiedCount > 0) {
+          upsertedCount++;
+        }
+
+        console.log(
+          `[DB] ${result.upsertedCount > 0 ? "Created" : "Updated"} game: ${
+            gameData.away.abbrev
+          } @ ${gameData.home.abbrev}`
+        );
       } catch (error) {
-        const errorMsg = `Failed to upsert game ${gameData.espnId}: ${error}`;
-        console.error("[API]", errorMsg);
+        const errorMsg = `Failed to upsert game ${gameData.espnId}: ${
+          error instanceof Error ? error.message : String(error)
+        }`;
+        console.error(`[DB] ${errorMsg}`);
         errors.push(errorMsg);
       }
     }
 
     const response: PullResponse = {
-      upserted: upsertCount,
+      upserted: upsertedCount,
       lastUpdated: new Date().toISOString(),
+      logs: logs, // Include reshape logs in response
+      ...(errors.length > 0 && { errors }),
     };
 
-    if (errors.length > 0) {
-      response.errors = errors;
-    }
-
-    console.log(`[API] Pull completed: ${upsertCount} games upserted`);
+    console.log(
+      `[API] Database write completed: ${upsertedCount}/${
+        reshapedGames?.length || 0
+      } games upserted`
+    );
 
     return NextResponse.json(response, {
       headers: {
@@ -133,4 +159,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
