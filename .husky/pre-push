@@ -4,7 +4,8 @@
 GREEN='\033[0;32m'
 RED='\033[0;31m'
 YELLOW='\033[0;33m'
-NC='\033[0m' # No Color
+BLUE='\033[0;34m'
+RESET='\033[0m'
 
 # Get current branch
 branch=$(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3)
@@ -13,15 +14,27 @@ branch=$(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3)
 if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
   # Run deployment monitor in background after push completes
   (
+    # Kill process after 45 seconds no matter what
+    sleep 45
+    echo ""
+    printf "${YELLOW}[Vercel] Monitoring stopped after 45 seconds${RESET}\n"
+    exit 0
+  ) &
+  
+  # Also run the actual monitor
+  (
+    # Handle Ctrl+C gracefully
+    trap 'echo ""; printf "${YELLOW}[Vercel] Monitoring stopped${RESET}\n"; exit 0' INT TERM
+    
     # Wait for push to complete
     sleep 2
     
     echo ""
-    printf "${YELLOW}[Vercel] Push complete - monitoring deployment...${NC}\n"
+    printf "${YELLOW}[Vercel] Push complete - monitoring deployment...${RESET}\n"
     echo ""
     
-    # Wait for deployment to be ready (check every 10 seconds, max 5 minutes)
-    max_attempts=30
+    # Wait for deployment to be ready (check every 10 seconds, max 45 seconds)
+    max_attempts=4
     attempt=0
     
     while [ $attempt -lt $max_attempts ]; do
@@ -30,23 +43,21 @@ if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
       
       if [ "$status" = "READY" ]; then
         echo ""
-        printf "${GREEN}[Vercel] Deployment complete and ready!${NC}\n"
-        echo ""
-        printf "${GREEN}[AI] You can now tell the AI to run tests${NC}\n"
+        printf "${GREEN}[Vercel] Deployment complete and ready!${RESET}\n"
         echo ""
         
         # Optional: Open browser to deployment
         # npx vercel ls --yes | head -2 | tail -1 | awk '{print $2}' | xargs open
         
-        break
+        exit 0
       elif [ "$status" = "ERROR" ]; then
         echo ""
-        printf "${RED}[Vercel] Deployment failed!${NC}\n"
+        printf "${RED}[Vercel] Deployment failed!${RESET}\n"
         echo ""
         npx vercel logs --yes
-        break
+        exit 1
       else
-        printf "${YELLOW}[Vercel] Building... (${attempt}/${max_attempts})${NC}\n"
+        printf "${BLUE}[Vercel] Building... (${attempt}/${max_attempts})${RESET}\n"
         sleep 10
         attempt=$((attempt + 1))
       fi
@@ -54,8 +65,9 @@ if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
     
     if [ $attempt -eq $max_attempts ]; then
       echo ""
-      printf "${YELLOW}[Vercel] Deployment timed out after 5 minutes${NC}\n"
+      printf "${YELLOW}[Vercel] Still building after 45 seconds${RESET}\n"
       echo ""
+      exit 0
     fi
   ) &
 fi
