@@ -149,48 +149,13 @@ export class ESPNClient {
 
   /**
    * Fetch all teams in a conference
-   * ESPN conference standings endpoint provides team list
+   * Note: This method is not implemented. Use conference-specific constants from lib/constants.ts
+   * (e.g., SEC_TEAMS for SEC conference)
    */
-  async getConferenceTeams(conferenceId: number = 8): Promise<string[]> {
-    const url = `${this.baseUrl}/standings?group=${conferenceId}`;
-
-    try {
-      const response = await fetch(url, {
-        headers: {
-          "User-Agent": "SEC-Tiebreaker/1.0",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(
-          `ESPN API error: ${response.status} ${response.statusText}`
-        );
-      }
-
-      const data = await response.json();
-
-      // Extract team abbreviations from standings
-      const teams: string[] = [];
-      if (data.children) {
-        for (const child of data.children) {
-          if (child.standings?.entries) {
-            for (const entry of child.standings.entries) {
-              const abbrev = entry.team?.abbreviation;
-              if (abbrev) {
-                teams.push(abbrev);
-              }
-            }
-          }
-        }
-      }
-
-      return teams;
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to fetch conference teams: ${error.message}`);
-      }
-      throw error;
-    }
+  getConferenceTeams(conferenceId: number): Promise<string[]> {
+    throw new Error(
+      `getConferenceTeams not implemented for conference ${conferenceId}. Use conference-specific constants from lib/constants.ts`
+    );
   }
 
   /**
