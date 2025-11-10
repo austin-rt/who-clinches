@@ -13,6 +13,11 @@
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,
+
+    // Better error reporting
+    "noErrorTruncation": true,
+    "preserveWatchOutput": true,
+
     "plugins": [
       {
         "name": "next"
