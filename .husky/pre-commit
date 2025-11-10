@@ -1,10 +1,15 @@
 #!/bin/sh
 
+# Color codes
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
 # 1. Block direct commits to main
 branch=$(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3)
 if [ "$branch" = "main" ]; then
-  echo "❌ Cannot commit directly to main branch"
-  echo "💡 Switch to develop: git checkout develop"
+  printf "${RED}ERROR: Cannot commit directly to main branch${NC}\n"
+  printf "${YELLOW}Switch to develop: git checkout develop${NC}\n"
   exit 1
 fi
 

@@ -1,0 +1,61 @@
+#!/bin/sh
+
+# Color codes
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+# Get current branch
+branch=$(git symbolic-ref HEAD 2>/dev/null | cut -d"/" -f 3)
+
+# Only monitor deployments for main and develop branches
+if [ "$branch" = "main" ] || [ "$branch" = "develop" ]; then
+  # Run deployment monitor in background after push completes
+  (
+    # Wait for push to complete
+    sleep 2
+    
+    echo ""
+    printf "${YELLOW}[Vercel] Push complete - monitoring deployment...${NC}\n"
+    echo ""
+    
+    # Wait for deployment to be ready (check every 10 seconds, max 5 minutes)
+    max_attempts=30
+    attempt=0
+    
+    while [ $attempt -lt $max_attempts ]; do
+      # Check deployment status
+      status=$(npx vercel ls --yes 2>/dev/null | head -2 | tail -1 | awk '{print $6}')
+      
+      if [ "$status" = "READY" ]; then
+        echo ""
+        printf "${GREEN}[Vercel] Deployment complete and ready!${NC}\n"
+        echo ""
+        printf "${GREEN}[AI] You can now tell the AI to run tests${NC}\n"
+        echo ""
+        
+        # Optional: Open browser to deployment
+        # npx vercel ls --yes | head -2 | tail -1 | awk '{print $2}' | xargs open
+        
+        break
+      elif [ "$status" = "ERROR" ]; then
+        echo ""
+        printf "${RED}[Vercel] Deployment failed!${NC}\n"
+        echo ""
+        npx vercel logs --yes
+        break
+      else
+        printf "${YELLOW}[Vercel] Building... (${attempt}/${max_attempts})${NC}\n"
+        sleep 10
+        attempt=$((attempt + 1))
+      fi
+    done
+    
+    if [ $attempt -eq $max_attempts ]; then
+      echo ""
+      printf "${YELLOW}[Vercel] Deployment timed out after 5 minutes${NC}\n"
+      echo ""
+    fi
+  ) &
+fi
