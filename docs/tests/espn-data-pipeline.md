@@ -82,16 +82,40 @@ Replace `{DATABASE}` with `preview` or `production`.
 
 ---
 
-### POST /api/pull
+### POST /api/pull-games
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB.
 
-#### Command Template
+**Automatic Backfill:** If `week` is not specified, the endpoint automatically detects and pulls all missing weeks for the season (1-15). This ensures the database always has complete historical data.
+
+#### Command Template (Automatic Backfill - Recommended)
 
 ```bash
-curl -X POST "{BASE_URL}/api/pull?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
+curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
   -H "Content-Type: application/json" \
   -d '{
+    "sport": "football",
+    "league": "college-football",
+    "season": 2025,
+    "conferenceId": 8
+  }'
+```
+
+This will:
+- Check which weeks are already in the database
+- Pull only the missing weeks from ESPN
+- Return the list of weeks that were pulled
+
+#### Command Template (Single Week - Optional)
+
+Use this to force update a specific week:
+
+```bash
+curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sport": "football",
+    "league": "college-football",
     "season": 2025,
     "conferenceId": 8,
     "week": 11
@@ -100,13 +124,12 @@ curl -X POST "{BASE_URL}/api/pull?x-vercel-protection-bypass=$(grep VERCEL_AUTOM
 
 #### Expected Response
 
-See `app/api/pull/route.ts` for response interface.
+See `app/api/pull-games/route.ts` for response interface.
 
 Response should include:
-- `fetched`: number of games from ESPN
 - `upserted`: number of games inserted/updated
 - `lastUpdated`: timestamp
-- `logs`: array of processing messages
+- `errors`: array of error messages (if any)
 
 #### Database Verification
 
@@ -175,14 +198,29 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
   --quiet
 ```
 
-### Check Games Count for Week
+### Check Games Count by Week
 
 ```bash
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
-  --eval "db.games.countDocuments({season: 2025, week: 11})" \
+  --eval "
+console.log('Total games:', db.games.countDocuments());
+console.log('');
+console.log('Games by week:');
+const byWeek = db.games.aggregate([
+  { \$group: { _id: '\$week', count: { \$sum: 1 } } },
+  { \$sort: { _id: 1 } }
+]).toArray();
+byWeek.forEach(w => console.log('Week', w._id + ':', w.count, 'games'));
+" \
   --quiet
 ```
+
+Expected output for complete dataset (weeks 1-11):
+- Total games: ~100
+- Week 1: 16 games
+- Week 2: 15 games
+- Week 3-11: varying counts
 
 ### Verify Conference Records
 
@@ -210,23 +248,22 @@ Should show `preview` or `production` based on environment.
 
 ### Preview (develop branch)
 - [ ] Deployment accessible with bypass token
-- [ ] POST /api/pull-teams returns 200
-- [ ] POST /api/pull returns 200
+- [ ] POST /api/pull-teams returns 200 (16 teams)
+- [ ] POST /api/pull-games returns 200 for all weeks 1-11
 - [ ] GET /api/games returns 200
-- [ ] Teams data verified in `preview` database
-- [ ] Games data verified in `preview` database
+- [ ] Teams data verified in `preview` database (16 teams)
+- [ ] Games data verified in `preview` database (~100 games, weeks 1-11)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: preview`
 
 ### Production (main branch)
 - [ ] Preview tests completed successfully first
 - [ ] Deployment accessible with bypass token
-- [ ] Test with single team first
-- [ ] POST /api/pull-teams returns 200
-- [ ] POST /api/pull returns 200
+- [ ] POST /api/pull-teams returns 200 (16 teams)
+- [ ] POST /api/pull-games returns 200 for all weeks 1-11
 - [ ] GET /api/games returns 200
-- [ ] Teams data verified in `production` database
-- [ ] Games data verified in `production` database
+- [ ] Teams data verified in `production` database (16 teams)
+- [ ] Games data verified in `production` database (~100 games, weeks 1-11)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: production`
 - [ ] Monitor for errors for 5-10 minutes
