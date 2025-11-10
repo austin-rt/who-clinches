@@ -50,28 +50,21 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL
 
 #### Expected Response
 
-```json
-{
-  "upserted": 2,
-  "lastUpdated": "2025-11-10T16:41:24.908Z",
-  "logs": [
-    "Processing 2 teams",
-    "Team 1: UGA",
-    "Overall Record: 8-1",
-    "Conference Record: 6-1",
-    "Home Record: 4-1",
-    "Away Record: 3-0",
-    "Team reshaped successfully"
-  ]
-}
-```
+See `app/api/pull-teams/route.ts` for `PullTeamsResponse` interface.
+
+Response should include:
+- `upserted`: number of teams inserted/updated
+- `lastUpdated`: timestamp
+- `logs`: array of processing messages
 
 #### Database Verification
+
+See `lib/models/Team.ts` for `ITeam` interface and schema.
 
 ```bash
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
-  --eval "db.teams.find({}, {_id:1, displayName:1, abbreviation:1, 'record.overall':1, 'record.conference':1}).pretty()" \
+  --eval "db.teams.find({}, {_id:1, displayName:1, abbreviation:1, 'record.overall':1, 'record.conference':1, nationalRanking:1, conferenceStanding:1}).pretty()" \
   --quiet
 ```
 
@@ -81,8 +74,10 @@ Replace `{DATABASE}` with `preview` or `production`.
 
 - Status code: 200
 - `upserted` count matches requested teams
-- Conference records are populated (not null)
-- Home/away records are populated
+- Conference records populated (not null)
+- Home/away records populated
+- National rankings populated for ranked teams
+- Conference standings populated
 - Data exists in correct database
 
 ---
@@ -105,21 +100,22 @@ curl -X POST "{BASE_URL}/api/pull?x-vercel-protection-bypass=$(grep VERCEL_AUTOM
 
 #### Expected Response
 
-```json
-{
-  "fetched": 16,
-  "upserted": 16,
-  "lastUpdated": "2025-11-10T...",
-  "logs": ["Processing 16 games", "Game details..."]
-}
-```
+See `app/api/pull/route.ts` for response interface.
+
+Response should include:
+- `fetched`: number of games from ESPN
+- `upserted`: number of games inserted/updated
+- `lastUpdated`: timestamp
+- `logs`: array of processing messages
 
 #### Database Verification
+
+See `lib/models/Game.ts` for `IGame` interface and schema.
 
 ```bash
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
-  --eval "db.games.find({season: 2025, week: 11}, {espnId:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, state:1}).limit(5).pretty()" \
+  --eval "db.games.find({season: 2025, week: 11}, {espnId:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, state:1, conferenceGame:1}).limit(5).pretty()" \
   --quiet
 ```
 
@@ -128,8 +124,9 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 - Status code: 200
 - `upserted` count matches games for that week
 - Games have correct season/week
-- Odds data populated (spread, overUnder, favoriteTeamEspnId)
-- Team ESPN IDs are correct
+- Odds data populated when available
+- Team ESPN IDs correct
+- Conference game flag set correctly
 - Data stored in correct database
 
 ---
@@ -150,50 +147,19 @@ curl "{BASE_URL}/api/games?season=2025&conferenceId=8&x-vercel-protection-bypass
 
 #### Expected Response
 
-```json
-{
-  "events": [
-    {
-      "espnId": "401752766",
-      "date": "2025-11-16T00:30Z",
-      "week": 12,
-      "season": 2025,
-      "state": "pre",
-      "home": {
-        "teamEspnId": "61",
-        "abbrev": "UGA",
-        "score": null
-      },
-      "away": {
-        "teamEspnId": "251",
-        "abbrev": "TEX",
-        "score": null
-      },
-      "odds": {
-        "favoriteTeamEspnId": "61",
-        "spread": -9.5,
-        "overUnder": 52.5
-      }
-    }
-  ],
-  "teams": [
-    {
-      "id": "61",
-      "abbrev": "UGA",
-      "displayName": "Georgia Bulldogs",
-      "logo": "https://..."
-    }
-  ],
-  "lastUpdated": "2025-11-10T..."
-}
-```
+See `app/api/games/route.ts` for response interface.
+
+Response should include:
+- `events`: array of `GameLean` objects (see `lib/types.ts`)
+- `teams`: array of team metadata objects
+- `lastUpdated`: timestamp
 
 #### Checks
 
 - Status code: 200
-- `events` array contains games
-- `teams` array contains team metadata
-- Filters work correctly
+- `events` array contains games matching query
+- `teams` array contains all teams from games
+- Filters work correctly (season, week, conferenceId)
 - Data comes from correct database
 
 ---

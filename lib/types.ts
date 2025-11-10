@@ -66,8 +66,8 @@ export interface ReshapedTeam {
   alternateColor: string;
   conferenceId: string;
   record?: TeamRecord;
-  standingSummary?: string;
-  currentRank?: number | null;
+  conferenceStanding?: string;
+  nationalRanking?: number | null;
   playoffSeed?: number | null;
   nextGameId?: string;
   lastUpdated: Date;
@@ -158,8 +158,8 @@ export interface TeamLean {
       avgPointsAgainst?: number;
     };
   };
-  standingSummary?: string;
-  currentRank?: number | null;
+  conferenceStanding?: string;
+  nationalRanking?: number | null;
   playoffSeed?: number | null;
   nextGameId?: string;
   lastUpdated: Date;

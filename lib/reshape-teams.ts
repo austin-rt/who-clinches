@@ -135,20 +135,22 @@ export const reshapeTeamData = (
     }
 
     // Parse current ranking and playoff info
-    const currentRank = espnTeamResponse.team.curatedRank?.current;
+    // ESPN uses 99 or null for unranked teams
+    const rawRank = espnTeamResponse.team.rank;
+    const currentRank = rawRank && rawRank !== 99 ? rawRank : null;
     const playoffSeed = null; // Will be populated from separate playoff rankings API if needed
 
-    if (currentRank && currentRank !== 99) {
+    if (currentRank) {
       logs.push(`   Current Rank: #${currentRank}`);
     }
     if (playoffSeed) {
       logs.push(`   Playoff Seed: #${playoffSeed}`);
     }
 
-    // Parse standing summary
-    const standingSummary = espnTeamResponse.standingSummary;
-    if (standingSummary) {
-      logs.push(`   Standing: ${standingSummary}`);
+    // Parse conference standing
+    const conferenceStanding = espnTeamResponse.standingSummary;
+    if (conferenceStanding) {
+      logs.push(`   Conference Standing: ${conferenceStanding}`);
     }
 
     // Parse next game
@@ -167,8 +169,8 @@ export const reshapeTeamData = (
       alternateColor: team.alternateColor,
       conferenceId: team.groups?.parent?.id || "8", // Default to SEC
       record,
-      standingSummary,
-      currentRank: currentRank && currentRank !== 99 ? currentRank : null,
+      conferenceStanding,
+      nationalRanking: currentRank,
       playoffSeed: playoffSeed || null,
       nextGameId,
       lastUpdated: new Date(),

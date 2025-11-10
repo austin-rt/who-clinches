@@ -3,6 +3,8 @@
  * Based on tech spec endpoints and field mappings
  */
 
+/* eslint-disable no-console -- Allow logging in ESPN API client for debugging */
+
 export interface ESPNCompetitor {
   homeAway: "home" | "away";
   team: {
@@ -111,9 +113,7 @@ export interface ESPNTeamResponse {
       };
     };
     record?: ESPNTeamRecord;
-    curatedRank?: {
-      current: number;
-    };
+    rank?: number; // Current ranking (99 or null for unranked)
   };
   standingSummary?: string;
   nextEvent?: Array<{

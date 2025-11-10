@@ -26,8 +26,8 @@ export interface ITeam extends Document {
       avgPointsAgainst?: number;
     };
   };
-  standingSummary?: string; // "3rd in SEC"
-  currentRank?: number; // Current AP/Coaches poll ranking
+  conferenceStanding?: string; // "3rd in SEC" - from ESPN standingSummary
+  nationalRanking?: number; // AP/Coaches poll ranking (1-25, null if unranked)
   playoffSeed?: number; // CFP ranking if available
   nextGameId?: string; // ESPN ID of next game
   lastUpdated: Date;
@@ -85,8 +85,8 @@ const TeamSchema = new Schema<ITeam>(
         avgPointsAgainst: { type: Number },
       },
     },
-    standingSummary: { type: String },
-    currentRank: { type: Number },
+    conferenceStanding: { type: String },
+    nationalRanking: { type: Number },
     playoffSeed: { type: Number },
     nextGameId: { type: String },
     lastUpdated: {
