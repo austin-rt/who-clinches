@@ -110,7 +110,6 @@ export const POST = async (request: NextRequest) => {
       },
     });
   } catch (error) {
-
     // Log error to database
     try {
       await ErrorModel.create({
