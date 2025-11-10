@@ -12,19 +12,19 @@ export interface IGame extends Document {
   conferenceGame: boolean;
   neutralSite: boolean;
   home: {
-    teamId: string;
+    teamEspnId: string;
     abbrev: string;
     score: number | null;
     rank: number | null;
   };
   away: {
-    teamId: string;
+    teamEspnId: string;
     abbrev: string;
     score: number | null;
     rank: number | null;
   };
   odds: {
-    favoriteTeamId: string | null;
+    favoriteTeamEspnId: string | null;
     spread: number | null;
     overUnder: number | null;
   };
@@ -81,7 +81,7 @@ const GameSchema = new Schema<IGame>(
       default: false,
     },
     home: {
-      teamId: {
+      teamEspnId: {
         type: String,
         required: true,
         index: true,
@@ -100,7 +100,7 @@ const GameSchema = new Schema<IGame>(
       },
     },
     away: {
-      teamId: {
+      teamEspnId: {
         type: String,
         required: true,
         index: true,
@@ -119,7 +119,7 @@ const GameSchema = new Schema<IGame>(
       },
     },
     odds: {
-      favoriteTeamId: {
+      favoriteTeamEspnId: {
         type: String,
         default: null,
       },
@@ -152,6 +152,8 @@ GameSchema.index({
 });
 GameSchema.index({ state: 1, completed: 1 });
 GameSchema.index({ sport: 1, league: 1 });
+GameSchema.index({ "home.teamEspnId": 1 });
+GameSchema.index({ "away.teamEspnId": 1 });
 
 export default mongoose.models.Game ||
   mongoose.model<IGame>("Game", GameSchema);
