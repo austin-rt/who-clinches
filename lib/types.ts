@@ -76,7 +76,6 @@ export interface ReshapedTeam {
 export interface ReshapeResult<T> {
   games?: T[];
   teams?: T[];
-  logs: string[];
 }
 
 export interface TeamDataResponse {
