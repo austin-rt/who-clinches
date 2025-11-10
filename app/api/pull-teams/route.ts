@@ -6,22 +6,14 @@ import { createESPNClient } from "@/lib/espn-client";
 import { reshapeTeamsData } from "@/lib/reshape-teams";
 import { TeamDataResponse } from "@/lib/types";
 import { CONFERENCE_TEAMS_MAP } from "@/lib/constants";
+import {
+  PullTeamsRequest,
+  PullTeamsResponse,
+  ApiErrorResponse,
+} from "@/lib/api-types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-
-interface PullTeamsRequest {
-  sport: string;
-  league: string;
-  conferenceId?: number; // Optional: if not provided, must provide teams
-  teams?: string[]; // Optional: specific teams, overrides conferenceId
-}
-
-interface PullTeamsResponse {
-  upserted: number;
-  lastUpdated: string;
-  errors?: string[];
-}
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -31,19 +23,21 @@ export const POST = async (request: NextRequest) => {
 
     // Validate required fields
     if (!body.sport || !body.league) {
-      return NextResponse.json(
+      return NextResponse.json<ApiErrorResponse>(
         {
           error: "Missing required fields: sport and league are required",
+          code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
     }
 
     if (!body.teams && !body.conferenceId) {
-      return NextResponse.json(
+      return NextResponse.json<ApiErrorResponse>(
         {
           error:
             "Must provide either 'teams' (array of team abbreviations) or 'conferenceId' (number)",
+          code: "VALIDATION_ERROR",
         },
         { status: 400 }
       );
@@ -62,9 +56,10 @@ export const POST = async (request: NextRequest) => {
       // Look up conference teams from the map
       const conferenceTeams = CONFERENCE_TEAMS_MAP[conferenceId];
       if (!conferenceTeams) {
-        return NextResponse.json(
+        return NextResponse.json<ApiErrorResponse>(
           {
             error: `Conference ID ${conferenceId} not supported. Add conference to CONFERENCE_TEAMS_MAP in lib/constants.ts`,
+            code: "INVALID_CONFERENCE",
           },
           { status: 400 }
         );
@@ -72,7 +67,10 @@ export const POST = async (request: NextRequest) => {
       teamsToQuery = [...conferenceTeams];
     } else {
       // This shouldn't happen due to validation above, but TypeScript needs it
-      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+      return NextResponse.json<ApiErrorResponse>(
+        { error: "Invalid request", code: "VALIDATION_ERROR" },
+        { status: 400 }
+      );
     }
 
     // Fetch all teams from ESPN (with rate limiting)
@@ -171,7 +169,7 @@ export const POST = async (request: NextRequest) => {
       // Failed to log error to database
     }
 
-    return NextResponse.json(
+    return NextResponse.json<ApiErrorResponse>(
       {
         error:
           error instanceof Error ? error.message : "Unknown error occurred",
