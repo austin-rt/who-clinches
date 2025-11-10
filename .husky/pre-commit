@@ -13,6 +13,19 @@ if [ "$branch" = "main" ]; then
   exit 1
 fi
 
-# 2. Run ESLint + TypeScript checks (via lint-staged)
+# 2. Check for file-level eslint-disable comments
+FILE_LEVEL_IGNORES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' | xargs grep -l "eslint-disable\s*$" 2>/dev/null || true)
+if [ -n "$FILE_LEVEL_IGNORES" ]; then
+  printf "${RED}ERROR: File-level eslint-disable comments are not allowed${NC}\n"
+  printf "${YELLOW}Found in:${NC}\n"
+  echo "$FILE_LEVEL_IGNORES" | while read -r file; do
+    line=$(grep -n "eslint-disable\s*$" "$file" | head -1 | cut -d: -f1)
+    printf "  ${YELLOW}$file:$line${NC}\n"
+  done
+  printf "${YELLOW}Use line-specific comments instead: // eslint-disable-next-line rule-name${NC}\n"
+  exit 1
+fi
+
+# 3. Run ESLint + TypeScript checks (via lint-staged)
 # This enforces: no console.log, no debugger, no 'any', no unused vars, etc.
 npx lint-staged
