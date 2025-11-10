@@ -3,8 +3,6 @@
  * Based on tech spec endpoints and field mappings
  */
 
-/* eslint-disable no-console -- Allow logging in ESPN API client for debugging */
-
 export interface ESPNCompetitor {
   homeAway: "home" | "away";
   team: {
@@ -114,8 +112,8 @@ export interface ESPNTeamResponse {
     };
     record?: ESPNTeamRecord;
     rank?: number; // Current ranking (99 or null for unranked)
+    standingSummary?: string; // "3rd in SEC"
   };
-  standingSummary?: string;
   nextEvent?: Array<{
     id: string;
   }>;
@@ -150,6 +148,52 @@ export class ESPNClient {
   }
 
   /**
+   * Fetch all teams in a conference
+   * ESPN conference standings endpoint provides team list
+   */
+  async getConferenceTeams(conferenceId: number = 8): Promise<string[]> {
+    const url = `${this.baseUrl}/standings?group=${conferenceId}`;
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "SEC-Tiebreaker/1.0",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `ESPN API error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+
+      // Extract team abbreviations from standings
+      const teams: string[] = [];
+      if (data.children) {
+        for (const child of data.children) {
+          if (child.standings?.entries) {
+            for (const entry of child.standings.entries) {
+              const abbrev = entry.team?.abbreviation;
+              if (abbrev) {
+                teams.push(abbrev);
+              }
+            }
+          }
+        }
+      }
+
+      return teams;
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(`Failed to fetch conference teams: ${error.message}`);
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Fetch scoreboard data for a specific conference/week/season
    */
   async getScoreboard(
@@ -168,10 +212,6 @@ export class ESPNClient {
 
     const url = `${this.baseUrl}/scoreboard?${searchParams.toString()}`;
 
-    console.log(
-      `[ESPN] Fetching ${this.sport}/${this.league} scoreboard: ${url}`
-    );
-
     try {
       const response = await fetch(url, {
         headers: {
@@ -186,13 +226,8 @@ export class ESPNClient {
       }
 
       const data = await response.json();
-      console.log(
-        `[ESPN] Scoreboard response: ${data.events?.length || 0} events`
-      );
-
       return data;
     } catch (error) {
-      console.error("[ESPN] Scoreboard fetch failed:", error);
       throw error;
     }
   }
@@ -203,8 +238,6 @@ export class ESPNClient {
   async getGameSummary(gameId: string): Promise<ESPNGameSummaryResponse> {
     const url = `${this.baseUrl}/summary?event=${gameId}`;
 
-    console.log(`[ESPN] Fetching game summary: ${gameId}`);
-
     try {
       const response = await fetch(url, {
         headers: {
@@ -219,11 +252,8 @@ export class ESPNClient {
       }
 
       const data = await response.json();
-      console.log(`[ESPN] Game summary response for ${gameId}`);
-
       return data;
     } catch (error) {
-      console.error(`[ESPN] Game summary fetch failed for ${gameId}:`, error);
       throw error;
     }
   }
@@ -234,8 +264,6 @@ export class ESPNClient {
   async getTeam(teamAbbrev: string): Promise<ESPNTeamResponse> {
     const url = `${this.baseUrl}/teams/${teamAbbrev}`;
 
-    console.log(`[ESPN] Fetching team: ${teamAbbrev}`);
-
     try {
       const response = await fetch(url, {
         headers: {
@@ -250,11 +278,8 @@ export class ESPNClient {
       }
 
       const data = await response.json();
-      console.log(`[ESPN] Team response for ${teamAbbrev}`);
-
       return data;
     } catch (error) {
-      console.error(`[ESPN] Team fetch failed for ${teamAbbrev}:`, error);
       throw error;
     }
   }
@@ -270,8 +295,6 @@ export class ESPNClient {
   ): Promise<ESPNCoreRecordResponse> {
     const url = `http://sports.core.api.espn.com/v2/sports/${this.sport}/leagues/${this.league}/seasons/${season}/types/${seasonType}/teams/${teamId}/record?lang=en&region=us`;
 
-    console.log(`[ESPN] Fetching team records: ${teamId}`);
-
     try {
       const response = await fetch(url, {
         headers: {
@@ -286,13 +309,8 @@ export class ESPNClient {
       }
 
       const data = await response.json();
-      console.log(
-        `[ESPN] Team records response for ${teamId}: ${data.items?.length || 0} record types`
-      );
-
       return data;
     } catch (error) {
-      console.error(`[ESPN] Team records fetch failed for ${teamId}:`, error);
       throw error;
     }
   }
