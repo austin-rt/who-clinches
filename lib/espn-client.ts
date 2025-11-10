@@ -121,6 +121,24 @@ export interface ESPNTeamResponse {
   }>;
 }
 
+export interface ESPNRecordItem {
+  id: string;
+  name: string;
+  type: string;
+  summary: string;
+  displayValue: string;
+  stats?: Array<{
+    name: string;
+    type: string;
+    value: number;
+    displayValue: string;
+  }>;
+}
+
+export interface ESPNCoreRecordResponse {
+  items: ESPNRecordItem[];
+}
+
 export class ESPNClient {
   private baseUrl: string;
 
@@ -237,6 +255,44 @@ export class ESPNClient {
       return data;
     } catch (error) {
       console.error(`[ESPN] Team fetch failed for ${teamAbbrev}:`, error);
+      throw error;
+    }
+  }
+
+  /**
+   * Fetch detailed team records from core API
+   * Provides overall, conference, home, and away records
+   */
+  async getTeamRecords(
+    teamId: string,
+    season: number = 2025,
+    seasonType: number = 2
+  ): Promise<ESPNCoreRecordResponse> {
+    const url = `http://sports.core.api.espn.com/v2/sports/${this.sport}/leagues/${this.league}/seasons/${season}/types/${seasonType}/teams/${teamId}/record?lang=en&region=us`;
+
+    console.log(`[ESPN] Fetching team records: ${teamId}`);
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          "User-Agent": "SEC-Tiebreaker/1.0",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          `ESPN Core API error: ${response.status} ${response.statusText}`
+        );
+      }
+
+      const data = await response.json();
+      console.log(
+        `[ESPN] Team records response for ${teamId}: ${data.items?.length || 0} record types`
+      );
+
+      return data;
+    } catch (error) {
+      console.error(`[ESPN] Team records fetch failed for ${teamId}:`, error);
       throw error;
     }
   }
