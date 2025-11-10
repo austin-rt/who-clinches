@@ -2,19 +2,15 @@
 
 ## Objective
 
-Test both preview (develop) and production (main) deployments by executing all testing procedures from `docs/TESTING.md`.
+Test the ESPN data pipeline (ingestion, transformation, persistence, retrieval) for deployed environments by executing procedures from `docs/tests/api/espn-data-pipeline.md`.
 
 ## Instructions
 
-1. Read `docs/TESTING.md`
-2. Test preview deployment first (develop branch)
-   - Base URL: `https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`
-   - Expected database: `preview`
-3. Test production deployment second (main branch)
-   - Base URL: `https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`
-   - Expected database: `production`
-4. For each deployment:
-   - Execute all API endpoint tests using `run_terminal_cmd`
-   - Verify database state with mongosh queries
-   - Compare responses against expected results
-5. Report results for both environments in structured format
+1. Read `docs/tests/api/espn-data-pipeline.md`
+2. Determine target environment from user input:
+   - "test preview", "test develop", or "test dev" → Preview deployment (`preview` database)
+   - "test prod" or "test production" → Production deployment (`production` database)
+3. Replace `{BASE_URL}` and `{DATABASE}` in all commands based on environment
+4. Execute all API endpoint tests using `run_terminal_cmd`
+5. Verify database state with mongosh queries
+6. Report results in structured format with pass/fail for each check
