@@ -5,6 +5,7 @@ import ErrorModel from "@/lib/models/Error";
 import { createESPNClient } from "@/lib/espn-client";
 import { reshapeTeamsData } from "@/lib/reshape-teams";
 import { TeamDataResponse } from "@/lib/types";
+import { CONFERENCE_TEAMS_MAP } from "@/lib/constants";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -53,12 +54,22 @@ export const POST = async (request: NextRequest) => {
     // Create ESPN client for sport/league
     const client = createESPNClient(sport, league);
 
-    // Fetch teams list from ESPN (either specific teams or all conference teams)
+    // Fetch teams list (either specific teams or use conference constant)
     let teamsToQuery: string[];
     if (teams) {
       teamsToQuery = teams;
     } else if (conferenceId) {
-      teamsToQuery = await client.getConferenceTeams(conferenceId);
+      // Look up conference teams from the map
+      const conferenceTeams = CONFERENCE_TEAMS_MAP[conferenceId];
+      if (!conferenceTeams) {
+        return NextResponse.json(
+          {
+            error: `Conference ID ${conferenceId} not supported. Add conference to CONFERENCE_TEAMS_MAP in lib/constants.ts`,
+          },
+          { status: 400 }
+        );
+      }
+      teamsToQuery = [...conferenceTeams];
     } else {
       // This shouldn't happen due to validation above, but TypeScript needs it
       return NextResponse.json({ error: "Invalid request" }, { status: 400 });
@@ -108,51 +119,44 @@ export const POST = async (request: NextRequest) => {
     const reshapedTeams = reshapeTeamsData(teamResponses);
 
     if (!reshapedTeams || reshapedTeams.length === 0) {
-      return NextResponse.json({
+      return NextResponse.json<PullTeamsResponse>({
         upserted: 0,
         lastUpdated: new Date().toISOString(),
       });
     }
 
-    // Write teams to database using upsert
+    // Upsert teams to database
+    const upsertErrors: string[] = [];
     let upsertedCount = 0;
-    const errors: string[] = [];
 
-    for (const teamData of reshapedTeams) {
+    for (const team of reshapedTeams) {
       try {
-        const result = await Team.updateOne(
-          { _id: teamData._id }, // Find by ESPN team ID (which is our _id)
-          {
-            $set: {
-              ...teamData,
-              lastUpdated: new Date(),
-            },
-          },
-          { upsert: true } // Create if doesn't exist, update if it does
+        await Team.updateOne(
+          { _id: team._id },
+          { $set: team },
+          { upsert: true }
         );
-
-        if (result.upsertedCount > 0 || result.modifiedCount > 0) {
-          upsertedCount++;
-        }
+        upsertedCount++;
       } catch (error) {
-        const errorMsg = `Failed to upsert team ${teamData._id}: ${
+        const errorMessage = `Failed to upsert team ${team._id}: ${
           error instanceof Error ? error.message : String(error)
         }`;
-        errors.push(errorMsg);
+        upsertErrors.push(errorMessage);
       }
     }
 
-    const response: PullTeamsResponse = {
-      upserted: upsertedCount,
-      lastUpdated: new Date().toISOString(),
-      ...(errors.length > 0 && { errors }),
-    };
-
-    return NextResponse.json(response, {
-      headers: {
-        "Cache-Control": "no-store",
+    return NextResponse.json<PullTeamsResponse>(
+      {
+        upserted: upsertedCount,
+        lastUpdated: new Date().toISOString(),
+        errors: upsertErrors.length > 0 ? upsertErrors : undefined,
       },
-    });
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
   } catch (error) {
     // Log error to database
     try {
