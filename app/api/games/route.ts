@@ -2,12 +2,42 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
 import Team from "@/lib/models/Team";
+import { MongoQuery, GameLean, TeamLean } from "@/lib/types";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 interface GameResponse {
-  events: any[];
+  events: Array<{
+    espnId: string;
+    date: string;
+    week: number | null;
+    season: number;
+    sport: string;
+    league: string;
+    state: "pre" | "in" | "post";
+    completed: boolean;
+    conferenceGame: boolean;
+    neutralSite: boolean;
+    home: {
+      teamEspnId: string;
+      abbrev: string;
+      score: number | null;
+      rank: number | null;
+    };
+    away: {
+      teamEspnId: string;
+      abbrev: string;
+      score: number | null;
+      rank: number | null;
+    };
+    odds: {
+      favoriteTeamEspnId: string | null;
+      spread: number | null;
+      overUnder: number | null;
+    };
+    lastUpdated: Date;
+  }>;
   teams: Array<{
     id: string;
     abbrev: string;
@@ -17,14 +47,14 @@ interface GameResponse {
   lastUpdated: string;
 }
 
-export async function GET(request: NextRequest) {
+export const GET = async (request: NextRequest) => {
   try {
     await dbConnect();
 
     const { searchParams } = new URL(request.url);
 
     // Build query from search parameters
-    const query: any = {};
+    const query: MongoQuery = {};
 
     const conferenceId = searchParams.get("conferenceId");
     const season = searchParams.get("season");
@@ -70,35 +100,94 @@ export async function GET(request: NextRequest) {
     console.log("[API] Games query:", query);
 
     // Fetch games with lean mode (no hydration)
-    const games = await Game.find(query)
+    const gamesRaw = await Game.find(query)
       .lean()
       .sort({ date: 1, week: 1 })
       .exec();
+
+    // Type assertion - we know our schema matches GameLean exactly
+    const games: GameLean[] = gamesRaw.map(
+      (game): GameLean => ({
+        _id: String(game._id),
+        espnId: String(game.espnId),
+        date: String(game.date),
+        week: typeof game.week === "number" ? game.week : null,
+        season: Number(game.season),
+        sport: String(game.sport),
+        league: String(game.league),
+        state: game.state as "pre" | "in" | "post",
+        completed: Boolean(game.completed),
+        conferenceGame: Boolean(game.conferenceGame),
+        neutralSite: Boolean(game.neutralSite),
+        home: {
+          teamEspnId: String(game.home.teamEspnId),
+          abbrev: String(game.home.abbrev),
+          score: typeof game.home.score === "number" ? game.home.score : null,
+          rank: typeof game.home.rank === "number" ? game.home.rank : null,
+        },
+        away: {
+          teamEspnId: String(game.away.teamEspnId),
+          abbrev: String(game.away.abbrev),
+          score: typeof game.away.score === "number" ? game.away.score : null,
+          rank: typeof game.away.rank === "number" ? game.away.rank : null,
+        },
+        odds: {
+          favoriteTeamEspnId: game.odds.favoriteTeamEspnId
+            ? String(game.odds.favoriteTeamEspnId)
+            : null,
+          spread:
+            typeof game.odds.spread === "number" ? game.odds.spread : null,
+          overUnder:
+            typeof game.odds.overUnder === "number"
+              ? game.odds.overUnder
+              : null,
+        },
+        lastUpdated: new Date(game.lastUpdated),
+      })
+    );
 
     console.log(`[API] Found ${games.length} games`);
 
     // Extract unique team IDs from games
     const teamIds = new Set<string>();
-    games.forEach((game) => {
-      teamIds.add(game.home.teamId);
-      teamIds.add(game.away.teamId);
-    });
+    for (const game of games) {
+      teamIds.add(game.home.teamEspnId);
+      teamIds.add(game.away.teamEspnId);
+    }
 
     // Fetch team metadata for all teams in results
-    const teams = await Team.find({ _id: { $in: Array.from(teamIds) } })
+    const teamsRaw = await Team.find({ _id: { $in: Array.from(teamIds) } })
       .lean()
       .select("_id abbreviation displayName logo")
       .exec();
 
-    const teamMap = teams.reduce((acc, team) => {
-      acc[team._id] = {
+    // Type assertion - we know our selected fields match exactly
+    const teams: Pick<
+      TeamLean,
+      "_id" | "abbreviation" | "displayName" | "logo"
+    >[] = teamsRaw.map(
+      (
+        team
+      ): Pick<TeamLean, "_id" | "abbreviation" | "displayName" | "logo"> => ({
+        _id: String(team._id),
+        abbreviation: String(team.abbreviation),
+        displayName: String(team.displayName),
+        logo: String(team.logo),
+      })
+    );
+
+    const teamMap: Record<
+      string,
+      { id: string; abbrev: string; displayName: string; logo: string }
+    > = {};
+    for (const team of teams) {
+      teamMap[team._id] = {
         id: team._id,
         abbrev: team.abbreviation,
         displayName: team.displayName,
         logo: team.logo,
       };
-      return acc;
-    }, {} as Record<string, any>);
+    }
 
     // Determine cache headers based on game states
     const hasLiveGames = games.some((game) => game.state === "in");
@@ -127,4 +216,4 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
-}
+};
