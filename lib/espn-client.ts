@@ -4,6 +4,7 @@
  */
 
 export interface ESPNCompetitor {
+  homeAway: "home" | "away";
   team: {
     id: string;
     abbreviation: string;
@@ -44,10 +45,14 @@ export interface ESPNCompetition {
   };
   odds?: Array<{
     details: string;
+    spread: number;
+    overUnder: number;
     awayTeamOdds: {
       favorite: boolean;
     };
-    overUnder: number;
+    homeTeamOdds: {
+      favorite: boolean;
+    };
   }>;
   groups?: {
     id: string;
@@ -73,6 +78,47 @@ export interface ESPNGameSummaryResponse {
   header: {
     competitions: ESPNCompetition[];
   };
+}
+
+export interface ESPNTeamLogo {
+  href: string;
+  width: number;
+  height: number;
+}
+
+export interface ESPNTeamRecord {
+  items: Array<{
+    summary: string;
+    stats?: Array<{
+      name: string;
+      value: number;
+    }>;
+  }>;
+}
+
+export interface ESPNTeamResponse {
+  team: {
+    id: string;
+    name: string;
+    displayName: string;
+    abbreviation: string;
+    logos?: ESPNTeamLogo[];
+    color: string;
+    alternateColor: string;
+    groups?: {
+      parent?: {
+        id: string;
+      };
+    };
+    record?: ESPNTeamRecord;
+    curatedRank?: {
+      current: number;
+    };
+  };
+  standingSummary?: string;
+  nextEvent?: Array<{
+    id: string;
+  }>;
 }
 
 export class ESPNClient {
@@ -167,7 +213,7 @@ export class ESPNClient {
   /**
    * Fetch team metadata (for manual seeding)
    */
-  async getTeam(teamAbbrev: string) {
+  async getTeam(teamAbbrev: string): Promise<ESPNTeamResponse> {
     const url = `${this.baseUrl}/teams/${teamAbbrev}`;
 
     console.log(`[ESPN] Fetching team: ${teamAbbrev}`);
@@ -200,6 +246,6 @@ export class ESPNClient {
 export const espnClient = new ESPNClient("football", "college-football");
 
 // Factory function for creating clients for different sports/leagues
-export function createESPNClient(sport: string, league: string) {
+export const createESPNClient = (sport: string, league: string) => {
   return new ESPNClient(sport, league);
-}
+};
