@@ -29,6 +29,7 @@ if (!MONGODB_DB) {
 
 const MONGODB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}`;
 
+// eslint-disable-next-line no-console -- Allow DB connection logging
 console.log(`[MongoDB] Connecting to database: ${MONGODB_DB}`);
 
 interface MongooseCache {
