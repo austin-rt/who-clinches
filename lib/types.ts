@@ -82,6 +82,7 @@ export interface ReshapeResult<T> {
 export interface TeamDataResponse {
   abbreviation: string;
   data: import("./espn-client").ESPNTeamResponse | null;
+  recordData?: import("./espn-client").ESPNCoreRecordResponse | null;
 }
 
 export interface MongoQuery {
