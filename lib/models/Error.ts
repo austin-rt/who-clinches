@@ -1,12 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose'
+import { ErrorLogFields } from '../api-types'
 
-export interface IError extends Document {
-  timestamp: Date
-  endpoint: string
-  payload: object
-  error: string
-  stackTrace: string
-}
+export interface IError extends Document, ErrorLogFields {}
 
 const ErrorSchema = new Schema<IError>({
   timestamp: {
