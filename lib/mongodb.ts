@@ -1,12 +1,33 @@
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGODB_URI!;
+// Build MongoDB URI dynamically from environment variables
+const MONGODB_BASE = process.env.MONGODB_BASE;
+const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME;
 
-if (!MONGODB_URI) {
+// Determine database name from environment
+// Priority: MONGODB_DB (explicit) > VERCEL_ENV (Vercel deployments)
+const MONGODB_DB = process.env.MONGODB_DB || process.env.VERCEL_ENV;
+
+if (!MONGODB_BASE || !MONGODB_APP_NAME) {
   throw new Error(
-    "Please define the MONGODB_URI environment variable inside .env.local"
+    "Please define MONGODB_BASE and MONGODB_APP_NAME environment variables"
   );
 }
+
+// Require MONGODB_DB to be set locally (when not on Vercel)
+if (!MONGODB_DB && !process.env.VERCEL_ENV) {
+  throw new Error(
+    "Please define MONGODB_DB environment variable for local development"
+  );
+}
+
+if (!MONGODB_DB) {
+  throw new Error("Unable to determine database name from environment");
+}
+
+const MONGODB_URI = `${MONGODB_BASE}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}`;
+
+console.log(`[MongoDB] Connecting to database: ${MONGODB_DB}`);
 
 interface MongooseCache {
   conn: typeof mongoose | null;
@@ -37,6 +58,6 @@ const dbConnect = async () => {
   }
 
   return cached.conn;
-}
+};
 
 export default dbConnect;
