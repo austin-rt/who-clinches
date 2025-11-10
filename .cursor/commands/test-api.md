@@ -2,12 +2,19 @@
 
 ## Objective
 
-Read and execute all testing procedures from `docs/TESTING.md` for the specified environment (local/preview/production).
+Test both preview (develop) and production (main) deployments by executing all testing procedures from `docs/TESTING.md`.
 
 ## Instructions
 
 1. Read `docs/TESTING.md`
-2. Identify target environment from user input
-3. Execute all tests for that environment using `run_terminal_cmd`
-4. Verify responses and database state
-5. Report results in structured format
+2. Test preview deployment first (develop branch)
+   - Base URL: `https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`
+   - Expected database: `preview`
+3. Test production deployment second (main branch)
+   - Base URL: `https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`
+   - Expected database: `production`
+4. For each deployment:
+   - Execute all API endpoint tests using `run_terminal_cmd`
+   - Verify database state with mongosh queries
+   - Compare responses against expected results
+5. Report results for both environments in structured format
