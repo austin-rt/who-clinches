@@ -75,7 +75,9 @@ The application will be available at [http://localhost:3000](http://localhost:30
 The MongoDB connection is dynamically constructed and **automatically selects the correct database** based on the deployment environment:
 
 ```bash
-MONGODB_BASE=mongodb+srv://username:password@cluster.mongodb.net
+MONGODB_USER=your_username
+MONGODB_PASSWORD=your_password
+MONGODB_HOST=cluster0.rr6gggn.mongodb.net
 MONGODB_APP_NAME=SEC-Tiebreaker
 ```
 
