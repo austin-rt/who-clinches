@@ -4,7 +4,7 @@
 
 Test the ESPN data pipeline for the production (main branch) deployment.
 
-**⚠️ CAUTION: This tests production and will modify production data.**
+**CAUTION: This tests production and will modify production data.**
 
 ## Environment
 
