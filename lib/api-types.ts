@@ -135,3 +135,46 @@ export interface CronHealthCheckResponse {
   details?: string;
 }
 
+// ============================================================================
+// /api/simulate (POST)
+// ============================================================================
+
+export interface SimulateRequest {
+  season: number;
+  conferenceId: string;
+  overrides: {
+    [gameId: string]: {
+      homeScore: number;
+      awayScore: number;
+    };
+  };
+}
+
+export interface SimulateResponse {
+  standings: StandingEntry[];
+  championship: [string, string];
+  tieLogs: TieLog[];
+}
+
+export interface StandingEntry {
+  rank: number;
+  teamId: string;
+  abbrev: string;
+  displayName: string;
+  logo: string;
+  color: string;
+  record: { wins: number; losses: number };
+  confRecord: { wins: number; losses: number };
+  explainPosition: string;
+}
+
+export interface TieLog {
+  teams: string[];
+  steps: TieStep[];
+}
+
+export interface TieStep {
+  rule: string;
+  detail: string;
+  survivors: string[];
+}
