@@ -98,3 +98,40 @@ export interface GamesResponse {
   lastUpdated: string;
 }
 
+// ============================================================================
+// /api/cron/update-live-games
+// ============================================================================
+
+export interface CronLiveGamesResponse {
+  updated: number;
+  gamesChecked: number;
+  activeGames: number;
+  espnCalls: number;
+  lastUpdated: string;
+  errors?: string[];
+}
+
+// ============================================================================
+// /api/cron/update-rankings
+// ============================================================================
+
+export interface CronRankingsResponse {
+  updated: number;
+  teamsChecked: number;
+  espnCalls: number;
+  lastUpdated: string;
+  errors?: string[];
+}
+
+// ============================================================================
+// /api/cron/health (OPTIONAL)
+// ============================================================================
+
+export interface CronHealthCheckResponse {
+  endpoint: string;
+  lastRun: string | null;
+  status: "healthy" | "warning" | "error";
+  executionTime?: number;
+  details?: string;
+}
+
