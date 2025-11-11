@@ -36,6 +36,10 @@ export interface ReshapedGame {
     spread: number | null;
     overUnder: number | null;
   };
+  predictedScore?: {
+    home: number;
+    away: number;
+  };
   lastUpdated: Date;
 }
 
@@ -115,12 +119,18 @@ export interface GameLean {
   home: {
     teamEspnId: string;
     abbrev: string;
+    displayName?: string;
+    logo?: string;
+    color?: string;
     score: number | null;
     rank: number | null;
   };
   away: {
     teamEspnId: string;
     abbrev: string;
+    displayName?: string;
+    logo?: string;
+    color?: string;
     score: number | null;
     rank: number | null;
   };
@@ -128,6 +138,10 @@ export interface GameLean {
     favoriteTeamEspnId: string | null;
     spread: number | null;
     overUnder: number | null;
+  };
+  predictedScore?: {
+    home: number;
+    away: number;
   };
   lastUpdated: Date;
 }

@@ -14,12 +14,18 @@ export interface IGame extends Document {
   home: {
     teamEspnId: string;
     abbrev: string;
+    displayName: string;
+    logo: string;
+    color: string;
     score: number | null;
     rank: number | null;
   };
   away: {
     teamEspnId: string;
     abbrev: string;
+    displayName: string;
+    logo: string;
+    color: string;
     score: number | null;
     rank: number | null;
   };
@@ -27,6 +33,10 @@ export interface IGame extends Document {
     favoriteTeamEspnId: string | null;
     spread: number | null;
     overUnder: number | null;
+  };
+  predictedScore?: {
+    home: number;
+    away: number;
   };
   lastUpdated: Date;
 }
@@ -90,6 +100,18 @@ const GameSchema = new Schema<IGame>(
         type: String,
         required: true,
       },
+      displayName: {
+        type: String,
+        required: false,
+      },
+      logo: {
+        type: String,
+        required: false,
+      },
+      color: {
+        type: String,
+        required: false,
+      },
       score: {
         type: Number,
         default: null,
@@ -108,6 +130,18 @@ const GameSchema = new Schema<IGame>(
       abbrev: {
         type: String,
         required: true,
+      },
+      displayName: {
+        type: String,
+        required: false,
+      },
+      logo: {
+        type: String,
+        required: false,
+      },
+      color: {
+        type: String,
+        required: false,
       },
       score: {
         type: Number,
@@ -130,6 +164,14 @@ const GameSchema = new Schema<IGame>(
       overUnder: {
         type: Number,
         default: null,
+      },
+    },
+    predictedScore: {
+      home: {
+        type: Number,
+      },
+      away: {
+        type: Number,
       },
     },
     lastUpdated: {
@@ -155,5 +197,9 @@ GameSchema.index({ sport: 1, league: 1 });
 GameSchema.index({ "home.teamEspnId": 1 });
 GameSchema.index({ "away.teamEspnId": 1 });
 
-export default mongoose.models.Game ||
-  mongoose.model<IGame>("Game", GameSchema);
+// Force delete cached model to pick up schema changes
+if (mongoose.models.Game) {
+  delete mongoose.models.Game;
+}
+
+export default mongoose.model<IGame>("Game", GameSchema);
