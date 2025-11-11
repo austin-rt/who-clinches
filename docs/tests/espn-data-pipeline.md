@@ -86,7 +86,7 @@ Replace `{DATABASE}` with `preview` or `production`.
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB.
 
-**Full Season Pull:** If `week` is not specified, the endpoint pulls all weeks for the season (1-15). This ensures the database has complete season data.
+**Full Season Pull:** If `week` is not specified, the endpoint dynamically fetches the ESPN calendar to determine the "Regular Season" weeks and pulls all of them. For 2025, this is weeks 1-14 (SEC Championship excluded). This ensures the database has complete regular season data without hardcoding week ranges.
 
 #### Command Template (Full Season - Recommended)
 
@@ -102,9 +102,10 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL
 ```
 
 This will:
-- Pull all weeks 1-15 from ESPN
+- Query ESPN calendar API to determine regular season weeks dynamically
+- Pull all regular season weeks (e.g., 1-14 for 2025, excluding SEC Championship)
 - Upsert games (existing games updated, new games inserted)
-- Return the total number of games upserted
+- Return the total number of games upserted and the list of weeks pulled
 
 #### Command Template (Single Week - Optional)
 
@@ -128,8 +129,9 @@ See `app/api/pull-games/route.ts` for response interface.
 
 Response should include:
 - `upserted`: number of games inserted/updated
+- `weeksPulled`: array of week numbers that were pulled
 - `lastUpdated`: timestamp
-- `errors`: array of error messages (if any)
+- `errors`: array of error messages (if any, optional field)
 
 #### Database Verification
 
@@ -216,11 +218,10 @@ byWeek.forEach(w => console.log('Week', w._id + ':', w.count, 'games'));
   --quiet
 ```
 
-Expected output for complete dataset (weeks 1-11):
-- Total games: ~100
+Expected output for complete dataset (weeks 1-14 for 2025 season):
+- Total games: ~128
 - Week 1: 16 games
-- Week 2: 15 games
-- Week 3-11: varying counts
+- Week 2-14: varying counts (typically 8-10 games per week)
 
 ### Verify Conference Records
 
@@ -249,10 +250,12 @@ Should show `preview` or `production` based on environment.
 ### Preview (develop branch)
 - [ ] Deployment accessible with bypass token
 - [ ] POST /api/pull-teams returns 200 (16 teams)
-- [ ] POST /api/pull-games returns 200 for all weeks 1-11
+- [ ] POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
+- [ ] Response includes `weeksPulled` array with all pulled weeks
 - [ ] GET /api/games returns 200
 - [ ] Teams data verified in `preview` database (16 teams)
-- [ ] Games data verified in `preview` database (~100 games, weeks 1-11)
+- [ ] Games data verified in `preview` database (~128 games for 2025, weeks 1-14)
+- [ ] Games include team display fields (displayName, logo, color)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: preview`
 
@@ -260,10 +263,12 @@ Should show `preview` or `production` based on environment.
 - [ ] Preview tests completed successfully first
 - [ ] Deployment accessible with bypass token
 - [ ] POST /api/pull-teams returns 200 (16 teams)
-- [ ] POST /api/pull-games returns 200 for all weeks 1-11
+- [ ] POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
+- [ ] Response includes `weeksPulled` array with all pulled weeks
 - [ ] GET /api/games returns 200
 - [ ] Teams data verified in `production` database (16 teams)
-- [ ] Games data verified in `production` database (~100 games, weeks 1-11)
+- [ ] Games data verified in `production` database (~128 games for 2025, weeks 1-14)
+- [ ] Games include team display fields (displayName, logo, color)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: production`
 - [ ] Monitor for errors for 5-10 minutes
