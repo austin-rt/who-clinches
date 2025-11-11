@@ -13,10 +13,6 @@ import {
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-interface GameWeekQuery {
-  week: number;
-}
-
 export const POST = async (request: NextRequest) => {
   try {
     await dbConnect();
@@ -47,37 +43,34 @@ export const POST = async (request: NextRequest) => {
       // Specific week requested
       weeksToPull = [week];
     } else {
-      // Backfill mode: find all missing weeks for this season
-      // Get distinct weeks that already exist in the database
-      const existingWeeks = await Game.distinct("week", {
-        season,
-        sport,
-        league,
-        conferenceGame: true, // Only check conference games
-      });
+      // No week specified: pull entire season
+      // Fetch calendar from ESPN to get all available weeks dynamically
+      try {
+        const calendarResponse = await client.getScoreboard({
+          groups: conferenceId,
+          season: season,
+        });
 
-      // Assume weeks 1-15 for college football season (can make this configurable)
-      const maxWeek = 15;
-      const allWeeks = Array.from({ length: maxWeek }, (_, i) => i + 1);
+        // Extract week numbers from Regular Season calendar
+        const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
+          (cal) => cal.label === "Regular Season"
+        );
 
-      // Find weeks that don't exist yet
-      weeksToPull = allWeeks.filter((w) => !existingWeeks.includes(w));
-
-      // If all weeks exist, pull current week (week with most recent games)
-      if (weeksToPull.length === 0) {
-        const latestGame = await Game.findOne(
-          { season, sport, league },
-          { week: 1 }
-        )
-          .sort({ date: -1 })
-          .lean<GameWeekQuery>();
-
-        if (latestGame?.week) {
-          weeksToPull = [latestGame.week];
-        } else {
-          // Default to week 1 if no games exist
-          weeksToPull = [1];
+        if (regularSeason?.entries) {
+          weeksToPull = regularSeason.entries
+            .map((entry) => parseInt(entry.value, 10))
+            .filter((val: number) => !isNaN(val));
         }
+
+        // Fallback to weeks 1-15 if calendar not available
+        if (weeksToPull.length === 0) {
+          const maxWeek = 15;
+          weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
+        }
+      } catch {
+        // If calendar fetch fails, fall back to weeks 1-15
+        const maxWeek = 15;
+        weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
       }
     }
 

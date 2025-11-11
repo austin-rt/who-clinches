@@ -86,9 +86,9 @@ Replace `{DATABASE}` with `preview` or `production`.
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB.
 
-**Automatic Backfill:** If `week` is not specified, the endpoint automatically detects and pulls all missing weeks for the season (1-15). This ensures the database always has complete historical data.
+**Full Season Pull:** If `week` is not specified, the endpoint pulls all weeks for the season (1-15). This ensures the database has complete season data.
 
-#### Command Template (Automatic Backfill - Recommended)
+#### Command Template (Full Season - Recommended)
 
 ```bash
 curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
@@ -102,13 +102,13 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL
 ```
 
 This will:
-- Check which weeks are already in the database
-- Pull only the missing weeks from ESPN
-- Return the list of weeks that were pulled
+- Pull all weeks 1-15 from ESPN
+- Upsert games (existing games updated, new games inserted)
+- Return the total number of games upserted
 
 #### Command Template (Single Week - Optional)
 
-Use this to force update a specific week:
+Use this to update only a specific week:
 
 ```bash
 curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \

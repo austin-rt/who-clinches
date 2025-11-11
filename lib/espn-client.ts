@@ -72,6 +72,16 @@ export interface ESPNScoreboardResponse {
   week: {
     number: number;
   };
+  leagues?: Array<{
+    calendar?: Array<{
+      label: string;
+      value: string;
+      entries?: Array<{
+        label: string;
+        value: string;
+      }>;
+    }>;
+  }>;
 }
 
 export interface ESPNGameSummaryResponse {
