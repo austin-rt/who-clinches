@@ -222,6 +222,31 @@ curl "{BASE_URL}/api/games?season=2025&week=11&conferenceId=8&state=post&x-verce
 
 **Expected:** Status 200, response includes `events` array, `teams` array, and `lastUpdated` timestamp
 
+**Response Type Verification (GamesResponse):**
+
+After receiving response, verify structure matches `lib/api-types.ts`:
+
+```bash
+# Test that response matches GamesResponse interface
+curl "{BASE_URL}/api/games?season=2025&conferenceId=8&x-vercel-protection-bypass=${BYPASS_TOKEN}" | jq '
+  {
+    events_is_array: (.events | type),
+    teams_is_array: (.teams | type),
+    lastUpdated_exists: (.lastUpdated != null),
+    team_structure: .teams[0] | keys | sort,
+    required_team_fields: ([.teams[0] | keys[] | select(. == "id" or . == "abbrev" or . == "displayName" or . == "logo" or . == "color" or . == "alternateColor")] | length)
+  }
+'
+```
+
+Expected output:
+
+- `events_is_array`: "array"
+- `teams_is_array`: "array"
+- `lastUpdated_exists`: true
+- `team_structure`: includes all required TeamMetadata fields
+- `required_team_fields`: equals 6 (id, abbrev, displayName, logo, color, alternateColor)
+
 **Invalid Payloads:**
 
 ```bash
@@ -271,6 +296,37 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 
 **Expected:** Status 200, response includes `standings` array (all 16 SEC teams with rankings, records, and tiebreaker explanations)
 
+**Response Type Verification (SimulateResponse):**
+
+After receiving response, verify structure matches `lib/api-types.ts`:
+
+```bash
+# Test that response matches SimulateResponse interface
+curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"season": 2025, "conferenceId": "8", "overrides": {}}' | jq '
+  {
+    standings_is_array: (.standings | type),
+    standings_count: (.standings | length),
+    championship_is_array: (.championship | type),
+    championship_length: (.championship | length),
+    tieLogs_is_array: (.tieLogs | type),
+    first_standing_structure: .standings[0] | keys | sort,
+    required_standing_fields: ([.standings[0] | keys[] | select(. == "rank" or . == "teamId" or . == "abbrev" or . == "displayName" or . == "logo" or . == "color" or . == "record" or . == "confRecord" or . == "explainPosition")] | length)
+  }
+'
+```
+
+Expected output:
+
+- `standings_is_array`: "array"
+- `standings_count`: 16 (all SEC teams)
+- `championship_is_array`: "array"
+- `championship_length`: 2 (top 2 teams)
+- `tieLogs_is_array`: "array"
+- `first_standing_structure`: includes all required StandingEntry fields
+- `required_standing_fields`: equals 9 (rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition)
+
 **Invalid Payloads:**
 
 ```bash
@@ -310,10 +366,12 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 **Checks:**
 
 - Standings array contains all 16 SEC teams
-- Each team has: rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition
+- Each team has all required fields from `StandingEntry` interface: rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition
+  - `color` field must be present and match database team color (from `/api/games`)
 - Rankings are 1-16 with no gaps
 - Tiebreaker rules applied correctly (A-E)
 - Overrides reflected in final standings
+- Response structure matches `SimulateResponse` type from `lib/api-types.ts`
 
 #### Test Scenarios with Expected Results
 
@@ -529,7 +587,11 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 
 - ✅ All valid requests return appropriate 2xx status codes
 - ✅ All invalid requests return appropriate 4xx status codes
-- ✅ Response schemas match documented interfaces in `lib/api-types.ts`
+- ✅ **Response schemas match documented interfaces in `lib/api-types.ts`:**
+  - ✅ `GamesResponse` includes `events`, `teams`, `lastUpdated`
+  - ✅ `TeamMetadata` includes all 6 required fields: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`
+  - ✅ `SimulateResponse` includes `standings`, `championship`, `tieLogs`
+  - ✅ `StandingEntry` includes all 9 required fields with correct types
 - ✅ Database state reflects expected changes in correct database
 - ✅ No unhandled errors or exceptions
 - ✅ Logs confirm connection to correct database (for Vercel deployments)
