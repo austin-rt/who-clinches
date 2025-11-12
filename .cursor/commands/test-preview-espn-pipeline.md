@@ -1,24 +1,23 @@
 # test-preview-espn-pipeline
 
-## Objective
+## Testing Guide
 
-Test the ESPN data pipeline for the preview (develop branch) deployment.
+Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
 
-## Environment
+## Environment Configuration
 
-- **Branch**: `develop`
-- **Base URL**: `https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`
-- **Database**: `preview`
+**Branch**: `develop` (auto-deploys to Vercel preview)
 
-## Instructions
+**Environment Variables:**
+```bash
+BASE_URL="https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app"
+DATABASE="preview"
+BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+```
 
-1. Read `docs/tests/espn-data-pipeline.md`
-2. Replace `{BASE_URL}` with `https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`
-3. Replace `{DATABASE}` with `preview`
-4. Execute all API endpoint tests using `run_terminal_cmd`:
-   - POST /api/pull-teams
-   - POST /api/pull
-   - GET /api/games
-5. Execute all database verification queries using `run_terminal_cmd`
-6. Verify all checks from the "Preview (develop branch)" checklist
-7. Report results in structured format with pass/fail for each test
+**Notes:**
+- `BYPASS_TOKEN` required for protected Vercel deployment
+- Check Vercel logs for database connection: `[MongoDB] Connecting to database: preview`
+- All credentials read from `.env.local`

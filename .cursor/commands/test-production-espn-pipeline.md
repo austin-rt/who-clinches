@@ -1,29 +1,35 @@
 # test-production-espn-pipeline
 
-## Objective
+**⚠️ CAUTION: This tests production and WILL modify production data.**
 
-Test the ESPN data pipeline for the production (main branch) deployment.
+## Prerequisites
 
-**CAUTION: This tests production and will modify production data.**
+- ✅ Preview environment tests completed successfully
+- ✅ All preview tests passed with 100% accuracy
+- ✅ User explicitly approved production testing
 
-## Environment
+## Testing Guide
 
-- **Branch**: `main`
-- **Base URL**: `https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`
-- **Database**: `production`
+Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
 
-## Instructions
+**Important:** Start conservative with single team/week tests before full data loads.
 
-1. Read `docs/tests/espn-data-pipeline.md`
-2. Replace `{BASE_URL}` with `https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`
-3. Replace `{DATABASE}` with `production`
-4. Test with a single team first for /api/pull-teams before testing multiple
-5. Execute all API endpoint tests using `run_terminal_cmd`:
-   - POST /api/pull-teams (single team first, then multiple)
-   - POST /api/pull
-   - GET /api/games
-6. Execute all database verification queries using `run_terminal_cmd`
-7. Verify all checks from the "Production (main branch)" checklist
-8. Monitor Vercel logs for 5-10 minutes after tests complete
-9. Report results in structured format with pass/fail for each test
+## Environment Configuration
+
+**Branch**: `main` (auto-deploys to production)
+
+**Environment Variables:**
+```bash
+BASE_URL="https://sec-tiebreaker-git-main-austinrts-projects.vercel.app"
+DATABASE="production"
+BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+```
+
+**Notes:**
+- `BYPASS_TOKEN` required for protected Vercel deployment
+- Check Vercel logs for database connection: `[MongoDB] Connecting to database: production`
+- **Monitor Vercel logs for 5-10 minutes after tests complete**
+- All credentials read from `.env.local`
 
