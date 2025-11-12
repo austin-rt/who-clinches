@@ -2,7 +2,7 @@
  * Prefill calculation helpers for predicted game scores
  */
 
-import { ReshapedGame } from "./types";
+import { ReshapedGame } from './types';
 
 // Minimal team interface for predictedScore calculation
 interface TeamForPrediction {
@@ -35,10 +35,7 @@ export const calculatePredictedScore = (
   }
 
   // If game is in progress AND someone has scored, use real scores
-  if (
-    game.state === "in" &&
-    ((game.home.score ?? 0) > 0 || (game.away.score ?? 0) > 0)
-  ) {
+  if (game.state === 'in' && ((game.home.score ?? 0) > 0 || (game.away.score ?? 0) > 0)) {
     return {
       home: game.home.score ?? 0,
       away: game.away.score ?? 0,
@@ -53,8 +50,7 @@ export const calculatePredictedScore = (
 
   // Priority 1: Use spread if available
   if (game.odds.spread !== null && game.odds.favoriteTeamEspnId) {
-    const isFavoriteHome =
-      game.odds.favoriteTeamEspnId === game.home.teamEspnId;
+    const isFavoriteHome = game.odds.favoriteTeamEspnId === game.home.teamEspnId;
     const favoriteAvg = isFavoriteHome ? homeAvg : awayAvg;
 
     // Favorite score = their average (rounded)

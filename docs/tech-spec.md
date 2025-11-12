@@ -14,24 +14,29 @@ Automate schedule and standings ingestion for SEC football using ESPN public JSO
 ## 2. Scope & Phases
 
 ### Phase 1: SEC Football Regular Season
+
 - SEC conference games only (hide non-conference from UI)
 - Tiebreaker rules A-D (head-to-head through opponent win%)
 - Basic simulation with user overrides
 - Week 0-16 regular season (weeks with no games auto-skip, only active weeks in UI)
 
 ### Phase 2: Enhanced Tiebreakers
+
 - Implement Tiebreaker E (scoring margin)
 - Richer explanations for standings
 
 ### Phase 3: Multi-Conference
+
 - Abstract tiebreaker rules per conference
 - Add conference metadata storage
 
 ### Phase 4: Live Score Streaming
+
 - Client-side polling every 30 seconds during active games
 - No SSE/WebSocket needed for Phase 1-3
 
 ### Phase 5: Basketball Support
+
 - Apply same architecture to basketball
 
 ---
@@ -53,23 +58,27 @@ Automate schedule and standings ingestion for SEC football using ESPN public JSO
 ### 4.1 Confirmed Working Endpoints
 
 #### Scoreboard (Primary Data Source)
+
 ```
 GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=8
 ```
 
 **Query Parameters:**
+
 - `groups=8` - Filters to SEC conference (ID 8)
 - `season=YYYY` - Optional, defaults to current season
 - `seasontype=2` - Optional, regular season (default)
 - `week=N` - Optional, specific week (1-16)
 
 **Response Structure:**
+
 - Returns current week by default
 - Includes both conference and non-conference games
 - `conferenceCompetition: true` identifies SEC vs SEC games
 - All team metadata embedded (names, logos, colors, conferenceId)
 
 #### Individual Game (For Live Polling)
+
 ```
 GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={gameId}
 ```
@@ -77,6 +86,7 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/summa
 **Use Case:** Poll only active games during live game windows
 
 #### Team Metadata
+
 ```
 GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/{teamAbbrev}
 ```
@@ -86,6 +96,7 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams
 ### 4.2 Polling Strategy
 
 #### Schedule Poller (Weekly)
+
 - **Runs:** Sundays at 3 AM (low traffic)
 - **Period:** July 1 - December 1 (every season)
 - **Action:** Poll weeks 0-16, upsert new/updated games to MongoDB
@@ -97,12 +108,14 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams
 - **Endpoint:** Individual week queries `?groups=8&week={0..16}` in loop
 
 #### Live Score Poller (During Games)
+
 - **Runs:** Every 30 seconds
 - **Condition:** Only when games have `status.type.state === "in"`
 - **Action:** Query MongoDB for active games, poll those game IDs individually
 - **Endpoint:** Individual game summary per gameId
 
 #### Smart Activation
+
 - Schedule poller detects upcoming games (within 2 hours of kickoff)
 - Activates live poller when first game goes live
 - Deactivates when all games reach `status.type.completed === true`
@@ -110,6 +123,7 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams
 ### 4.3 Data We Extract from ESPN
 
 **Always Rely on ESPN (Don't Calculate):**
+
 - ✅ Game scores (home/away)
 - ✅ Game status (`"pre"`, `"in"`, `"post"`)
 - ✅ Completed flag (`status.type.completed`)
@@ -124,6 +138,7 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams
 - ✅ Neutral site indicator
 
 **Calculate Ourselves:**
+
 - Conference standings (W-L from games)
 - Tiebreaker results
 - Opponent win percentages
@@ -133,38 +148,36 @@ GET http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams
 
 ```typescript
 // Game Status
-event.status.type.state // "pre" | "in" | "post"
-event.status.type.completed // boolean
-event.status.clock // number
-event.status.period // 0-4 (quarter)
+event.status.type.state; // "pre" | "in" | "post"
+event.status.type.completed; // boolean
+event.status.clock; // number
+event.status.period; // 0-4 (quarter)
 
 // Conference Check
-event.competitions[0].conferenceCompetition // boolean
-event.competitions[0].groups.id // "8" for SEC
+event.competitions[0].conferenceCompetition; // boolean
+event.competitions[0].groups.id; // "8" for SEC
 
 // Teams
-event.competitions[0].competitors[0].team.id // "333"
-event.competitions[0].competitors[0].team.abbreviation // "ALA"
-event.competitions[0].competitors[0].team.displayName // "Alabama Crimson Tide"
-event.competitions[0].competitors[0].team.logo // URL
-event.competitions[0].competitors[0].team.color // hex
-event.competitions[0].competitors[0].team.conferenceId // "8"
+event.competitions[0].competitors[0].team.id; // "333"
+event.competitions[0].competitors[0].team.abbreviation; // "ALA"
+event.competitions[0].competitors[0].team.displayName; // "Alabama Crimson Tide"
+event.competitions[0].competitors[0].team.logo; // URL
+event.competitions[0].competitors[0].team.color; // hex
+event.competitions[0].competitors[0].team.conferenceId; // "8"
 
 // Scores
-event.competitions[0].competitors[0].score // "0" (string!)
+event.competitions[0].competitors[0].score; // "0" (string!)
 
 // Rankings
-event.competitions[0].competitors[0].curatedRank.current // 5 or 99
+event.competitions[0].competitors[0].curatedRank.current; // 5 or 99
 
 // Records
-event.competitions[0].competitors[0].records
-  .find(r => r.type === "vsconf")
-  .summary // "5-1"
+event.competitions[0].competitors[0].records.find((r) => r.type === 'vsconf').summary; // "5-1"
 
 // Odds
-event.competitions[0].odds[0].awayTeamOdds.favorite // boolean
-event.competitions[0].odds[0].details // "UGA -8.5"
-event.competitions[0].odds[0].overUnder // 56.5
+event.competitions[0].odds[0].awayTeamOdds.favorite; // boolean
+event.competitions[0].odds[0].details; // "UGA -8.5"
+event.competitions[0].odds[0].overUnder; // 56.5
 ```
 
 ---
@@ -174,6 +187,7 @@ event.competitions[0].odds[0].overUnder // 56.5
 ### 5.1 MongoDB Collections
 
 #### `games` Collection
+
 ```typescript
 {
   _id: ObjectId,                    // MongoDB generated
@@ -207,6 +221,7 @@ event.competitions[0].odds[0].overUnder // 56.5
 ```
 
 **Indexes:**
+
 ```javascript
 { espnId: 1 }                       // Unique
 { conferenceGame: 1, season: 1, week: 1 }
@@ -216,6 +231,7 @@ event.competitions[0].odds[0].overUnder // 56.5
 ```
 
 #### `teams` Collection
+
 ```typescript
 {
   _id: string,                      // "333" (ESPN team ID)
@@ -231,14 +247,20 @@ event.competitions[0].odds[0].overUnder // 56.5
 ```
 
 **Indexes:**
+
 ```javascript
-{ _id: 1 }                          // Primary
-{ conferenceId: 1 }
+{
+  _id: 1;
+} // Primary
+{
+  conferenceId: 1;
+}
 ```
 
 **Population:** Manual seed from ESPN API after testing
 
 #### `errors` Collection (For Debugging)
+
 ```typescript
 {
   _id: ObjectId,
@@ -263,9 +285,10 @@ event.competitions[0].odds[0].overUnder // 56.5
 ## 6. API Routes (Next.js App Router)
 
 All routes:
+
 ```typescript
-export const runtime = "nodejs"
-export const dynamic = "force-dynamic"
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 ```
 
 ### 6.1 POST /api/pull
@@ -273,6 +296,7 @@ export const dynamic = "force-dynamic"
 **Purpose:** Poll ESPN, normalize, upsert games into MongoDB
 
 **Body:**
+
 ```typescript
 {
   season: number,        // 2025
@@ -281,6 +305,7 @@ export const dynamic = "force-dynamic"
 ```
 
 **Response:**
+
 ```typescript
 {
   upserted: number,      // Count of games upserted
@@ -289,6 +314,7 @@ export const dynamic = "force-dynamic"
 ```
 
 **Headers:**
+
 ```
 Cache-Control: no-store
 ```
@@ -300,6 +326,7 @@ Cache-Control: no-store
 **Purpose:** Query games with filters
 
 **Query Params:**
+
 ```
 ?conferenceId=8
 &season=2025
@@ -310,6 +337,7 @@ Cache-Control: no-store
 ```
 
 **Response:**
+
 ```typescript
 {
   events: GameDoc[],
@@ -319,6 +347,7 @@ Cache-Control: no-store
 ```
 
 **Headers:**
+
 ```
 Cache-Control: public, s-maxage=60
 // During live games: s-maxage=10
@@ -329,6 +358,7 @@ Cache-Control: public, s-maxage=60
 **Purpose:** Run tiebreaker engine with user overrides
 
 **Body:**
+
 ```typescript
 {
   season: number,
@@ -341,6 +371,7 @@ Cache-Control: public, s-maxage=60
 ```
 
 **Response:**
+
 ```typescript
 {
   standings: Array<{
@@ -364,6 +395,7 @@ Cache-Control: public, s-maxage=60
 ```
 
 **Headers:**
+
 ```
 Cache-Control: no-store
 ```
@@ -371,6 +403,7 @@ Cache-Control: no-store
 ### 6.4 Error Response Format
 
 All endpoints return errors as:
+
 ```typescript
 {
   error: string,
@@ -387,30 +420,36 @@ All endpoints return errors as:
 ### 7.1 Rules (In Order)
 
 **A. Head-to-Head**
+
 - Compare records among tied teams only
 - If unequal, highest wins
 
 **B. Record vs Common Conference Opponents**
+
 - Identify opponents all tied teams played
 - Compare records against those common opponents
 
 **C. Record vs Highest-Placed Common Opponent**
+
 - Calculate preliminary standings (by W-L only)
 - Find highest-ranked team all tied teams played
 - Compare records against that team
 - If tied, repeat with next-highest common opponent
 
 **D. Cumulative Conference Win% of All Opponents**
+
 - For each tied team, sum conference W-L of all their opponents
 - Calculate win percentage
 - Highest wins
 
 **E. Capped Relative Scoring Margin** (Phase 2)
+
 - Per SEC Appendix A: 42-point offensive cap, 48-point defensive cap
 - Compare how teams performed relative to opponent averages
 - Complex formula - defer to Phase 2
 
 **F. Random Draw** (Commissioner-overseen)
+
 - Display "Tie unresolved by rules A-E" in UI
 - Optional: User can click button to randomly draw winner (fun feature)
 
@@ -455,12 +494,14 @@ All endpoints return errors as:
 ### 8.2 User Overrides
 
 **Form Input Design:**
+
 - User enters custom scores for each game (home and away)
 - Inputs prefilled with `predictedScore` (guaranteed valid defaults)
 - Validation on submit: no ties, non-negative, whole numbers only
 - Only valid overrides stored in `localStorage`
 
 **Storage:**
+
 - Key: `sec-tiebreaker-overrides-{season}`
 - Value: `{ [gameEspnId]: { homeScore: number, awayScore: number } }` map
 - **Critical:** Uses `game.espnId` (ESPN game ID) as key, not MongoDB `_id`
@@ -490,11 +531,13 @@ All endpoints return errors as:
 ## 9. Caching Strategy
 
 ### Server-Side
+
 - `/api/pull` → No cache (always fresh write)
 - `/api/games` → `s-maxage=60` (1 min CDN cache), `s-maxage=10` during live games
 - `/api/simulate` → No cache (depends on user overrides)
 
 ### Client-Side (RTK Query)
+
 - GET `/api/games` → Cache 60s, refetch on window focus
 - Polling: Every 30s during game day (9 AM - 11 PM Saturdays)
 - POST `/api/simulate` → Never cached
@@ -513,16 +556,19 @@ All endpoints return errors as:
 ## 11. Testing Strategy
 
 ### Unit Tests
+
 - Tiebreaker rules A-D with known scenarios
 - Override application logic
 - Conference record calculation
 
 ### Integration Tests
+
 - Mock ESPN API responses
 - Full flow: `/api/pull` → `/api/games` → `/api/simulate`
 - Test with 2024 actual SEC season data
 
 ### Fixtures
+
 - Store past season JSON responses for regression testing
 
 ---
@@ -566,22 +612,26 @@ All endpoints return errors as:
 ## QUESTIONS FOR LATER (Non-Blocking)
 
 ### Phase 2+
+
 - Tiebreaker E scoring margin formula - need SEC Appendix A full text
 - Multi-conference tiebreaker rule abstraction design
 - Basketball season structure differences
 
 ### Optimization
+
 - Should we cache tiebreaker calculations for common scenarios?
 - Compound MongoDB indexes - which query patterns are most common?
 - Should we precompute standings nightly and cache?
 
 ### Features
+
 - Shareable scenario URLs (encode overrides in URL params)
 - Historical season replays
 - "What if" simulator with undo/redo
 - Export standings to image/PDF
 
 ### Scaling
+
 - If >10k users, move live polling to separate service?
 - CDN strategy for game data during peak traffic?
 
@@ -592,6 +642,7 @@ All endpoints return errors as:
 **Phase:** ESPN API R&D Complete ✅
 
 **Completed Tests:**
+
 1. ✅ Scoreboard endpoint with `?groups=8` works
 2. ✅ Returns current week by default
 3. ✅ Includes non-conference games (filterable via `conferenceCompetition`)
@@ -605,6 +656,7 @@ All endpoints return errors as:
 **Blocking Questions Resolved:** ALL 5
 
 **Next Phase:** Implementation ready
+
 - Database models finalized
 - API routes spec complete
 - Tiebreaker rules researched
@@ -615,9 +667,11 @@ All endpoints return errors as:
 ## ESPN API Test Log
 
 ### Test 1: Current Week (✅ Success)
+
 **Endpoint:** `http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=8`
 
 **Findings:**
+
 - Returns week 11 (current week) automatically
 - 6 games returned (5 conference, 1 non-conference)
 - All required fields present and structured as expected
@@ -626,17 +680,21 @@ All endpoints return errors as:
 - Rankings: `curatedRank.current` (1-25, 99 = unranked)
 
 ### Test 2: Explicit Groups Param (✅ Success)
+
 **Endpoint:** Same as Test 1
 
 **Findings:**
+
 - Confirmed `?groups=8` filters to SEC teams (not just SEC vs SEC)
 - Non-SEC opponents included (The Citadel with `conferenceId: "29"`)
 - This is correct behavior - we filter by `conferenceCompetition` flag
 
 ### Test 3: Historical Week (✅ Success)
+
 **Endpoint:** `http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=8&week=1&year=2025`
 
 **Findings:**
+
 - Use `year` parameter instead of `season` (parameter name is confusing)
 - Week parameter works with year filter
 - Returns 16 games for requested week
@@ -645,9 +703,11 @@ All endpoints return errors as:
 - ✅ CONFIRMED: We can fetch historical weeks with completed final scores
 
 ### Test 4: Individual Game Endpoint (✅ Success)
+
 **Endpoint:** `http://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event={gameId}`
 
 **Findings:**
+
 - Different structure than scoreboard endpoint
 - Game data located in `.header.competitions[0]` instead of `.competitions[0]`
 - Returns full standings in `.standings` object with conference groupings
@@ -655,9 +715,11 @@ All endpoints return errors as:
 - ✅ CONFIRMED: Same basic structure as scoreboard but nested differently. Can use for live polling but requires path adjustments
 
 ### Test 5: Conference Records Source (✅ Success)
+
 **Endpoint:** Scoreboard with `?groups=8`
 
 **Findings:**
+
 - Scoreboard competitors have `.records` array with multiple types:
   - `type: "total"` → Overall record (e.g., "5-4")
   - `type: "homerecord"` → Home games (e.g., "3-2")
@@ -666,7 +728,9 @@ All endpoints return errors as:
 - ✅ DECISION: Trust ESPN's `type: "vsconf"` summary for accuracy. No need to calculate ourselves
 
 ### Test 6: Odds Data Availability (✅ Success)
+
 **Findings:**
+
 - Odds ARE available in scoreboard as `.competitions[0].odds` array
 - Non-conference games (like MISS vs Citadel) have NO odds data
 - Conference games always have odds with:
@@ -675,7 +739,9 @@ All endpoints return errors as:
 - ✅ DECISION: Check if `odds.length > 0` before accessing. Fallback to ranking, then home team
 
 ### Test 7: Week 0 and Bowl Games (✅ Complete)
+
 **Findings:**
+
 - Week 0 (`?week=0`) returns empty events array with null week/season
 - Bowl games (`?week=18`) also return null week/season with empty events
 - 2025 regular season has games in weeks 1-14, weeks 15-16 empty

@@ -1,23 +1,23 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Game from "@/lib/models/Game";
-import Team from "@/lib/models/Team";
-import ErrorLog from "@/lib/models/Error";
-import { espnClient } from "@/lib/espn-client";
-import { reshapeScoreboardData } from "@/lib/reshape-games";
-import { SEC_CONFERENCE_ID } from "@/lib/constants";
-import { CronLiveGamesResponse } from "@/lib/api-types";
-import { GameLean } from "@/lib/types";
-import { calculatePredictedScore } from "@/lib/prefill-helpers";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Game from '@/lib/models/Game';
+import Team from '@/lib/models/Team';
+import ErrorLog from '@/lib/models/Error';
+import { espnClient } from '@/lib/espn-client';
+import { reshapeScoreboardData } from '@/lib/reshape-games';
+import { SEC_CONFERENCE_ID } from '@/lib/constants';
+import { CronLiveGamesResponse } from '@/lib/api-types';
+import { GameLean } from '@/lib/types';
+import { calculatePredictedScore } from '@/lib/prefill-helpers';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export const GET = async (request: NextRequest) => {
   // 1. Verify cron secret
-  const authHeader = request.headers.get("authorization");
+  const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -37,43 +37,36 @@ export const GET = async (request: NextRequest) => {
       espnId: String(g.espnId),
       displayName: String(g.displayName),
       date: String(g.date),
-      week: typeof g.week === "number" ? g.week : null,
+      week: typeof g.week === 'number' ? g.week : null,
       season: Number(g.season),
       sport: String(g.sport),
       league: String(g.league),
-      state: g.state as "pre" | "in" | "post",
+      state: g.state as 'pre' | 'in' | 'post',
       completed: Boolean(g.completed),
       conferenceGame: Boolean(g.conferenceGame),
       neutralSite: Boolean(g.neutralSite),
       home: {
         teamEspnId: String(g.home.teamEspnId),
         abbrev: String(g.home.abbrev),
-        displayName: g.home.displayName
-          ? String(g.home.displayName)
-          : undefined,
+        displayName: g.home.displayName ? String(g.home.displayName) : undefined,
         logo: g.home.logo ? String(g.home.logo) : undefined,
         color: g.home.color ? String(g.home.color) : undefined,
-        score: typeof g.home.score === "number" ? g.home.score : null,
-        rank: typeof g.home.rank === "number" ? g.home.rank : null,
+        score: typeof g.home.score === 'number' ? g.home.score : null,
+        rank: typeof g.home.rank === 'number' ? g.home.rank : null,
       },
       away: {
         teamEspnId: String(g.away.teamEspnId),
         abbrev: String(g.away.abbrev),
-        displayName: g.away.displayName
-          ? String(g.away.displayName)
-          : undefined,
+        displayName: g.away.displayName ? String(g.away.displayName) : undefined,
         logo: g.away.logo ? String(g.away.logo) : undefined,
         color: g.away.color ? String(g.away.color) : undefined,
-        score: typeof g.away.score === "number" ? g.away.score : null,
-        rank: typeof g.away.rank === "number" ? g.away.rank : null,
+        score: typeof g.away.score === 'number' ? g.away.score : null,
+        rank: typeof g.away.rank === 'number' ? g.away.rank : null,
       },
       odds: {
-        favoriteTeamEspnId: g.odds.favoriteTeamEspnId
-          ? String(g.odds.favoriteTeamEspnId)
-          : null,
-        spread: typeof g.odds.spread === "number" ? g.odds.spread : null,
-        overUnder:
-          typeof g.odds.overUnder === "number" ? g.odds.overUnder : null,
+        favoriteTeamEspnId: g.odds.favoriteTeamEspnId ? String(g.odds.favoriteTeamEspnId) : null,
+        spread: typeof g.odds.spread === 'number' ? g.odds.spread : null,
+        overUnder: typeof g.odds.overUnder === 'number' ? g.odds.overUnder : null,
       },
       predictedScore: g.predictedScore
         ? {
@@ -103,10 +96,10 @@ export const GET = async (request: NextRequest) => {
     if (currentWeek === null) {
       await ErrorLog.create({
         timestamp: new Date(),
-        endpoint: "/api/cron/update-live-games",
+        endpoint: '/api/cron/update-live-games',
         payload: { season: currentSeason },
-        error: "Games in database missing week number",
-        stackTrace: "",
+        error: 'Games in database missing week number',
+        stackTrace: '',
       });
 
       return NextResponse.json<CronLiveGamesResponse>({
@@ -130,10 +123,10 @@ export const GET = async (request: NextRequest) => {
       // Log error and return, will retry in 5 minutes
       await ErrorLog.create({
         timestamp: new Date(),
-        endpoint: "/api/cron/update-live-games",
+        endpoint: '/api/cron/update-live-games',
         payload: { season: currentSeason, week: currentWeek },
         error: error instanceof Error ? error.message : String(error),
-        stackTrace: error instanceof Error ? error.stack || "" : "",
+        stackTrace: error instanceof Error ? error.stack || '' : '',
       });
 
       return NextResponse.json<CronLiveGamesResponse>({
@@ -147,19 +140,13 @@ export const GET = async (request: NextRequest) => {
     }
 
     // 7. Reshape ESPN response
-    const result = reshapeScoreboardData(
-      espnResponse,
-      "football",
-      "college-football"
-    );
+    const result = reshapeScoreboardData(espnResponse, 'football', 'college-football');
     const reshapedGames = result.games || [];
 
     // 8. Update each game with new data from ESPN
     let updateCount = 0;
     const gameIds = new Set(games.map((g) => g.espnId));
-    const gamesToUpdate = reshapedGames.filter((game) =>
-      gameIds.has(game.espnId)
-    );
+    const gamesToUpdate = reshapedGames.filter((game) => gameIds.has(game.espnId));
 
     // Fetch teams for predictedScore calculation
     const teamIds = [
@@ -209,8 +196,7 @@ export const GET = async (request: NextRequest) => {
         reshapedGame.home.rank !== currentGame.home.rank ||
         reshapedGame.away.rank !== currentGame.away.rank ||
         reshapedGame.odds?.spread !== currentGame.odds?.spread ||
-        reshapedGame.odds?.favoriteTeamEspnId !==
-          currentGame.odds?.favoriteTeamEspnId ||
+        reshapedGame.odds?.favoriteTeamEspnId !== currentGame.odds?.favoriteTeamEspnId ||
         predictedScore.home !== currentGame.predictedScore?.home ||
         predictedScore.away !== currentGame.predictedScore?.away;
 
@@ -222,16 +208,15 @@ export const GET = async (request: NextRequest) => {
             $set: {
               state: reshapedGame.state,
               completed: reshapedGame.completed,
-              "home.score": reshapedGame.home.score,
-              "home.rank": reshapedGame.home.rank,
-              "away.score": reshapedGame.away.score,
-              "away.rank": reshapedGame.away.rank,
-              "odds.spread": reshapedGame.odds?.spread ?? null,
-              "odds.favoriteTeamEspnId":
-                reshapedGame.odds?.favoriteTeamEspnId ?? null,
-              "odds.overUnder": reshapedGame.odds?.overUnder ?? null,
-              "predictedScore.home": predictedScore.home,
-              "predictedScore.away": predictedScore.away,
+              'home.score': reshapedGame.home.score,
+              'home.rank': reshapedGame.home.rank,
+              'away.score': reshapedGame.away.score,
+              'away.rank': reshapedGame.away.rank,
+              'odds.spread': reshapedGame.odds?.spread ?? null,
+              'odds.favoriteTeamEspnId': reshapedGame.odds?.favoriteTeamEspnId ?? null,
+              'odds.overUnder': reshapedGame.odds?.overUnder ?? null,
+              'predictedScore.home': predictedScore.home,
+              'predictedScore.away': predictedScore.away,
               lastUpdated: new Date(),
             },
           }
@@ -251,15 +236,15 @@ export const GET = async (request: NextRequest) => {
     // Unexpected error - log and return
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: "/api/cron/update-live-games",
+      endpoint: '/api/cron/update-live-games',
       payload: {},
       error: error instanceof Error ? error.message : String(error),
-      stackTrace: error instanceof Error ? error.stack || "" : "",
+      stackTrace: error instanceof Error ? error.stack || '' : '',
     });
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

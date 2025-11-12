@@ -11,16 +11,19 @@
 **Status:** Phase 0 plan has been updated to match actual API specification. Two critical backend fixes are REQUIRED before starting Phase 0 implementation:
 
 ### Fix #1: Update `TeamMetadata` Type (lib/api-types.ts)
+
 **Current State:** `TeamMetadata` interface is missing `color` and `alternateColor` fields
 **Required Action:** Add these two fields to the interface (they exist in database, just not exposed in API)
 **Impact:** Blocks Phases 2, 3, 4, and 5 if not fixed
 
 ### Fix #2: Update `/api/games` Endpoint (app/api/games/route.ts)
+
 **Current State:** API query doesn't select or return `color`/`alternateColor`
 **Required Action:** Update line 125 query and lines 143-151 mapping (detailed in Implementation section)
 **Impact:** Frontend can't get team colors even if type is fixed
 
 **Why Both Fixes Required:**
+
 - Database ✅ has colors
 - Mongoose schema ✅ includes colors
 - API type definition ❌ doesn't expose colors
@@ -33,6 +36,7 @@ These fixes are now documented in the Implementation Checklist below (marked as 
 ---
 
 **Files to Create/Modify:**
+
 - `package.json` (downgrade Tailwind to 3.x, add DaisyUI)
 - `tailwind.config.js` (new - required for DaisyUI)
 - `postcss.config.mjs` (update for Tailwind 3)
@@ -44,6 +48,7 @@ These fixes are now documented in the Implementation Checklist below (marked as 
 - `app/api/games/route.ts` (CRITICAL FIX: update query and mapping to include colors)
 
 **Configuration Steps:**
+
 ```bash
 npm install daisyui@latest
 npm install -D tailwindcss@^3 postcss autoprefixer
@@ -56,10 +61,13 @@ Create a configuration file that maps conference IDs to their default themes. Th
 
 ```typescript
 // app/config/theme-config.ts
-export const conferenceThemes: Record<string, {
-  defaultTheme: string;
-  name: string;
-}> = {
+export const conferenceThemes: Record<
+  string,
+  {
+    defaultTheme: string;
+    name: string;
+  }
+> = {
   '8': {
     defaultTheme: 'sec',
     name: 'SEC',
@@ -71,22 +79,25 @@ export const conferenceThemes: Record<string, {
 ```
 
 **Type Definitions:**
+
 - Create `types/frontend.ts` with all frontend types (see README Type System section)
 - Re-export relevant types from `lib/api-types.ts`
 
 **Critical API Fixes (BLOCKING - Must Complete):**
 
 1. **Fix `TeamMetadata` interface in `lib/api-types.ts`:**
+
    ```typescript
    export interface TeamMetadata {
      id: string;
      abbrev: string;
      displayName: string;
      logo: string;
-     color: string;           // ADD THIS
-     alternateColor: string;  // ADD THIS
+     color: string; // ADD THIS
+     alternateColor: string; // ADD THIS
    }
    ```
+
    - These fields are already in the database schema
    - Phases 2-5 depend on these being available in API response
 
@@ -101,7 +112,7 @@ export const conferenceThemes: Record<string, {
          abbrev: team.abbreviation,
          displayName: team.displayName,
          logo: team.logo,
-         color: team.color,           // ADD THIS
+         color: team.color, // ADD THIS
          alternateColor: team.alternateColor, // ADD THIS
        };
      }
@@ -111,17 +122,20 @@ export const conferenceThemes: Record<string, {
 **Theme Strategy - Phased Approach:**
 
 **Phase 0 (Current):** Hardcode SEC default theme only
+
 - Simple, reliable, gets us started
 - SEC theme defined in CSS
 - No team themes yet
 
 **Phase 5 (Future):** Dynamic team themes from database
+
 - Will implement dynamic CSS injection from `/api/teams`
 - Team list and colors from database
 - Full scalability for future conferences
 - Discussion tabled until Phase 5 implementation
 
 **Phase 0 Theme Implementation:**
+
 ```typescript
 // app/layout.tsx - Simple theme initialization
 'use client';
@@ -132,10 +146,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     // Load saved team theme or default to SEC
     const savedTeam = localStorage.getItem('sec-tiebreaker-theme') || 'sec';
-    
+
     // Load saved mode or default to light
     const savedMode = localStorage.getItem('sec-tiebreaker-mode') || 'light';
-    
+
     // Apply both: team colors + light/dark mode
     // data-theme controls primary/secondary/accent (team colors)
     // data-mode controls base-100/base-content (backgrounds/text)
@@ -152,6 +166,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 **Theme Strategy:**
+
 - **Team colors (primary/secondary/accent):** Controlled by `data-theme` attribute
 - **Base colors (background/text):** Controlled by light/dark mode
 - **Storage:** Two localStorage keys: `sec-tiebreaker-theme` (team) and `sec-tiebreaker-mode` (light/dark)
@@ -160,6 +175,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 **Implementation Checklist:**
 
 **STEP 1: CRITICAL BACKEND FIXES (BLOCKING - DO FIRST):**
+
 - [ ] **CRITICAL:** Update `lib/api-types.ts` - Add `color` and `alternateColor` to `TeamMetadata` interface
   - See "Fix `TeamMetadata` interface" section above for exact code
   - This MUST be done before any frontend work can proceed
@@ -173,6 +189,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 - [ ] **Verify:** Test `/api/games` endpoint includes colors in response (see Manual Testing #3)
 
 **STEP 2: Frontend Configuration & Setup (only after Step 1 complete):**
+
 - [ ] Downgrade Tailwind to 3.x: `npm install -D tailwindcss@^3 postcss autoprefixer`
 - [ ] Install DaisyUI: `npm install daisyui@latest`
 - [ ] Create `tailwind.config.js` with DaisyUI plugin
@@ -180,24 +197,30 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 - [ ] Add SEC default theme to `globals.css` (only SEC theme for Phase 0)
 
 **STEP 3: Type System & Frontend (after Step 2):**
+
 - [ ] Create `types/frontend.ts` with frontend types
 - [ ] Create `app/config/theme-config.ts` with conference theme mapping (SEC only for Phase 0)
 - [ ] Update `app/layout.tsx` to initialize SEC theme from localStorage (useEffect)
 
 **STEP 4: Verification & Testing:**
+
 - [ ] Test SEC theme works and persists in browser
 - [ ] Test localStorage persistence for `sec-tiebreaker-theme` and `sec-tiebreaker-mode`
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Check browser console for errors
 3. **Test CRITICAL FIX - Colors in API response:**
+
    ```bash
    curl http://localhost:3000/api/games?season=2025&conferenceId=8 | jq '.teams[0]'
    ```
+
    - ✅ Response should include `color` and `alternateColor` fields
    - ✅ Example: `{ "id": "333", "abbrev": "ALA", "displayName": "Alabama Crimson Tide", "logo": "...", "color": "ba0c2f", "alternateColor": "ffffff" }`
    - ❌ If missing, the critical fixes were not applied correctly
+
 4. Inspect `<html>` element in DevTools:
    - Should have `data-theme="sec"`
    - Should have `data-mode="light"`
@@ -212,32 +235,36 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
 **Known Gotchas & Important Notes:**
 
-*API/Database:*
+_API/Database:_
+
 - Database already has all color data - verified: all 16 teams have both `color` and `alternateColor` stored
 - **ESPN color format is hex WITHOUT `#` prefix** (e.g., `"ba0c2f"` not `"#ba0c2f"`) - add `#` prefix when using in CSS
 - Current Team schema: Uses `color` and `alternateColor` fields (NO UNDERSCORE)
 - Mongoose team query returns fields as: `color` and `alternateColor` (not prefixed)
 
-*Frontend/CSS:*
+_Frontend/CSS:_
+
 - Tailwind 3 requires `tailwind.config.js` (not CSS-based like Tailwind 4)
 - DaisyUI themes must be defined in both `tailwind.config.js` and CSS
 - Theme switching requires `data-theme` on `<html>` element
 - localStorage may be unavailable in SSR - handle gracefully
 
-*Phase Scope:*
+_Phase Scope:_
+
 - **Phase 0 Goal:** Static SEC theme only. Do NOT implement dynamic team themes in Phase 0
 - **Phase 0 API:** Only adds colors to existing `/api/games` response
 - **Phase 0:** Does NOT create `/api/teams` endpoint (that's Phase 5)
 - **Phase 5:** Will implement dynamic team themes from database using `/api/teams`
 
-*What Phase 2 Needs:*
+_What Phase 2 Needs:_
+
 - Phase 2 (Games List) depends on colors being in `/api/games` response
 - Once Phase 0 fixes are complete, Phase 2 can fetch and use colors automatically
 
-*Multi-Conference Support:*
+_Multi-Conference Support:_
+
 - **Phase 0 creates the foundation:** `app/config/theme-config.ts` with conference mapping
 - **Phase 0 only implements SEC:** Default theme hardcoded to 'sec'
 - **Future (when routing added):** Will read conferenceId from URL and use `conferenceThemes` map to set default
 - **localStorage persists user preference:** If user selects Alabama theme in SEC section, then visits ACC section, their Alabama choice is saved (independent of conference default)
 - **No code changes needed later:** Just add new conferences to `theme-config.ts` and implement route parameter reading
-

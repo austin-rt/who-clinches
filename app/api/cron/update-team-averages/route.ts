@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Team from "@/lib/models/Team";
-import ErrorLog from "@/lib/models/Error";
-import { espnClient } from "@/lib/espn-client";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Team from '@/lib/models/Team';
+import ErrorLog from '@/lib/models/Error';
+import { espnClient } from '@/lib/espn-client';
 import {
   SEC_TEAMS,
   RECORD_TYPE_OVERALL,
@@ -14,11 +14,11 @@ import {
   STAT_WINS,
   STAT_LOSSES,
   STAT_DIFFERENTIAL,
-} from "@/lib/constants";
-import { CronRankingsResponse } from "@/lib/api-types";
+} from '@/lib/constants';
+import { CronRankingsResponse } from '@/lib/api-types';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 /**
  * Pro Mode Only: Weekly team season averages update
@@ -27,9 +27,9 @@ export const dynamic = "force-dynamic";
  */
 export const GET = async (request: NextRequest) => {
   // 1. Verify cron secret
-  const authHeader = request.headers.get("authorization");
+  const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
@@ -64,15 +64,9 @@ export const GET = async (request: NextRequest) => {
         const recordData = await espnClient.getTeamRecords(teamData.team.id);
 
         // Extract records by type from Core API
-        const overallRecord = recordData?.items?.find(
-          (item) => item.name === RECORD_TYPE_OVERALL
-        );
-        const homeRecord = recordData?.items?.find(
-          (item) => item.type === RECORD_TYPE_HOME
-        );
-        const awayRecord = recordData?.items?.find(
-          (item) => item.type === RECORD_TYPE_AWAY
-        );
+        const overallRecord = recordData?.items?.find((item) => item.name === RECORD_TYPE_OVERALL);
+        const homeRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_HOME);
+        const awayRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_AWAY);
         const conferenceRecord = recordData?.items?.find(
           (item) => item.type === RECORD_TYPE_CONFERENCE
         );
@@ -89,32 +83,30 @@ export const GET = async (request: NextRequest) => {
         const coreStats = overallRecord?.stats;
 
         // Fallback to Site API stats if Core API returns no data
-        const siteStats =
-          teamData.team.record?.items?.find((item) => item.summary)?.stats ||
-          [];
+        const siteStats = teamData.team.record?.items?.find((item) => item.summary)?.stats || [];
         const useSiteAPI = !coreStats && siteStats.length > 0;
 
         let recordStats;
         if (useSiteAPI) {
           // Parse Site API format
           recordStats = {
-            wins: getStatValue(siteStats, "wins"),
-            losses: getStatValue(siteStats, "losses"),
-            winPercent: getStatValue(siteStats, "winPercent"),
-            pointsFor: getStatValue(siteStats, "pointsFor"),
-            pointsAgainst: getStatValue(siteStats, "pointsAgainst"),
-            pointDifferential: getStatValue(siteStats, "pointDifferential"),
-            avgPointsFor: getStatValue(siteStats, "avgPointsFor"),
-            avgPointsAgainst: getStatValue(siteStats, "avgPointsAgainst"),
+            wins: getStatValue(siteStats, 'wins'),
+            losses: getStatValue(siteStats, 'losses'),
+            winPercent: getStatValue(siteStats, 'winPercent'),
+            pointsFor: getStatValue(siteStats, 'pointsFor'),
+            pointsAgainst: getStatValue(siteStats, 'pointsAgainst'),
+            pointDifferential: getStatValue(siteStats, 'pointDifferential'),
+            avgPointsFor: getStatValue(siteStats, 'avgPointsFor'),
+            avgPointsAgainst: getStatValue(siteStats, 'avgPointsAgainst'),
           };
         } else {
           // Parse Core API format (flat stats array)
           recordStats = {
             wins: getStatValue(coreStats, STAT_WINS),
             losses: getStatValue(coreStats, STAT_LOSSES),
-            winPercent: getStatValue(coreStats, "winPercent"),
-            pointsFor: getStatValue(coreStats, "pointsFor"),
-            pointsAgainst: getStatValue(coreStats, "pointsAgainst"),
+            winPercent: getStatValue(coreStats, 'winPercent'),
+            pointsFor: getStatValue(coreStats, 'pointsFor'),
+            pointsAgainst: getStatValue(coreStats, 'pointsAgainst'),
             pointDifferential: getStatValue(coreStats, STAT_DIFFERENTIAL),
             avgPointsFor: getStatValue(coreStats, STAT_AVG_POINTS_FOR),
             avgPointsAgainst: getStatValue(coreStats, STAT_AVG_POINTS_AGAINST),
@@ -126,21 +118,19 @@ export const GET = async (request: NextRequest) => {
           { _id: teamData.team.id },
           {
             $set: {
-              "record.overall":
-                overallRecord?.summary ||
-                teamData.team.record?.items?.[0]?.summary ||
-                null,
-              "record.conference": conferenceRecord?.summary || null,
-              "record.home": homeRecord?.summary || null,
-              "record.away": awayRecord?.summary || null,
-              "record.stats.wins": recordStats.wins,
-              "record.stats.losses": recordStats.losses,
-              "record.stats.winPercent": recordStats.winPercent,
-              "record.stats.pointsFor": recordStats.pointsFor,
-              "record.stats.pointsAgainst": recordStats.pointsAgainst,
-              "record.stats.pointDifferential": recordStats.pointDifferential,
-              "record.stats.avgPointsFor": recordStats.avgPointsFor,
-              "record.stats.avgPointsAgainst": recordStats.avgPointsAgainst,
+              'record.overall':
+                overallRecord?.summary || teamData.team.record?.items?.[0]?.summary || null,
+              'record.conference': conferenceRecord?.summary || null,
+              'record.home': homeRecord?.summary || null,
+              'record.away': awayRecord?.summary || null,
+              'record.stats.wins': recordStats.wins,
+              'record.stats.losses': recordStats.losses,
+              'record.stats.winPercent': recordStats.winPercent,
+              'record.stats.pointsFor': recordStats.pointsFor,
+              'record.stats.pointsAgainst': recordStats.pointsAgainst,
+              'record.stats.pointDifferential': recordStats.pointDifferential,
+              'record.stats.avgPointsFor': recordStats.avgPointsFor,
+              'record.stats.avgPointsAgainst': recordStats.avgPointsAgainst,
               lastUpdated: new Date(),
             },
           }
@@ -153,10 +143,10 @@ export const GET = async (request: NextRequest) => {
       } catch (error) {
         await ErrorLog.create({
           timestamp: new Date(),
-          endpoint: "/api/cron/update-team-averages",
+          endpoint: '/api/cron/update-team-averages',
           payload: { team: teamAbbrev },
           error: error instanceof Error ? error.message : String(error),
-          stackTrace: error instanceof Error ? error.stack || "" : "",
+          stackTrace: error instanceof Error ? error.stack || '' : '',
         });
         failedTeams.push(teamAbbrev);
       }
@@ -177,12 +167,8 @@ export const GET = async (request: NextRequest) => {
           const overallRecord = recordData?.items?.find(
             (item) => item.name === RECORD_TYPE_OVERALL
           );
-          const homeRecord = recordData?.items?.find(
-            (item) => item.type === RECORD_TYPE_HOME
-          );
-          const awayRecord = recordData?.items?.find(
-            (item) => item.type === RECORD_TYPE_AWAY
-          );
+          const homeRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_HOME);
+          const awayRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_AWAY);
           const conferenceRecord = recordData?.items?.find(
             (item) => item.type === RECORD_TYPE_CONFERENCE
           );
@@ -199,9 +185,7 @@ export const GET = async (request: NextRequest) => {
           const coreStats = overallRecord?.stats;
 
           // Fallback to Site API stats if Core API returns no data
-          const siteStats =
-            teamData.team.record?.items?.find((item) => item.summary)?.stats ||
-            [];
+          const siteStats = teamData.team.record?.items?.find((item) => item.summary)?.stats || [];
           const useSiteAPI = !coreStats && siteStats.length > 0;
 
           let recordStats;
@@ -211,29 +195,26 @@ export const GET = async (request: NextRequest) => {
               return siteStats.find((s) => s.name === statName)?.value ?? 0;
             };
             recordStats = {
-              wins: getSiteStatValue("wins"),
-              losses: getSiteStatValue("losses"),
-              winPercent: getSiteStatValue("winPercent"),
-              pointsFor: getSiteStatValue("pointsFor"),
-              pointsAgainst: getSiteStatValue("pointsAgainst"),
-              pointDifferential: getSiteStatValue("pointDifferential"),
-              avgPointsFor: getSiteStatValue("avgPointsFor"),
-              avgPointsAgainst: getSiteStatValue("avgPointsAgainst"),
+              wins: getSiteStatValue('wins'),
+              losses: getSiteStatValue('losses'),
+              winPercent: getSiteStatValue('winPercent'),
+              pointsFor: getSiteStatValue('pointsFor'),
+              pointsAgainst: getSiteStatValue('pointsAgainst'),
+              pointDifferential: getSiteStatValue('pointDifferential'),
+              avgPointsFor: getSiteStatValue('avgPointsFor'),
+              avgPointsAgainst: getSiteStatValue('avgPointsAgainst'),
             };
           } else {
             // Parse Core API format (flat stats array)
             recordStats = {
               wins: getStatValue(coreStats, STAT_WINS),
               losses: getStatValue(coreStats, STAT_LOSSES),
-              winPercent: getStatValue(coreStats, "winPercent"),
-              pointsFor: getStatValue(coreStats, "pointsFor"),
-              pointsAgainst: getStatValue(coreStats, "pointsAgainst"),
+              winPercent: getStatValue(coreStats, 'winPercent'),
+              pointsFor: getStatValue(coreStats, 'pointsFor'),
+              pointsAgainst: getStatValue(coreStats, 'pointsAgainst'),
               pointDifferential: getStatValue(coreStats, STAT_DIFFERENTIAL),
               avgPointsFor: getStatValue(coreStats, STAT_AVG_POINTS_FOR),
-              avgPointsAgainst: getStatValue(
-                coreStats,
-                STAT_AVG_POINTS_AGAINST
-              ),
+              avgPointsAgainst: getStatValue(coreStats, STAT_AVG_POINTS_AGAINST),
             };
           }
 
@@ -241,21 +222,19 @@ export const GET = async (request: NextRequest) => {
             { _id: teamData.team.id },
             {
               $set: {
-                "record.overall":
-                  overallRecord?.summary ||
-                  teamData.team.record?.items?.[0]?.summary ||
-                  null,
-                "record.conference": conferenceRecord?.summary || null,
-                "record.home": homeRecord?.summary || null,
-                "record.away": awayRecord?.summary || null,
-                "record.stats.wins": recordStats.wins,
-                "record.stats.losses": recordStats.losses,
-                "record.stats.winPercent": recordStats.winPercent,
-                "record.stats.pointsFor": recordStats.pointsFor,
-                "record.stats.pointsAgainst": recordStats.pointsAgainst,
-                "record.stats.pointDifferential": recordStats.pointDifferential,
-                "record.stats.avgPointsFor": recordStats.avgPointsFor,
-                "record.stats.avgPointsAgainst": recordStats.avgPointsAgainst,
+                'record.overall':
+                  overallRecord?.summary || teamData.team.record?.items?.[0]?.summary || null,
+                'record.conference': conferenceRecord?.summary || null,
+                'record.home': homeRecord?.summary || null,
+                'record.away': awayRecord?.summary || null,
+                'record.stats.wins': recordStats.wins,
+                'record.stats.losses': recordStats.losses,
+                'record.stats.winPercent': recordStats.winPercent,
+                'record.stats.pointsFor': recordStats.pointsFor,
+                'record.stats.pointsAgainst': recordStats.pointsAgainst,
+                'record.stats.pointDifferential': recordStats.pointDifferential,
+                'record.stats.avgPointsFor': recordStats.avgPointsFor,
+                'record.stats.avgPointsAgainst': recordStats.avgPointsAgainst,
                 lastUpdated: new Date(),
               },
             }
@@ -266,10 +245,10 @@ export const GET = async (request: NextRequest) => {
         } catch (error) {
           await ErrorLog.create({
             timestamp: new Date(),
-            endpoint: "/api/cron/update-team-averages",
+            endpoint: '/api/cron/update-team-averages',
             payload: { team: teamAbbrev, retry: true },
             error: error instanceof Error ? error.message : String(error),
-            stackTrace: error instanceof Error ? error.stack || "" : "",
+            stackTrace: error instanceof Error ? error.stack || '' : '',
           });
           retryFailures.push(teamAbbrev);
         }
@@ -285,15 +264,15 @@ export const GET = async (request: NextRequest) => {
   } catch (error) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: "/api/cron/update-team-averages",
+      endpoint: '/api/cron/update-team-averages',
       payload: {},
       error: error instanceof Error ? error.message : String(error),
-      stackTrace: error instanceof Error ? error.stack || "" : "",
+      stackTrace: error instanceof Error ? error.stack || '' : '',
     });
 
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
     );

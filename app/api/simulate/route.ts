@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Game from "@/lib/models/Game";
-import { applyOverrides, calculateStandings } from "@/lib/tiebreaker-helpers";
-import { SimulateRequest, SimulateResponse } from "@/lib/api-types";
-import { GameLean } from "@/lib/types";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Game from '@/lib/models/Game';
+import { applyOverrides, calculateStandings } from '@/lib/tiebreaker-helpers';
+import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
+import { GameLean } from '@/lib/types';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export const POST = async (
   request: NextRequest
@@ -19,7 +19,7 @@ export const POST = async (
     // 2. Validate
     if (!season || !conferenceId) {
       return NextResponse.json(
-        { error: "Missing required fields: season, conferenceId" },
+        { error: 'Missing required fields: season, conferenceId' },
         { status: 400 }
       );
     }
@@ -31,12 +31,12 @@ export const POST = async (
     const games = await Game.find({
       season,
       conferenceGame: true,
-      league: "college-football",
+      league: 'college-football',
     }).lean<GameLean[]>();
 
     if (games.length === 0) {
       return NextResponse.json(
-        { error: "No conference games found for this season" },
+        { error: 'No conference games found for this season' },
         { status: 404 }
       );
     }
@@ -64,13 +64,13 @@ export const POST = async (
       },
       {
         status: 200,
-        headers: { "Cache-Control": "no-store" },
+        headers: { 'Cache-Control': 'no-store' },
       }
     );
   } catch (error) {
     return NextResponse.json(
       {
-        error: error instanceof Error ? error.message : "Internal server error",
+        error: error instanceof Error ? error.message : 'Internal server error',
       },
       { status: 500 }
     );

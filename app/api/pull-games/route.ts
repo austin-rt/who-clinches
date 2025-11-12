@@ -1,19 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Game from "@/lib/models/Game";
-import Team from "@/lib/models/Team";
-import ErrorModel from "@/lib/models/Error";
-import { createESPNClient } from "@/lib/espn-client";
-import { reshapeScoreboardData } from "@/lib/reshape-games";
-import { calculatePredictedScore } from "@/lib/prefill-helpers";
-import {
-  PullGamesRequest,
-  PullGamesResponse,
-  ApiErrorResponse,
-} from "@/lib/api-types";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Game from '@/lib/models/Game';
+import Team from '@/lib/models/Team';
+import ErrorModel from '@/lib/models/Error';
+import { createESPNClient } from '@/lib/espn-client';
+import { reshapeScoreboardData } from '@/lib/reshape-games';
+import { calculatePredictedScore } from '@/lib/prefill-helpers';
+import { PullGamesRequest, PullGamesResponse, ApiErrorResponse } from '@/lib/api-types';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -25,9 +21,8 @@ export const POST = async (request: NextRequest) => {
     if (!body.sport || !body.league || !body.season || !body.conferenceId) {
       return NextResponse.json<ApiErrorResponse>(
         {
-          error:
-            "Missing required fields: sport, league, season, and conferenceId are required",
-          code: "VALIDATION_ERROR",
+          error: 'Missing required fields: sport, league, season, and conferenceId are required',
+          code: 'VALIDATION_ERROR',
         },
         { status: 400 }
       );
@@ -55,7 +50,7 @@ export const POST = async (request: NextRequest) => {
 
         // Extract week numbers from Regular Season calendar
         const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
-          (cal) => cal.label === "Regular Season"
+          (cal) => cal.label === 'Regular Season'
         );
 
         if (regularSeason?.entries) {
@@ -95,11 +90,7 @@ export const POST = async (request: NextRequest) => {
         }
 
         // Reshape ESPN data
-        const reshapeResult = reshapeScoreboardData(
-          espnResponse,
-          sport,
-          league
-        );
+        const reshapeResult = reshapeScoreboardData(espnResponse, sport, league);
         const { games: reshapedGames } = reshapeResult;
 
         if (!reshapedGames || reshapedGames.length === 0) {
@@ -160,9 +151,7 @@ export const POST = async (request: NextRequest) => {
               totalUpserted++;
             }
           } catch (error) {
-            const errorMsg = `Failed to upsert game ${
-              gameData.espnId
-            } (week ${weekNumber}): ${
+            const errorMsg = `Failed to upsert game ${gameData.espnId} (week ${weekNumber}): ${
               error instanceof Error ? error.message : String(error)
             }`;
             errors.push(errorMsg);
@@ -192,7 +181,7 @@ export const POST = async (request: NextRequest) => {
       },
       {
         headers: {
-          "Cache-Control": "no-store",
+          'Cache-Control': 'no-store',
         },
       }
     );
@@ -201,10 +190,10 @@ export const POST = async (request: NextRequest) => {
     try {
       await ErrorModel.create({
         timestamp: new Date(),
-        endpoint: "/api/pull",
+        endpoint: '/api/pull',
         payload: await request.json().catch(() => ({})),
         error: error instanceof Error ? error.message : String(error),
-        stackTrace: error instanceof Error ? error.stack || "" : "",
+        stackTrace: error instanceof Error ? error.stack || '' : '',
       });
     } catch {
       // Failed to log error to database
@@ -212,9 +201,8 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json<ApiErrorResponse>(
       {
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-        code: "UNKNOWN_ERROR",
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        code: 'UNKNOWN_ERROR',
       },
       { status: 500 }
     );

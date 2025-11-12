@@ -5,6 +5,7 @@ A web application for simulating SEC Football standings and exploring tiebreaker
 ## Overview
 
 This application allows users to simulate "what-if" scenarios for SEC Football conference standings by:
+
 - Fetching live game data from ESPN's public API
 - Storing historical and upcoming game information
 - Allowing users to override game outcomes
@@ -90,17 +91,20 @@ MONGODB_DB=test  # Explicit database name (takes priority)
 ```
 
 Or falls back to Vercel's automatic environment:
+
 ```bash
 VERCEL_ENV=production  # Vercel sets this automatically per branch
 ```
 
 **Examples:**
+
 - **Local**: Set `MONGODB_DB=test` in `.env.local`
 - **Vercel develop branch**: `VERCEL_ENV=preview` (automatic) → Database = `preview`
 - **Vercel main branch**: `VERCEL_ENV=production` (automatic) → Database = `production`
 - **Staging**: Set `MONGODB_DB=staging` override in Vercel
 
 **Safety:**
+
 - ✅ **No fallback defaults** - app fails if database not specified
 - ✅ Prevents accidentally connecting to wrong database
 - ✅ Explicit configuration required for all environments
@@ -141,6 +145,7 @@ ESPN API → reshape functions → MongoDB
 ```
 
 **Endpoints:**
+
 - `POST /api/pull` - Fetch and store game data
 - `POST /api/pull-teams` - Fetch and store team data
 
@@ -151,6 +156,7 @@ MongoDB → lean queries → strongly typed transformations → API response
 ```
 
 **Endpoints:**
+
 - `GET /api/games` - Query games with filters (season, week, team, etc.)
 
 ### 3. Future: Simulation Engine
@@ -176,6 +182,7 @@ Team documents use ESPN's team IDs directly as MongoDB `_id`:
 ```
 
 **Benefits:**
+
 - No redundant ID fields
 - Direct relationship mapping
 - Simpler queries
@@ -186,11 +193,13 @@ All database reads use Mongoose `.lean()` for performance, with explicit type tr
 
 ```typescript
 const gamesRaw = await Game.find(query).lean().exec();
-const games: GameLean[] = gamesRaw.map((game): GameLean => ({
-  _id: String(game._id),
-  espnId: String(game.espnId),
-  // ... explicit field-by-field transformation
-}));
+const games: GameLean[] = gamesRaw.map(
+  (game): GameLean => ({
+    _id: String(game._id),
+    espnId: String(game.espnId),
+    // ... explicit field-by-field transformation
+  })
+);
 ```
 
 ### Null vs Undefined Semantics
@@ -209,6 +218,7 @@ The ESPN client and data models support multiple sports/leagues for future expan
 Query stored games with filters.
 
 **Query Parameters:**
+
 - `season` - Year (e.g., 2024)
 - `week` - Week number
 - `sport` - Sport type (default: "football")
@@ -218,6 +228,7 @@ Query stored games with filters.
 - `from` / `to` - Date range filters
 
 **Response:**
+
 ```json
 {
   "events": [...],
@@ -231,6 +242,7 @@ Query stored games with filters.
 Fetch game data from ESPN and store in database.
 
 **Request Body:**
+
 ```json
 {
   "season": 2024,
@@ -246,6 +258,7 @@ Fetch game data from ESPN and store in database.
 Fetch team data from ESPN and store in database.
 
 **Request Body:**
+
 ```json
 {
   "teams": ["ALA", "UGA", "LSU"],
@@ -287,6 +300,7 @@ Fetch team data from ESPN and store in database.
 ```
 
 **Indexes:**
+
 - Compound: `{ sport, league, conferenceGame, season, week }`
 - `{ state, completed }`
 - `{ "home.teamEspnId" }`
@@ -337,17 +351,20 @@ npm run lint
 ## Current Status
 
 ✅ **Phase 1 Complete**: API Foundation
+
 - ESPN data ingestion
 - MongoDB integration
 - Strongly typed API layer
 - Game and team data storage
 
 🚧 **Phase 2 In Progress**: Tiebreaker Engine
+
 - SEC rules implementation
 - Simulation endpoint
 - User overrides
 
 📋 **Phase 3 Planned**: Frontend UI
+
 - Game picker interface
 - Standings visualization
 - Simulation controls

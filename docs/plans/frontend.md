@@ -57,6 +57,7 @@ types/                       # Frontend types (new)
 ```
 
 **Key Decisions:**
+
 - Components in `app/components/` (Next.js App Router convention)
 - Frontend types in `types/frontend.ts` (separate from backend `lib/types.ts`)
 - Hooks in `app/hooks/` (co-located with components)
@@ -103,8 +104,8 @@ RootLayout
  * Backend types are in lib/types.ts and lib/api-types.ts
  */
 
-import { GameLean, TeamLean } from "@/lib/types";
-import { GamesResponse, SimulateResponse, StandingEntry, TieLog } from "@/lib/api-types";
+import { GameLean, TeamLean } from '@/lib/types';
+import { GamesResponse, SimulateResponse, StandingEntry, TieLog } from '@/lib/api-types';
 
 // Re-export API types for convenience
 export type { GamesResponse, SimulateResponse, StandingEntry, TieLog };
@@ -114,9 +115,9 @@ export interface FrontendGame extends Omit<GameLean, 'home' | 'away'> {
   home: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;  // Guaranteed by API response teams metadata
-    logo: string;         // Guaranteed by API response teams metadata
-    color: string;         // Guaranteed by API response teams metadata
+    displayName: string; // Guaranteed by API response teams metadata
+    logo: string; // Guaranteed by API response teams metadata
+    color: string; // Guaranteed by API response teams metadata
     score: number | null;
     rank: number | null;
   };
@@ -163,6 +164,7 @@ export interface ThemeConfig {
 ```
 
 **Key Points:**
+
 - Frontend types extend/transform backend types
 - `FrontendGame` enriches `GameLean` with guaranteed team metadata from API
 - Re-export API types for convenience
@@ -177,12 +179,14 @@ export interface ThemeConfig {
 **Decision:** The app loads with a custom SEC theme (not team-specific) on first visit.
 
 **SEC Theme Colors (Official Brand Colors):**
+
 - Primary: SEC Blue (`#004B8D`) - Pantone PMS 2945 XGC
 - Secondary: SEC Gold (`#FFD046`) - Pantone PMS 7404 U
 - Accent: White (`#FFFFFF`)
 - Neutral: Black (`#000000`)
 
 **Theme Selection Flow:**
+
 1. On first visit: Load SEC default theme
 2. User selects favorite team: Switch to team theme
 3. Theme persists in localStorage: `"sec-tiebreaker-theme"`
@@ -190,10 +194,12 @@ export interface ThemeConfig {
 5. If localStorage corrupted: Fall back to SEC default theme
 
 **localStorage Keys:**
+
 - `"sec-tiebreaker-theme"`: Team abbreviation string (e.g., `"alabama"`, `"georgia"`) or `"sec"` for default
 - `"sec-tiebreaker-mode"`: `"light"` or `"dark"` for base color mode
 
 **Theme Independence:**
+
 - Team selection affects: `primary`, `secondary`, `accent` colors (buttons, highlights, etc.)
 - Mode selection affects: `base-100`, `base-200`, `base-300`, `base-content` (backgrounds, text)
 - These are independent - user can mix any team with any mode
@@ -203,22 +209,23 @@ export interface ThemeConfig {
 DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All DaisyUI components automatically use theme colors via CSS variables.
 
 **Theme Structure:**
+
 ```css
-[data-theme="sec"] {
-  --color-primary: #004B8D;        /* SEC Blue - Official Brand Color */
+[data-theme='sec'] {
+  --color-primary: #004b8d; /* SEC Blue - Official Brand Color */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFD046;     /* SEC Gold - Official Brand Color */
+  --color-secondary: #ffd046; /* SEC Gold - Official Brand Color */
   --color-secondary-content: #000000;
   --color-accent: #ffffff;
   --color-accent-content: #000000;
 }
 
-[data-theme="alabama"] {
-  --color-primary: #A00000;        /* Crimson */
+[data-theme='alabama'] {
+  --color-primary: #a00000; /* Crimson */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFFFFF;      /* White */
+  --color-secondary: #ffffff; /* White */
   --color-secondary-content: #000000;
-  --color-accent: #231F20;         /* Black */
+  --color-accent: #231f20; /* Black */
   --color-accent-content: #ffffff;
 }
 
@@ -230,6 +237,7 @@ DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All Da
 **Source of Truth:** Team colors come from the database (ESPN API) via `/api/games` response.
 
 **Current State:**
+
 - ✅ Database stores `color` and `alternateColor` for each team (from ESPN) - **VERIFIED**
 - ✅ All 16 teams have both color fields populated - **VERIFIED**
 - ❌ `/api/games` currently does NOT include colors in `TeamMetadata` response
@@ -254,24 +262,30 @@ DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All Da
    - Falls back to SEC default theme if team data missing
 
 **Example Override File:**
+
 ```typescript
 // app/config/theme-overrides.ts
-export const themeOverrides: Record<string, {
-  primary: string;
-  secondary: string;
-  accent: string;
-}> = {
+export const themeOverrides: Record<
+  string,
+  {
+    primary: string;
+    secondary: string;
+    accent: string;
+  }
+> = {
   // Only override teams where ESPN colors don't match official brand
-  "333": { // Alabama
-    primary: "#A00000",  // Crimson (ESPN might have different shade)
-    secondary: "#FFFFFF",
-    accent: "#231F20",
+  '333': {
+    // Alabama
+    primary: '#A00000', // Crimson (ESPN might have different shade)
+    secondary: '#FFFFFF',
+    accent: '#231F20',
   },
   // Add more as needed
 };
 ```
 
 **Benefits:**
+
 - Single source of truth (database/ESPN)
 - Easy to update when ESPN changes team colors
 - Minimal hardcoding (only overrides)
@@ -285,12 +299,14 @@ export const themeOverrides: Record<string, {
 
 **Finding:** DaisyUI requires a `tailwind.config.js` file and is not fully compatible with Tailwind CSS 4's CSS-based configuration (`@theme inline` syntax). DaisyUI is designed to work with Tailwind CSS 3.x's JavaScript configuration approach.
 
-**Decision:** 
+**Decision:**
+
 - **Downgrade to Tailwind CSS 3.x** for DaisyUI compatibility
 - Use traditional `tailwind.config.js` file (not CSS-based config)
 - DaisyUI plugin integration via `tailwind.config.js`
 
-**Rationale:** 
+**Rationale:**
+
 - DaisyUI provides significant value with pre-built components
 - Tailwind 3.x is stable and well-supported
 - Can upgrade to Tailwind 4 later if/when DaisyUI adds support
@@ -298,22 +314,20 @@ export const themeOverrides: Record<string, {
 ### Configuration Files
 
 **tailwind.config.js** (required for DaisyUI):
+
 ```javascript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
+  plugins: [require('daisyui')],
   daisyui: {
     themes: [
-      "light",  // DaisyUI default (light mode base)
-      "dark",   // DaisyUI default (dark mode base)
-      "sec",    // Custom SEC theme (Phase 0)
+      'light', // DaisyUI default (light mode base)
+      'dark', // DaisyUI default (dark mode base)
+      'sec', // Custom SEC theme (Phase 0)
       // Team themes will be added dynamically in Phase 5
     ],
   },
@@ -321,12 +335,14 @@ module.exports = {
 ```
 
 **Theme Architecture:**
+
 - **Light/Dark Mode:** Controls `base-100`, `base-200`, `base-300`, `base-content` (backgrounds and text)
 - **Team Selection:** Controls `primary`, `secondary`, `accent` (team colors for buttons, highlights, etc.)
 - **Independent:** User can select team colors + light/dark mode independently
 - **Base colors:** Mild, readable colors that don't use team colors
 
 **postcss.config.mjs** (update for Tailwind 3):
+
 ```javascript
 const config = {
   plugins: {
@@ -339,6 +355,7 @@ export default config;
 ```
 
 **app/globals.css** (update):
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -347,29 +364,29 @@ export default config;
 /* Light/Dark Mode Base Colors (independent of team selection) */
 /* These control backgrounds and text - mild, readable colors */
 /* Applied via data-mode attribute, works with any team theme */
-html[data-mode="light"],
+html[data-mode='light'],
 html:not([data-mode]) {
   /* Light mode base colors (default) */
-  --color-base-100: #ffffff;        /* Main background */
-  --color-base-200: #f5f5f5;        /* Secondary background */
-  --color-base-300: #e5e5e5;        /* Tertiary background */
-  --color-base-content: #1f2937;    /* Main text color (dark gray) */
+  --color-base-100: #ffffff; /* Main background */
+  --color-base-200: #f5f5f5; /* Secondary background */
+  --color-base-300: #e5e5e5; /* Tertiary background */
+  --color-base-content: #1f2937; /* Main text color (dark gray) */
 }
 
-html[data-mode="dark"] {
+html[data-mode='dark'] {
   /* Dark mode base colors */
-  --color-base-100: #1a1a1a;        /* Main background (dark) */
-  --color-base-200: #2d2d2d;        /* Secondary background */
-  --color-base-300: #404040;        /* Tertiary background */
-  --color-base-content: #f5f5f5;     /* Main text color (light) */
+  --color-base-100: #1a1a1a; /* Main background (dark) */
+  --color-base-200: #2d2d2d; /* Secondary background */
+  --color-base-300: #404040; /* Tertiary background */
+  --color-base-content: #f5f5f5; /* Main text color (light) */
 }
 
 /* SEC Default Theme - Team Colors Only */
 /* Background/text controlled by light/dark mode above */
-[data-theme="sec"] {
-  --color-primary: #004B8D;          /* SEC Blue - Pantone PMS 2945 XGC */
+[data-theme='sec'] {
+  --color-primary: #004b8d; /* SEC Blue - Pantone PMS 2945 XGC */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFD046;       /* SEC Gold - Pantone PMS 7404 U */
+  --color-secondary: #ffd046; /* SEC Gold - Pantone PMS 7404 U */
   --color-secondary-content: #000000;
   --color-accent: #ffffff;
   --color-accent-content: #000000;
@@ -391,11 +408,13 @@ html[data-mode="dark"] {
 **Dependencies:** None (first phase)
 
 **⚠️ CRITICAL BACKEND FIXES REQUIRED (Blocking Issue):**
+
 - **Fix #1:** Update `lib/api-types.ts` - Add `color` and `alternateColor` to `TeamMetadata` interface
 - **Fix #2:** Update `app/api/games/route.ts` - Return colors in API response (line 125 query, lines 143-151 mapping)
 - **Impact:** Database has colors, but API doesn't expose them. Phase 0 cannot complete without these fixes.
 
 **Files to Create/Modify:**
+
 - `package.json` (downgrade Tailwind to 3.x, add DaisyUI)
 - `tailwind.config.js` (new - required for DaisyUI)
 - `postcss.config.mjs` (update for Tailwind 3)
@@ -406,6 +425,7 @@ html[data-mode="dark"] {
 - `app/api/games/route.ts` (CRITICAL FIX: return colors in response)
 
 **Configuration Steps:**
+
 ```bash
 npm install daisyui@latest
 npm install -D tailwindcss@^3 postcss autoprefixer
@@ -413,20 +433,22 @@ npx tailwindcss init -p
 ```
 
 **Type Definitions:**
+
 - Create `types/frontend.ts` with all frontend types (see Type System section)
 - Re-export relevant types from `lib/api-types.ts`
 
 **Critical API Fixes (REQUIRED - See Above):**
 
 1. **CRITICAL FIX: Update `TeamMetadata` interface in `lib/api-types.ts`:**
+
    ```typescript
    export interface TeamMetadata {
      id: string;
      abbrev: string;
      displayName: string;
      logo: string;
-     color: string;           // ADD THIS
-     alternateColor: string;  // ADD THIS
+     color: string; // ADD THIS
+     alternateColor: string; // ADD THIS
    }
    ```
 
@@ -441,6 +463,7 @@ npx tailwindcss init -p
 
 **Backend Verification:**
 After fixes, verify with:
+
 ```bash
 curl http://localhost:3000/api/games?season=2025&conferenceId=8 | jq '.teams[0]'
 # Should include: "color": "...", "alternateColor": "..."
@@ -449,17 +472,20 @@ curl http://localhost:3000/api/games?season=2025&conferenceId=8 | jq '.teams[0]'
 **Theme Strategy - Phased Approach:**
 
 **Phase 0 (Current):** Hardcode SEC default theme only
+
 - Simple, reliable, gets us started
 - SEC theme defined in CSS
 - No team themes yet
 
 **Phase 5 (Future):** Dynamic team themes from database
+
 - Will implement dynamic CSS injection from `/api/teams`
 - Team list and colors from database
 - Full scalability for future conferences
 - Discussion tabled until Phase 5 implementation
 
 **Phase 0 Theme Implementation:**
+
 ```typescript
 // app/layout.tsx - Simple theme initialization
 'use client';
@@ -470,10 +496,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   useEffect(() => {
     // Load saved team theme or default to SEC
     const savedTeam = localStorage.getItem('sec-tiebreaker-theme') || 'sec';
-    
+
     // Load saved mode or default to light
     const savedMode = localStorage.getItem('sec-tiebreaker-mode') || 'light';
-    
+
     // Apply both: team colors + light/dark mode
     // data-theme controls primary/secondary/accent (team colors)
     // data-mode controls base-100/base-content (backgrounds/text)
@@ -490,12 +516,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 **Theme Strategy:**
+
 - **Team colors (primary/secondary/accent):** Controlled by `data-theme` attribute
 - **Base colors (background/text):** Controlled by light/dark mode
 - **Storage:** Two localStorage keys: `sec-tiebreaker-theme` (team) and `sec-tiebreaker-mode` (light/dark)
 - **Phase 0:** Only SEC theme + light mode. Team themes and mode toggle in Phase 5.
 
 **Implementation Checklist:**
+
 - [ ] Downgrade Tailwind to 3.x
 - [ ] Install DaisyUI
 - [ ] Create `tailwind.config.js` with DaisyUI plugin
@@ -515,13 +543,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 - [ ] Test localStorage persistence
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Check browser console for errors
 3. Test `/api/games` endpoint includes colors:
+
    ```bash
    curl http://localhost:3000/api/games?season=2025&conferenceId=8
    ```
+
    - Check `teams` array - each team should have `color` and `alternateColor`
+
 4. Inspect `<html>` element - should have `data-theme="sec"`
 5. Verify SEC theme colors are applied (blue primary, gold secondary)
 6. Check localStorage has `sec-tiebreaker-theme` key with value "sec"
@@ -529,6 +561,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 8. **Note:** Team theme selector testing deferred to Phase 5
 
 **Known Gotchas:**
+
 - Tailwind 3 requires `tailwind.config.js` (not CSS-based like Tailwind 4)
 - DaisyUI themes must be defined in both `tailwind.config.js` and CSS
 - Theme switching requires `data-theme` on `<html>` element
@@ -551,12 +584,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 **Dependencies:** Phase 0 (DaisyUI installed, themes configured)
 
 **Files to Create/Modify:**
+
 - `app/components/Header.tsx` (new)
 - `app/components/Navigation.tsx` (new)
 - `app/components/Footer.tsx` (new)
 - `app/layout.tsx` (update to use Header/Footer)
 
 **Component Definitions:**
+
 ```typescript
 // app/components/Header.tsx
 // Uses DaisyUI navbar component
@@ -575,6 +610,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create Header with DaisyUI navbar
 - [ ] Create Navigation component (placeholder for future)
 - [ ] Create Footer with DaisyUI footer
@@ -584,6 +620,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 - [ ] Ensure theme colors apply via `data-theme`
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Verify Header at top, Footer at bottom
 3. Switch theme - colors should update
@@ -599,6 +636,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 **Dependencies:** Phase 1 (layout shell exists)
 
 **Files to Create/Modify:**
+
 - `app/components/GamesList.tsx` (new)
 - `app/components/GameCard.tsx` (new)
 - `app/components/WeekAccordion.tsx` (new)
@@ -607,6 +645,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 - `app/page.tsx` (update to use GamesList)
 
 **API Integration:**
+
 ```typescript
 // app/hooks/useGames.ts
 export function useGames(season: number, conferenceId: number) {
@@ -618,33 +657,31 @@ export function useGames(season: number, conferenceId: number) {
   useEffect(() => {
     async function fetchGames() {
       try {
-        const response = await fetch(
-          `/api/games?season=${season}&conferenceId=${conferenceId}`
-        );
+        const response = await fetch(`/api/games?season=${season}&conferenceId=${conferenceId}`);
         const data: GamesResponse = await response.json();
-        
+
         // Enrich games with team metadata
-        const teamMap = new Map(data.teams.map(t => [t.id, t]));
-        const enrichedGames: FrontendGame[] = data.events.map(game => ({
+        const teamMap = new Map(data.teams.map((t) => [t.id, t]));
+        const enrichedGames: FrontendGame[] = data.events.map((game) => ({
           ...game,
           home: {
             ...game.home,
             displayName: teamMap.get(game.home.teamEspnId)?.displayName || game.home.abbrev,
-            logo: teamMap.get(game.home.teamEspnId)?.logo || "",
-            color: teamMap.get(game.home.teamEspnId)?.color || "",
+            logo: teamMap.get(game.home.teamEspnId)?.logo || '',
+            color: teamMap.get(game.home.teamEspnId)?.color || '',
           },
           away: {
             ...game.away,
             displayName: teamMap.get(game.away.teamEspnId)?.displayName || game.away.abbrev,
-            logo: teamMap.get(game.away.teamEspnId)?.logo || "",
-            color: teamMap.get(game.away.teamEspnId)?.color || "",
+            logo: teamMap.get(game.away.teamEspnId)?.logo || '',
+            color: teamMap.get(game.away.teamEspnId)?.color || '',
           },
         }));
-        
+
         setGames(enrichedGames);
         setTeams(data.teams);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch games");
+        setError(err instanceof Error ? err.message : 'Failed to fetch games');
       } finally {
         setLoading(false);
       }
@@ -657,6 +694,7 @@ export function useGames(season: number, conferenceId: number) {
 ```
 
 **Component Definitions:**
+
 ```typescript
 // app/components/GamesList.tsx
 // Fetches games from /api/games
@@ -681,6 +719,7 @@ export function useGames(season: number, conferenceId: number) {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create `useGames` hook to fetch from `/api/games`
 - [ ] Handle API response structure: `{ events, teams, lastUpdated }`
 - [ ] Enrich games with team metadata from `teams` array
@@ -694,6 +733,7 @@ export function useGames(season: number, conferenceId: number) {
 - [ ] Test: multiple weeks can be open simultaneously
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Load page - should see list of weeks
 3. Click week - accordion expands
@@ -704,6 +744,7 @@ export function useGames(season: number, conferenceId: number) {
 8. Test on mobile - responsive layout works
 
 **Known Gotchas:**
+
 - API returns `events` not `games` - use `data.events`
 - Team metadata must be merged from `teams` array
 - Use `teamEspnId` not `teamId` in game data
@@ -719,12 +760,14 @@ export function useGames(season: number, conferenceId: number) {
 **Dependencies:** Phase 2 (games displayed)
 
 **Files to Create/Modify:**
+
 - `app/components/GameCard.tsx` (update to include score inputs)
 - `app/components/ScoreInputs.tsx` (new - React Hook Form component)
 - `app/hooks/useGameOverrides.ts` (new - manage localStorage)
 - `app/page.tsx` (update overrides handling and reset button)
 
 **Override Behavior:**
+
 - Two score input fields per game (home and away)
 - Inputs prefilled with `predictedScore` (guaranteed valid default)
 - User can simulate immediately without entering any values
@@ -734,12 +777,14 @@ export function useGames(season: number, conferenceId: number) {
 - Reset to Live: fetches fresh data, clears overrides, refills with new predicted scores
 
 **Validation Rules:**
+
 - No tie scores: `homeScore !== awayScore`
 - Non-negative: `homeScore >= 0 && awayScore >= 0`
 - Whole numbers: `Number.isInteger(homeScore) && Number.isInteger(awayScore)`
 - Any positive integer allowed (no max cap)
 
 **Component Definitions:**
+
 ```typescript
 // app/components/ScoreInputs.tsx
 // Uses React Hook Form for validation
@@ -764,6 +809,7 @@ export function useGames(season: number, conferenceId: number) {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Install React Hook Form: `npm install react-hook-form`
 - [ ] Create `ScoreInputs.tsx` component with React Hook Form validation
 - [ ] Prefill inputs with `game.predictedScore` values
@@ -780,6 +826,7 @@ export function useGames(season: number, conferenceId: number) {
 - [ ] Handle localStorage edge cases (corruption, invalid state)
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Load games - all score inputs prefilled with predictedScore
 3. Click simulate without any changes - should work (all games valid)
@@ -799,6 +846,7 @@ export function useGames(season: number, conferenceId: number) {
 9. Test multiple games - each tracks overrides independently
 
 **Known Gotchas:**
+
 - Override keys use `game.espnId` (ESPN ID, always available, primary identifier)
 - NOT MongoDB `_id` - this matches backend `applyOverrides()` function
 - `predictedScore` always present in game data (guaranteed by database)
@@ -816,6 +864,7 @@ export function useGames(season: number, conferenceId: number) {
 **Dependencies:** Phase 3 (overrides working)
 
 **Files to Create/Modify:**
+
 - `app/components/SimulateButton.tsx` (new)
 - `app/components/StandingsTable.tsx` (new)
 - `app/components/StandingRow.tsx` (new)
@@ -824,6 +873,7 @@ export function useGames(season: number, conferenceId: number) {
 - `app/page.tsx` (update to show standings after simulate)
 
 **API Integration:**
+
 ```typescript
 // app/hooks/useSimulate.ts
 export function useSimulate() {
@@ -833,17 +883,13 @@ export function useSimulate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const simulate = async (
-    season: number,
-    conferenceId: string,
-    overrides: UserOverrides
-  ) => {
+  const simulate = async (season: number, conferenceId: string, overrides: UserOverrides) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ season, conferenceId, overrides }),
       });
       const data: SimulateResponse = await response.json();
@@ -851,7 +897,7 @@ export function useSimulate() {
       setTieLogs(data.tieLogs);
       setChampionship(data.championship);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Simulation failed");
+      setError(err instanceof Error ? err.message : 'Simulation failed');
     } finally {
       setLoading(false);
     }
@@ -862,6 +908,7 @@ export function useSimulate() {
 ```
 
 **Component Definitions:**
+
 ```typescript
 // app/components/SimulateButton.tsx
 // Uses DaisyUI btn component
@@ -885,6 +932,7 @@ export function useSimulate() {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create `useSimulate` hook to POST to `/api/simulate`
 - [ ] Create SimulateButton component with loading state
 - [ ] Create StandingsTable using DaisyUI table component
@@ -897,6 +945,7 @@ export function useSimulate() {
 - [ ] Test: standings update when overrides change
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Make some game overrides
 3. Click "Simulate Standings" button
@@ -909,6 +958,7 @@ export function useSimulate() {
 10. Test on mobile - table should be readable
 
 **Known Gotchas:**
+
 - `/api/simulate` response uses `teamId` in standings (correct)
 - Championship field is array of 2 team IDs
 - TieLogs may be empty - handle gracefully
@@ -924,6 +974,7 @@ export function useSimulate() {
 **Dependencies:** Phase 4 (all features working)
 
 **Approach:** Dynamic team themes from database
+
 - Fetch teams from `/api/teams` endpoint (created in this phase)
 - Dynamically inject CSS for each team theme
 - Build custom dropdown (DaisyUI's theme controller won't work with dynamic themes)
@@ -931,6 +982,7 @@ export function useSimulate() {
 - **Technical discussion tabled until Phase 5 implementation**
 
 **Files to Create/Modify:**
+
 - `app/api/teams/route.ts` (new - GET endpoint to fetch all teams from DB)
 - `app/components/TeamThemeSelector.tsx` (new)
 - `app/components/Header.tsx` (update to include theme selector)
@@ -938,6 +990,7 @@ export function useSimulate() {
 - `lib/api-types.ts` (add TeamsResponse type if not already added)
 
 **Component Definitions:**
+
 ```typescript
 // app/components/TeamThemeSelector.tsx
 // Custom dropdown component (not DaisyUI's theme controller)
@@ -954,6 +1007,7 @@ export function useSimulate() {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create `/api/teams` endpoint (GET, returns all teams with colors)
 - [ ] Create `useTeams` hook to fetch teams and inject themes
 - [ ] Implement dynamic CSS injection function
@@ -968,11 +1022,13 @@ export function useSimulate() {
 - [ ] Handle error cases (API failure, localStorage corruption)
 
 **Technical Discussion:**
+
 - Dynamic CSS injection approach will be finalized during Phase 5 implementation
 - DaisyUI theme controller limitations will be addressed
 - Performance and caching strategies will be determined
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Look for theme selector in Header
 3. Click selector - should show dropdown with all 16 teams + "SEC Default"
@@ -986,6 +1042,7 @@ export function useSimulate() {
 11. Test standings table - all text readable with chosen theme
 
 **Known Gotchas:**
+
 - Team abbreviations must match `data-theme` values exactly
 - Some team color combinations may have poor contrast - test readability
 - Dropdown should show current selection as selected option
@@ -1032,6 +1089,7 @@ npm run build        # Build for production (includes type check)
 7. **Repeat Steps 3-6** for each phase
 
 **After Each Implementation:**
+
 - Write clean, typed code (no shortcuts)
 - Create one commit per phase
 - Commit message format: `feat: Phase X - [feature name]`
@@ -1056,19 +1114,21 @@ npm run build        # Build for production (includes type check)
 ## Scalability Considerations
 
 **Future Expansion:**
+
 - Structure supports multiple sports/conferences
 - Component organization allows for route-specific components
 - Type system can be extended for new sports
 - Theme system can add conference-specific themes
 
 **Current Scope:**
+
 - Single page application (SEC Football only)
 - Standings on same page as games
 - No routing needed initially
 
 **Future Enhancements:**
+
 - Add routing for different sports/conferences
 - Separate pages for games vs standings
 - WebSocket/SSE for real-time updates
 - Multi-conference support
-

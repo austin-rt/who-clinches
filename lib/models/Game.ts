@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IGame extends Document {
   espnId: string;
@@ -8,7 +8,7 @@ export interface IGame extends Document {
   season: number;
   sport: string;
   league: string;
-  state: "pre" | "in" | "post";
+  state: 'pre' | 'in' | 'post';
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
@@ -69,16 +69,16 @@ const GameSchema = new Schema<IGame>(
     sport: {
       type: String,
       required: true,
-      default: "football",
+      default: 'football',
     },
     league: {
       type: String,
       required: true,
-      default: "college-football",
+      default: 'college-football',
     },
     state: {
       type: String,
-      enum: ["pre", "in", "post"],
+      enum: ['pre', 'in', 'post'],
       required: true,
     },
     completed: {
@@ -206,4 +206,4 @@ if (mongoose.models.Game) {
   delete mongoose.models.Game;
 }
 
-export default mongoose.model<IGame>("Game", GameSchema);
+export default mongoose.model<IGame>('Game', GameSchema);

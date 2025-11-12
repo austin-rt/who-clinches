@@ -5,12 +5,14 @@
 **Dependencies:** Phase 0 (DaisyUI installed, themes configured)
 
 **Files to Create/Modify:**
+
 - `app/components/Header.tsx` (new)
 - `app/components/Navigation.tsx` (new)
 - `app/components/Footer.tsx` (new)
 - `app/layout.tsx` (update to use Header/Footer)
 
 **Component Definitions:**
+
 ```typescript
 // app/components/Header.tsx
 // Uses DaisyUI navbar component
@@ -29,6 +31,7 @@
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create Header with DaisyUI navbar
 - [ ] Create Navigation component (placeholder for future)
 - [ ] Create Footer with DaisyUI footer
@@ -38,9 +41,9 @@
 - [ ] Ensure theme colors apply via `data-theme`
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Verify Header at top, Footer at bottom
 3. Switch theme - colors should update
 4. Test responsive layout
 5. Verify no console errors
-

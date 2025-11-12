@@ -3,12 +3,8 @@
  * Transform raw ESPN team data into our desired format
  */
 
-import {
-  ESPNTeamResponse,
-  ESPNTeamLogo,
-  ESPNCoreRecordResponse,
-} from "./espn-client";
-import { ReshapedTeam, TeamRecord, TeamDataResponse } from "./types";
+import { ESPNTeamResponse, ESPNTeamLogo, ESPNCoreRecordResponse } from './espn-client';
+import { ReshapedTeam, TeamRecord, TeamDataResponse } from './types';
 
 /**
  * Reshape ESPN team response into our team format
@@ -32,15 +28,14 @@ export const reshapeTeamData = (
     const items = coreRecordResponse.items;
 
     // Find each record type
-    const overallRecord = items.find((item) => item.type === "total");
-    const homeRecord = items.find((item) => item.type === "homerecord");
-    const awayRecord = items.find((item) => item.type === "awayrecord");
-    const confRecord = items.find((item) => item.type === "vsconf");
+    const overallRecord = items.find((item) => item.type === 'total');
+    const homeRecord = items.find((item) => item.type === 'homerecord');
+    const awayRecord = items.find((item) => item.type === 'awayrecord');
+    const confRecord = items.find((item) => item.type === 'vsconf');
 
     // Extract stats from overall record
     const stats = overallRecord?.stats || [];
-    const getStatValue = (name: string) =>
-      stats.find((s) => s.name === name)?.value;
+    const getStatValue = (name: string) => stats.find((s) => s.name === name)?.value;
 
     record = {
       overall: overallRecord?.summary,
@@ -48,14 +43,14 @@ export const reshapeTeamData = (
       home: homeRecord?.summary || null,
       away: awayRecord?.summary || null,
       stats: {
-        wins: getStatValue("wins"),
-        losses: getStatValue("losses"),
-        winPercent: getStatValue("winPercent"),
-        pointsFor: getStatValue("pointsFor"),
-        pointsAgainst: getStatValue("pointsAgainst"),
-        pointDifferential: getStatValue("pointDifferential"),
-        avgPointsFor: getStatValue("avgPointsFor"),
-        avgPointsAgainst: getStatValue("avgPointsAgainst"),
+        wins: getStatValue('wins'),
+        losses: getStatValue('losses'),
+        winPercent: getStatValue('winPercent'),
+        pointsFor: getStatValue('pointsFor'),
+        pointsAgainst: getStatValue('pointsAgainst'),
+        pointDifferential: getStatValue('pointDifferential'),
+        avgPointsFor: getStatValue('avgPointsFor'),
+        avgPointsAgainst: getStatValue('avgPointsAgainst'),
       },
     };
   } else if (espnTeamResponse.team.record?.items) {
@@ -64,8 +59,7 @@ export const reshapeTeamData = (
     if (recordItem) {
       const stats = recordItem.stats || [];
       const getStatValue = (name: string) =>
-        stats.find((s: { name: string; value: number }) => s.name === name)
-          ?.value;
+        stats.find((s: { name: string; value: number }) => s.name === name)?.value;
 
       record = {
         overall: recordItem.summary,
@@ -73,14 +67,14 @@ export const reshapeTeamData = (
         home: null,
         away: null,
         stats: {
-          wins: getStatValue("wins"),
-          losses: getStatValue("losses"),
-          winPercent: getStatValue("winPercent"),
-          pointsFor: getStatValue("pointsFor"),
-          pointsAgainst: getStatValue("pointsAgainst"),
-          pointDifferential: getStatValue("pointDifferential"),
-          avgPointsFor: getStatValue("avgPointsFor"),
-          avgPointsAgainst: getStatValue("avgPointsAgainst"),
+          wins: getStatValue('wins'),
+          losses: getStatValue('losses'),
+          winPercent: getStatValue('winPercent'),
+          pointsFor: getStatValue('pointsFor'),
+          pointsAgainst: getStatValue('pointsAgainst'),
+          pointDifferential: getStatValue('pointDifferential'),
+          avgPointsFor: getStatValue('avgPointsFor'),
+          avgPointsAgainst: getStatValue('avgPointsAgainst'),
         },
       };
     }
@@ -103,10 +97,10 @@ export const reshapeTeamData = (
     name: team.name,
     displayName: team.displayName,
     abbreviation: team.abbreviation,
-    logo: logo?.href || "",
+    logo: logo?.href || '',
     color: team.color,
     alternateColor: team.alternateColor,
-    conferenceId: team.groups?.parent?.id || "8", // Default to SEC
+    conferenceId: team.groups?.parent?.id || '8', // Default to SEC
     record,
     conferenceStanding,
     nationalRanking,
@@ -119,9 +113,7 @@ export const reshapeTeamData = (
 /**
  * Reshape multiple team responses
  */
-export const reshapeTeamsData = (
-  teamResponses: TeamDataResponse[]
-): ReshapedTeam[] => {
+export const reshapeTeamsData = (teamResponses: TeamDataResponse[]): ReshapedTeam[] => {
   const teams: ReshapedTeam[] = [];
 
   teamResponses.forEach(({ data, recordData }) => {

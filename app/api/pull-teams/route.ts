@@ -1,19 +1,15 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Team from "@/lib/models/Team";
-import ErrorModel from "@/lib/models/Error";
-import { createESPNClient } from "@/lib/espn-client";
-import { reshapeTeamsData } from "@/lib/reshape-teams";
-import { TeamDataResponse } from "@/lib/types";
-import { CONFERENCE_TEAMS_MAP } from "@/lib/constants";
-import {
-  PullTeamsRequest,
-  PullTeamsResponse,
-  ApiErrorResponse,
-} from "@/lib/api-types";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Team from '@/lib/models/Team';
+import ErrorModel from '@/lib/models/Error';
+import { createESPNClient } from '@/lib/espn-client';
+import { reshapeTeamsData } from '@/lib/reshape-teams';
+import { TeamDataResponse } from '@/lib/types';
+import { CONFERENCE_TEAMS_MAP } from '@/lib/constants';
+import { PullTeamsRequest, PullTeamsResponse, ApiErrorResponse } from '@/lib/api-types';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export const POST = async (request: NextRequest) => {
   try {
@@ -25,8 +21,8 @@ export const POST = async (request: NextRequest) => {
     if (!body.sport || !body.league) {
       return NextResponse.json<ApiErrorResponse>(
         {
-          error: "Missing required fields: sport and league are required",
-          code: "VALIDATION_ERROR",
+          error: 'Missing required fields: sport and league are required',
+          code: 'VALIDATION_ERROR',
         },
         { status: 400 }
       );
@@ -37,7 +33,7 @@ export const POST = async (request: NextRequest) => {
         {
           error:
             "Must provide either 'teams' (array of team abbreviations) or 'conferenceId' (number)",
-          code: "VALIDATION_ERROR",
+          code: 'VALIDATION_ERROR',
         },
         { status: 400 }
       );
@@ -59,7 +55,7 @@ export const POST = async (request: NextRequest) => {
         return NextResponse.json<ApiErrorResponse>(
           {
             error: `Conference ID ${conferenceId} not supported. Add conference to CONFERENCE_TEAMS_MAP in lib/constants.ts`,
-            code: "INVALID_CONFERENCE",
+            code: 'INVALID_CONFERENCE',
           },
           { status: 400 }
         );
@@ -68,7 +64,7 @@ export const POST = async (request: NextRequest) => {
     } else {
       // This shouldn't happen due to validation above, but TypeScript needs it
       return NextResponse.json<ApiErrorResponse>(
-        { error: "Invalid request", code: "VALIDATION_ERROR" },
+        { error: 'Invalid request', code: 'VALIDATION_ERROR' },
         { status: 400 }
       );
     }
@@ -129,11 +125,7 @@ export const POST = async (request: NextRequest) => {
 
     for (const team of reshapedTeams) {
       try {
-        await Team.updateOne(
-          { _id: team._id },
-          { $set: team },
-          { upsert: true }
-        );
+        await Team.updateOne({ _id: team._id }, { $set: team }, { upsert: true });
         upsertedCount++;
       } catch (error) {
         const errorMessage = `Failed to upsert team ${team._id}: ${
@@ -151,7 +143,7 @@ export const POST = async (request: NextRequest) => {
       },
       {
         headers: {
-          "Cache-Control": "no-store",
+          'Cache-Control': 'no-store',
         },
       }
     );
@@ -160,10 +152,10 @@ export const POST = async (request: NextRequest) => {
     try {
       await ErrorModel.create({
         timestamp: new Date(),
-        endpoint: "/api/pull-teams",
+        endpoint: '/api/pull-teams',
         payload: await request.json().catch(() => ({})),
         error: error instanceof Error ? error.message : String(error),
-        stackTrace: error instanceof Error ? error.stack || "" : "",
+        stackTrace: error instanceof Error ? error.stack || '' : '',
       });
     } catch {
       // Failed to log error to database
@@ -171,9 +163,8 @@ export const POST = async (request: NextRequest) => {
 
     return NextResponse.json<ApiErrorResponse>(
       {
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-        code: "UNKNOWN_ERROR",
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        code: 'UNKNOWN_ERROR',
       },
       { status: 500 }
     );

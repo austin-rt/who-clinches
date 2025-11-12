@@ -7,22 +7,22 @@
  * Used for initial data seeding and batch operations
  */
 export const SEC_TEAMS = [
-  "ALA", // Alabama
-  "ARK", // Arkansas
-  "AUB", // Auburn
-  "FLA", // Florida
-  "UGA", // Georgia
-  "UK", // Kentucky
-  "LSU", // LSU
-  "MISS", // Ole Miss
-  "MSST", // Mississippi State
-  "MIZ", // Missouri
-  "OU", // Oklahoma
-  "SC", // South Carolina
-  "TENN", // Tennessee
-  "TEX", // Texas
-  "TA&M", // Texas A&M
-  "VAN", // Vanderbilt
+  'ALA', // Alabama
+  'ARK', // Arkansas
+  'AUB', // Auburn
+  'FLA', // Florida
+  'UGA', // Georgia
+  'UK', // Kentucky
+  'LSU', // LSU
+  'MISS', // Ole Miss
+  'MSST', // Mississippi State
+  'MIZ', // Missouri
+  'OU', // Oklahoma
+  'SC', // South Carolina
+  'TENN', // Tennessee
+  'TEX', // Texas
+  'TA&M', // Texas A&M
+  'VAN', // Vanderbilt
 ] as const;
 
 /**
@@ -33,17 +33,17 @@ export const SEC_TEAMS = [
 export const SEC_CONFERENCE_ID = 8;
 
 // ESPN Core API Record Types (used for finding specific record types)
-export const RECORD_TYPE_OVERALL = "overall";
-export const RECORD_TYPE_HOME = "homerecord";
-export const RECORD_TYPE_AWAY = "awayrecord";
-export const RECORD_TYPE_CONFERENCE = "vsconf";
+export const RECORD_TYPE_OVERALL = 'overall';
+export const RECORD_TYPE_HOME = 'homerecord';
+export const RECORD_TYPE_AWAY = 'awayrecord';
+export const RECORD_TYPE_CONFERENCE = 'vsconf';
 
 // ESPN Core API Stat Names (used for extracting stats from flat array)
-export const STAT_AVG_POINTS_FOR = "avgPointsFor";
-export const STAT_AVG_POINTS_AGAINST = "avgPointsAgainst";
-export const STAT_WINS = "wins";
-export const STAT_LOSSES = "losses";
-export const STAT_DIFFERENTIAL = "differential";
+export const STAT_AVG_POINTS_FOR = 'avgPointsFor';
+export const STAT_AVG_POINTS_AGAINST = 'avgPointsAgainst';
+export const STAT_WINS = 'wins';
+export const STAT_LOSSES = 'losses';
+export const STAT_DIFFERENTIAL = 'differential';
 
 /**
  * All supported teams across all conferences

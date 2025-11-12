@@ -2,7 +2,7 @@
  * Shared API request and response types
  */
 
-import { GameLean } from "./types";
+import { GameLean } from './types';
 
 // ============================================================================
 // Error Types
@@ -78,7 +78,7 @@ export interface GamesQueryParams {
   conferenceId?: string;
   season?: string;
   week?: string;
-  state?: "pre" | "in" | "post";
+  state?: 'pre' | 'in' | 'post';
   from?: string;
   to?: string;
   sport?: string;
@@ -130,7 +130,7 @@ export interface CronRankingsResponse {
 export interface CronHealthCheckResponse {
   endpoint: string;
   lastRun: string | null;
-  status: "healthy" | "warning" | "error";
+  status: 'healthy' | 'warning' | 'error';
   executionTime?: number;
   details?: string;
 }

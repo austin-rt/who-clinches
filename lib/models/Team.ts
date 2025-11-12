@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ITeam extends Document {
   _id: string; // ESPN team ID used as primary key
@@ -100,5 +100,4 @@ const TeamSchema = new Schema<ITeam>(
   }
 );
 
-export default mongoose.models.Team ||
-  mongoose.model<ITeam>("Team", TeamSchema);
+export default mongoose.models.Team || mongoose.model<ITeam>('Team', TeamSchema);

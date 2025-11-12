@@ -420,7 +420,7 @@ Tests that errors are logged to database for monitoring.
 curl "http://localhost:3000/api/errors?limit=10" | jq .
 ```
 
-*Note: This requires an `/api/errors` endpoint to be implemented for viewing error logs*
+_Note: This requires an `/api/errors` endpoint to be implemented for viewing error logs_
 
 ### Expected Results
 
@@ -452,10 +452,12 @@ Tests that crons don't overwhelm ESPN API or database.
 ### Expected Performance
 
 **Hobby Plan:**
+
 - `update-live-games`: < 10s execution, ~2-5 ESPN calls
 - `update-rankings`: < 10s execution, 16 ESPN calls (one per team)
 
 **Pro Plan:**
+
 - Same per-execution times
 - Higher total daily API calls (more frequent executions)
 
@@ -508,6 +510,7 @@ done
 **Cause**: CRON_SECRET not set in Vercel environment variables
 
 **Fix**:
+
 1. Go to Vercel → Settings → Environment Variables
 2. Add `CRON_SECRET` with same value as `.env.local`
 3. Redeploy
@@ -517,6 +520,7 @@ done
 **Cause**: Vercel plan limits or schedule syntax error
 
 **Fix**:
+
 1. Verify Hobby plan: max 2 crons, min 1 day frequency
 2. Check `vercel.json` syntax (no comments allowed)
 3. Verify crons show as "Active" in dashboard
@@ -526,6 +530,7 @@ done
 **Cause**: Inefficient cron logic or too frequent executions
 
 **Fix**:
+
 1. Review cron code for unnecessary API calls
 2. Implement caching where appropriate
 3. Adjust Pro plan schedule if needed
@@ -535,6 +540,7 @@ done
 **Cause**: Connection pool exhaustion
 
 **Fix**:
+
 1. Ensure `dbConnect()` is called once per request
 2. Connections auto-close after serverless function ends
 3. Check MongoDB Atlas connection limits
@@ -544,6 +550,7 @@ done
 ## Testing Checklist
 
 ### Local Testing
+
 - [ ] Test 1: Update live games cron
 - [ ] Test 2: Update rankings cron
 - [ ] Test 3: Auth - missing token
@@ -553,22 +560,26 @@ done
 - [ ] Test 14: Idempotency test
 
 ### Vercel Testing (Hobby Plan)
+
 - [ ] Test 9: Cron configuration in dashboard
 - [ ] Test 10: Execution logs show success
 - [ ] Manual trigger both crons from dashboard
 - [ ] Monitor for 1 week to ensure reliability
 
 ### Performance
+
 - [ ] Test 13: Rate limiting and performance
 - [ ] Execution times under limits
 - [ ] No ESPN 429 errors
 
 ### Error Handling
+
 - [ ] Test 7: Graceful ESPN API failure
 - [ ] Test 12: Error logging working
 - [ ] Errors don't crash crons
 
 ### Future (Pro Plan)
+
 - [ ] Test 11: Pro configuration ready
 - [ ] Migration plan documented
 - [ ] All 6 crons tested manually
@@ -583,4 +594,3 @@ done
 4. Monitor for 1 week
 5. Plan Pro upgrade when needed
 6. Implement `/api/update-spreads` and `/api/update-team-averages` for Pro
-

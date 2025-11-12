@@ -75,6 +75,7 @@ types/                       # Frontend types (new)
 ```
 
 **Key Decisions:**
+
 - Components in `app/components/` (Next.js App Router convention)
 - Frontend types in `types/frontend.ts` (separate from backend `lib/types.ts`)
 - Hooks in `app/hooks/` (co-located with components)
@@ -120,8 +121,8 @@ RootLayout
  * Backend types are in lib/types.ts and lib/api-types.ts
  */
 
-import { GameLean, TeamLean } from "@/lib/types";
-import { GamesResponse, SimulateResponse, StandingEntry, TieLog } from "@/lib/api-types";
+import { GameLean, TeamLean } from '@/lib/types';
+import { GamesResponse, SimulateResponse, StandingEntry, TieLog } from '@/lib/api-types';
 
 // Re-export API types for convenience
 export type { GamesResponse, SimulateResponse, StandingEntry, TieLog };
@@ -131,9 +132,9 @@ export interface FrontendGame extends Omit<GameLean, 'home' | 'away'> {
   home: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;  // Guaranteed by API response teams metadata
-    logo: string;         // Guaranteed by API response teams metadata
-    color: string;         // Guaranteed by API response teams metadata
+    displayName: string; // Guaranteed by API response teams metadata
+    logo: string; // Guaranteed by API response teams metadata
+    color: string; // Guaranteed by API response teams metadata
     score: number | null;
     rank: number | null;
   };
@@ -180,6 +181,7 @@ export interface ThemeConfig {
 ```
 
 **Key Points:**
+
 - Frontend types extend/transform backend types
 - `FrontendGame` enriches `GameLean` with guaranteed team metadata from API
 - Re-export API types for convenience
@@ -194,12 +196,14 @@ export interface ThemeConfig {
 **Decision:** The app loads with a custom SEC theme (not team-specific) on first visit.
 
 **SEC Theme Colors (Official Brand Colors):**
+
 - Primary: SEC Blue (`#004B8D`) - Pantone PMS 2945 XGC
 - Secondary: SEC Gold (`#FFD046`) - Pantone PMS 7404 U
 - Accent: White (`#FFFFFF`)
 - Neutral: Black (`#000000`)
 
 **Theme Selection Flow:**
+
 1. On first visit: Load SEC default theme
 2. User selects favorite team: Switch to team theme
 3. Theme persists in localStorage: `"sec-tiebreaker-theme"`
@@ -207,10 +211,12 @@ export interface ThemeConfig {
 5. If localStorage corrupted: Fall back to SEC default theme
 
 **localStorage Keys:**
+
 - `"sec-tiebreaker-theme"`: Team abbreviation string (e.g., `"alabama"`, `"georgia"`) or `"sec"` for default
 - `"sec-tiebreaker-mode"`: `"light"` or `"dark"` for base color mode
 
 **Theme Independence:**
+
 - Team selection affects: `primary`, `secondary`, `accent` colors (buttons, highlights, etc.)
 - Mode selection affects: `base-100`, `base-200`, `base-300`, `base-content` (backgrounds, text)
 - These are independent - user can mix any team with any mode
@@ -220,22 +226,23 @@ export interface ThemeConfig {
 DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All DaisyUI components automatically use theme colors via CSS variables.
 
 **Theme Structure:**
+
 ```css
-[data-theme="sec"] {
-  --color-primary: #004B8D;        /* SEC Blue - Official Brand Color */
+[data-theme='sec'] {
+  --color-primary: #004b8d; /* SEC Blue - Official Brand Color */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFD046;     /* SEC Gold - Official Brand Color */
+  --color-secondary: #ffd046; /* SEC Gold - Official Brand Color */
   --color-secondary-content: #000000;
   --color-accent: #ffffff;
   --color-accent-content: #000000;
 }
 
-[data-theme="alabama"] {
-  --color-primary: #A00000;        /* Crimson */
+[data-theme='alabama'] {
+  --color-primary: #a00000; /* Crimson */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFFFFF;      /* White */
+  --color-secondary: #ffffff; /* White */
   --color-secondary-content: #000000;
-  --color-accent: #231F20;         /* Black */
+  --color-accent: #231f20; /* Black */
   --color-accent-content: #ffffff;
 }
 
@@ -247,6 +254,7 @@ DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All Da
 **Source of Truth:** Team colors come from the database (ESPN API) via `/api/games` response.
 
 **Current State:**
+
 - ✅ Database stores `color` and `alternateColor` for each team (from ESPN) - **VERIFIED**
 - ✅ All 16 teams have both color fields populated - **VERIFIED**
 - ❌ `/api/games` currently does NOT include colors in `TeamMetadata` response
@@ -271,24 +279,30 @@ DaisyUI uses `data-theme` attribute on `<html>` element to switch themes. All Da
    - Falls back to SEC default theme if team data missing
 
 **Example Override File:**
+
 ```typescript
 // app/config/theme-overrides.ts
-export const themeOverrides: Record<string, {
-  primary: string;
-  secondary: string;
-  accent: string;
-}> = {
+export const themeOverrides: Record<
+  string,
+  {
+    primary: string;
+    secondary: string;
+    accent: string;
+  }
+> = {
   // Only override teams where ESPN colors don't match official brand
-  "333": { // Alabama
-    primary: "#A00000",  // Crimson (ESPN might have different shade)
-    secondary: "#FFFFFF",
-    accent: "#231F20",
+  '333': {
+    // Alabama
+    primary: '#A00000', // Crimson (ESPN might have different shade)
+    secondary: '#FFFFFF',
+    accent: '#231F20',
   },
   // Add more as needed
 };
 ```
 
 **Benefits:**
+
 - Single source of truth (database/ESPN)
 - Easy to update when ESPN changes team colors
 - Minimal hardcoding (only overrides)
@@ -302,12 +316,14 @@ export const themeOverrides: Record<string, {
 
 **Finding:** DaisyUI requires a `tailwind.config.js` file and is not fully compatible with Tailwind CSS 4's CSS-based configuration (`@theme inline` syntax). DaisyUI is designed to work with Tailwind CSS 3.x's JavaScript configuration approach.
 
-**Decision:** 
+**Decision:**
+
 - **Downgrade to Tailwind CSS 3.x** for DaisyUI compatibility
 - Use traditional `tailwind.config.js` file (not CSS-based config)
 - DaisyUI plugin integration via `tailwind.config.js`
 
-**Rationale:** 
+**Rationale:**
+
 - DaisyUI provides significant value with pre-built components
 - Tailwind 3.x is stable and well-supported
 - Can upgrade to Tailwind 4 later if/when DaisyUI adds support
@@ -315,22 +331,20 @@ export const themeOverrides: Record<string, {
 ### Configuration Files
 
 **tailwind.config.js** (required for DaisyUI):
+
 ```javascript
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
+  content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     extend: {},
   },
-  plugins: [require("daisyui")],
+  plugins: [require('daisyui')],
   daisyui: {
     themes: [
-      "light",  // DaisyUI default (light mode base)
-      "dark",   // DaisyUI default (dark mode base)
-      "sec",    // Custom SEC theme (Phase 0)
+      'light', // DaisyUI default (light mode base)
+      'dark', // DaisyUI default (dark mode base)
+      'sec', // Custom SEC theme (Phase 0)
       // Team themes will be added dynamically in Phase 5
     ],
   },
@@ -338,12 +352,14 @@ module.exports = {
 ```
 
 **Theme Architecture:**
+
 - **Light/Dark Mode:** Controls `base-100`, `base-200`, `base-300`, `base-content` (backgrounds and text)
 - **Team Selection:** Controls `primary`, `secondary`, `accent` (team colors for buttons, highlights, etc.)
 - **Independent:** User can select team colors + light/dark mode independently
 - **Base colors:** Mild, readable colors that don't use team colors
 
 **postcss.config.mjs** (update for Tailwind 3):
+
 ```javascript
 const config = {
   plugins: {
@@ -356,6 +372,7 @@ export default config;
 ```
 
 **app/globals.css** (update):
+
 ```css
 @tailwind base;
 @tailwind components;
@@ -364,29 +381,29 @@ export default config;
 /* Light/Dark Mode Base Colors (independent of team selection) */
 /* These control backgrounds and text - mild, readable colors */
 /* Applied via data-mode attribute, works with any team theme */
-html[data-mode="light"],
+html[data-mode='light'],
 html:not([data-mode]) {
   /* Light mode base colors (default) */
-  --color-base-100: #ffffff;        /* Main background */
-  --color-base-200: #f5f5f5;        /* Secondary background */
-  --color-base-300: #e5e5e5;        /* Tertiary background */
-  --color-base-content: #1f2937;    /* Main text color (dark gray) */
+  --color-base-100: #ffffff; /* Main background */
+  --color-base-200: #f5f5f5; /* Secondary background */
+  --color-base-300: #e5e5e5; /* Tertiary background */
+  --color-base-content: #1f2937; /* Main text color (dark gray) */
 }
 
-html[data-mode="dark"] {
+html[data-mode='dark'] {
   /* Dark mode base colors */
-  --color-base-100: #1a1a1a;        /* Main background (dark) */
-  --color-base-200: #2d2d2d;        /* Secondary background */
-  --color-base-300: #404040;        /* Tertiary background */
-  --color-base-content: #f5f5f5;     /* Main text color (light) */
+  --color-base-100: #1a1a1a; /* Main background (dark) */
+  --color-base-200: #2d2d2d; /* Secondary background */
+  --color-base-300: #404040; /* Tertiary background */
+  --color-base-content: #f5f5f5; /* Main text color (light) */
 }
 
 /* SEC Default Theme - Team Colors Only */
 /* Background/text controlled by light/dark mode above */
-[data-theme="sec"] {
-  --color-primary: #004B8D;          /* SEC Blue - Pantone PMS 2945 XGC */
+[data-theme='sec'] {
+  --color-primary: #004b8d; /* SEC Blue - Pantone PMS 2945 XGC */
   --color-primary-content: #ffffff;
-  --color-secondary: #FFD046;       /* SEC Gold - Pantone PMS 7404 U */
+  --color-secondary: #ffd046; /* SEC Gold - Pantone PMS 7404 U */
   --color-secondary-content: #000000;
   --color-accent: #ffffff;
   --color-accent-content: #000000;
@@ -402,6 +419,7 @@ html[data-mode="dark"] {
 ## Phased Implementation
 
 See individual phase files:
+
 - [Phase 0: Config & Setup](./phase0.md)
 - [Phase 1: Basic Layout & Navigation](./phase1.md)
 - [Phase 2: Games List & Filtering](./phase2.md)
@@ -430,6 +448,7 @@ See individual phase files:
 **See:** [phase0.md](./phase0.md)
 
 **Key Milestones:**
+
 - [ ] Tailwind 3.x + DaisyUI installed
 - [ ] SEC theme configured in CSS
 - [ ] Frontend types created
@@ -442,6 +461,7 @@ See individual phase files:
 **See:** [phase1.md](./phase1.md)
 
 **Key Milestones:**
+
 - [ ] Header component created
 - [ ] Footer component created
 - [ ] Navigation placeholder created
@@ -453,6 +473,7 @@ See individual phase files:
 **See:** [phase2.md](./phase2.md)
 
 **Key Milestones:**
+
 - [ ] `useGames` hook implemented
 - [ ] GamesList component displays games
 - [ ] WeekAccordion with independent collapse
@@ -465,6 +486,7 @@ See individual phase files:
 **See:** [phase3.md](./phase3.md)
 
 **Key Milestones:**
+
 - [ ] `useGameOverrides` hook implemented
 - [ ] OverrideButtons component created
 - [ ] Overrides persist to localStorage
@@ -477,6 +499,7 @@ See individual phase files:
 **See:** [phase4.md](./phase4.md)
 
 **Key Milestones:**
+
 - [ ] `useSimulate` hook implemented
 - [ ] SimulateButton component created
 - [ ] StandingsTable displays results
@@ -489,6 +512,7 @@ See individual phase files:
 **See:** [phase5.md](./phase5.md)
 
 **Key Milestones:**
+
 - [ ] `/api/teams` endpoint created
 - [ ] Dynamic CSS injection implemented
 - [ ] TeamThemeSelector component created
@@ -542,6 +566,7 @@ npm run build        # Build for production (includes type check)
 7. **Repeat Steps 3-6** for each phase
 
 **After Each Implementation:**
+
 - Write clean, typed code (no shortcuts)
 - Create one commit per phase
 - Commit message format: `feat: Phase X - [feature name]`
@@ -566,19 +591,21 @@ npm run build        # Build for production (includes type check)
 ## Scalability Considerations
 
 **Future Expansion:**
+
 - Structure supports multiple sports/conferences
 - Component organization allows for route-specific components
 - Type system can be extended for new sports
 - Theme system can add conference-specific themes
 
 **Current Scope:**
+
 - Single page application (SEC Football only)
 - Standings on same page as games
 - No routing needed initially
 
 **Future Enhancements:**
+
 - Add routing for different sports/conferences
 - Separate pages for games vs standings
 - WebSocket/SSE for real-time updates
 - Multi-conference support
-

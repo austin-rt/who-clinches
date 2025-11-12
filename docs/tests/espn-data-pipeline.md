@@ -9,12 +9,14 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 ## Environments
 
 ### Local (develop branch)
+
 - **URL**: http://localhost:3000
 - **Database**: `dev`
 - **Branch**: `develop`
 - **Purpose**: Active development and testing
 
 ### Preview/Staging (develop branch on Vercel)
+
 - **URL**: https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/
 - **Database**: `preview`
 - **Vercel Env**: `VERCEL_ENV=preview`
@@ -22,6 +24,7 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 - **Purpose**: Staging environment for testing before production
 
 ### Production (main branch)
+
 - **URL**: https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/
 - **Database**: `production`
 - **Vercel Env**: `VERCEL_ENV=production`
@@ -33,6 +36,7 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 ## Prerequisites
 
 All credentials stored in `.env.local`:
+
 - `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token for protected deployments
 - `MONGODB_PASSWORD_READONLY` - Read-only password for database verification
 - Read-only user: `readonly`
@@ -57,12 +61,14 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ```
 
 **Decision:**
+
 - If teams exist and data looks current: **SKIP seeding**, report as "Seeding not needed - {count} teams already present"
 - If teams missing or data looks stale: **PROCEED with seeding**, report as "Seeding needed - database empty/stale"
 
 #### Command Template
 
 Replace `{BASE_URL}` and `{DATABASE}` based on environment:
+
 - Local: `BASE_URL=http://localhost:3000`, `DATABASE=dev`
 - Preview/Staging: `BASE_URL=https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`, `DATABASE=preview`
 - Production: `BASE_URL=https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`, `DATABASE=production`
@@ -81,6 +87,7 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL
 See `app/api/pull-teams/route.ts` for `PullTeamsResponse` interface.
 
 Response should include:
+
 - `upserted`: 16 (all SEC teams)
 - `lastUpdated`: timestamp
 
@@ -133,6 +140,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ```
 
 **Decision:**
+
 - If games exist for target season/week: **SKIP seeding**, report as "Seeding not needed - {count} games already present for season/week"
 - If games missing or incomplete: **PROCEED with seeding**, report as "Seeding needed - games missing for season/week"
 - If testing specific week and it exists: **SKIP**, report as "Week {X} already seeded with {count} games"
@@ -151,6 +159,7 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL
 ```
 
 This will:
+
 - Query ESPN calendar API to determine regular season weeks dynamically
 - Pull all regular season weeks (e.g., 1-14 for 2025, excluding SEC Championship)
 - Upsert games (existing games updated, new games inserted)
@@ -177,6 +186,7 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL
 See `app/api/pull-games/route.ts` for response interface.
 
 Response should include:
+
 - `upserted`: number of games inserted/updated
 - `weeksPulled`: array of week numbers that were pulled
 - `lastUpdated`: timestamp
@@ -228,6 +238,7 @@ curl "{BASE_URL}/api/games?season=2025&conferenceId=8&x-vercel-protection-bypass
 See `app/api/games/route.ts` for response interface.
 
 Response should include:
+
 - `events`: array of `GameLean` objects (see `lib/types.ts`)
 - `teams`: array of team metadata objects
 - `lastUpdated`: timestamp
@@ -272,6 +283,7 @@ byWeek.forEach(w => console.log('Week', w._id + ':', w.count, 'games'));
 ```
 
 Expected output for complete dataset (weeks 1-14 for 2025 season):
+
 - Total games: ~128
 - Week 1: 16 games
 - Week 2-14: varying counts (typically 8-10 games per week)
@@ -290,6 +302,7 @@ Should return `0` (no teams with null conference records).
 ### Verify Database Connection Logs
 
 Check Vercel deployment logs for:
+
 ```
 [MongoDB] Connecting to database: {DATABASE}
 ```
@@ -301,6 +314,7 @@ Should show `preview` or `production` based on environment.
 ## Testing Checklist
 
 ### Preview (develop branch)
+
 - [ ] Deployment accessible with bypass token
 - [ ] **Pre-check**: Teams count in `preview` database
   - [ ] If teams exist: Seeding skipped (report count)
@@ -317,6 +331,7 @@ Should show `preview` or `production` based on environment.
 - [ ] Logs show: `[MongoDB] Connecting to database: preview`
 
 ### Production (main branch)
+
 - [ ] Preview tests completed successfully first
 - [ ] Deployment accessible with bypass token
 - [ ] **Pre-check**: Teams count in `production` database
@@ -339,15 +354,18 @@ Should show `preview` or `production` based on environment.
 ## Troubleshooting
 
 ### Wrong Database Connected
+
 Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`.
 Verify `VERCEL_ENV` is set correctly in Vercel.
 
 ### Bypass Token Not Working
+
 Verify token in `.env.local` matches Vercel deployment setting.
 
 ### ESPN API Rate Limiting
+
 Wait 1-2 minutes between requests. Current delay: 500ms between calls.
 
 ### Null Conference Records
-Check ESPN Core API accessibility and logs for errors.
 
+Check ESPN Core API accessibility and logs for errors.

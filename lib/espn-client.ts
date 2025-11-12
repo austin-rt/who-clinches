@@ -4,7 +4,7 @@
  */
 
 export interface ESPNCompetitor {
-  homeAway: "home" | "away";
+  homeAway: 'home' | 'away';
   team: {
     id: string;
     abbreviation: string;
@@ -31,7 +31,7 @@ export interface ESPNCompetition {
   competitors: ESPNCompetitor[];
   status: {
     type: {
-      state: "pre" | "in" | "post";
+      state: 'pre' | 'in' | 'post';
       completed: boolean;
     };
     clock?: number;
@@ -151,8 +151,8 @@ export class ESPNClient {
   private baseUrl: string;
 
   constructor(
-    private sport: string = "football",
-    private league: string = "college-football"
+    private sport: string = 'football',
+    private league: string = 'college-football'
   ) {
     this.baseUrl = `http://site.api.espn.com/apis/site/v2/sports/${sport}/${league}`;
   }
@@ -180,24 +180,21 @@ export class ESPNClient {
   ): Promise<ESPNScoreboardResponse> {
     const searchParams = new URLSearchParams();
 
-    if (params.groups) searchParams.set("groups", params.groups.toString());
-    if (params.season) searchParams.set("year", params.season.toString()); // Note: 'year' not 'season'
-    if (params.week !== undefined)
-      searchParams.set("week", params.week.toString());
+    if (params.groups) searchParams.set('groups', params.groups.toString());
+    if (params.season) searchParams.set('year', params.season.toString()); // Note: 'year' not 'season'
+    if (params.week !== undefined) searchParams.set('week', params.week.toString());
 
     const url = `${this.baseUrl}/scoreboard?${searchParams.toString()}`;
 
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "SEC-Tiebreaker/1.0",
+          'User-Agent': 'SEC-Tiebreaker/1.0',
         },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `ESPN API error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -216,14 +213,12 @@ export class ESPNClient {
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "SEC-Tiebreaker/1.0",
+          'User-Agent': 'SEC-Tiebreaker/1.0',
         },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `ESPN API error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -242,14 +237,12 @@ export class ESPNClient {
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "SEC-Tiebreaker/1.0",
+          'User-Agent': 'SEC-Tiebreaker/1.0',
         },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `ESPN API error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -273,14 +266,12 @@ export class ESPNClient {
     try {
       const response = await fetch(url, {
         headers: {
-          "User-Agent": "SEC-Tiebreaker/1.0",
+          'User-Agent': 'SEC-Tiebreaker/1.0',
         },
       });
 
       if (!response.ok) {
-        throw new Error(
-          `ESPN Core API error: ${response.status} ${response.statusText}`
-        );
+        throw new Error(`ESPN Core API error: ${response.status} ${response.statusText}`);
       }
 
       const data = await response.json();
@@ -292,7 +283,7 @@ export class ESPNClient {
 }
 
 // Default client for SEC college football
-export const espnClient = new ESPNClient("football", "college-football");
+export const espnClient = new ESPNClient('football', 'college-football');
 
 // Factory function for creating clients for different sports/leagues
 export const createESPNClient = (sport: string, league: string) => {

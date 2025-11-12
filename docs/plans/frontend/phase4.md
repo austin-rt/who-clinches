@@ -5,6 +5,7 @@
 **Dependencies:** Phase 3 (overrides working)
 
 **Files to Create/Modify:**
+
 - `app/components/SimulateButton.tsx` (new)
 - `app/components/StandingsTable.tsx` (new)
 - `app/components/StandingRow.tsx` (new)
@@ -13,6 +14,7 @@
 - `app/page.tsx` (update to show standings after simulate)
 
 **API Integration:**
+
 ```typescript
 // app/hooks/useSimulate.ts
 export function useSimulate() {
@@ -22,17 +24,13 @@ export function useSimulate() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const simulate = async (
-    season: number,
-    conferenceId: string,
-    overrides: UserOverrides
-  ) => {
+  const simulate = async (season: number, conferenceId: string, overrides: UserOverrides) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/simulate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      const response = await fetch('/api/simulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ season, conferenceId, overrides }),
       });
       const data: SimulateResponse = await response.json();
@@ -40,7 +38,7 @@ export function useSimulate() {
       setTieLogs(data.tieLogs);
       setChampionship(data.championship);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Simulation failed");
+      setError(err instanceof Error ? err.message : 'Simulation failed');
     } finally {
       setLoading(false);
     }
@@ -51,6 +49,7 @@ export function useSimulate() {
 ```
 
 **Component Definitions:**
+
 ```typescript
 // app/components/SimulateButton.tsx
 // Uses DaisyUI btn component
@@ -74,6 +73,7 @@ export function useSimulate() {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create `useSimulate` hook to POST to `/api/simulate`
 - [ ] Create SimulateButton component with loading state
 - [ ] Create StandingsTable using DaisyUI table component
@@ -86,6 +86,7 @@ export function useSimulate() {
 - [ ] Test: standings update when overrides change
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Make some game overrides
 3. Click "Simulate Standings" button
@@ -98,6 +99,7 @@ export function useSimulate() {
 10. Test on mobile - table should be readable
 
 **Known Gotchas:**
+
 - `/api/simulate` response uses `teamId` in standings (correct)
 - Championship field is array of 2 team IDs
 - TieLogs may be empty - handle gracefully
@@ -105,6 +107,7 @@ export function useSimulate() {
 - Standings persist on page (same page as games)
 
 **Error Handling & Notifications:**
+
 - Backend validation errors from `/api/simulate` should be displayed to user
 - Invalid override errors: "Scores cannot be equal", "Scores must be whole numbers", "Scores cannot be negative"
 - Use React Toast library for error/success notifications
@@ -113,4 +116,3 @@ export function useSimulate() {
   - Use for: API error toasts, validation error toasts, success confirmations
   - Can also be used retroactively for Phase 3 "Reset to Live" feedback
   - Error messages displayed inline below score inputs (Phase 3) AND in toast (Phase 4)
-

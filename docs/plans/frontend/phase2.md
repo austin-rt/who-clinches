@@ -5,6 +5,7 @@
 **Dependencies:** Phase 1 (layout shell exists)
 
 **Files to Create/Modify:**
+
 - `app/components/GamesList.tsx` (new)
 - `app/components/GameCard.tsx` (new)
 - `app/components/WeekAccordion.tsx` (new)
@@ -13,6 +14,7 @@
 - `app/page.tsx` (update to use GamesList)
 
 **API Integration:**
+
 ```typescript
 // app/hooks/useGames.ts
 export function useGames(season: number, conferenceId: number) {
@@ -24,33 +26,31 @@ export function useGames(season: number, conferenceId: number) {
   useEffect(() => {
     async function fetchGames() {
       try {
-        const response = await fetch(
-          `/api/games?season=${season}&conferenceId=${conferenceId}`
-        );
+        const response = await fetch(`/api/games?season=${season}&conferenceId=${conferenceId}`);
         const data: GamesResponse = await response.json();
-        
+
         // Enrich games with team metadata
-        const teamMap = new Map(data.teams.map(t => [t.id, t]));
-        const enrichedGames: FrontendGame[] = data.events.map(game => ({
+        const teamMap = new Map(data.teams.map((t) => [t.id, t]));
+        const enrichedGames: FrontendGame[] = data.events.map((game) => ({
           ...game,
           home: {
             ...game.home,
             displayName: teamMap.get(game.home.teamEspnId)?.displayName || game.home.abbrev,
-            logo: teamMap.get(game.home.teamEspnId)?.logo || "",
-            color: teamMap.get(game.home.teamEspnId)?.color || "",
+            logo: teamMap.get(game.home.teamEspnId)?.logo || '',
+            color: teamMap.get(game.home.teamEspnId)?.color || '',
           },
           away: {
             ...game.away,
             displayName: teamMap.get(game.away.teamEspnId)?.displayName || game.away.abbrev,
-            logo: teamMap.get(game.away.teamEspnId)?.logo || "",
-            color: teamMap.get(game.away.teamEspnId)?.color || "",
+            logo: teamMap.get(game.away.teamEspnId)?.logo || '',
+            color: teamMap.get(game.away.teamEspnId)?.color || '',
           },
         }));
-        
+
         setGames(enrichedGames);
         setTeams(data.teams);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to fetch games");
+        setError(err instanceof Error ? err.message : 'Failed to fetch games');
       } finally {
         setLoading(false);
       }
@@ -63,6 +63,7 @@ export function useGames(season: number, conferenceId: number) {
 ```
 
 **Component Definitions:**
+
 ```typescript
 // app/components/GamesList.tsx
 // Fetches games from /api/games
@@ -87,6 +88,7 @@ export function useGames(season: number, conferenceId: number) {
 ```
 
 **Implementation Checklist:**
+
 - [ ] Create `useGames` hook to fetch from `/api/games`
 - [ ] Handle API response structure: `{ events, teams, lastUpdated }`
 - [ ] Enrich games with team metadata from `teams` array
@@ -100,6 +102,7 @@ export function useGames(season: number, conferenceId: number) {
 - [ ] Test: multiple weeks can be open simultaneously
 
 **Manual Testing:**
+
 1. Run `npm run dev`
 2. Load page - should see list of weeks
 3. Click week - accordion expands
@@ -110,9 +113,9 @@ export function useGames(season: number, conferenceId: number) {
 8. Test on mobile - responsive layout works
 
 **Known Gotchas:**
+
 - API returns `events` not `games` - use `data.events`
 - Team metadata must be merged from `teams` array
 - Use `teamEspnId` not `teamId` in game data
 - Handle optional fields gracefully
 - DaisyUI collapse uses checkbox for state management
-

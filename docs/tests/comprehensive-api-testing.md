@@ -17,11 +17,13 @@ Complete testing procedures for all SEC Tiebreaker API endpoints with valid and 
 ## Prerequisites
 
 **Credentials from `.env.local`:**
+
 - `VERCEL_AUTOMATION_BYPASS_SECRET` - For protected deployments (Vercel preview/production)
 - `CRON_SECRET` - For cron job endpoints
 - `MONGODB_PASSWORD_READONLY` - For database verification queries
 
 **Required for testing:**
+
 - Environment variables set: `BASE_URL`, `DATABASE`
 - Local server running (for local testing)
 - Database access for verification queries
@@ -46,6 +48,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ```
 
 **Decision:**
+
 - If teams exist and data looks current: **SKIP seeding**, report as "Seeding not needed - {count} teams already present"
 - If teams missing or data looks stale: **PROCEED with seeding**, report as "Seeding needed - database empty/stale"
 
@@ -65,7 +68,8 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=${BYPASS_TOKE
   -d '{"sport": "football", "league": "college-football", "teams": ["UGA", "ALA"]}'
 ```
 
-**Expected:** 
+**Expected:**
+
 - Test 1: Status 200, `upserted`: 16, `lastUpdated` timestamp
 - Test 2: Status 200, `upserted`: 2, `lastUpdated` timestamp
 
@@ -123,6 +127,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ```
 
 **Decision:**
+
 - If games exist for target season/week: **SKIP seeding**, report as "Seeding not needed - {count} games already present for season/week"
 - If games missing or incomplete: **PROCEED with seeding**, report as "Seeding needed - games missing for season/week"
 - If testing specific week and it exists: **SKIP**, report as "Week {X} already seeded with {count} games"
@@ -233,6 +238,7 @@ curl "{BASE_URL}/api/games?season=2025&state=invalid&x-vercel-protection-bypass=
 **Expected:** For invalid formats, API may return 200 with empty results or ignore invalid parameters (verify actual behavior)
 
 **Checks:**
+
 - `events` array contains games matching query filters
 - `teams` array contains metadata for all teams in returned games
 - Games include `displayName` field
@@ -302,6 +308,7 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 **Expected:** Status 400, response includes error message and error code
 
 **Checks:**
+
 - Standings array contains all 16 SEC teams
 - Each team has: rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition
 - Rankings are 1-16 with no gaps
@@ -313,6 +320,7 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 **Scenario 1: 2025 Season with Real + Predicted Scores (No Overrides)**
 
 Payload:
+
 ```json
 {
   "season": 2025,
@@ -322,6 +330,7 @@ Payload:
 ```
 
 Expected Result (based on 2025 data as of testing):
+
 - All 16 teams ranked
 - Teams ordered by conference record (wins/losses)
 - Teams with same record broken by tiebreaker rules A-E
@@ -329,6 +338,7 @@ Expected Result (based on 2025 data as of testing):
 - Bottom teams should have 0-8 or 1-7 records
 
 **Verification Steps:**
+
 1. Check that `standings.length === 16`
 2. Check that ranks are 1-16 with no duplicates or gaps
 3. Check that higher-ranked teams have better or equal win percentages
@@ -350,6 +360,7 @@ curl -X GET "{BASE_URL}/api/cron/update-live-games" \
 ```
 
 **Expected:** Status 200, response includes:
+
 - `updated`: number of games updated
 - `gamesChecked`: number of games examined
 - `activeGames`: number of games currently in progress
@@ -386,6 +397,7 @@ curl -X GET "{BASE_URL}/api/cron/update-rankings" \
 ```
 
 **Expected:** Status 200, response includes:
+
 - `updated`: number of teams updated (should be 16 for SEC)
 - `teamsChecked`: number of teams examined
 - `espnCalls`: number of ESPN API calls made
@@ -485,6 +497,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ### Verify Database Connection (Vercel deployments)
 
 Check Vercel deployment logs for:
+
 ```
 [MongoDB] Connecting to database: {DATABASE}
 ```
@@ -527,17 +540,20 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ## Troubleshooting
 
 ### Wrong Database Connected
+
 Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`.
 Verify `VERCEL_ENV` is set correctly in Vercel.
 
 ### Bypass Token Not Working
+
 Verify token in `.env.local` matches Vercel deployment setting.
 Token only required for Vercel deployments, not local.
 
 ### ESPN API Rate Limiting
+
 Wait 1-2 minutes between requests. Current delay: 500ms between calls.
 
 ### Null Conference Records
+
 Check ESPN Core API accessibility and logs for errors.
 May indicate ESPN API issues or incorrect record type constants.
-

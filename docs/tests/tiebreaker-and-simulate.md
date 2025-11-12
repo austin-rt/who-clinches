@@ -7,11 +7,13 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 ## Prerequisites
 
 ### Database Setup
+
 1. Fresh database with updated Game model (includes `displayName`, team fields: `logo`, `color`, `displayName`, `predictedScore`)
 2. All SEC teams pulled via `/api/pull-teams`
 3. Full 2025 regular season games (weeks 1-14) pulled via `/api/pull-games`
 
 ### Data Requirements
+
 - 16 SEC teams in database
 - ~128 conference games (2025 season, weeks 1-14)
 - Games must include:
@@ -90,7 +92,7 @@ curl -X POST "http://localhost:3000/api/simulate" \
   }' | jq .
 ```
 
-*Replace `401752686` with an actual game ESPN ID from your database*
+_Replace `401752686` with an actual game ESPN ID from your database_
 
 ### Expected Results
 
@@ -394,6 +396,7 @@ These will be tested after cron implementation:
 **Cause**: Games in database don't have displayName, logo, color fields
 
 **Fix**:
+
 1. Restart dev server (model changes require restart)
 2. Drop database
 3. Re-pull games: `POST /api/pull-games` with no week parameter
@@ -404,6 +407,7 @@ These will be tested after cron implementation:
 **Cause**: Wrong database connected or no games in database
 
 **Fix**:
+
 1. Check `.env.local` for correct MONGODB_URI and database name
 2. Verify games exist: `GET /api/games?season=2025&conferenceId=8`
 3. Re-pull if needed
@@ -413,6 +417,7 @@ These will be tested after cron implementation:
 **Cause**: No teams with conference game records
 
 **Fix**:
+
 1. Ensure conferenceGame flag is true for pulled games
 2. Verify SEC teams are in constants: check `lib/constants.ts`
 3. Re-pull games ensuring `conferenceId: 8` in request
@@ -422,6 +427,7 @@ These will be tested after cron implementation:
 **Cause**: Logic error or missing game data
 
 **Debug**:
+
 1. Check tie logs to see which rules were applied
 2. Verify game scores are correct in database
 3. Check that all head-to-head games exist
@@ -432,6 +438,7 @@ These will be tested after cron implementation:
 ## Testing Checklist
 
 ### Basic Functionality
+
 - [ ] Test 1: Basic simulate (no overrides)
 - [ ] Test 2: Simulate with valid overrides
 - [ ] Test 3: Invalid - tie score
@@ -440,17 +447,20 @@ These will be tested after cron implementation:
 - [ ] Test 6: Missing required fields
 
 ### Tiebreaker Rules
+
 - [ ] Test 7: Rule A (head-to-head)
 - [ ] Test 8: All rules present in tie logs
 - [ ] Test 9: Championship matchup correct
 
 ### Data Quality
+
 - [ ] Test 10: Team display data populated
 - [ ] All 16 SEC teams in standings
 - [ ] Records are accurate
 - [ ] Explanations are readable
 
 ### Performance
+
 - [ ] Response time < 2s for basic simulate
 - [ ] No errors after multiple requests
 - [ ] Server remains stable
@@ -460,8 +470,8 @@ These will be tested after cron implementation:
 ## Next Steps
 
 After tiebreaker tests pass:
+
 1. Test cron jobs (see `cron-jobs-testing.md`)
 2. Test predicted score prefill logic
 3. Test Rule E with simulated scores
 4. Deploy to staging and test with production data
-

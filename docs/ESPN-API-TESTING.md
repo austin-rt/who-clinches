@@ -13,13 +13,14 @@ Testing results from actual ESPN API calls to verify our type definitions and us
 
 ESPN uses **different conference IDs** in different APIs:
 
-| API | Conference ID | Usage |
-|-----|---------------|-------|
-| **Scoreboard API** | `"8"` | Query parameter: `?groups=8`<br/>Response: `competitor.team.conferenceId = "8"` |
-| **Team API** | `"80"` | Response: `team.groups.parent.id = "80"` |
-| **Core Records API** | Uses team ID only | No conference ID in request/response |
+| API                  | Conference ID     | Usage                                                                           |
+| -------------------- | ----------------- | ------------------------------------------------------------------------------- |
+| **Scoreboard API**   | `"8"`             | Query parameter: `?groups=8`<br/>Response: `competitor.team.conferenceId = "8"` |
+| **Team API**         | `"80"`            | Response: `team.groups.parent.id = "80"`                                        |
+| **Core Records API** | Uses team ID only | No conference ID in request/response                                            |
 
 **Impact on our code:**
+
 - ✅ We use `SEC_CONFERENCE_ID = 8` for scoreboard queries (correct)
 - ✅ We DON'T store conferenceId from teams (we use scoreboard's conferenceCompetition flag)
 - ⚠️ If we ever query by conferenceId, need to know which API expects which value
@@ -31,6 +32,7 @@ ESPN uses **different conference IDs** in different APIs:
 **Endpoint**: `http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard`
 
 ### Test Query
+
 ```bash
 curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/college-football/scoreboard?groups=8&week=12&year=2025"
 ```
@@ -38,49 +40,55 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
 ### Key Findings
 
 **Query Parameters:**
+
 - ✅ `groups=8` (SEC conference)
 - ✅ `week=12` (week number)
 - ✅ `year=2025` (NOT `season`)
 
 **Response Structure:**
+
 ```json
 {
-  "season": {"year": 2025},
-  "week": {"number": 12},
+  "season": { "year": 2025 },
+  "week": { "number": 12 },
   "events": [
     {
       "id": "401752772",
-      "competitions": [{
-        "conferenceCompetition": true,
-        "neutralSite": false,
-        "competitors": [
-          {
-            "homeAway": "home",
-            "team": {
-              "id": "245",
-              "abbreviation": "TA&M",
-              "displayName": "Texas A&M Aggies",
-              "logo": "https://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
-              "color": "500000",
-              "conferenceId": "8"  // ← Note: "8" not "80"
-            },
-            "score": "0",
-            "curatedRank": {"current": 3}
-          }
-        ],
-        "odds": [{
-          "spread": -18.5,
-          "overUnder": 47.5,
-          "awayTeamOdds": {"favorite": false},
-          "homeTeamOdds": {"favorite": true}
-        }],
-        "status": {
-          "type": {
-            "state": "pre",
-            "completed": false
+      "competitions": [
+        {
+          "conferenceCompetition": true,
+          "neutralSite": false,
+          "competitors": [
+            {
+              "homeAway": "home",
+              "team": {
+                "id": "245",
+                "abbreviation": "TA&M",
+                "displayName": "Texas A&M Aggies",
+                "logo": "https://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+                "color": "500000",
+                "conferenceId": "8" // ← Note: "8" not "80"
+              },
+              "score": "0",
+              "curatedRank": { "current": 3 }
+            }
+          ],
+          "odds": [
+            {
+              "spread": -18.5,
+              "overUnder": 47.5,
+              "awayTeamOdds": { "favorite": false },
+              "homeTeamOdds": { "favorite": true }
+            }
+          ],
+          "status": {
+            "type": {
+              "state": "pre",
+              "completed": false
+            }
           }
         }
-      }]
+      ]
     }
   ]
 }
@@ -95,6 +103,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
 **Endpoint**: `http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/{teamId}`
 
 ### Test Query
+
 ```bash
 curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/college-football/teams/61"
 ```
@@ -102,6 +111,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
 ### Key Findings
 
 **Response Structure:**
+
 ```json
 {
   "team": {
@@ -120,7 +130,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
     ],
     "groups": {
       "parent": {
-        "id": "80"  // ← Note: "80" not "8"
+        "id": "80" // ← Note: "80" not "8"
       }
     },
     "rank": 5,
@@ -151,6 +161,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
 **Endpoint**: `http://sports.core.api.espn.com/v2/sports/football/leagues/college-football/seasons/{year}/types/2/teams/{teamId}/records`
 
 ### Test Query
+
 ```bash
 curl -s "http://sports.core.api.espn.com/v2/sports/football/leagues/college-football/seasons/2024/types/2/teams/61/records"
 ```
@@ -158,6 +169,7 @@ curl -s "http://sports.core.api.espn.com/v2/sports/football/leagues/college-foot
 ### Key Findings
 
 **Response Structure:**
+
 ```json
 {
   "count": 10,
@@ -217,12 +229,14 @@ curl -s "http://sports.core.api.espn.com/v2/sports/football/leagues/college-foot
 ```
 
 **Note:** Code searches for records using both `name` and `type` fields:
+
 - Overall: `item.name === "overall"` (RECORD_TYPE_OVERALL constant)
 - Home: `item.type === "homerecord"` (RECORD_TYPE_HOME constant)
 - Away: `item.type === "awayrecord"` (RECORD_TYPE_AWAY constant)
 - Conference: `item.type === "vsconf"` (RECORD_TYPE_CONFERENCE constant)
 
 **Important Notes:**
+
 - Stats are a **flat array**, not nested objects
 - Different record types: `"overall"`, `"homerecord"`, `"awayrecord"`, `"vsconf"`
 - Find record by `name` or `type` field
@@ -238,22 +252,22 @@ Based on testing, here are the constants we should define:
 
 ```typescript
 // Conference IDs (ESPN is inconsistent!)
-export const SEC_CONFERENCE_ID = 8;           // For scoreboard queries (groups=8)
-export const SEC_CONFERENCE_ID_ALT = 80;      // For team API (groups.parent.id)
+export const SEC_CONFERENCE_ID = 8; // For scoreboard queries (groups=8)
+export const SEC_CONFERENCE_ID_ALT = 80; // For team API (groups.parent.id)
 
 // Record types from Core API
-export const RECORD_TYPE_OVERALL = "overall";
-export const RECORD_TYPE_HOME = "homerecord";
-export const RECORD_TYPE_AWAY = "awayrecord";
-export const RECORD_TYPE_CONFERENCE = "vsconf";
+export const RECORD_TYPE_OVERALL = 'overall';
+export const RECORD_TYPE_HOME = 'homerecord';
+export const RECORD_TYPE_AWAY = 'awayrecord';
+export const RECORD_TYPE_CONFERENCE = 'vsconf';
 
 // Stat names from Core API
-export const STAT_AVG_POINTS_FOR = "avgPointsFor";
-export const STAT_AVG_POINTS_AGAINST = "avgPointsAgainst";
-export const STAT_WINS = "wins";
-export const STAT_LOSSES = "losses";
-export const STAT_GAMES_PLAYED = "gamesPlayed";
-export const STAT_DIFFERENTIAL = "differential";
+export const STAT_AVG_POINTS_FOR = 'avgPointsFor';
+export const STAT_AVG_POINTS_AGAINST = 'avgPointsAgainst';
+export const STAT_WINS = 'wins';
+export const STAT_LOSSES = 'losses';
+export const STAT_GAMES_PLAYED = 'gamesPlayed';
+export const STAT_DIFFERENTIAL = 'differential';
 ```
 
 ---
@@ -263,7 +277,7 @@ export const STAT_DIFFERENTIAL = "differential";
 All our ESPN API types are **CORRECT** ✅:
 
 - `ESPNScoreboardResponse` - Matches actual scoreboard response
-- `ESPNEvent` - Matches event structure  
+- `ESPNEvent` - Matches event structure
 - `ESPNCompetition` - Matches competition structure
 - `ESPNCompetitor` - Matches competitor structure
 - `ESPNTeamResponse` - Matches team API response
@@ -278,6 +292,7 @@ All our ESPN API types are **CORRECT** ✅:
 ## Testing Recommendations
 
 ### Before Each Season
+
 1. Test scoreboard API with current week: `?groups=8&week=1&year=YYYY`
 2. Test team API with known team: `/teams/61` (Georgia)
 3. Test Core Records API: `/seasons/YYYY/types/2/teams/61/records`
@@ -285,6 +300,7 @@ All our ESPN API types are **CORRECT** ✅:
 5. Verify stat names in Core API response
 
 ### During Season
+
 1. Monitor for API structure changes
 2. Check if new stat fields are added
 3. Verify odds data availability
@@ -295,16 +311,19 @@ All our ESPN API types are **CORRECT** ✅:
 ## Known Issues & Workarounds
 
 ### Issue 1: Future Season Returns Null
+
 **Problem**: Core API returns null stats for 2025 season (future season)  
 **Workaround**: Fall back to Site API stats from team.record.items[0].stats  
 **Code**: Implemented in `update-rankings` and `update-team-averages` cron jobs
 
 ### Issue 2: Conference ID Mismatch
+
 **Problem**: Scoreboard uses "8", Team API uses "80"  
 **Workaround**: Use `conferenceCompetition` boolean flag from scoreboard instead of comparing IDs  
 **Code**: We check `conferenceGame` field (set from `conferenceCompetition`)
 
 ### Issue 3: No Conference Record in 2025
+
 **Problem**: Core API type "vsconf" may not exist for current/future seasons  
 **Workaround**: Allow null for conference record, don't fail if missing  
 **Code**: `conferenceRecord?.summary || null`
@@ -314,6 +333,7 @@ All our ESPN API types are **CORRECT** ✅:
 ## API Rate Limiting
 
 Based on testing:
+
 - **No explicit rate limits** observed
 - **Best practice**: 500ms delay between requests
 - **Implemented in**: `update-rankings` and `update-team-averages` (see `setTimeout` calls)
@@ -325,7 +345,7 @@ Based on testing:
 ESPN APIs return **gzip compressed** responses by default.
 
 **Requirements:**
+
 - Use `--compressed` flag with curl
 - Fetch API handles automatically in Node.js
 - Add `Accept-Encoding: gzip` header if needed
-

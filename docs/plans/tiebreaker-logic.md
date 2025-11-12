@@ -2,15 +2,18 @@
 
 > **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
 > This document was created during planning phase. For actual implementation details, refer to:
+>
 > - Actual code in `/app/api/simulate/route.ts`
 > - `/lib/tiebreaker-helpers.ts` for tiebreaker logic
 > - `/docs/api-reference.md` for current API documentation
 > - `/lib/constants.ts` for actual constant definitions (SEC_TEAMS is string[], not objects)
 
 ## Overview
+
 Implement the SEC conference tiebreaker engine following rules A-E from the official SEC policy. Create `/api/simulate` endpoint that accepts user score predictions for incomplete games and returns fully resolved conference standings with human-readable explanations.
 
 ## Prerequisites
+
 - Game model updated with `predictedScore` field and team display data
 - All SEC conference games seeded in database
 - Team collection populated with current season data
@@ -27,22 +30,23 @@ export interface IGame extends Document {
   home: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;     // ADD: "Alabama Crimson Tide"
-    logo: string;            // ADD: Full URL
-    color: string;           // ADD: Hex color
+    displayName: string; // ADD: "Alabama Crimson Tide"
+    logo: string; // ADD: Full URL
+    color: string; // ADD: Hex color
     score: number | null;
     rank: number | null;
   };
   away: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;     // ADD
-    logo: string;            // ADD
-    color: string;           // ADD
+    displayName: string; // ADD
+    logo: string; // ADD
+    color: string; // ADD
     score: number | null;
     rank: number | null;
   };
-  predictedScore?: {         // ADD: For frontend prefills
+  predictedScore?: {
+    // ADD: For frontend prefills
     home: number;
     away: number;
   };
@@ -66,22 +70,23 @@ export interface GameLean {
   home: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;   // ADD
-    logo: string;          // ADD
-    color: string;         // ADD
+    displayName: string; // ADD
+    logo: string; // ADD
+    color: string; // ADD
     score: number | null;
     rank: number | null;
   };
   away: {
     teamEspnId: string;
     abbrev: string;
-    displayName: string;   // ADD
-    logo: string;          // ADD
-    color: string;         // ADD
+    displayName: string; // ADD
+    logo: string; // ADD
+    color: string; // ADD
     score: number | null;
     rank: number | null;
   };
-  predictedScore?: {       // ADD
+  predictedScore?: {
+    // ADD
     home: number;
     away: number;
   };
@@ -101,7 +106,8 @@ export interface SimulateRequest {
   season: number;
   conferenceId: string;
   overrides: {
-    [gameId: string]: {      // Object format: { "401628349": { home: 35, away: 24 } }
+    [gameId: string]: {
+      // Object format: { "401628349": { home: 35, away: 24 } }
       homeScore: number;
       awayScore: number;
     };
@@ -111,7 +117,7 @@ export interface SimulateRequest {
 // POST /api/simulate - Response
 export interface SimulateResponse {
   standings: StandingEntry[];
-  championship: [string, string];  // Top 2 team IDs
+  championship: [string, string]; // Top 2 team IDs
   tieLogs: TieLog[];
 }
 
@@ -124,17 +130,17 @@ export interface StandingEntry {
   color: string;
   record: { wins: number; losses: number };
   confRecord: { wins: number; losses: number };
-  explainPosition: string;  // Single human-readable string
+  explainPosition: string; // Single human-readable string
 }
 
 export interface TieLog {
-  teams: string[];  // Team abbreviations
+  teams: string[]; // Team abbreviations
   steps: TieStep[];
 }
 
 export interface TieStep {
-  rule: string;       // "A: Head-to-Head"
-  detail: string;     // "ALA beat UGA 27-24"
+  rule: string; // "A: Head-to-Head"
+  detail: string; // "ALA beat UGA 27-24"
   survivors: string[]; // Remaining tied teams after this step
 }
 ```
@@ -220,9 +226,7 @@ export const applyRuleA = (
 
   // Filter games to only those among tied teams
   const h2hGames = games.filter(
-    (g) =>
-      tiedTeams.includes(g.home.teamEspnId) &&
-      tiedTeams.includes(g.away.teamEspnId)
+    (g) => tiedTeams.includes(g.home.teamEspnId) && tiedTeams.includes(g.away.teamEspnId)
   );
 
   if (h2hGames.length === 0) {
@@ -245,9 +249,7 @@ export const applyRuleA = (
     const game = games.find(
       (g) => g.home.teamEspnId === r.teamId || g.away.teamEspnId === r.teamId
     );
-    return game?.home.teamEspnId === r.teamId
-      ? game.home.abbrev
-      : game?.away.abbrev || r.teamId;
+    return game?.home.teamEspnId === r.teamId ? game.home.abbrev : game?.away.abbrev || r.teamId;
   });
 
   const detail = teamAbbrevs
@@ -289,9 +291,7 @@ export const applyRuleB = (
       (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
     );
     return new Set(
-      teamGames.map((g) =>
-        g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
-      )
+      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
     );
   });
 
@@ -307,10 +307,8 @@ export const applyRuleB = (
   const records = tiedTeams.map((teamId) => {
     const vsCommonGames = games.filter(
       (g) =>
-        (g.home.teamEspnId === teamId &&
-          commonOpponents.includes(g.away.teamEspnId)) ||
-        (g.away.teamEspnId === teamId &&
-          commonOpponents.includes(g.home.teamEspnId))
+        (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
+        (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
     );
     return {
       teamId,
@@ -370,9 +368,7 @@ export const applyRuleC = (
       (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
     );
     return new Set(
-      teamGames.map((g) =>
-        g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
-      )
+      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
     );
   });
 
@@ -412,13 +408,9 @@ export const applyRuleC = (
         .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
         .map((r) => r.teamId);
 
-      const oppGame = games.find(
-        (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
-      );
+      const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
       const oppAbbrev =
-        oppGame?.home.teamEspnId === oppId
-          ? oppGame.home.abbrev
-          : oppGame?.away.abbrev || oppId;
+        oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
 
       const detail = `Record vs ${oppAbbrev}`;
 
@@ -563,16 +555,10 @@ export const applyRuleE = (
       const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
 
       // Cap team's score
-      const teamScore = Math.min(
-        isHome ? game.home.score : game.away.score,
-        OFFENSIVE_CAP
-      );
+      const teamScore = Math.min(isHome ? game.home.score : game.away.score, OFFENSIVE_CAP);
 
       // Cap opponent's score
-      const oppScore = Math.min(
-        isHome ? game.away.score : game.home.score,
-        DEFENSIVE_CAP
-      );
+      const oppScore = Math.min(isHome ? game.away.score : game.home.score, DEFENSIVE_CAP);
 
       // Get opponent's season averages (from all games, including simulated)
       const oppAvgFor = getTeamAvgPointsFor(oppId, games);
@@ -773,9 +759,7 @@ export const calculateStandings = (
         const game = games.find(
           (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
         );
-        return game?.home.teamEspnId === teamId
-          ? game.home.abbrev
-          : game?.away.abbrev || teamId;
+        return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
       });
 
       // Convert survivors to abbreviations
@@ -785,9 +769,7 @@ export const calculateStandings = (
           const game = games.find(
             (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
           );
-          return game?.home.teamEspnId === teamId
-            ? game.home.abbrev
-            : game?.away.abbrev || teamId;
+          return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
         }),
       }));
 
@@ -801,9 +783,7 @@ export const calculateStandings = (
   // Build standings with explanations
   const standings: StandingEntry[] = orderedTeams.map((teamId, index) => {
     const record = teamRecords.find((r) => r.teamId === teamId)!;
-    const game = games.find(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    )!;
+    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId)!;
 
     const team = game.home.teamEspnId === teamId ? game.home : game.away;
 
@@ -847,7 +827,9 @@ import { GameLean } from '@/lib/types';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export async function POST(req: NextRequest): Promise<NextResponse<SimulateResponse | { error: string }>> {
+export async function POST(
+  req: NextRequest
+): Promise<NextResponse<SimulateResponse | { error: string }>> {
   try {
     // 1. Parse request body
     const body: SimulateRequest = await req.json();
@@ -914,6 +896,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
 ## 6. Testing
 
 ### Manual Testing Scenarios:
+
 1. **Two-way tie:** Teams with same record, different h2h
 2. **Three-way tie:** Requires common opponent rules
 3. **Cascading tie:** One team eliminated, remaining teams re-evaluated
@@ -922,6 +905,7 @@ export async function POST(req: NextRequest): Promise<NextResponse<SimulateRespo
 6. **All games incomplete:** All overrides required
 
 ### Test curl:
+
 ```bash
 curl -X POST http://localhost:3000/api/simulate \
   -H "Content-Type: application/json" \
@@ -946,4 +930,3 @@ curl -X POST http://localhost:3000/api/simulate \
 - Rule E calculates conference-only averages from simulated games (real + user predictions)
 - Frontend will prefill completed games with real scores, incomplete with predictedScore
 - No validation for "unrealistic" scores (500-0 allowed), but guards against negatives and non-integers
-

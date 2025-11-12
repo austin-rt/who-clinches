@@ -10,7 +10,7 @@ export interface ReshapedGame {
   season: number;
   sport: string;
   league: string;
-  state: "pre" | "in" | "post";
+  state: 'pre' | 'in' | 'post';
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
@@ -85,8 +85,8 @@ export interface ReshapeResult<T> {
 
 export interface TeamDataResponse {
   abbreviation: string;
-  data: import("./espn-client").ESPNTeamResponse | null;
-  recordData?: import("./espn-client").ESPNCoreRecordResponse | null;
+  data: import('./espn-client').ESPNTeamResponse | null;
+  recordData?: import('./espn-client').ESPNCoreRecordResponse | null;
 }
 
 export interface MongoQuery {
@@ -114,7 +114,7 @@ export interface GameLean {
   season: number;
   sport: string;
   league: string;
-  state: "pre" | "in" | "post";
+  state: 'pre' | 'in' | 'post';
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;

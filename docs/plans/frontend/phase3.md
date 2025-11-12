@@ -5,6 +5,7 @@
 **Dependencies:** Phase 2 (games displayed)
 
 **Files to Create/Modify:**
+
 - `app/components/GameCard.tsx` (update to include override controls)
 - `app/components/OverrideControl.tsx` (new - hybrid button + input component)
 - `app/hooks/useGameOverrides.ts` (new - manage localStorage)
@@ -15,6 +16,7 @@
 ## Override Behavior
 
 **UI Design - Hybrid Button + Input Mode:**
+
 - **Default view:** Team name buttons + scores displayed as text + "Edit Scores" button
 - **Edit view:** Team buttons toggle to inline score input fields (optional mode)
 - Always show scores (visible by default, clickable to edit)
@@ -28,12 +30,14 @@
 - Only valid overrides stored to localStorage (see Validation Rules below)
 
 **Override Persistence:**
+
 - Overrides stored in localStorage: key `"sec-tiebreaker-overrides-{season}"`
 - Override format: `{ [gameEspnId]: { homeScore: number, awayScore: number } }`
 - **Critical:** Uses `game.espnId` as key (ESPN ID is primary identifier, always available)
 - Only valid scores persisted - invalid state never stored
 
 **Reset to Live Behavior:**
+
 - "Reset to Live" button appears prominently (header or top of games list)
 - On click:
   1. Triggers cron job to fetch live scores from ESPN
@@ -47,6 +51,7 @@
 ## Validation Rules
 
 **Validation Rules** (React Hook Form):
+
 ```typescript
 1. No tie scores: homeScore !== awayScore
    - Error: "Scores cannot be equal"
@@ -61,6 +66,7 @@
 ```
 
 **Frontend Validation Timing** (React Hook Form - configurable):
+
 - Real-time validation on every keystroke in input fields
 - Validation on button click (auto-calculated scores always valid)
 - Display errors immediately below failing input
@@ -69,12 +75,13 @@
 - Backend also validates before simulation (defensive layer)
 
 **Type Safety:**
+
 ```typescript
 // Frontend override type (types/frontend.ts)
 export interface UserOverrides {
   [gameEspnId: string]: {
-    homeScore: number;    // >= 0, integer only
-    awayScore: number;    // >= 0, integer only
+    homeScore: number; // >= 0, integer only
+    awayScore: number; // >= 0, integer only
     // homeScore !== awayScore
   };
 }
@@ -135,10 +142,12 @@ export interface UserOverrides {
 ## Implementation Checklist
 
 **Setup & Dependencies:**
+
 - [ ] Install React Hook Form: `npm install react-hook-form`
 - [ ] Install Joi or Zod for validation logic (optional - React Hook Form has built-in validators)
 
 **Component Implementation:**
+
 - [ ] Create `OverrideControl.tsx` component with hybrid button + input design
 - [ ] Implement editMode state (toggle between default and edit views)
 - [ ] Create default view: team buttons + score display + "Edit Scores" button
@@ -146,6 +155,7 @@ export interface UserOverrides {
 - [ ] Prefill inputs with `game.predictedScore` values
 
 **Button Styling & Colors:**
+
 - [ ] Apply dynamic team colors from API to buttons using CSS variables
 - [ ] Implement CSS classes: `.btn.selected` (background color) and `.btn.unselected` (outline)
 - [ ] Add CSS rule: `--team-color: var(--team-color, var(--color-primary))` for fallback
@@ -154,6 +164,7 @@ export interface UserOverrides {
 - [ ] Ensure button colors match team abbreviations (e.g., `.btn-uga`, `.btn-georgia`)
 
 **Validation & Real-time Feedback:**
+
 - [ ] Implement React Hook Form with real-time validation
 - [ ] Validate: no tie scores (homeScore !== awayScore)
 - [ ] Validate: non-negative integers only (>= 0)
@@ -162,6 +173,7 @@ export interface UserOverrides {
 - [ ] Handle button click auto-calculation (always produces valid scores)
 
 **Persistence:**
+
 - [ ] Create `useGameOverrides` hook to manage localStorage
 - [ ] Only store valid overrides (validate before storing)
 - [ ] Update GameCard to include OverrideControl
@@ -170,6 +182,7 @@ export interface UserOverrides {
 - [ ] Populate overrides map when passing to `/api/simulate`
 
 **Reset Functionality:**
+
 - [ ] Create `resetToLive` function in useGameOverrides
 - [ ] Add loading state during fetch
 - [ ] Call cron job (or trigger update) to get live data
@@ -179,6 +192,7 @@ export interface UserOverrides {
 - [ ] Show success/loading toast (Phase 4+ implementation, defer for now)
 
 **UI & UX:**
+
 - [ ] "Reset to Live" button prominent (header or top of games list)
 - [ ] Loading indicator during reset fetch
 - [ ] Show which games have overrides (visual indication on button state)
@@ -191,6 +205,7 @@ export interface UserOverrides {
 ## Manual Testing
 
 **Button-Based Override (Main Flow):**
+
 1. Run `npm run dev`
 2. Load games - see team buttons with team colors + score display "Alabama: 24 vs Georgia: 21"
 3. Click home team button - score updates to make home team winner (e.g., "Alabama: 24 vs Georgia: 21")
@@ -200,36 +215,11 @@ export interface UserOverrides {
 7. Click simulate without any edits - should work (all games valid)
 8. Refresh page - button selection persists from localStorage
 
-**Score Input Mode (Optional):**
-9. Click "Edit Scores" button - toggles to edit view, shows inputs + buttons
-10. Inputs prefilled with current scores (predictedScore or override values)
-11. Type valid score - error clears if it was showing, buttons update to reflect state
-12. Type invalid score (negative, tie, decimal):
-    - Should show error message below input
-    - Should not update button state
-    - Should not store to localStorage
-13. Fix input - error clears, buttons update
-14. Click "Hide Scores" - toggles back to default view (score display + buttons)
-15. Scores still show as text (not hidden)
-16. Refresh page - valid overrides persist from localStorage
+**Score Input Mode (Optional):** 9. Click "Edit Scores" button - toggles to edit view, shows inputs + buttons 10. Inputs prefilled with current scores (predictedScore or override values) 11. Type valid score - error clears if it was showing, buttons update to reflect state 12. Type invalid score (negative, tie, decimal): - Should show error message below input - Should not update button state - Should not store to localStorage 13. Fix input - error clears, buttons update 14. Click "Hide Scores" - toggles back to default view (score display + buttons) 15. Scores still show as text (not hidden) 16. Refresh page - valid overrides persist from localStorage
 
-**Reset to Live:**
-17. Make some game overrides (buttons or inputs)
-18. Click "Reset to Live" button:
-    - Should show loading indicator
-    - Should fetch fresh data
-    - Scores should reset to new predicted values
-    - All buttons deselected
-    - All overrides cleared from localStorage
-    - localStorage key should be empty
+**Reset to Live:** 17. Make some game overrides (buttons or inputs) 18. Click "Reset to Live" button: - Should show loading indicator - Should fetch fresh data - Scores should reset to new predicted values - All buttons deselected - All overrides cleared from localStorage - localStorage key should be empty
 
-**Multi-Game Scenarios:**
-19. Test multiple games - each tracks overrides independently
-20. Edit one game, leave others default
-21. localStorage (`DevTools → Application → Local Storage`):
-    - Key: `sec-tiebreaker-overrides-{season}`
-    - Value: only games with overrides present (no default state games)
-22. Test mobile view - buttons and inputs stack appropriately
+**Multi-Game Scenarios:** 19. Test multiple games - each tracks overrides independently 20. Edit one game, leave others default 21. localStorage (`DevTools → Application → Local Storage`): - Key: `sec-tiebreaker-overrides-{season}` - Value: only games with overrides present (no default state games) 22. Test mobile view - buttons and inputs stack appropriately
 
 ---
 
@@ -298,6 +288,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 ```
 
 **Why This Approach:**
+
 - ✅ No CSS class generation required
 - ✅ Colors come directly from API (ESPN data)
 - ✅ Scales to unlimited teams/conferences
@@ -307,6 +298,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - ✅ No build-time CSS overhead
 
 **Color Format Notes:**
+
 - ESPN API provides colors as hex WITHOUT `#` prefix (e.g., `"ba0c2f"`)
 - Always add `#` when applying to CSS: ``--team-color`: `#${team.color}` `
 - Fallback to DaisyUI's `--color-primary` if color unavailable
@@ -317,12 +309,14 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 ## Known Gotchas & Important Notes
 
 **espnId as Primary Key:**
+
 - Override keys use `game.espnId` (ESPN ID, always available)
 - NOT MongoDB `_id` or `_id` string
 - This matches backend `applyOverrides()` function (line 21 of tiebreaker-helpers.ts)
 - Every game guaranteed to have `espnId` (not optional in schema)
 
 **Real-time Validation:**
+
 - Validation happens on every keystroke in input fields (React Hook Form configured for real-time)
 - Button clicks always produce valid scores (auto-calculated opponent score)
 - Validation timing is configurable via React Hook Form options - not a blocking concern
@@ -330,6 +324,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - If backend validation fails, error shown in toast (Phase 4+)
 
 **Prefill & Default Values Strategy:**
+
 - `predictedScore` always present in game data (guaranteed by database)
 - Button scores use `predictedScore` as default if no override exists
 - Input prefill uses current override OR `predictedScore` as fallback
@@ -337,6 +332,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - Even with no user interaction, game has valid score for simulation
 
 **Button State Management:**
+
 - Button clicks calculate opponent score as 1 point less than selected team
 - Button styling reflects current selected winner (background color vs outline)
 - Multiple button clicks toggle between teams (clicking same team again toggles to unselected)
@@ -344,6 +340,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - Buttons always available (never hidden, even in view modes)
 
 **Edit Mode Toggle:**
+
 - Default view: score display + buttons + "Edit Scores" link
 - Edit view: score inputs + buttons + "Hide Scores" link
 - Transition is smooth (no validation blocking mode toggle)
@@ -351,6 +348,7 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - Edit mode state is UI-only (not persisted to localStorage)
 
 **localStorage Behavior:**
+
 - Only valid overrides stored (invalid state never persists)
 - If localStorage corrupted/invalid, treat as no overrides
 - localStorage key includes season: `sec-tiebreaker-overrides-{season}`
@@ -358,12 +356,14 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - Size limit monitored (log warning if approaching limit)
 
 **React Hook Form Implementation:**
+
 - Use real-time validation (configurable via mode option)
 - Preserve prefilled values on component remount
 - Handle form reset (for "Reset to Live") cleanly
 - No form submission event needed - auto-save on every valid change
 
 **CSS Colors & ESPN Format:**
+
 - ESPN provides colors as hex WITHOUT `#` prefix (e.g., `"ba0c2f"`)
 - Add `#` prefix when applying to CSS: `style={{ '--team-color': `#${team.color}` }}`
 - Fallback to DaisyUI primary color if no API color available
@@ -371,10 +371,10 @@ This approach uses CSS variables injected per-button combined with DaisyUI class
 - CSS variable: `--team-color: var(--team-color, var(--color-primary))`
 
 **Future: React Toast Integration (Phase 4+)**
+
 - Error messages currently shown inline below inputs
 - When implementing Phase 4 error handling:
   - Add `react-hot-toast` or similar library
   - Show error toasts for backend validation failures
   - Show success toast for "Reset to Live" completion
   - Defer full toast integration to Phase 4 implementation doc
-

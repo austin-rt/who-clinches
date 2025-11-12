@@ -2,11 +2,13 @@
 
 > **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
 > This document was created during planning phase. For actual implementation details, refer to:
+>
 > - Actual code in `/app/api/cron/` endpoints
 > - `/docs/api-reference.md` for current API documentation
 > - `/lib/constants.ts` for actual constant definitions
 
 ## Overview
+
 Enhance existing cron jobs to update game spreads and calculate `predictedScore` fields for all games. Spreads move throughout the week, so daily updates are needed to keep prefill suggestions accurate.
 
 ## Vercel Plan Constraints
@@ -14,11 +16,13 @@ Enhance existing cron jobs to update game spreads and calculate `predictedScore`
 Per [Vercel Cron Documentation](https://vercel.com/docs/cron-jobs/usage-and-pricing#hobby-scheduling-limits):
 
 **Hobby Plan:**
+
 - **2 cron jobs max** per account
 - **Once per day** scheduling only
 - **Imprecise timing**: Cron set for `0 1 * * *` will trigger anywhere between 1:00 AM - 1:59 AM
 
 **Pro Plan:**
+
 - **40 cron jobs** per account
 - **Unlimited invocations** (any frequency)
 - **Precise timing**
@@ -28,10 +32,12 @@ Per [Vercel Cron Documentation](https://vercel.com/docs/cron-jobs/usage-and-pric
 ## Current State
 
 **Existing Crons:**
+
 - `update-live-games`: Updates scores/ranks during game windows (Thu-Sat)
 - `update-rankings`: Updates team rankings/standings weekly (Tuesday night)
 
 **Problem:**
+
 - Spreads not being updated after initial game seed
 - No `predictedScore` field calculated for frontend prefills
 - Live games cron only runs during game windows, misses mid-week spread changes
@@ -100,10 +106,10 @@ export const calculatePredictedScore = (
   if (game.odds.spread !== null && game.odds.favoriteTeamEspnId) {
     const isFavoriteHome = game.odds.favoriteTeamEspnId === game.home.teamEspnId;
     const favoriteAvg = isFavoriteHome ? homeAvg : awayAvg;
-    
+
     const favoriteScore = Math.round(favoriteAvg);
     const underdogScore = Math.ceil(favoriteScore - Math.abs(game.odds.spread));
-    
+
     return isFavoriteHome
       ? { home: favoriteScore, away: underdogScore }
       : { home: underdogScore, away: favoriteScore };
@@ -111,13 +117,12 @@ export const calculatePredictedScore = (
 
   // Priority 2: Use ranks (higher ranked = favorite)
   if (game.home.rank || game.away.rank) {
-    const homeIsFavorite = !game.away.rank || 
-      (game.home.rank && game.home.rank < game.away.rank);
-    
+    const homeIsFavorite = !game.away.rank || (game.home.rank && game.home.rank < game.away.rank);
+
     const favoriteAvg = homeIsFavorite ? homeAvg : awayAvg;
     const favoriteScore = Math.round(favoriteAvg);
     const underdogScore = favoriteScore - 7; // Default 7-point margin
-    
+
     return homeIsFavorite
       ? { home: favoriteScore, away: underdogScore }
       : { home: underdogScore, away: favoriteScore };
@@ -126,7 +131,7 @@ export const calculatePredictedScore = (
   // Priority 3: Home field advantage (3 points)
   const homeScore = Math.round(homeAvg);
   const awayScore = homeScore - 3;
-  
+
   return { home: homeScore, away: awayScore };
 };
 ```
@@ -159,13 +164,15 @@ if (
 import Team from '@/lib/models/Team';
 import { calculatePredictedScore } from '@/lib/prefill-helpers';
 
-const teamIds = [...new Set([
-  ...gamesToUpdate.map(g => g.home.teamEspnId),
-  ...gamesToUpdate.map(g => g.away.teamEspnId),
-])];
+const teamIds = [
+  ...new Set([
+    ...gamesToUpdate.map((g) => g.home.teamEspnId),
+    ...gamesToUpdate.map((g) => g.away.teamEspnId),
+  ]),
+];
 
 const teams = await Team.find({ _id: { $in: teamIds } }).lean();
-const teamMap = new Map(teams.map(t => [t._id, t]));
+const teamMap = new Map(teams.map((t) => [t._id, t]));
 ```
 
 3. **Calculate and update predictedScore** (inside update loop, line ~160):
@@ -191,11 +198,11 @@ await Game.updateOne(
       'home.rank': reshapedGame.home.rank,
       'away.score': reshapedGame.away.score,
       'away.rank': reshapedGame.away.rank,
-      'odds.spread': reshapedGame.odds?.spread,                    // ADD
-      'odds.favoriteTeamEspnId': reshapedGame.odds?.favoriteTeamEspnId,  // ADD
-      'odds.overUnder': reshapedGame.odds?.overUnder,              // ADD
-      'predictedScore.home': predictedScore.home,                  // ADD
-      'predictedScore.away': predictedScore.away,                  // ADD
+      'odds.spread': reshapedGame.odds?.spread, // ADD
+      'odds.favoriteTeamEspnId': reshapedGame.odds?.favoriteTeamEspnId, // ADD
+      'odds.overUnder': reshapedGame.odds?.overUnder, // ADD
+      'predictedScore.home': predictedScore.home, // ADD
+      'predictedScore.away': predictedScore.away, // ADD
       lastUpdated: new Date(),
     },
   }
@@ -239,12 +246,12 @@ await Team.updateOne(
     $set: {
       nationalRanking: reshapedTeam.nationalRanking,
       conferenceStanding: reshapedTeam.conferenceStanding,
-      'record.overall': reshapedTeam.record?.overall,                    // ADD
-      'record.conference': reshapedTeam.record?.conference,              // ADD
-      'record.stats.avgPointsFor': reshapedTeam.record?.stats?.avgPointsFor,      // ADD
-      'record.stats.avgPointsAgainst': reshapedTeam.record?.stats?.avgPointsAgainst,  // ADD
-      'record.stats.pointsFor': reshapedTeam.record?.stats?.pointsFor,              // ADD
-      'record.stats.pointsAgainst': reshapedTeam.record?.stats?.pointsAgainst,      // ADD
+      'record.overall': reshapedTeam.record?.overall, // ADD
+      'record.conference': reshapedTeam.record?.conference, // ADD
+      'record.stats.avgPointsFor': reshapedTeam.record?.stats?.avgPointsFor, // ADD
+      'record.stats.avgPointsAgainst': reshapedTeam.record?.stats?.avgPointsAgainst, // ADD
+      'record.stats.pointsFor': reshapedTeam.record?.stats?.pointsFor, // ADD
+      'record.stats.pointsAgainst': reshapedTeam.record?.stats?.pointsAgainst, // ADD
       lastUpdated: new Date(),
     },
   }
@@ -281,11 +288,13 @@ Design allows zero-code-change upgrade from Hobby to Pro - just swap config file
 ```
 
 **Behavior:**
+
 - `update-live-games`: Daily at 1 AM ET (updates scores, spreads, predictedScores)
 - `update-rankings`: Weekly Tuesday 11 PM ET (updates team stats, which feed into predictedScore calculations)
 - **Covers all needs:** Scores updated daily, spreads updated daily, team averages updated weekly
 
 **Limitations:**
+
 - No real-time updates during games (imprecise timing, once/day only)
 - Spread changes only caught once per day
 - Acceptable for testing/MVP phase
@@ -328,12 +337,14 @@ Design allows zero-code-change upgrade from Hobby to Pro - just swap config file
 **Behavior:**
 
 **1. Live Scores (Real-Time):**
+
 - `update-live-games`: Every 5 min during game windows
   - Thu-Fri nights: 4 PM - 1 AM ET (`*/5 21-23,0-6 * * 4-5`)
   - Saturday: 11 AM - 1 AM ET (`*/5 16-23,0-6 * * 6`)
 - Updates scores, spreads, and predictedScores for active games
 
 **2. Team Averages (After Saturday Games):**
+
 - `update-team-averages`: Sunday 1 AM ET (`0 6 * * 0`)
 - Runs after Saturday games complete, before Sunday rankings
 - Fetches Core API records for all SEC teams
@@ -341,12 +352,14 @@ Design allows zero-code-change upgrade from Hobby to Pro - just swap config file
 - Feeds into predictedScore calculations for upcoming week
 
 **3. Rankings (AP Early Season → CFP Late Season):**
+
 - Early season (weeks 1-8): Sunday 10 PM ET (`0 3 * * 0`) - after AP Poll release
 - Late season (weeks 9+): Tuesday 10 PM ET (`0 3 * * 3`) - after CFP rankings release
 - **Note:** Use both cron entries year-round, or manually swap config based on season phase
 - Updates team rankings and standings only (averages already updated by dedicated cron)
 
 **4. Betting Odds (Line Movement):**
+
 - `update-spreads`: Hourly from 8 AM - midnight ET (`0 13-5 * * *`)
   - 8 AM ET = 13:00 UTC (EST) / 12:00 UTC (EDT)
   - Midnight ET = 05:00 UTC (next day, EST) / 04:00 UTC (next day, EDT)
@@ -355,6 +368,7 @@ Design allows zero-code-change upgrade from Hobby to Pro - just swap config file
 - Lighter than live-games (no score polling, just scoreboard fetch)
 
 **Benefits:**
+
 - Real-time score updates during games (5-min refresh)
 - Team averages update Sunday morning with fresh Saturday results
 - Hourly odds updates catch line movement as it happens
@@ -362,6 +376,7 @@ Design allows zero-code-change upgrade from Hobby to Pro - just swap config file
 - Precise timing for production-quality UX
 
 **New Endpoints Required:**
+
 - `/api/cron/update-spreads` (fetches scoreboard for odds only)
 - `/api/cron/update-team-averages` (fetches Core API for all teams, updates averages only)
 
@@ -401,7 +416,7 @@ export async function GET(req: NextRequest) {
         // Fetch team data (for team ID)
         const teamData = await espnClient.getTeam(team.abbrev);
         espnCalls++;
-        
+
         const teamId = teamData.team.id;
 
         // Fetch Core API records
@@ -436,7 +451,7 @@ export async function GET(req: NextRequest) {
       } catch (error) {
         const errorMsg = `Failed to update ${team.abbrev}: ${error instanceof Error ? error.message : String(error)}`;
         errors.push(errorMsg);
-        
+
         await ErrorLog.create({
           timestamp: new Date(),
           endpoint: '/api/cron/update-team-averages',
@@ -506,18 +521,17 @@ export async function GET(req: NextRequest) {
     }
 
     // 3. Determine which weeks to fetch
-    const weeks = [...new Set(games.map(g => g.week).filter(w => w !== null))];
-    
+    const weeks = [...new Set(games.map((g) => g.week).filter((w) => w !== null))];
+
     let updateCount = 0;
     let espnCalls = 0;
 
     // 4. Fetch teams for predictedScore calculation
-    const teamIds = [...new Set([
-      ...games.map(g => g.home.teamEspnId),
-      ...games.map(g => g.away.teamEspnId),
-    ])];
+    const teamIds = [
+      ...new Set([...games.map((g) => g.home.teamEspnId), ...games.map((g) => g.away.teamEspnId)]),
+    ];
     const teams = await Team.find({ _id: { $in: teamIds } }).lean();
-    const teamMap = new Map(teams.map(t => [t._id, t]));
+    const teamMap = new Map(teams.map((t) => [t._id, t]));
 
     // 5. For each week, fetch scoreboard
     for (const week of weeks) {
@@ -533,7 +547,7 @@ export async function GET(req: NextRequest) {
 
       // 6. Update each game's spread and predictedScore
       for (const reshapedGame of reshapedGames) {
-        const currentGame = games.find(g => g.espnId === reshapedGame.espnId);
+        const currentGame = games.find((g) => g.espnId === reshapedGame.espnId);
         if (!currentGame) continue;
 
         const homeTeam = teamMap.get(reshapedGame.home.teamEspnId);
@@ -596,10 +610,10 @@ import { calculatePredictedScore } from '@/lib/prefill-helpers';
 for (const game of reshapedGames) {
   const homeTeam = teamMap.get(game.home.teamEspnId);
   const awayTeam = teamMap.get(game.away.teamEspnId);
-  
+
   if (homeTeam && awayTeam) {
     const predictedScore = calculatePredictedScore(game, homeTeam, awayTeam);
-    
+
     await Game.updateOne(
       { espnId: game.espnId },
       {
@@ -637,6 +651,7 @@ export interface GameResponse {
 ### Initial Deployment (Hobby Mode)
 
 1. **Activate Hobby config:**
+
 ```bash
 cp vercel.hobby.json vercel.json
 git add vercel.json vercel.hobby.json vercel.pro.json
@@ -645,6 +660,7 @@ git push origin main
 ```
 
 2. **Verify in Vercel Dashboard:**
+
 - Navigate to Project Settings → Cron Jobs
 - Should see 2 cron jobs listed
 - Note: Timing will be imprecise (±1 hour window)
@@ -662,6 +678,7 @@ git push origin main
 ```
 
 **That's it!** Vercel will automatically:
+
 - Register 4 new cron jobs
 - Remove old schedules
 - Begin invoking at new frequencies
@@ -711,12 +728,14 @@ curl http://localhost:3000/api/games?conferenceId=8&season=2025 | jq '.[0].predi
 #### Hobby Mode
 
 **Daily (1 AM ET via `update-live-games`):**
+
 - ✅ Game scores (completed & live)
 - ✅ Game spreads (all games)
 - ✅ Game ranks (all games)
 - ✅ PredictedScores (all games, calculated from real scores or spread+averages)
 
 **Weekly (Tuesday 11 PM ET via `update-rankings`):**
+
 - ✅ Team national rankings
 - ✅ Team conference standings
 - ✅ Team season averages (avgPointsFor/Against)
@@ -725,26 +744,31 @@ curl http://localhost:3000/api/games?conferenceId=8&season=2025 | jq '.[0].predi
 #### Pro Mode
 
 **Every 5 minutes during games (Thu-Sat via `update-live-games`):**
+
 - ✅ Game scores (real-time for active games)
 - ✅ Game spreads (live movement)
 - ✅ Game ranks (updated as games complete)
 - ✅ PredictedScores (recalculated with latest data)
 
 **Hourly 8 AM - midnight ET (via `update-spreads`):**
+
 - ✅ Game spreads (all upcoming games)
 - ✅ Game odds (overUnder, favoriteTeam)
 - ✅ PredictedScores (recalculated with new spreads)
 
 **Weekly Sunday 1 AM ET (via `update-team-averages`):**
+
 - ✅ Team season averages (avgPointsFor/Against)
 - ✅ Team records (overall, conference, home, away)
 - ✅ Season totals (pointsFor, pointsAgainst, pointDifferential)
 
 **Weekly (Sunday/Tuesday 10 PM ET via `update-rankings`):**
+
 - ✅ Team national rankings (AP on Sunday weeks 1-8, CFP on Tuesday weeks 9+)
 - ✅ Team conference standings
 
 **Result:**
+
 - **All questions answered for both modes:**
   - **Hobby:** Scores/spreads/predictions update daily (good for MVP)
   - **Pro:** Real-time scores (5min), hourly odds (17hrs/day), weekly rankings (poll-synced)
@@ -753,4 +777,3 @@ curl http://localhost:3000/api/games?conferenceId=8&season=2025 | jq '.[0].predi
   - Pre-state games: `predictedScore` = calculated from spread + ESPN season averages
 - Rankings sync with poll schedules (AP early season, CFP late season)
 - Easy upgrade path with zero code changes (just swap vercel.json)
-

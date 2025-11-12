@@ -3,8 +3,8 @@
  * Implements SEC conference tiebreaker rules A-E
  */
 
-import { GameLean } from "./types";
-import { StandingEntry, TieLog, TieStep } from "./api-types";
+import { GameLean } from './types';
+import { StandingEntry, TieLog, TieStep } from './api-types';
 
 const EPSILON = 0.0001;
 const OFFENSIVE_CAP = 42;
@@ -27,13 +27,10 @@ export const applyOverrides = (
         throw new Error(`Tie scores not allowed for game ${game.espnId}`);
       }
       if (override.homeScore < 0 || override.awayScore < 0) {
-        throw new Error("Scores cannot be negative");
+        throw new Error('Scores cannot be negative');
       }
-      if (
-        !Number.isInteger(override.homeScore) ||
-        !Number.isInteger(override.awayScore)
-      ) {
-        throw new Error("Scores must be whole numbers");
+      if (!Number.isInteger(override.homeScore) || !Number.isInteger(override.awayScore)) {
+        throw new Error('Scores must be whole numbers');
       }
 
       return {
@@ -101,18 +98,16 @@ export const applyRuleA = (
   explanations: Map<string, string[]>
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
-    return { winners: tiedTeams, detail: "No tie to break" };
+    return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
   // Filter games to only those among tied teams
   const h2hGames = games.filter(
-    (g) =>
-      tiedTeams.includes(g.home.teamEspnId) &&
-      tiedTeams.includes(g.away.teamEspnId)
+    (g) => tiedTeams.includes(g.home.teamEspnId) && tiedTeams.includes(g.away.teamEspnId)
   );
 
   if (h2hGames.length === 0) {
-    return { winners: tiedTeams, detail: "No head-to-head games played" };
+    return { winners: tiedTeams, detail: 'No head-to-head games played' };
   }
 
   // Calculate h2h records
@@ -131,14 +126,12 @@ export const applyRuleA = (
     const game = games.find(
       (g) => g.home.teamEspnId === r.teamId || g.away.teamEspnId === r.teamId
     );
-    return game?.home.teamEspnId === r.teamId
-      ? game.home.abbrev
-      : game?.away.abbrev || r.teamId;
+    return game?.home.teamEspnId === r.teamId ? game.home.abbrev : game?.away.abbrev || r.teamId;
   });
 
   const detail = teamAbbrevs
     .map((abbrev, i) => `${abbrev}: ${records[i].wins}-${records[i].losses}`)
-    .join(", ");
+    .join(', ');
 
   // Add to explanations for teams eliminated
   records.forEach((r) => {
@@ -164,7 +157,7 @@ export const applyRuleB = (
   explanations: Map<string, string[]>
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
-    return { winners: tiedTeams, detail: "No tie to break" };
+    return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
   // Find common opponents (played by all tied teams)
@@ -173,9 +166,7 @@ export const applyRuleB = (
       (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
     );
     return new Set(
-      teamGames.map((g) =>
-        g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
-      )
+      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
     );
   });
 
@@ -184,17 +175,15 @@ export const applyRuleB = (
   );
 
   if (commonOpponents.length === 0) {
-    return { winners: tiedTeams, detail: "No common opponents" };
+    return { winners: tiedTeams, detail: 'No common opponents' };
   }
 
   // Calculate records vs common opponents
   const records = tiedTeams.map((teamId) => {
     const vsCommonGames = games.filter(
       (g) =>
-        (g.home.teamEspnId === teamId &&
-          commonOpponents.includes(g.away.teamEspnId)) ||
-        (g.away.teamEspnId === teamId &&
-          commonOpponents.includes(g.home.teamEspnId))
+        (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
+        (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
     );
     return {
       teamId,
@@ -233,7 +222,7 @@ export const applyRuleC = (
   explanations: Map<string, string[]>
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
-    return { winners: tiedTeams, detail: "No tie to break" };
+    return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
   // Build preliminary standings (W-L only, no tiebreakers)
@@ -253,9 +242,7 @@ export const applyRuleC = (
       (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
     );
     return new Set(
-      teamGames.map((g) =>
-        g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
-      )
+      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
     );
   });
 
@@ -264,7 +251,7 @@ export const applyRuleC = (
   );
 
   if (commonOpponents.length === 0) {
-    return { winners: tiedTeams, detail: "No common opponents" };
+    return { winners: tiedTeams, detail: 'No common opponents' };
   }
 
   // Order common opponents by preliminary standing
@@ -295,13 +282,9 @@ export const applyRuleC = (
         .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
         .map((r) => r.teamId);
 
-      const oppGame = games.find(
-        (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
-      );
+      const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
       const oppAbbrev =
-        oppGame?.home.teamEspnId === oppId
-          ? oppGame.home.abbrev
-          : oppGame?.away.abbrev || oppId;
+        oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
 
       const detail = `Record vs ${oppAbbrev}`;
 
@@ -320,7 +303,7 @@ export const applyRuleC = (
     }
   }
 
-  return { winners: tiedTeams, detail: "Tied vs all common opponents" };
+  return { winners: tiedTeams, detail: 'Tied vs all common opponents' };
 };
 
 /**
@@ -332,7 +315,7 @@ export const applyRuleD = (
   explanations: Map<string, string[]>
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
-    return { winners: tiedTeams, detail: "No tie to break" };
+    return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
   const records = tiedTeams.map((teamId) => {
@@ -384,10 +367,7 @@ export const applyRuleD = (
 /**
  * Get team's average points scored per game
  */
-export const getTeamAvgPointsFor = (
-  teamId: string,
-  games: GameLean[]
-): number => {
+export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number => {
   const teamGames = games.filter(
     (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
   );
@@ -407,10 +387,7 @@ export const getTeamAvgPointsFor = (
 /**
  * Get team's average points allowed per game
  */
-export const getTeamAvgPointsAgainst = (
-  teamId: string,
-  games: GameLean[]
-): number => {
+export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): number => {
   const teamGames = games.filter(
     (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
   );
@@ -436,7 +413,7 @@ export const applyRuleE = (
   explanations: Map<string, string[]>
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
-    return { winners: tiedTeams, detail: "No tie to break" };
+    return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
   const margins = tiedTeams.map((teamId) => {
@@ -453,16 +430,10 @@ export const applyRuleE = (
       const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
 
       // Cap team's score
-      const teamScore = Math.min(
-        isHome ? game.home.score : game.away.score,
-        OFFENSIVE_CAP
-      );
+      const teamScore = Math.min(isHome ? game.home.score : game.away.score, OFFENSIVE_CAP);
 
       // Cap opponent's score
-      const oppScore = Math.min(
-        isHome ? game.away.score : game.home.score,
-        DEFENSIVE_CAP
-      );
+      const oppScore = Math.min(isHome ? game.away.score : game.home.score, DEFENSIVE_CAP);
 
       // Get opponent's season averages (from all games, including simulated)
       const oppAvgFor = getTeamAvgPointsFor(oppId, games);
@@ -476,8 +447,7 @@ export const applyRuleE = (
       totalMargin += gameMargin;
     }
 
-    const avgMargin =
-      teamGames.length === 0 ? 0 : totalMargin / teamGames.length;
+    const avgMargin = teamGames.length === 0 ? 0 : totalMargin / teamGames.length;
 
     return { teamId, avgMargin };
   });
@@ -531,7 +501,7 @@ export const breakTie = (
     // Rule A: Head-to-Head
     const ruleA = applyRuleA(remaining, games, explanations);
     steps.push({
-      rule: "A: Head-to-Head",
+      rule: 'A: Head-to-Head',
       detail: ruleA.detail,
       survivors: ruleA.winners,
     });
@@ -542,12 +512,7 @@ export const breakTie = (
 
       // Recursively rank eliminated teams if there's more than one
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(
-          eliminated,
-          games,
-          allTeams,
-          explanations
-        );
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -561,7 +526,7 @@ export const breakTie = (
     // Rule B: Common Opponents
     const ruleB = applyRuleB(remaining, games, explanations);
     steps.push({
-      rule: "B: Common Opponents",
+      rule: 'B: Common Opponents',
       detail: ruleB.detail,
       survivors: ruleB.winners,
     });
@@ -570,12 +535,7 @@ export const breakTie = (
       const eliminated = remaining.filter((t) => !ruleB.winners.includes(t));
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(
-          eliminated,
-          games,
-          allTeams,
-          explanations
-        );
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -589,7 +549,7 @@ export const breakTie = (
     // Rule C: Highest Placed Common Opponent
     const ruleC = applyRuleC(remaining, games, allTeams, explanations);
     steps.push({
-      rule: "C: Highest Placed Common Opponent",
+      rule: 'C: Highest Placed Common Opponent',
       detail: ruleC.detail,
       survivors: ruleC.winners,
     });
@@ -598,12 +558,7 @@ export const breakTie = (
       const eliminated = remaining.filter((t) => !ruleC.winners.includes(t));
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(
-          eliminated,
-          games,
-          allTeams,
-          explanations
-        );
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -617,7 +572,7 @@ export const breakTie = (
     // Rule D: Opponent Win %
     const ruleD = applyRuleD(remaining, games, explanations);
     steps.push({
-      rule: "D: Opponent Win %",
+      rule: 'D: Opponent Win %',
       detail: ruleD.detail,
       survivors: ruleD.winners,
     });
@@ -626,12 +581,7 @@ export const breakTie = (
       const eliminated = remaining.filter((t) => !ruleD.winners.includes(t));
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(
-          eliminated,
-          games,
-          allTeams,
-          explanations
-        );
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -645,7 +595,7 @@ export const breakTie = (
     // Rule E: Scoring Margin
     const ruleE = applyRuleE(remaining, games, explanations);
     steps.push({
-      rule: "E: Scoring Margin",
+      rule: 'E: Scoring Margin',
       detail: ruleE.detail,
       survivors: ruleE.winners,
     });
@@ -654,12 +604,7 @@ export const breakTie = (
       const eliminated = remaining.filter((t) => !ruleE.winners.includes(t));
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(
-          eliminated,
-          games,
-          allTeams,
-          explanations
-        );
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -672,8 +617,8 @@ export const breakTie = (
 
     // Still tied after all rules - all remaining teams share same rank
     steps.push({
-      rule: "F: Unresolved",
-      detail: "Tie unresolved by rules A-E",
+      rule: 'F: Unresolved',
+      detail: 'Tie unresolved by rules A-E',
       survivors: remaining,
     });
     ranked.push(...remaining);
@@ -727,9 +672,7 @@ export const calculateStandings = (
         const game = games.find(
           (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
         );
-        return game?.home.teamEspnId === teamId
-          ? game.home.abbrev
-          : game?.away.abbrev || teamId;
+        return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
       });
 
       // Convert survivors to abbreviations
@@ -739,9 +682,7 @@ export const calculateStandings = (
           const game = games.find(
             (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
           );
-          return game?.home.teamEspnId === teamId
-            ? game.home.abbrev
-            : game?.away.abbrev || teamId;
+          return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
         }),
       }));
 
@@ -755,9 +696,7 @@ export const calculateStandings = (
   // Build standings with explanations
   const standings: StandingEntry[] = orderedTeams.map((teamId, index) => {
     const record = teamRecords.find((r) => r.teamId === teamId)!;
-    const game = games.find(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    )!;
+    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId)!;
 
     const team = game.home.teamEspnId === teamId ? game.home : game.away;
 
@@ -765,16 +704,16 @@ export const calculateStandings = (
     let explainPosition = `Conference record: ${record.wins}-${record.losses}`;
     const teamExplanations = explanations.get(teamId);
     if (teamExplanations && teamExplanations.length > 0) {
-      explainPosition += `. ${teamExplanations.join(". ")}`;
+      explainPosition += `. ${teamExplanations.join('. ')}`;
     }
 
     return {
       rank: index + 1,
       teamId,
       abbrev: team.abbrev,
-      displayName: team.displayName || team.abbrev || "Unknown",
-      logo: team.logo || "",
-      color: team.color || "000000",
+      displayName: team.displayName || team.abbrev || 'Unknown',
+      logo: team.logo || '',
+      color: team.color || '000000',
       record: { wins: record.wins, losses: record.losses },
       confRecord: { wins: record.wins, losses: record.losses },
       explainPosition,

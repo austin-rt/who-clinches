@@ -25,6 +25,7 @@ Seeds or updates team data from ESPN API.
 **Authentication:** None required
 
 **Request Body:**
+
 ```json
 {
   "sport": "football",
@@ -34,6 +35,7 @@ Seeds or updates team data from ESPN API.
 ```
 
 **Alternative Request (Specific Teams):**
+
 ```json
 {
   "sport": "football",
@@ -51,6 +53,7 @@ Seeds or updates team data from ESPN API.
 | `teams` | string[] | Conditional | Array of team abbreviations. Required if `conferenceId` not provided |
 
 **Response:**
+
 ```json
 {
   "upserted": 16,
@@ -59,10 +62,12 @@ Seeds or updates team data from ESPN API.
 ```
 
 **Error Responses:**
+
 - `400`: Missing required fields
 - `500`: ESPN API error or database error
 
 **Notes:**
+
 - Uses ESPN Site API to fetch team metadata
 - Upserts teams (creates new or updates existing)
 - Stores: name, logo, colors, conference affiliation
@@ -78,6 +83,7 @@ Pulls game data from ESPN for a specific season/conference.
 **Authentication:** None required
 
 **Request Body:**
+
 ```json
 {
   "sport": "football",
@@ -88,6 +94,7 @@ Pulls game data from ESPN for a specific season/conference.
 ```
 
 **Request Body (Specific Week):**
+
 ```json
 {
   "sport": "football",
@@ -108,6 +115,7 @@ Pulls game data from ESPN for a specific season/conference.
 | `week` | number | No | Specific week number. If omitted, pulls entire regular season |
 
 **Response:**
+
 ```json
 {
   "upserted": 128,
@@ -117,6 +125,7 @@ Pulls game data from ESPN for a specific season/conference.
 ```
 
 **Response (With Errors):**
+
 ```json
 {
   "upserted": 120,
@@ -127,10 +136,12 @@ Pulls game data from ESPN for a specific season/conference.
 ```
 
 **Error Responses:**
+
 - `400`: Missing required fields
 - `500`: ESPN API error or database error
 
 **Game Data Stored:**
+
 - Basic info: `espnId`, `displayName` ("{away abbrev} @ {home abbrev}", e.g., "UGA @ ALA"), `date`, `week`, `season`
 - State: `state` (pre/in/post), `completed`, `conferenceGame`, `neutralSite`
 - Teams: `home`/`away` with `teamEspnId`, `abbrev`, `displayName`, `logo`, `color`, `score`, `rank`
@@ -142,6 +153,7 @@ Pulls game data from ESPN for a specific season/conference.
   - Default average: 28 points per team if no team data available
 
 **Notes:**
+
 - Dynamically determines season weeks using ESPN calendar API
 - Excludes SEC Championship game
 - **Can run independently** - does not require teams to be seeded first
@@ -157,6 +169,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 **Authentication:** None required
 
 **Request Body:**
+
 ```json
 {
   "season": 2025,
@@ -166,6 +179,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 ```
 
 **Request Body (With Overrides):**
+
 ```json
 {
   "season": 2025,
@@ -197,6 +211,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 | `awayScore` | number | Yes | Away team score (must be non-negative integer) |
 
 **Response:**
+
 ```json
 {
   "standings": [
@@ -268,11 +283,13 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 | `survivors` | string[] | Teams remaining after rule application |
 
 **Error Responses:**
+
 - `400`: Missing required fields (`season`, `conferenceId`)
 - `400`: Invalid score (negative or non-integer)
 - `500`: Database error or tiebreaker calculation error
 
 **Tiebreaker Rules Applied:**
+
 - **Rule A**: Head-to-head record (minimum 2 games)
 - **Rule B**: Record vs common conference opponents (minimum 4)
 - **Rule C**: Record within division
@@ -280,6 +297,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 - **Rule E**: Scoring margin (offensive cap: 42 points, defensive cap: 48 points)
 
 **Notes:**
+
 - Uses `predictedScore` for games without user overrides
 - Validates scores (non-negative integers)
 - Handles ties recursively (cascading tiebreakers)
@@ -292,11 +310,13 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 All cron jobs require Bearer token authentication.
 
 **Authentication Header:**
+
 ```
 Authorization: Bearer {CRON_SECRET}
 ```
 
 **401 Response (Unauthorized):**
+
 ```json
 {
   "error": "Unauthorized"
@@ -312,10 +332,12 @@ Updates scores, states, and odds for active (incomplete) games.
 **Authentication:** Required (Bearer token)
 
 **Schedule:**
+
 - **Hobby Plan**: Daily at 6 AM ET (`0 6 * * *`)
 - **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET
 
 **Response:**
+
 ```json
 {
   "updated": 6,
@@ -327,6 +349,7 @@ Updates scores, states, and odds for active (incomplete) games.
 ```
 
 **Response (With Errors):**
+
 ```json
 {
   "updated": 0,
@@ -349,6 +372,7 @@ Updates scores, states, and odds for active (incomplete) games.
 | `errors` | string[] | Optional array of error messages |
 
 **Updates:**
+
 - `state` (pre/in/post)
 - `completed` (boolean)
 - `home.score`, `away.score`
@@ -357,6 +381,7 @@ Updates scores, states, and odds for active (incomplete) games.
 - `predictedScore` (recalculated based on current data)
 
 **Logic:**
+
 - Queries incomplete conference games for current season
 - Fetches current week's scoreboard from ESPN
 - Compares ESPN data with database
@@ -364,6 +389,7 @@ Updates scores, states, and odds for active (incomplete) games.
 - Recalculates `predictedScore` for all games (uses real scores if game started scoring)
 
 **Error Handling:**
+
 - Logs errors to `errors` collection
 - Returns gracefully if ESPN API fails
 - Skips non-conference games (missing team data)
@@ -377,10 +403,12 @@ Updates scores, states, and odds for active (incomplete) games.
 **Authentication:** Required (Bearer token)
 
 **Schedule:**
+
 - **Pro Plan**: Every hour 1PM-5AM ET (`0 13-5 * * *` - runs at minute 0 of hours 13-23,0-5 UTC)
 - **Hobby Plan**: Not used (combined with `update-live-games`)
 
 **Response:**
+
 ```json
 {
   "updated": 0,
@@ -394,18 +422,21 @@ Updates scores, states, and odds for active (incomplete) games.
 **Response Fields:** Same as `update-live-games`
 
 **Updates:**
+
 - `odds.spread`
 - `odds.favoriteTeamEspnId`
 - `odds.overUnder`
 - `predictedScore` (recalculated)
 
 **Logic:**
+
 - Queries upcoming SEC games (not yet started)
 - Fetches current odds from ESPN
 - Updates if odds changed
 - Recalculates `predictedScore` using new spread
 
 **Notes:**
+
 - More frequent than `update-live-games` to catch line movements
 - Only updates odds, not scores/states
 - Pro-only feature for more granular updates
@@ -419,10 +450,12 @@ Updates team rankings, standings, and season statistics.
 **Authentication:** Required (Bearer token)
 
 **Schedule:**
+
 - **Hobby Plan**: Wednesday 4 AM ET (`0 4 * * 3`)
 - **Pro Plan**: Sunday 3 AM ET + Wednesday 3 AM ET (`0 3 * * 0` + `0 3 * * 3`)
 
 **Response:**
+
 ```json
 {
   "updated": 16,
@@ -433,6 +466,7 @@ Updates team rankings, standings, and season statistics.
 ```
 
 **Response (With Errors):**
+
 ```json
 {
   "updated": 14,
@@ -453,6 +487,7 @@ Updates team rankings, standings, and season statistics.
 | `errors` | string[] | Optional array of failed team abbreviations |
 
 **Updates:**
+
 - `nationalRanking` (CFP/AP ranking)
 - `conferenceStanding` (e.g., "3rd in SEC")
 - `record.overall` (e.g., "8-1")
@@ -463,6 +498,7 @@ Updates team rankings, standings, and season statistics.
 - **`record.stats.avgPointsFor`**, **`avgPointsAgainst`** (used for `predictedScore`)
 
 **Logic:**
+
 - Loops through all 16 SEC teams
 - Calls ESPN Site API (team metadata + rankings)
 - Calls ESPN Core API (detailed stats + season averages)
@@ -471,6 +507,7 @@ Updates team rankings, standings, and season statistics.
 - 500ms rate limit between teams (2 calls per team = ~16 seconds total)
 
 **Notes:**
+
 - Critical for `predictedScore` calculation (provides team averages)
 - Should run weekly (Tuesday night after rankings release)
 - Core API may return null for future seasons (falls back to Site API)
@@ -484,10 +521,12 @@ Updates team rankings, standings, and season statistics.
 **Authentication:** Required (Bearer token)
 
 **Schedule:**
+
 - **Pro Plan**: Sunday 6 AM ET (`0 6 * * 0`)
 - **Hobby Plan**: Not used (combined with `update-rankings`)
 
 **Response:**
+
 ```json
 {
   "updated": 16,
@@ -502,11 +541,13 @@ Updates team rankings, standings, and season statistics.
 **Updates:** Same fields as `update-rankings` but focused on stats
 
 **Logic:**
+
 - Same as `update-rankings` but separate endpoint for Pro mode
 - Allows more frequent stat updates without full rankings sync
 - Ensures `avgPointsFor`/`avgPointsAgainst` stay current
 
 **Notes:**
+
 - Pro-only optimization
 - Runs Sunday morning after week's games complete
 - Rankings cron still runs Wed for mid-week updates
@@ -530,31 +571,34 @@ All endpoints log errors to MongoDB `errors` collection:
 ```
 
 **Query Errors:**
+
 ```javascript
-db.errors.find({endpoint: "/api/cron/update-rankings"}).sort({timestamp: -1})
+db.errors.find({ endpoint: '/api/cron/update-rankings' }).sort({ timestamp: -1 });
 ```
 
 ---
 
 ## Common Response Codes
 
-| Code | Meaning | Common Causes |
-|------|---------|---------------|
-| 200 | Success | Request completed successfully |
-| 400 | Bad Request | Missing required fields, invalid input |
-| 401 | Unauthorized | Missing or invalid `CRON_SECRET` |
-| 500 | Server Error | Database error, ESPN API timeout |
+| Code | Meaning      | Common Causes                          |
+| ---- | ------------ | -------------------------------------- |
+| 200  | Success      | Request completed successfully         |
+| 400  | Bad Request  | Missing required fields, invalid input |
+| 401  | Unauthorized | Missing or invalid `CRON_SECRET`       |
+| 500  | Server Error | Database error, ESPN API timeout       |
 
 ---
 
 ## Rate Limiting
 
 **ESPN API:**
+
 - Site API: ~500ms between requests
 - Core API: ~500ms between requests
 - Scoreboard API: No rate limit (batched by week)
 
 **Our APIs:**
+
 - Data endpoints: No rate limit
 - Cron jobs: Scheduled (see individual endpoints)
 
@@ -562,10 +606,10 @@ db.errors.find({endpoint: "/api/cron/update-rankings"}).sort({timestamp: -1})
 
 ## Environment Variables
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `CRON_SECRET` | Yes | Bearer token for cron authentication |
-| `MONGODB_URI` | Yes | MongoDB connection string |
+| Variable      | Required | Description                          |
+| ------------- | -------- | ------------------------------------ |
+| `CRON_SECRET` | Yes      | Bearer token for cron authentication |
+| `MONGODB_URI` | Yes      | MongoDB connection string            |
 
 ---
 
@@ -576,4 +620,3 @@ db.errors.find({endpoint: "/api/cron/update-rankings"}).sort({timestamp: -1})
 - Conference ID 8 = SEC
 - Team IDs are ESPN team IDs (e.g., "333" = Alabama)
 - Game IDs are ESPN event IDs (e.g., "401752772")
-

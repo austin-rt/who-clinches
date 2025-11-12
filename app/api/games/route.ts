@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongodb";
-import Game from "@/lib/models/Game";
-import Team from "@/lib/models/Team";
-import { MongoQuery, GameLean, TeamLean } from "@/lib/types";
-import { GamesResponse, TeamMetadata, ApiErrorResponse } from "@/lib/api-types";
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import Game from '@/lib/models/Game';
+import Team from '@/lib/models/Team';
+import { MongoQuery, GameLean, TeamLean } from '@/lib/types';
+import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 
-export const runtime = "nodejs";
-export const dynamic = "force-dynamic";
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export const GET = async (request: NextRequest) => {
   try {
@@ -17,14 +17,14 @@ export const GET = async (request: NextRequest) => {
     // Build query from search parameters
     const query: MongoQuery = {};
 
-    const conferenceId = searchParams.get("conferenceId");
-    const season = searchParams.get("season");
-    const week = searchParams.get("week");
-    const state = searchParams.get("state");
-    const from = searchParams.get("from");
-    const to = searchParams.get("to");
-    const sport = searchParams.get("sport");
-    const league = searchParams.get("league");
+    const conferenceId = searchParams.get('conferenceId');
+    const season = searchParams.get('season');
+    const week = searchParams.get('week');
+    const state = searchParams.get('state');
+    const from = searchParams.get('from');
+    const to = searchParams.get('to');
+    const sport = searchParams.get('sport');
+    const league = searchParams.get('league');
 
     // Filter by conference games only (as specified in tech spec)
     if (conferenceId) {
@@ -39,7 +39,7 @@ export const GET = async (request: NextRequest) => {
       query.week = parseInt(week, 10);
     }
 
-    if (state && ["pre", "in", "post"].includes(state)) {
+    if (state && ['pre', 'in', 'post'].includes(state)) {
       query.state = state;
     }
 
@@ -59,10 +59,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // Fetch games with lean mode (no hydration)
-    const gamesRaw = await Game.find(query)
-      .lean()
-      .sort({ date: 1, week: 1 })
-      .exec();
+    const gamesRaw = await Game.find(query).lean().sort({ date: 1, week: 1 }).exec();
 
     // Type annotation - we know our schema matches GameLean exactly
     const games: GameLean[] = gamesRaw.map(
@@ -71,36 +68,32 @@ export const GET = async (request: NextRequest) => {
         espnId: String(game.espnId),
         displayName: String(game.displayName),
         date: String(game.date),
-        week: typeof game.week === "number" ? game.week : null,
+        week: typeof game.week === 'number' ? game.week : null,
         season: Number(game.season),
         sport: String(game.sport),
         league: String(game.league),
-        state: game.state as "pre" | "in" | "post",
+        state: game.state as 'pre' | 'in' | 'post',
         completed: Boolean(game.completed),
         conferenceGame: Boolean(game.conferenceGame),
         neutralSite: Boolean(game.neutralSite),
         home: {
           teamEspnId: String(game.home.teamEspnId),
           abbrev: String(game.home.abbrev),
-          score: typeof game.home.score === "number" ? game.home.score : null,
-          rank: typeof game.home.rank === "number" ? game.home.rank : null,
+          score: typeof game.home.score === 'number' ? game.home.score : null,
+          rank: typeof game.home.rank === 'number' ? game.home.rank : null,
         },
         away: {
           teamEspnId: String(game.away.teamEspnId),
           abbrev: String(game.away.abbrev),
-          score: typeof game.away.score === "number" ? game.away.score : null,
-          rank: typeof game.away.rank === "number" ? game.away.rank : null,
+          score: typeof game.away.score === 'number' ? game.away.score : null,
+          rank: typeof game.away.rank === 'number' ? game.away.rank : null,
         },
         odds: {
           favoriteTeamEspnId: game.odds.favoriteTeamEspnId
             ? String(game.odds.favoriteTeamEspnId)
             : null,
-          spread:
-            typeof game.odds.spread === "number" ? game.odds.spread : null,
-          overUnder:
-            typeof game.odds.overUnder === "number"
-              ? game.odds.overUnder
-              : null,
+          spread: typeof game.odds.spread === 'number' ? game.odds.spread : null,
+          overUnder: typeof game.odds.overUnder === 'number' ? game.odds.overUnder : null,
         },
         predictedScore: game.predictedScore
           ? {
@@ -122,17 +115,12 @@ export const GET = async (request: NextRequest) => {
     // Fetch team metadata for all teams in results
     const teamsRaw = await Team.find({ _id: { $in: Array.from(teamIds) } })
       .lean()
-      .select("_id abbreviation displayName logo")
+      .select('_id abbreviation displayName logo')
       .exec();
 
     // Type assertion - we know our selected fields match exactly
-    const teams: Pick<
-      TeamLean,
-      "_id" | "abbreviation" | "displayName" | "logo"
-    >[] = teamsRaw.map(
-      (
-        team
-      ): Pick<TeamLean, "_id" | "abbreviation" | "displayName" | "logo"> => ({
+    const teams: Pick<TeamLean, '_id' | 'abbreviation' | 'displayName' | 'logo'>[] = teamsRaw.map(
+      (team): Pick<TeamLean, '_id' | 'abbreviation' | 'displayName' | 'logo'> => ({
         _id: String(team._id),
         abbreviation: String(team.abbreviation),
         displayName: String(team.displayName),
@@ -151,7 +139,7 @@ export const GET = async (request: NextRequest) => {
     }
 
     // Determine cache headers based on game states
-    const hasLiveGames = games.some((game) => game.state === "in");
+    const hasLiveGames = games.some((game) => game.state === 'in');
     const cacheMaxAge = hasLiveGames ? 10 : 60; // 10s for live games, 60s otherwise
 
     return NextResponse.json<GamesResponse>(
@@ -162,16 +150,15 @@ export const GET = async (request: NextRequest) => {
       },
       {
         headers: {
-          "Cache-Control": `public, s-maxage=${cacheMaxAge}`,
+          'Cache-Control': `public, s-maxage=${cacheMaxAge}`,
         },
       }
     );
   } catch (error) {
     return NextResponse.json<ApiErrorResponse>(
       {
-        error:
-          error instanceof Error ? error.message : "Unknown error occurred",
-        code: "DB_ERROR",
+        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        code: 'DB_ERROR',
       },
       { status: 500 }
     );

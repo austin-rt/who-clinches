@@ -3,16 +3,16 @@
  * Transform raw ESPN data into our desired format
  */
 
-import { ESPNScoreboardResponse } from "./espn-client";
-import { ReshapedGame, ReshapeResult } from "./types";
+import { ESPNScoreboardResponse } from './espn-client';
+import { ReshapedGame, ReshapeResult } from './types';
 
 /**
  * Reshape ESPN scoreboard response for our needs
  */
 export const reshapeScoreboardData = (
   espnResponse: ESPNScoreboardResponse,
-  sport: string = "football",
-  league: string = "college-football"
+  sport: string = 'football',
+  league: string = 'college-football'
 ): ReshapeResult<ReshapedGame> => {
   if (!espnResponse.events || espnResponse.events.length === 0) {
     return { games: [] };
@@ -31,8 +31,8 @@ export const reshapeScoreboardData = (
       }
 
       // Use ESPN's homeAway field instead of assuming array positions
-      const homeTeam = competitors.find((c) => c.homeAway === "home");
-      const awayTeam = competitors.find((c) => c.homeAway === "away");
+      const homeTeam = competitors.find((c) => c.homeAway === 'home');
+      const awayTeam = competitors.find((c) => c.homeAway === 'away');
 
       if (!homeTeam || !awayTeam) {
         return null;
@@ -44,13 +44,9 @@ export const reshapeScoreboardData = (
 
       // Parse rankings (99 = unranked)
       const awayRank =
-        awayTeam.curatedRank?.current === 99
-          ? null
-          : awayTeam.curatedRank?.current || null;
+        awayTeam.curatedRank?.current === 99 ? null : awayTeam.curatedRank?.current || null;
       const homeRank =
-        homeTeam.curatedRank?.current === 99
-          ? null
-          : homeTeam.curatedRank?.current || null;
+        homeTeam.curatedRank?.current === 99 ? null : homeTeam.curatedRank?.current || null;
 
       // Parse odds - explicitly handle null vs undefined
       let favoriteTeamEspnId: string | null = null;
@@ -83,10 +79,7 @@ export const reshapeScoreboardData = (
         displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
         date: competition.date,
         week: competition.week?.number || espnResponse.week?.number || null,
-        season:
-          competition.season?.year ||
-          espnResponse.season?.year ||
-          new Date().getFullYear(),
+        season: competition.season?.year || espnResponse.season?.year || new Date().getFullYear(),
         sport,
         league,
         state: competition.status.type.state,
@@ -123,4 +116,3 @@ export const reshapeScoreboardData = (
 
   return { games: reshapedGames };
 };
-
