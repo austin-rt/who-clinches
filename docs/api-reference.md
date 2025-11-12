@@ -130,7 +130,7 @@ Pulls game data from ESPN for a specific season/conference.
 - `500`: ESPN API error or database error
 
 **Game Data Stored:**
-- Basic info: `espnId`, `displayName` ("{away} @ {home}"), `date`, `week`, `season`
+- Basic info: `espnId`, `displayName` ("{away abbrev} @ {home abbrev}", e.g., "UGA @ ALA"), `date`, `week`, `season`
 - State: `state` (pre/in/post), `completed`, `conferenceGame`, `neutralSite`
 - Teams: `home`/`away` with `teamEspnId`, `abbrev`, `displayName`, `logo`, `color`, `score`, `rank`
 - Odds: `spread`, `favoriteTeamEspnId`, `overUnder`
@@ -273,13 +273,13 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 - **Rule B**: Record vs common conference opponents (minimum 4)
 - **Rule C**: Record within division
 - **Rule D**: Conference win percentage
-- **Rule E**: Scoring margin (capped at 24 points per game)
+- **Rule E**: Scoring margin (offensive cap: 42 points, defensive cap: 48 points)
 
 **Notes:**
 - Uses `predictedScore` for games without user overrides
 - Validates scores (non-negative integers)
 - Handles ties recursively (cascading tiebreakers)
-- Returns top 7 teams in standings array
+- Returns all 16 teams in standings array (full conference standings)
 
 ---
 
@@ -373,7 +373,7 @@ Updates scores, states, and odds for active (incomplete) games.
 **Authentication:** Required (Bearer token)
 
 **Schedule:**
-- **Pro Plan**: Every hour 1PM-5AM ET (`0 13-5 * * *`)
+- **Pro Plan**: Every hour 1PM-5AM ET (`0 13-5 * * *` - runs at minute 0 of hours 13-23,0-5 UTC)
 - **Hobby Plan**: Not used (combined with `update-live-games`)
 
 **Response:**
