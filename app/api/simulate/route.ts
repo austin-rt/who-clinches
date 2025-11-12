@@ -14,7 +14,7 @@ export const POST = async (
   try {
     // 1. Parse request body
     const body: SimulateRequest = await request.json();
-    const { season, conferenceId, overrides } = body;
+    const { season, conferenceId, overrides = {} } = body;
 
     // 2. Validate
     if (!season || !conferenceId) {
