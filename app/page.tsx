@@ -1,65 +1,73 @@
-import Image from 'next/image';
-
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between bg-white px-16 py-32 sm:items-start dark:bg-black">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl leading-10 font-semibold tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{' '}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{' '}
-            or the{' '}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{' '}
-            center.
+    <div className="min-h-screen bg-base-100">
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="mb-2 text-4xl font-bold text-primary">SEC Tiebreaker Simulator</h1>
+          <p className="text-base-content/70 text-lg">
+            Tailwind CSS 3 + DaisyUI installed successfully
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="bg-foreground text-background flex h-12 w-full items-center justify-center gap-2 rounded-full px-5 transition-colors hover:bg-[#383838] md:w-[158px] dark:hover:bg-[#ccc]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] md:w-[158px] dark:border-white/[.145] dark:hover:bg-[#1a1a1a]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="card bg-primary text-primary-content shadow-lg">
+            <div className="card-body">
+              <h2 className="card-title">API Status</h2>
+              <p>Color fields enabled in GameMetadata response</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-secondary">Test API</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-secondary text-secondary-content shadow-lg">
+            <div className="card-body">
+              <h2 className="card-title">Theme System</h2>
+              <p>DaisyUI theme framework ready for implementation</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-primary">Configure</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-accent text-accent-content shadow-lg">
+            <div className="card-body">
+              <h2 className="card-title">Phase 0 Progress</h2>
+              <p>Backend fixes complete. Frontend setup in progress.</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-outline">View Details</button>
+              </div>
+            </div>
+          </div>
+
+          <div className="card bg-base-200 shadow-lg">
+            <div className="card-body">
+              <h2 className="card-title">Teams</h2>
+              <p>16 SEC teams with color data from API</p>
+              <div className="card-actions justify-end">
+                <button className="btn btn-ghost">View Teams</button>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
+
+        <div className="alert alert-info mt-8">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            className="h-6 w-6 shrink-0 stroke-current"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <span>Tailwind CSS 3.x with DaisyUI component library is working</span>
+        </div>
+      </div>
     </div>
   );
 }
