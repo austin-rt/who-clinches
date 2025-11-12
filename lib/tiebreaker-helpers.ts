@@ -11,7 +11,7 @@ const OFFENSIVE_CAP = 42;
 const DEFENSIVE_CAP = 48;
 
 /**
- * Apply user score overrides to games
+ * Apply user score overrides to games and fill in predictedScore for incomplete games
  */
 export const applyOverrides = (
   games: GameLean[],
@@ -19,27 +19,46 @@ export const applyOverrides = (
 ): GameLean[] => {
   return games.map((game) => {
     const override = overrides[game.espnId];
-    if (!override) return game;
 
-    // Validate scores
-    if (override.homeScore === override.awayScore) {
-      throw new Error(`Tie scores not allowed for game ${game.espnId}`);
-    }
-    if (override.homeScore < 0 || override.awayScore < 0) {
-      throw new Error("Scores cannot be negative");
-    }
-    if (
-      !Number.isInteger(override.homeScore) ||
-      !Number.isInteger(override.awayScore)
-    ) {
-      throw new Error("Scores must be whole numbers");
+    // If user provided override, use it
+    if (override) {
+      // Validate scores
+      if (override.homeScore === override.awayScore) {
+        throw new Error(`Tie scores not allowed for game ${game.espnId}`);
+      }
+      if (override.homeScore < 0 || override.awayScore < 0) {
+        throw new Error("Scores cannot be negative");
+      }
+      if (
+        !Number.isInteger(override.homeScore) ||
+        !Number.isInteger(override.awayScore)
+      ) {
+        throw new Error("Scores must be whole numbers");
+      }
+
+      return {
+        ...game,
+        home: { ...game.home, score: override.homeScore },
+        away: { ...game.away, score: override.awayScore },
+      };
     }
 
-    return {
-      ...game,
-      home: { ...game.home, score: override.homeScore },
-      away: { ...game.away, score: override.awayScore },
-    };
+    // If game already has scores, keep them
+    if (game.home.score !== null && game.away.score !== null) {
+      return game;
+    }
+
+    // If game is incomplete and has predictedScore, use it
+    if (game.predictedScore) {
+      return {
+        ...game,
+        home: { ...game.home, score: game.predictedScore.home },
+        away: { ...game.away, score: game.predictedScore.away },
+      };
+    }
+
+    // Return game as-is if no scores available (will be skipped by getTeamRecord)
+    return game;
   });
 };
 
@@ -58,6 +77,7 @@ export const getTeamRecord = (
   let losses = 0;
 
   for (const game of teamGames) {
+    // Skip games without scores (applyOverrides should have filled these in)
     if (game.home.score === null || game.away.score === null) continue;
 
     const isHome = game.home.teamEspnId === teamId;
@@ -497,105 +517,170 @@ export const breakTie = (
   }
 
   const steps: TieStep[] = [];
+  const ranked: string[] = [];
   let remaining = [...tiedTeams];
 
-  // Rule A
-  const ruleA = applyRuleA(remaining, games, explanations);
-  steps.push({
-    rule: "A: Head-to-Head",
-    detail: ruleA.detail,
-    survivors: ruleA.winners,
-  });
+  // Build rankings: eliminated teams added first (worse ranks), survivors continue for better ranks
+  while (remaining.length > 0) {
+    if (remaining.length === 1) {
+      // Last team remaining gets the best rank of this group
+      ranked.push(remaining[0]);
+      break;
+    }
 
-  if (ruleA.winners.length === 1) {
-    return { ranked: ruleA.winners, steps };
+    // Rule A: Head-to-Head
+    const ruleA = applyRuleA(remaining, games, explanations);
+    steps.push({
+      rule: "A: Head-to-Head",
+      detail: ruleA.detail,
+      survivors: ruleA.winners,
+    });
+
+    if (ruleA.winners.length < remaining.length) {
+      // Rule A separated teams: eliminated teams get worse ranks, survivors continue for better ranks
+      const eliminated = remaining.filter((t) => !ruleA.winners.includes(t));
+
+      // Recursively rank eliminated teams if there's more than one
+      if (eliminated.length > 1) {
+        const eliminatedResult = breakTie(
+          eliminated,
+          games,
+          allTeams,
+          explanations
+        );
+        ranked.push(...eliminatedResult.ranked);
+        steps.push(...eliminatedResult.steps);
+      } else {
+        ranked.push(...eliminated);
+      }
+
+      remaining = ruleA.winners;
+      continue;
+    }
+
+    // Rule B: Common Opponents
+    const ruleB = applyRuleB(remaining, games, explanations);
+    steps.push({
+      rule: "B: Common Opponents",
+      detail: ruleB.detail,
+      survivors: ruleB.winners,
+    });
+
+    if (ruleB.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleB.winners.includes(t));
+
+      if (eliminated.length > 1) {
+        const eliminatedResult = breakTie(
+          eliminated,
+          games,
+          allTeams,
+          explanations
+        );
+        ranked.push(...eliminatedResult.ranked);
+        steps.push(...eliminatedResult.steps);
+      } else {
+        ranked.push(...eliminated);
+      }
+
+      remaining = ruleB.winners;
+      continue;
+    }
+
+    // Rule C: Highest Placed Common Opponent
+    const ruleC = applyRuleC(remaining, games, allTeams, explanations);
+    steps.push({
+      rule: "C: Highest Placed Common Opponent",
+      detail: ruleC.detail,
+      survivors: ruleC.winners,
+    });
+
+    if (ruleC.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleC.winners.includes(t));
+
+      if (eliminated.length > 1) {
+        const eliminatedResult = breakTie(
+          eliminated,
+          games,
+          allTeams,
+          explanations
+        );
+        ranked.push(...eliminatedResult.ranked);
+        steps.push(...eliminatedResult.steps);
+      } else {
+        ranked.push(...eliminated);
+      }
+
+      remaining = ruleC.winners;
+      continue;
+    }
+
+    // Rule D: Opponent Win %
+    const ruleD = applyRuleD(remaining, games, explanations);
+    steps.push({
+      rule: "D: Opponent Win %",
+      detail: ruleD.detail,
+      survivors: ruleD.winners,
+    });
+
+    if (ruleD.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleD.winners.includes(t));
+
+      if (eliminated.length > 1) {
+        const eliminatedResult = breakTie(
+          eliminated,
+          games,
+          allTeams,
+          explanations
+        );
+        ranked.push(...eliminatedResult.ranked);
+        steps.push(...eliminatedResult.steps);
+      } else {
+        ranked.push(...eliminated);
+      }
+
+      remaining = ruleD.winners;
+      continue;
+    }
+
+    // Rule E: Scoring Margin
+    const ruleE = applyRuleE(remaining, games, explanations);
+    steps.push({
+      rule: "E: Scoring Margin",
+      detail: ruleE.detail,
+      survivors: ruleE.winners,
+    });
+
+    if (ruleE.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleE.winners.includes(t));
+
+      if (eliminated.length > 1) {
+        const eliminatedResult = breakTie(
+          eliminated,
+          games,
+          allTeams,
+          explanations
+        );
+        ranked.push(...eliminatedResult.ranked);
+        steps.push(...eliminatedResult.steps);
+      } else {
+        ranked.push(...eliminated);
+      }
+
+      remaining = ruleE.winners;
+      continue;
+    }
+
+    // Still tied after all rules - all remaining teams share same rank
+    steps.push({
+      rule: "F: Unresolved",
+      detail: "Tie unresolved by rules A-E",
+      survivors: remaining,
+    });
+    ranked.push(...remaining);
+    break;
   }
-  if (ruleA.winners.length < remaining.length) {
-    // Some eliminated, restart with survivors
-    const subResult = breakTie(ruleA.winners, games, allTeams, explanations);
-    return { ranked: subResult.ranked, steps: [...steps, ...subResult.steps] };
-  }
 
-  remaining = ruleA.winners;
-
-  // Rule B
-  const ruleB = applyRuleB(remaining, games, explanations);
-  steps.push({
-    rule: "B: Common Opponents",
-    detail: ruleB.detail,
-    survivors: ruleB.winners,
-  });
-
-  if (ruleB.winners.length === 1) {
-    return { ranked: ruleB.winners, steps };
-  }
-  if (ruleB.winners.length < remaining.length) {
-    const subResult = breakTie(ruleB.winners, games, allTeams, explanations);
-    return { ranked: subResult.ranked, steps: [...steps, ...subResult.steps] };
-  }
-
-  remaining = ruleB.winners;
-
-  // Rule C
-  const ruleC = applyRuleC(remaining, games, allTeams, explanations);
-  steps.push({
-    rule: "C: Highest Placed Common Opponent",
-    detail: ruleC.detail,
-    survivors: ruleC.winners,
-  });
-
-  if (ruleC.winners.length === 1) {
-    return { ranked: ruleC.winners, steps };
-  }
-  if (ruleC.winners.length < remaining.length) {
-    const subResult = breakTie(ruleC.winners, games, allTeams, explanations);
-    return { ranked: subResult.ranked, steps: [...steps, ...subResult.steps] };
-  }
-
-  remaining = ruleC.winners;
-
-  // Rule D
-  const ruleD = applyRuleD(remaining, games, explanations);
-  steps.push({
-    rule: "D: Opponent Win %",
-    detail: ruleD.detail,
-    survivors: ruleD.winners,
-  });
-
-  if (ruleD.winners.length === 1) {
-    return { ranked: ruleD.winners, steps };
-  }
-  if (ruleD.winners.length < remaining.length) {
-    const subResult = breakTie(ruleD.winners, games, allTeams, explanations);
-    return { ranked: subResult.ranked, steps: [...steps, ...subResult.steps] };
-  }
-
-  remaining = ruleD.winners;
-
-  // Rule E
-  const ruleE = applyRuleE(remaining, games, explanations);
-  steps.push({
-    rule: "E: Scoring Margin",
-    detail: ruleE.detail,
-    survivors: ruleE.winners,
-  });
-
-  if (ruleE.winners.length === 1) {
-    return { ranked: ruleE.winners, steps };
-  }
-  if (ruleE.winners.length < remaining.length) {
-    const subResult = breakTie(ruleE.winners, games, allTeams, explanations);
-    return { ranked: subResult.ranked, steps: [...steps, ...subResult.steps] };
-  }
-
-  // Still tied after all rules
-  steps.push({
-    rule: "F: Unresolved",
-    detail: "Tie unresolved by rules A-E",
-    survivors: remaining,
-  });
-
-  return { ranked: remaining, steps };
+  return { ranked, steps };
 };
 
 /**
