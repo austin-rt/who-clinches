@@ -69,6 +69,7 @@ export const GET = async (request: NextRequest) => {
       (game): GameLean => ({
         _id: String(game._id),
         espnId: String(game.espnId),
+        displayName: String(game.displayName),
         date: String(game.date),
         week: typeof game.week === "number" ? game.week : null,
         season: Number(game.season),
