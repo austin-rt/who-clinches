@@ -216,6 +216,12 @@ curl -s "http://sports.core.api.espn.com/v2/sports/football/leagues/college-foot
 }
 ```
 
+**Note:** Code searches for records using both `name` and `type` fields:
+- Overall: `item.name === "overall"` (RECORD_TYPE_OVERALL constant)
+- Home: `item.type === "homerecord"` (RECORD_TYPE_HOME constant)
+- Away: `item.type === "awayrecord"` (RECORD_TYPE_AWAY constant)
+- Conference: `item.type === "vsconf"` (RECORD_TYPE_CONFERENCE constant)
+
 **Important Notes:**
 - Stats are a **flat array**, not nested objects
 - Different record types: `"overall"`, `"homerecord"`, `"awayrecord"`, `"vsconf"`
