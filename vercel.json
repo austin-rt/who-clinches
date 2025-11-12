@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/cron/update-live-games",
-      "schedule": "0 6 * * 4-6"
+      "schedule": "0 6 * * *"
     },
     {
       "path": "/api/cron/update-rankings",

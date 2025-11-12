@@ -9,6 +9,18 @@
       "schedule": "*/5 16-23,0-6 * * 6"
     },
     {
+      "path": "/api/cron/update-spreads",
+      "schedule": "0 13-5 * * *"
+    },
+    {
+      "path": "/api/cron/update-team-averages",
+      "schedule": "0 6 * * 0"
+    },
+    {
+      "path": "/api/cron/update-rankings",
+      "schedule": "0 3 * * 0"
+    },
+    {
       "path": "/api/cron/update-rankings",
       "schedule": "0 3 * * 3"
     }
