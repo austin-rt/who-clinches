@@ -129,7 +129,55 @@ curl -X GET "http://localhost:3000/api/cron/update-live-games" \
 
 ---
 
-## Test 5: Update Live Games - No Active Games
+## Test 5: Field Verification - Database State
+
+Verify that new fields are properly populated after cron runs.
+
+### Check Game Fields
+
+```bash
+# Check that displayName and predictedScore are populated
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?appName=SEC-Tiebreaker" \
+  --eval "
+    print('Checking game fields...');
+    var game = db.games.findOne({conferenceGame: true});
+    print('displayName:', game.displayName);
+    print('Format check:', game.displayName.includes('@') ? 'PASS' : 'FAIL');
+    print('predictedScore:', JSON.stringify(game.predictedScore));
+    print('Has predictedScore:', game.predictedScore ? 'PASS' : 'FAIL');
+  " \
+  --quiet
+```
+
+### Check Team Fields
+
+```bash
+# Check that team averages are populated
+mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?appName=SEC-Tiebreaker" \
+  --eval "
+    print('Checking team fields...');
+    var team = db.teams.findOne({abbreviation: 'UGA'});
+    print('avgPointsFor:', team.record?.stats?.avgPointsFor);
+    print('avgPointsAgainst:', team.record?.stats?.avgPointsAgainst);
+    print('Has averages:', (team.record?.stats?.avgPointsFor > 0) ? 'PASS' : 'FAIL');
+  " \
+  --quiet
+```
+
+### Checks
+
+- [ ] `displayName` format is "{away abbrev} @ {home abbrev}" (e.g., "UGA @ ALA")
+- [ ] `predictedScore` present for conference games
+- [ ] `predictedScore.home` and `predictedScore.away` are positive integers
+- [ ] Completed games: `predictedScore` matches real scores
+- [ ] Incomplete games: `predictedScore` differs from 0-0 (uses spread + averages)
+- [ ] Team `avgPointsFor` > 0 after rankings cron
+- [ ] Team `avgPointsAgainst` > 0 after rankings cron
+
+---
+
+## Test 6: Update Live Games - No Active Games
 
 Tests behavior when no games are currently in progress.
 

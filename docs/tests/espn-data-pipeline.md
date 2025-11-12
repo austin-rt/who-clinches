@@ -8,15 +8,24 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 
 ## Environments
 
-### Preview (develop branch)
+### Local (develop branch)
+- **URL**: http://localhost:3000
+- **Database**: `dev`
+- **Branch**: `develop`
+- **Purpose**: Active development and testing
+
+### Preview/Staging (develop branch on Vercel)
 - **URL**: https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/
 - **Database**: `preview`
 - **Vercel Env**: `VERCEL_ENV=preview`
+- **Branch**: `develop` (auto-deploys to Vercel preview on push)
+- **Purpose**: Staging environment for testing before production
 
 ### Production (main branch)
 - **URL**: https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/
 - **Database**: `production`
 - **Vercel Env**: `VERCEL_ENV=production`
+- **Branch**: `main` (auto-deploys on push)
 - **⚠️ CAUTION**: Tests modify production data
 
 ---
@@ -39,7 +48,8 @@ Fetches team data from ESPN (site + core APIs) and stores in MongoDB.
 #### Command Template
 
 Replace `{BASE_URL}` and `{DATABASE}` based on environment:
-- Preview: `BASE_URL=https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`, `DATABASE=preview`
+- Local: `BASE_URL=http://localhost:3000`, `DATABASE=dev`
+- Preview/Staging: `BASE_URL=https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`, `DATABASE=preview`
 - Production: `BASE_URL=https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`, `DATABASE=production`
 
 ```bash
@@ -68,7 +78,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
   --quiet
 ```
 
-Replace `{DATABASE}` with `preview` or `production`.
+Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
 
 #### Checks
 
@@ -140,7 +150,7 @@ See `lib/models/Game.ts` for `IGame` interface and schema.
 ```bash
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
-  --eval "db.games.find({season: 2025, week: 11}, {espnId:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, state:1, conferenceGame:1}).limit(5).pretty()" \
+  --eval "db.games.find({season: 2025, week: 11}, {espnId:1, displayName:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, 'odds.spread':1, predictedScore:1, state:1, conferenceGame:1}).limit(5).pretty()" \
   --quiet
 ```
 
@@ -149,6 +159,10 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 - Status code: 200
 - `upserted` count matches games for that week
 - Games have correct season/week
+- **`displayName` field present** (format: "{away abbrev} @ {home abbrev}")
+- **`predictedScore` field present** for conference games
+  - Completed games: `predictedScore` matches real scores
+  - Incomplete games: `predictedScore` calculated from spread + team averages
 - Odds data populated when available
 - Team ESPN IDs correct
 - Conference game flag set correctly

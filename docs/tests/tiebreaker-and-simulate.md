@@ -7,14 +7,17 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 ## Prerequisites
 
 ### Database Setup
-1. Fresh database with updated Game model (includes displayName, logo, color, predictedScore fields)
+1. Fresh database with updated Game model (includes `displayName`, team fields: `logo`, `color`, `displayName`, `predictedScore`)
 2. All SEC teams pulled via `/api/pull-teams`
 3. Full 2025 regular season games (weeks 1-14) pulled via `/api/pull-games`
 
 ### Data Requirements
 - 16 SEC teams in database
 - ~128 conference games (2025 season, weeks 1-14)
-- Games must include team display fields (displayName, logo, color) from ESPN API
+- Games must include:
+  - Game `displayName` field (format: "{away abbrev} @ {home abbrev}")
+  - Team display fields (`displayName`, `logo`, `color`) for home/away teams
+  - `predictedScore` field for conference games
 - All completed games have final scores
 
 ---
