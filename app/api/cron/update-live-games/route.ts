@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
+import Team from "@/lib/models/Team";
 import ErrorLog from "@/lib/models/Error";
 import { espnClient } from "@/lib/espn-client";
 import { reshapeScoreboardData } from "@/lib/reshape-games";
 import { SEC_CONFERENCE_ID } from "@/lib/constants";
 import { CronLiveGamesResponse } from "@/lib/api-types";
 import { GameLean } from "@/lib/types";
+import { calculatePredictedScore } from "@/lib/prefill-helpers";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -33,6 +35,7 @@ export const GET = async (request: NextRequest) => {
     const games: GameLean[] = gamesRaw.map((g) => ({
       _id: String(g._id),
       espnId: String(g.espnId),
+      displayName: String(g.displayName),
       date: String(g.date),
       week: typeof g.week === "number" ? g.week : null,
       season: Number(g.season),
@@ -45,12 +48,22 @@ export const GET = async (request: NextRequest) => {
       home: {
         teamEspnId: String(g.home.teamEspnId),
         abbrev: String(g.home.abbrev),
+        displayName: g.home.displayName
+          ? String(g.home.displayName)
+          : undefined,
+        logo: g.home.logo ? String(g.home.logo) : undefined,
+        color: g.home.color ? String(g.home.color) : undefined,
         score: typeof g.home.score === "number" ? g.home.score : null,
         rank: typeof g.home.rank === "number" ? g.home.rank : null,
       },
       away: {
         teamEspnId: String(g.away.teamEspnId),
         abbrev: String(g.away.abbrev),
+        displayName: g.away.displayName
+          ? String(g.away.displayName)
+          : undefined,
+        logo: g.away.logo ? String(g.away.logo) : undefined,
+        color: g.away.color ? String(g.away.color) : undefined,
         score: typeof g.away.score === "number" ? g.away.score : null,
         rank: typeof g.away.rank === "number" ? g.away.rank : null,
       },
@@ -62,6 +75,12 @@ export const GET = async (request: NextRequest) => {
         overUnder:
           typeof g.odds.overUnder === "number" ? g.odds.overUnder : null,
       },
+      predictedScore: g.predictedScore
+        ? {
+            home: Number(g.predictedScore.home),
+            away: Number(g.predictedScore.away),
+          }
+        : undefined,
       lastUpdated: new Date(g.lastUpdated),
     }));
 
@@ -142,21 +161,61 @@ export const GET = async (request: NextRequest) => {
       gameIds.has(game.espnId)
     );
 
+    // Fetch teams for predictedScore calculation
+    const teamIds = [
+      ...new Set([
+        ...gamesToUpdate.map((g) => g.home.teamEspnId),
+        ...gamesToUpdate.map((g) => g.away.teamEspnId),
+      ]),
+    ];
+    const teams = await Team.find({ _id: { $in: teamIds } }).lean();
+    const teamMap = new Map(teams.map((t) => [String(t._id), t]));
+
     for (const reshapedGame of gamesToUpdate) {
       const currentGame = games.find((g) => g.espnId === reshapedGame.espnId);
 
       if (!currentGame) continue;
 
-      // Check if anything changed
-      if (
+      // Get team data for predictedScore calculation
+      const homeTeam = teamMap.get(reshapedGame.home.teamEspnId);
+      const awayTeam = teamMap.get(reshapedGame.away.teamEspnId);
+
+      if (!homeTeam || !awayTeam) {
+        // Skip if team data is missing (non-conference games)
+        continue;
+      }
+
+      // Always recalculate predictedScore (uses real scores if available, otherwise spread + averages)
+      const predictedScore = calculatePredictedScore(
+        reshapedGame,
+        homeTeam as unknown as {
+          record?: {
+            stats?: { avgPointsFor?: number; avgPointsAgainst?: number };
+          };
+        },
+        awayTeam as unknown as {
+          record?: {
+            stats?: { avgPointsFor?: number; avgPointsAgainst?: number };
+          };
+        }
+      );
+
+      // Check if anything changed (including spreads and predictedScore)
+      const hasChanges =
         reshapedGame.state !== currentGame.state ||
         reshapedGame.completed !== currentGame.completed ||
         reshapedGame.home.score !== currentGame.home.score ||
         reshapedGame.away.score !== currentGame.away.score ||
         reshapedGame.home.rank !== currentGame.home.rank ||
-        reshapedGame.away.rank !== currentGame.away.rank
-      ) {
-        // Update only game fields (not team display fields like displayName, logo, color)
+        reshapedGame.away.rank !== currentGame.away.rank ||
+        reshapedGame.odds?.spread !== currentGame.odds?.spread ||
+        reshapedGame.odds?.favoriteTeamEspnId !==
+          currentGame.odds?.favoriteTeamEspnId ||
+        predictedScore.home !== currentGame.predictedScore?.home ||
+        predictedScore.away !== currentGame.predictedScore?.away;
+
+      if (hasChanges) {
+        // Update game with new data including spreads and predictedScore
         await Game.updateOne(
           { espnId: reshapedGame.espnId },
           {
@@ -167,6 +226,12 @@ export const GET = async (request: NextRequest) => {
               "home.rank": reshapedGame.home.rank,
               "away.score": reshapedGame.away.score,
               "away.rank": reshapedGame.away.rank,
+              "odds.spread": reshapedGame.odds?.spread ?? null,
+              "odds.favoriteTeamEspnId":
+                reshapedGame.odds?.favoriteTeamEspnId ?? null,
+              "odds.overUnder": reshapedGame.odds?.overUnder ?? null,
+              "predictedScore.home": predictedScore.home,
+              "predictedScore.away": predictedScore.away,
               lastUpdated: new Date(),
             },
           }
@@ -200,4 +265,3 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
-
