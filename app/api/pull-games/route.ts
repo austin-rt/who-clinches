@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongodb";
 import Game from "@/lib/models/Game";
+import Team from "@/lib/models/Team";
 import ErrorModel from "@/lib/models/Error";
 import { createESPNClient } from "@/lib/espn-client";
 import { reshapeScoreboardData } from "@/lib/reshape-games";
+import { calculatePredictedScore } from "@/lib/prefill-helpers";
 import {
   PullGamesRequest,
   PullGamesResponse,
@@ -104,14 +106,52 @@ export const POST = async (request: NextRequest) => {
           continue;
         }
 
+        // Fetch all teams needed for predictedScore calculation
+        const teamIds = [
+          ...new Set([
+            ...reshapedGames.map((g) => g.home.teamEspnId),
+            ...reshapedGames.map((g) => g.away.teamEspnId),
+          ]),
+        ];
+        const teams = await Team.find({ _id: { $in: teamIds } }).lean();
+        const teamMap = new Map(teams.map((t) => [t._id, t]));
+
         // Write games to database using upsert
         for (const gameData of reshapedGames) {
           try {
+            // Calculate predictedScore for this game
+            const homeTeam = teamMap.get(gameData.home.teamEspnId);
+            const awayTeam = teamMap.get(gameData.away.teamEspnId);
+
+            let predictedScore = undefined;
+            if (homeTeam && awayTeam) {
+              predictedScore = calculatePredictedScore(
+                gameData,
+                homeTeam as unknown as {
+                  record?: {
+                    stats?: {
+                      avgPointsFor?: number;
+                      avgPointsAgainst?: number;
+                    };
+                  };
+                },
+                awayTeam as unknown as {
+                  record?: {
+                    stats?: {
+                      avgPointsFor?: number;
+                      avgPointsAgainst?: number;
+                    };
+                  };
+                }
+              );
+            }
+
             const result = await Game.updateOne(
               { espnId: gameData.espnId }, // Find by ESPN ID
               {
                 $set: {
                   ...gameData,
+                  ...(predictedScore && { predictedScore }),
                   lastUpdated: new Date(),
                 },
               },
