@@ -4,7 +4,13 @@
       "Bash(curl:*)",
       "Bash(gunzip:*)",
       "Bash(/tmp/summary.json)",
-      "Bash(jq:*)"
+      "Bash(jq:*)",
+      "Bash(find:*)",
+      "WebFetch(domain:daisyui.com)",
+      "WebFetch(domain:headlessui.com)",
+      "Bash(npm run lint:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []
