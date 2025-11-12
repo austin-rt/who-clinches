@@ -337,8 +337,8 @@ Tests that Vercel cron schedules are properly configured.
 
 ### Checks
 
-- [ ] `update-live-games`: Daily at 6 AM UTC (1 AM ET / 2 AM ET)
-- [ ] `update-rankings`: Weekly Wednesday 4 AM UTC (11 PM ET Tuesday / 12 AM ET Wednesday)
+- [ ] `update-live-games`: Daily at 6 AM UTC (1 AM EST / 2 AM EDT)
+- [ ] `update-rankings`: Weekly Wednesday 4 AM UTC (11 PM EST Tuesday / 12 AM EDT Wednesday)
 - [ ] Only 2 crons (Hobby plan limit)
 - [ ] Crons show as "Active" in Vercel dashboard
 
