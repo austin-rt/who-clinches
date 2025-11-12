@@ -45,6 +45,21 @@ All credentials stored in `.env.local`:
 
 Fetches team data from ESPN (site + core APIs) and stores in MongoDB.
 
+#### Pre-Seeding Check
+
+**Always check if teams already exist before seeding:**
+
+```bash
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+  --eval "const count = db.teams.countDocuments(); console.log('Teams in database:', count); if (count > 0) { console.log('Sample teams:'); db.teams.find({}, {_id:1, abbreviation:1, displayName:1}).limit(3).forEach(printjson); }" \
+  --quiet
+```
+
+**Decision:**
+- If teams exist and data looks current: **SKIP seeding**, report as "Seeding not needed - {count} teams already present"
+- If teams missing or data looks stale: **PROCEED with seeding**, report as "Seeding needed - database empty/stale"
+
 #### Command Template
 
 Replace `{BASE_URL}` and `{DATABASE}` based on environment:
@@ -52,10 +67,13 @@ Replace `{BASE_URL}` and `{DATABASE}` based on environment:
 - Preview/Staging: `BASE_URL=https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`, `DATABASE=preview`
 - Production: `BASE_URL=https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`, `DATABASE=production`
 
+**⚠️ IMPORTANT: Always seed ALL teams (conferenceId: 8) before proceeding with remaining tests**
+
 ```bash
+# Seed all SEC teams (required for accurate predictedScore calculations)
 curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
   -H "Content-Type: application/json" \
-  -d '{"teams": ["UGA", "ALA"]}'
+  -d '{"sport": "football", "league": "college-football", "conferenceId": 8}'
 ```
 
 #### Expected Response
@@ -63,9 +81,10 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL
 See `app/api/pull-teams/route.ts` for `PullTeamsResponse` interface.
 
 Response should include:
-- `upserted`: number of teams inserted/updated
+- `upserted`: 16 (all SEC teams)
 - `lastUpdated`: timestamp
-- `logs`: array of processing messages
+
+**Before proceeding to other tests, verify all 16 teams were seeded successfully.**
 
 #### Database Verification
 
@@ -83,12 +102,14 @@ Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
 #### Checks
 
 - Status code: 200
-- `upserted` count matches requested teams
+- `upserted` count = 16 (all SEC teams)
 - Conference records populated (not null)
 - Home/away records populated
 - National rankings populated for ranked teams
 - Conference standings populated
 - Data exists in correct database
+
+**Do not proceed to games seeding until all 16 teams are confirmed in database.**
 
 ---
 
@@ -96,7 +117,25 @@ Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB.
 
+**Prerequisites:** All SEC teams must be seeded first (`POST /api/pull-teams` with `conferenceId: 8`) for accurate `predictedScore` calculations.
+
 **Full Season Pull:** If `week` is not specified, the endpoint dynamically fetches the ESPN calendar to determine the "Regular Season" weeks and pulls all of them. For 2025, this is weeks 1-14 (SEC Championship excluded). This ensures the database has complete regular season data without hardcoding week ranges.
+
+#### Pre-Seeding Check
+
+**Always check if games already exist before seeding:**
+
+```bash
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+  --eval "const count = db.games.countDocuments({season: 2025}); console.log('Games in database (2025 season):', count); if (count > 0) { console.log('Games by week:'); const byWeek = db.games.aggregate([{ \$match: {season: 2025} }, { \$group: { _id: '\$week', count: { \$sum: 1 } } }, { \$sort: { _id: 1 } }]).toArray(); byWeek.forEach(w => console.log('  Week', w._id + ':', w.count, 'games')); }" \
+  --quiet
+```
+
+**Decision:**
+- If games exist for target season/week: **SKIP seeding**, report as "Seeding not needed - {count} games already present for season/week"
+- If games missing or incomplete: **PROCEED with seeding**, report as "Seeding needed - games missing for season/week"
+- If testing specific week and it exists: **SKIP**, report as "Week {X} already seeded with {count} games"
 
 #### Command Template (Full Season - Recommended)
 
@@ -263,12 +302,16 @@ Should show `preview` or `production` based on environment.
 
 ### Preview (develop branch)
 - [ ] Deployment accessible with bypass token
-- [ ] POST /api/pull-teams returns 200 (16 teams)
-- [ ] POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
-- [ ] Response includes `weeksPulled` array with all pulled weeks
+- [ ] **Pre-check**: Teams count in `preview` database
+  - [ ] If teams exist: Seeding skipped (report count)
+  - [ ] If teams missing: POST /api/pull-teams returns 200 (16 teams)
+- [ ] **Pre-check**: Games count in `preview` database for target season
+  - [ ] If games exist: Seeding skipped (report count by week)
+  - [ ] If games missing: POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
+  - [ ] Response includes `weeksPulled` array with all pulled weeks
 - [ ] GET /api/games returns 200
-- [ ] Teams data verified in `preview` database (16 teams)
-- [ ] Games data verified in `preview` database (~128 games for 2025, weeks 1-14)
+- [ ] Teams data verified in `preview` database (16 teams expected)
+- [ ] Games data verified in `preview` database (~128 games for 2025, weeks 1-14 expected)
 - [ ] Games include team display fields (displayName, logo, color)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: preview`
@@ -276,12 +319,16 @@ Should show `preview` or `production` based on environment.
 ### Production (main branch)
 - [ ] Preview tests completed successfully first
 - [ ] Deployment accessible with bypass token
-- [ ] POST /api/pull-teams returns 200 (16 teams)
-- [ ] POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
-- [ ] Response includes `weeksPulled` array with all pulled weeks
+- [ ] **Pre-check**: Teams count in `production` database
+  - [ ] If teams exist: Seeding skipped (report count)
+  - [ ] If teams missing: POST /api/pull-teams returns 200 (16 teams)
+- [ ] **Pre-check**: Games count in `production` database for target season
+  - [ ] If games exist: Seeding skipped (report count by week)
+  - [ ] If games missing: POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
+  - [ ] Response includes `weeksPulled` array with all pulled weeks
 - [ ] GET /api/games returns 200
-- [ ] Teams data verified in `production` database (16 teams)
-- [ ] Games data verified in `production` database (~128 games for 2025, weeks 1-14)
+- [ ] Teams data verified in `production` database (16 teams expected)
+- [ ] Games data verified in `production` database (~128 games for 2025, weeks 1-14 expected)
 - [ ] Games include team display fields (displayName, logo, color)
 - [ ] Conference records populated (not null)
 - [ ] Logs show: `[MongoDB] Connecting to database: production`
