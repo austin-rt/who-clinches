@@ -80,6 +80,7 @@ export const reshapeScoreboardData = (
       // Our reshaped format
       return {
         espnId: event.id,
+        displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
         date: competition.date,
         week: competition.week?.number || espnResponse.week?.number || null,
         season:

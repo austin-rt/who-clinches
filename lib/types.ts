@@ -4,6 +4,7 @@
 
 export interface ReshapedGame {
   espnId: string;
+  displayName: string; // "{away abbrev} @ {home abbrev}"
   date: string;
   week: number | null;
   season: number;
@@ -107,6 +108,7 @@ export interface MongoQuery {
 export interface GameLean {
   _id: string;
   espnId: string;
+  displayName: string; // "{away abbrev} @ {home abbrev}"
   date: string;
   week: number | null;
   season: number;
