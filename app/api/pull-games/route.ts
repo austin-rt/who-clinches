@@ -120,38 +120,36 @@ export const POST = async (request: NextRequest) => {
         for (const gameData of reshapedGames) {
           try {
             // Calculate predictedScore for this game
-            const homeTeam = teamMap.get(gameData.home.teamEspnId);
-            const awayTeam = teamMap.get(gameData.away.teamEspnId);
+            // Use team data if available, otherwise calculatePredictedScore will use defaults
+            const homeTeam = teamMap.get(gameData.home.teamEspnId) || {};
+            const awayTeam = teamMap.get(gameData.away.teamEspnId) || {};
 
-            let predictedScore = undefined;
-            if (homeTeam && awayTeam) {
-              predictedScore = calculatePredictedScore(
-                gameData,
-                homeTeam as unknown as {
-                  record?: {
-                    stats?: {
-                      avgPointsFor?: number;
-                      avgPointsAgainst?: number;
-                    };
+            const predictedScore = calculatePredictedScore(
+              gameData,
+              homeTeam as {
+                record?: {
+                  stats?: {
+                    avgPointsFor?: number;
+                    avgPointsAgainst?: number;
                   };
-                },
-                awayTeam as unknown as {
-                  record?: {
-                    stats?: {
-                      avgPointsFor?: number;
-                      avgPointsAgainst?: number;
-                    };
+                };
+              },
+              awayTeam as {
+                record?: {
+                  stats?: {
+                    avgPointsFor?: number;
+                    avgPointsAgainst?: number;
                   };
-                }
-              );
-            }
+                };
+              }
+            );
 
             const result = await Game.updateOne(
               { espnId: gameData.espnId }, // Find by ESPN ID
               {
                 $set: {
                   ...gameData,
-                  ...(predictedScore && { predictedScore }),
+                  predictedScore,
                   lastUpdated: new Date(),
                 },
               },
