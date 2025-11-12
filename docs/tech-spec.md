@@ -454,11 +454,22 @@ All endpoints return errors as:
 
 ### 8.2 User Overrides
 
-- User clicks opposite button → override stored in `localStorage`
-- Key: `cfb-sec-overrides-{season}`
-- Value: `{ gameId: winnerTeamId }` map
-- Persists for 24 hours, auto-clears after
-- "Reset to Live" button clears all overrides
+**Form Input Design:**
+- User enters custom scores for each game (home and away)
+- Inputs prefilled with `predictedScore` (guaranteed valid defaults)
+- Validation on submit: no ties, non-negative, whole numbers only
+- Only valid overrides stored in `localStorage`
+
+**Storage:**
+- Key: `sec-tiebreaker-overrides-{season}`
+- Value: `{ [gameEspnId]: { homeScore: number, awayScore: number } }` map
+- **Critical:** Uses `game.espnId` (ESPN game ID) as key, not MongoDB `_id`
+- Only valid scores persisted (invalid state never stored)
+- "Reset to Live" button:
+  1. Fetches fresh data from cron job
+  2. Calls `/api/games` to get updated predicted scores
+  3. Clears all overrides from localStorage
+  4. Refills form inputs with new predicted scores
 
 ### 8.3 Simulation Flow
 
