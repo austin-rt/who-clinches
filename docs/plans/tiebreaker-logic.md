@@ -1,5 +1,12 @@
 # SEC Tiebreaker Logic Implementation
 
+> **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
+> This document was created during planning phase. For actual implementation details, refer to:
+> - Actual code in `/app/api/simulate/route.ts`
+> - `/lib/tiebreaker-helpers.ts` for tiebreaker logic
+> - `/docs/api-reference.md` for current API documentation
+> - `/lib/constants.ts` for actual constant definitions (SEC_TEAMS is string[], not objects)
+
 ## Overview
 Implement the SEC conference tiebreaker engine following rules A-E from the official SEC policy. Create `/api/simulate` endpoint that accepts user score predictions for incomplete games and returns fully resolved conference standings with human-readable explanations.
 

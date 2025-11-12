@@ -1,5 +1,9 @@
 # ESPN API Foundation Setup
 
+> **⚠️ PLANNING DOCUMENT - HISTORICAL REFERENCE**
+> This document tracked the initial foundation setup. Implementation is complete.
+> For current API documentation, refer to `/docs/api-reference.md`
+
 ## Implementation Steps
 
 ### 1. Next.js Project Setup ✅ COMPLETE

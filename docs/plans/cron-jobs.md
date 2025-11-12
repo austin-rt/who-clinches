@@ -1,5 +1,11 @@
 # Automated Cron Jobs Implementation Plan
 
+> **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
+> This document was created during planning phase. For actual implementation details, refer to:
+> - Actual code in `/app/api/cron/` endpoints
+> - `/docs/api-reference.md` for current API documentation
+> - `/vercel.json` and `/vercel.pro.json` for actual cron schedules
+
 ## Overview
 Implement smart, efficient Vercel Cron jobs that minimize ESPN API calls while maintaining data accuracy. Priority: only fetch data when needed, only for active/changed entities.
 

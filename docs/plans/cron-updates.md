@@ -1,5 +1,11 @@
 # Cron Job Updates: Spreads & Predicted Scores
 
+> **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
+> This document was created during planning phase. For actual implementation details, refer to:
+> - Actual code in `/app/api/cron/` endpoints
+> - `/docs/api-reference.md` for current API documentation
+> - `/lib/constants.ts` for actual constant definitions
+
 ## Overview
 Enhance existing cron jobs to update game spreads and calculate `predictedScore` fields for all games. Spreads move throughout the week, so daily updates are needed to keep prefill suggestions accurate.
 
