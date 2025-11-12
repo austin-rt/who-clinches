@@ -67,6 +67,7 @@ Seeds or updates team data from ESPN API.
 - Upserts teams (creates new or updates existing)
 - Stores: name, logo, colors, conference affiliation
 - Does NOT fetch team stats (use `/api/cron/update-rankings` for that)
+- **Not required before pulling games** - games can be seeded independently
 
 ---
 
@@ -134,14 +135,17 @@ Pulls game data from ESPN for a specific season/conference.
 - State: `state` (pre/in/post), `completed`, `conferenceGame`, `neutralSite`
 - Teams: `home`/`away` with `teamEspnId`, `abbrev`, `displayName`, `logo`, `color`, `score`, `rank`
 - Odds: `spread`, `favoriteTeamEspnId`, `overUnder`
-- **`predictedScore`**: Calculated field
-  - Completed games: Real scores
-  - Incomplete games: Spread + team averages
+- **`predictedScore`**: Always calculated for all games
+  - Completed games: Uses real scores
+  - Incomplete games with spread: Uses spread + team averages (or defaults)
+  - Incomplete games without spread: Uses team averages + home field advantage (or defaults)
+  - Default average: 28 points per team if no team data available
 
 **Notes:**
 - Dynamically determines season weeks using ESPN calendar API
 - Excludes SEC Championship game
-- Requires teams to be seeded first (for `predictedScore` calculation)
+- **Can run independently** - does not require teams to be seeded first
+- **Optimal order**: Run `/api/pull-teams` → `/api/cron/update-rankings` → `/api/pull-games` for most accurate `predictedScore` calculations
 - Upserts games (updates if exists, creates if new)
 
 ---
