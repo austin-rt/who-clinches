@@ -116,3 +116,24 @@ export function useSimulate() {
   - Use for: API error toasts, validation error toasts, success confirmations
   - Can also be used retroactively for Phase 3 "Reset to Live" feedback
   - Error messages displayed inline below score inputs (Phase 3) AND in toast (Phase 4)
+
+**Version Automation Setup:**
+
+After Phase 4 is complete and `/api/simulate` is successfully returning to the FE, set up automated semantic versioning:
+
+- Install `standard-version`: `npm install -D standard-version`
+- Add to `package.json` scripts:
+  ```json
+  "release": "standard-version"
+  ```
+- Wire Husky post-commit hook (already installed in Phase 0):
+  - Create `.husky/prepare-commit-msg` hook
+  - Hook will auto-parse commit messages and increment minor version on release
+- Usage: `npm run release` bumps version based on commits (`feat:` = minor, `fix:` = patch, `BREAKING CHANGE:` = major)
+- Generates CHANGELOG automatically from commit history
+- Creates git tags for each release
+
+**Files to Create/Modify (for version automation):**
+
+- `package.json` (add `standard-version` to devDependencies, add `release` script)
+- `.husky/prepare-commit-msg` (new - hook configuration for version bumping)
