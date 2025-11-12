@@ -102,6 +102,12 @@ export const GET = async (request: NextRequest) => {
               ? game.odds.overUnder
               : null,
         },
+        predictedScore: game.predictedScore
+          ? {
+              home: Number(game.predictedScore.home),
+              away: Number(game.predictedScore.away),
+            }
+          : undefined,
         lastUpdated: new Date(game.lastUpdated),
       })
     );
