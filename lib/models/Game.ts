@@ -2,6 +2,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IGame extends Document {
   espnId: string;
+  displayName: string; // "{away abbrev} @ {home abbrev}"
   date: string;
   week: number | null;
   season: number;
@@ -48,6 +49,10 @@ const GameSchema = new Schema<IGame>(
       required: true,
       unique: true,
       index: true,
+    },
+    displayName: {
+      type: String,
+      required: true,
     },
     date: {
       type: String,
@@ -194,8 +199,7 @@ GameSchema.index({
 });
 GameSchema.index({ state: 1, completed: 1 });
 GameSchema.index({ sport: 1, league: 1 });
-GameSchema.index({ "home.teamEspnId": 1 });
-GameSchema.index({ "away.teamEspnId": 1 });
+// Note: home.teamEspnId and away.teamEspnId already have index: true in field definitions
 
 // Force delete cached model to pick up schema changes
 if (mongoose.models.Game) {
