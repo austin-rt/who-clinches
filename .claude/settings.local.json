@@ -9,8 +9,7 @@
       "WebFetch(domain:daisyui.com)",
       "WebFetch(domain:headlessui.com)",
       "Bash(npm run lint:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(npm run build:*)"
     ],
     "deny": [],
     "ask": []
