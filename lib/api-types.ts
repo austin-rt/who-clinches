@@ -90,6 +90,8 @@ export interface TeamMetadata {
   abbrev: string;
   displayName: string;
   logo: string;
+  color: string;
+  alternateColor: string;
 }
 
 export interface GamesResponse {

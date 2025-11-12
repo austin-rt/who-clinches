@@ -115,16 +115,26 @@ export const GET = async (request: NextRequest) => {
     // Fetch team metadata for all teams in results
     const teamsRaw = await Team.find({ _id: { $in: Array.from(teamIds) } })
       .lean()
-      .select('_id abbreviation displayName logo')
+      .select('_id abbreviation displayName logo color alternateColor')
       .exec();
 
     // Type assertion - we know our selected fields match exactly
-    const teams: Pick<TeamLean, '_id' | 'abbreviation' | 'displayName' | 'logo'>[] = teamsRaw.map(
-      (team): Pick<TeamLean, '_id' | 'abbreviation' | 'displayName' | 'logo'> => ({
+    const teams: Pick<
+      TeamLean,
+      '_id' | 'abbreviation' | 'displayName' | 'logo' | 'color' | 'alternateColor'
+    >[] = teamsRaw.map(
+      (
+        team
+      ): Pick<
+        TeamLean,
+        '_id' | 'abbreviation' | 'displayName' | 'logo' | 'color' | 'alternateColor'
+      > => ({
         _id: String(team._id),
         abbreviation: String(team.abbreviation),
         displayName: String(team.displayName),
         logo: String(team.logo),
+        color: String(team.color),
+        alternateColor: String(team.alternateColor),
       })
     );
 
@@ -135,6 +145,8 @@ export const GET = async (request: NextRequest) => {
         abbrev: team.abbreviation,
         displayName: team.displayName,
         logo: team.logo,
+        color: team.color,
+        alternateColor: team.alternateColor,
       };
     }
 
