@@ -267,7 +267,7 @@ export const GET = async (request: NextRequest) => {
     // Unexpected error - log and return
     await ErrorLog.create({
       timestamp: new Date(),
-        endpoint: '/api/cron/update-games',
+      endpoint: '/api/cron/update-games',
       payload: {},
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',
