@@ -7,7 +7,7 @@ This is your guide to finding documentation in the sec-tiebreaker project. Use t
 - **Getting Started?** → [README.md](../README.md)
 - **Need to test something?** → [Testing Quick Reference](./guides/TESTING-QUICK-REFERENCE.md)
 - **Setting up pre-commit hooks?** → [Pre-Commit Testing Guide](./guides/PRE-COMMIT-TESTING.md)
-- **Building an API endpoint?** → [API Reference](./api-reference.md)
+- **Building an API endpoint?** → [API Reference](./guides/api-reference.md)
 - **Understanding ESPN API patterns?** → [ESPN API Testing](./ESPN-API-TESTING.md)
 - **Need AI development guidance?** → [AI Development Guide](./ai-guide.md)
 
@@ -29,36 +29,33 @@ Essential documentation for active development:
 
 ```
 docs/
-├── api-reference.md                    - Complete API endpoint documentation
 ├── ESPN-API-TESTING.md                 - ESPN API field verification patterns
 ├── CHANGELOG-GUIDE.md                  - How to maintain the changelog
-├── ai-guide.md                         - AI assistant development guide
-├── tech-spec.md                        - Technical specification (historical)
-└── TEST-AUDIT.md                       - Test suite audit and coverage report
+└── ai-guide.md                         - AI assistant development guide
 ```
 
 **When to use:**
 
-- API Reference → Building endpoints, understanding request/response types
 - ESPN API Testing → Verifying ESPN data transformations
 - AI Guide → Writing code with AI assistance, prompt engineering
 - CHANGELOG Guide → Maintaining version history
-- TEST-AUDIT → Understanding test coverage and quality metrics
 
 ---
 
 ### Workflow Guides (`/docs/guides`)
 
-How-to documentation for common development tasks:
+How-to documentation and API reference for common development tasks:
 
 ```
 docs/guides/
+├── api-reference.md                    - Complete API endpoint documentation
 ├── PRE-COMMIT-TESTING.md               - Git hook setup, pre-commit workflow
 └── TESTING-QUICK-REFERENCE.md          - Testing commands, coverage checks
 ```
 
 **When to use:**
 
+- API Reference → Building endpoints, understanding request/response types
 - Pre-Commit Testing → Setting up or troubleshooting git hooks
 - Testing Quick Reference → Running tests, checking coverage, debugging
 
@@ -87,10 +84,11 @@ docs/tests/
 
 ### Planning Documents (`/docs/plans`)
 
-Historical planning documents (useful for understanding original design decisions):
+Historical planning documents and technical specifications:
 
 ```
 docs/plans/
+├── tech-spec.md                        - Technical specification (historical)
 ├── api-foundation.md                   - API architecture and endpoints
 ├── cron-jobs.md                        - Background job design
 ├── cron-updates.md                     - Cron job update patterns
@@ -107,6 +105,7 @@ docs/plans/
 
 **When to use:**
 
+- Tech Spec → Understanding overall architecture and design
 - Understanding original design decisions
 - Researching implementation rationale
 - Planning future features
@@ -147,20 +146,19 @@ docs/archive/
 #### **Understand the Project**
 
 1. Start with [README.md](../README.md) - Project overview
-2. Read [tech-spec.md](./tech-spec.md) - Technical details
-3. Review [api-reference.md](./api-reference.md) - Available endpoints
+2. Read [tech-spec.md](./plans/tech-spec.md) - Technical details
+3. Review [api-reference.md](./guides/api-reference.md) - Available endpoints
 
 #### **Add a New API Endpoint**
 
-1. Check [api-reference.md](./api-reference.md) - See existing patterns
+1. Check [api-reference.md](./guides/api-reference.md) - See existing patterns
 2. Review [plans/api-foundation.md](./plans/api-foundation.md) - Architecture
 3. Follow [tests/comprehensive-api-testing.md](./tests/comprehensive-api-testing.md) - Write tests
 
 #### **Test My Code Changes**
 
 1. Use [guides/TESTING-QUICK-REFERENCE.md](./guides/TESTING-QUICK-REFERENCE.md) - Quick commands
-2. Check [TEST-AUDIT.md](./TEST-AUDIT.md) - Coverage requirements
-3. Review relevant test docs in [tests/](./tests/) - Specific testing procedures
+2. Review relevant test docs in [tests/](./tests/) - Specific testing procedures
 
 #### **Set Up Pre-Commit Hooks**
 
@@ -177,33 +175,33 @@ docs/archive/
 
 1. Review [plans/tiebreaker-logic.md](./plans/tiebreaker-logic.md) - Design
 2. Check [tests/tiebreaker-and-simulate.md](./tests/tiebreaker-and-simulate.md) - Testing
-3. Read [api-reference.md](./api-reference.md) - Simulation endpoint
+3. Read [guides/api-reference.md](./guides/api-reference.md) - Simulation endpoint
 
 #### **Set Up Development with AI**
 
 1. Start with [ai-guide.md](./ai-guide.md) - Development guidelines
-2. Review [api-reference.md](./api-reference.md) - Code structure reference
+2. Review [guides/api-reference.md](./guides/api-reference.md) - Code structure reference
 3. Check relevant plan docs - Implementation patterns
 
 ---
 
 ## File Location Reference
 
-| Document          | Location                                  | Purpose                       |
-| ----------------- | ----------------------------------------- | ----------------------------- |
-| API Endpoints     | `docs/api-reference.md`                   | Current API documentation     |
-| ESPN Patterns     | `docs/ESPN-API-TESTING.md`                | Data transformation reference |
-| AI Development    | `docs/ai-guide.md`                        | Using AI for coding           |
-| Test Coverage     | `docs/TEST-AUDIT.md`                      | Coverage metrics and goals    |
-| API Testing       | `docs/tests/comprehensive-api-testing.md` | API test procedures           |
-| ESPN Pipeline     | `docs/tests/espn-data-pipeline.md`        | Data import testing           |
-| Pre-Commit Setup  | `docs/guides/PRE-COMMIT-TESTING.md`       | Git hook configuration        |
-| Test Commands     | `docs/guides/TESTING-QUICK-REFERENCE.md`  | Quick test reference          |
-| API Design        | `docs/plans/api-foundation.md`            | Architecture decisions        |
-| Tiebreaker Design | `docs/plans/tiebreaker-logic.md`          | Ranking algorithm             |
-| Frontend Plans    | `docs/plans/frontend/`                    | UI/UX phase planning          |
-| Phase History     | `docs/archive/phases/`                    | Completed work records        |
-| Audits            | `docs/archive/audits/`                    | Quality assessments           |
+| Document | Location | Purpose |
+|----------|----------|---------|
+| API Endpoints | `docs/guides/api-reference.md` | Current API documentation |
+| ESPN Patterns | `docs/ESPN-API-TESTING.md` | Data transformation reference |
+| AI Development | `docs/ai-guide.md` | Using AI for coding |
+| API Testing | `docs/tests/comprehensive-api-testing.md` | API test procedures |
+| ESPN Pipeline | `docs/tests/espn-data-pipeline.md` | Data import testing |
+| Pre-Commit Setup | `docs/guides/PRE-COMMIT-TESTING.md` | Git hook configuration |
+| Test Commands | `docs/guides/TESTING-QUICK-REFERENCE.md` | Quick test reference |
+| Tech Spec | `docs/plans/tech-spec.md` | Technical specification |
+| API Design | `docs/plans/api-foundation.md` | Architecture decisions |
+| Tiebreaker Design | `docs/plans/tiebreaker-logic.md` | Ranking algorithm |
+| Frontend Plans | `docs/plans/frontend/` | UI/UX phase planning |
+| Phase History | `docs/archive/phases/` | Completed work records |
+| Audits | `docs/archive/audits/` | Quality assessments |
 
 ---
 
@@ -213,7 +211,7 @@ If you're looking for something specific:
 
 ### By Topic
 
-- **API** → See `api-reference.md` and `plans/api-foundation.md`
+- **API** → See `guides/api-reference.md` and `plans/api-foundation.md`
 - **Testing** → See `guides/TESTING-QUICK-REFERENCE.md` and `tests/*`
 - **ESPN Integration** → See `ESPN-API-TESTING.md` and `tests/espn-data-pipeline.md`
 - **Tiebreaker** → See `plans/tiebreaker-logic.md` and `tests/tiebreaker-and-simulate.md`
@@ -225,7 +223,7 @@ If you're looking for something specific:
 - **Commit failing?** → `guides/PRE-COMMIT-TESTING.md`
 - **Tests failing?** → `guides/TESTING-QUICK-REFERENCE.md` then relevant test doc
 - **ESPN data wrong?** → `ESPN-API-TESTING.md` then `tests/espn-data-pipeline.md`
-- **Need endpoint details?** → `api-reference.md`
+- **Need endpoint details?** → `guides/api-reference.md`
 - **Forgot a command?** → `guides/TESTING-QUICK-REFERENCE.md`
 
 ### By Timeline
@@ -240,7 +238,7 @@ If you're looking for something specific:
 
 When creating new documentation:
 
-1. **Is it a reference?** → Place in `/docs/` (e.g., `api-reference.md`)
+1. **Is it a reference?** → Place in `/docs/` (e.g., `ESPN-API-TESTING.md`)
 2. **Is it a how-to guide?** → Place in `/docs/guides/` (e.g., `SETUP-GUIDE.md`)
 3. **Is it testing guidance?** → Place in `/docs/tests/` (e.g., `new-feature-testing.md`)
 4. **Is it a planning document?** → Place in `/docs/plans/` with clear phase/section name
@@ -268,14 +266,14 @@ All documentation should:
 **Before Major Releases:**
 
 - Update `CHANGELOG.md` with all changes
-- Review `api-reference.md` for accuracy
+- Review `guides/api-reference.md` for accuracy
 - Verify test documentation reflects current test suite
 
 **When Making Big Changes:**
 
 - Update relevant reference docs immediately
 - Create plan document if designing new feature
-- Update `TEST-AUDIT.md` if test coverage changes
+- Update archive if completing a phase
 
 ---
 
