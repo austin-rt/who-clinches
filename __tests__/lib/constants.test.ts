@@ -128,12 +128,7 @@ describe('Record Type Constants', () => {
   });
 
   it('record types are unique', () => {
-    const types = [
-      RECORD_TYPE_OVERALL,
-      RECORD_TYPE_HOME,
-      RECORD_TYPE_AWAY,
-      RECORD_TYPE_CONFERENCE,
-    ];
+    const types = [RECORD_TYPE_OVERALL, RECORD_TYPE_HOME, RECORD_TYPE_AWAY, RECORD_TYPE_CONFERENCE];
     const uniqueTypes = new Set(types);
     expect(uniqueTypes.size).toBe(4);
   });
