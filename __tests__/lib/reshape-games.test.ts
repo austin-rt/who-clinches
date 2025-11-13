@@ -18,11 +18,11 @@ const createTestEvent = (
   const competition = baseEvent.competitions[0];
   return {
     ...baseEvent,
-  competitions: [
-    {
+    competitions: [
+      {
         ...competition,
         ...overrides,
-              },
+      },
     ],
   };
 };
@@ -51,7 +51,9 @@ describe('reshapeScoreboardData', () => {
   describe('Basic Game Transformation', () => {
     it('transforms ESPN event to ReshapedGame', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates | NOTE:Scoreboard test data must contain at least one event, update reshape functions if API format changed');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates | NOTE:Scoreboard test data must contain at least one event, update reshape functions if API format changed'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -64,7 +66,9 @@ describe('reshapeScoreboardData', () => {
 
     it('includes team information correctly', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -80,7 +84,9 @@ describe('reshapeScoreboardData', () => {
 
     it('parses scores correctly', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -93,7 +99,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles null scores for pre-game', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       // Create a pre-game event from the first event
@@ -124,7 +132,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles partial scores for in-progress', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       // Create an in-progress event
@@ -157,17 +167,19 @@ describe('reshapeScoreboardData', () => {
   describe('Game State Handling', () => {
     it('detects completed games', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       // Find or create a completed game
-      const completedEvent = scoreboardResponse.events.find(
-        (e) => e.competitions[0]?.status?.type?.state === 'post'
-      ) || createTestEvent(scoreboardResponse.events[0], {
-        status: {
-          type: { state: 'post', completed: true },
-        },
-      });
+      const completedEvent =
+        scoreboardResponse.events.find((e) => e.competitions[0]?.status?.type?.state === 'post') ||
+        createTestEvent(scoreboardResponse.events[0], {
+          status: {
+            type: { state: 'post', completed: true },
+          },
+        });
 
       const response: ESPNScoreboardResponse = {
         ...scoreboardResponse,
@@ -182,7 +194,9 @@ describe('reshapeScoreboardData', () => {
 
     it('detects in-progress games', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -207,7 +221,9 @@ describe('reshapeScoreboardData', () => {
 
     it('detects pre-game', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -232,7 +248,9 @@ describe('reshapeScoreboardData', () => {
   describe('Ranking Handling', () => {
     it('includes valid rankings when present', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -257,7 +275,9 @@ describe('reshapeScoreboardData', () => {
 
     it('treats rank 99 as null (unranked)', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -282,7 +302,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles missing rank', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -309,7 +331,9 @@ describe('reshapeScoreboardData', () => {
   describe('Odds Parsing', () => {
     it('extracts spread and over/under when present', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -339,11 +363,14 @@ describe('reshapeScoreboardData', () => {
 
     it('identifies favorite team when away is favorite', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
-      const awayTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'away')?.team.id;
+      const awayTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'away')
+        ?.team.id;
       const oddsEvent = createTestEvent(firstEvent, {
         odds: [
           {
@@ -371,11 +398,14 @@ describe('reshapeScoreboardData', () => {
 
     it('identifies favorite team when home is favorite', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
-      const homeTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'home')?.team.id;
+      const homeTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'home')
+        ?.team.id;
       const oddsEvent = createTestEvent(firstEvent, {
         odds: [
           {
@@ -403,7 +433,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles missing odds', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -426,7 +458,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles push spreads (0)', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -455,7 +489,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles fractional spreads', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -486,7 +522,9 @@ describe('reshapeScoreboardData', () => {
   describe('Game Metadata', () => {
     it('includes week number', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -506,7 +544,9 @@ describe('reshapeScoreboardData', () => {
 
     it('includes season year', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -516,7 +556,9 @@ describe('reshapeScoreboardData', () => {
 
     it('marks conference games', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -536,7 +578,9 @@ describe('reshapeScoreboardData', () => {
 
     it('includes display name format', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -547,7 +591,9 @@ describe('reshapeScoreboardData', () => {
 
     it('includes team colors', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -559,7 +605,9 @@ describe('reshapeScoreboardData', () => {
 
     it('includes lastUpdated timestamp', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const before = new Date();
@@ -575,7 +623,9 @@ describe('reshapeScoreboardData', () => {
   describe('Multiple Games', () => {
     it('reshapes multiple games', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
@@ -602,13 +652,15 @@ describe('reshapeScoreboardData', () => {
   describe('Error Handling', () => {
     it('filters out events with missing competition', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const validEvent = scoreboardResponse.events[0];
       const invalidEvent: ESPNEvent = {
-          id: '999',
-          competitions: [], // Missing competition
+        id: '999',
+        competitions: [], // Missing competition
       };
 
       const response: ESPNScoreboardResponse = {
@@ -624,21 +676,23 @@ describe('reshapeScoreboardData', () => {
 
     it('filters out games with missing competitors', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const validEvent = scoreboardResponse.events[0];
       const invalidEvent: ESPNEvent = {
-          id: '999',
-          competitions: [
-            {
-              id: 'comp-999',
-              competitors: [], // Missing competitors
-              conferenceCompetition: false,
-              status: { type: { state: 'post', completed: true } },
-              date: '2025-09-06T12:00Z',
-            },
-          ],
+        id: '999',
+        competitions: [
+          {
+            id: 'comp-999',
+            competitors: [], // Missing competitors
+            conferenceCompetition: false,
+            status: { type: { state: 'post', completed: true } },
+            date: '2025-09-06T12:00Z',
+          },
+        ],
       };
 
       const response: ESPNScoreboardResponse = {
@@ -653,22 +707,24 @@ describe('reshapeScoreboardData', () => {
 
     it('filters out games with wrong number of competitors', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const validEvent = scoreboardResponse.events[0];
       const firstComp = validEvent.competitions[0];
       const invalidEvent: ESPNEvent = {
-          id: '999',
-          competitions: [
-            {
+        id: '999',
+        competitions: [
+          {
             ...firstComp,
-              id: 'comp-999',
-              competitors: [
+            id: 'comp-999',
+            competitors: [
               firstComp.competitors[0], // Only one competitor instead of two
-              ],
-            },
-          ],
+            ],
+          },
+        ],
       };
 
       const response: ESPNScoreboardResponse = {
@@ -685,7 +741,9 @@ describe('reshapeScoreboardData', () => {
   describe('Score Parsing Edge Cases', () => {
     it('parses string scores to integers', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -712,7 +770,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles zero scores', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -742,7 +802,9 @@ describe('reshapeScoreboardData', () => {
 
     it('handles very high scores', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -769,7 +831,9 @@ describe('reshapeScoreboardData', () => {
   describe('Default Values', () => {
     it('uses default week if not provided', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -790,7 +854,9 @@ describe('reshapeScoreboardData', () => {
 
     it('uses default season if not provided', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -811,7 +877,9 @@ describe('reshapeScoreboardData', () => {
 
     it('uses current year if season not provided', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const firstEvent = scoreboardResponse.events[0];
@@ -835,7 +903,9 @@ describe('reshapeScoreboardData', () => {
   describe('Sport and League Parameters', () => {
     it('uses provided sport parameter', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse, 'football', 'college-football');
@@ -845,7 +915,9 @@ describe('reshapeScoreboardData', () => {
 
     it('uses provided league parameter', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse, 'football', 'nfl');
@@ -855,7 +927,9 @@ describe('reshapeScoreboardData', () => {
 
     it('uses default parameters when not provided', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
-        throw new Error('TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates');
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
       }
 
       const result = reshapeScoreboardData(scoreboardResponse);
