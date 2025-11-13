@@ -107,9 +107,11 @@ describe('POST /api/pull-teams', () => {
       } catch (error: unknown) {
         const err = error as Error;
         if (err.message.includes('400')) {
-        expect(err.message).toContain('400');
+          expect(err.message).toContain('400');
         } else {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:teams | ISSUE:empty_array_without_conferenceId`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:teams | ISSUE:empty_array_without_conferenceId`
+          );
         }
       }
     });
@@ -123,11 +125,15 @@ describe('POST /api/pull-teams', () => {
             conferenceId: 8,
           }),
         });
-        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:sport');
+        throw new Error(
+          'API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:sport'
+        );
       } catch (error: unknown) {
         const err = error as Error;
         if (!err.message.includes('400')) {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:sport | ISSUE:missing_required_field`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:sport | ISSUE:missing_required_field`
+          );
         }
         expect(err.message).toContain('400');
       }
@@ -142,11 +148,15 @@ describe('POST /api/pull-teams', () => {
             conferenceId: 8,
           }),
         });
-        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:league');
+        throw new Error(
+          'API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:league'
+        );
       } catch (error: unknown) {
         const err = error as Error;
         if (!err.message.includes('400')) {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:league | ISSUE:missing_required_field`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:league | ISSUE:missing_required_field`
+          );
         }
         expect(err.message).toContain('400');
       }

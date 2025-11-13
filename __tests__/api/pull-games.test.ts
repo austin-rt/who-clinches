@@ -130,11 +130,15 @@ describe('POST /api/pull-games', () => {
             conferenceId: CONFERENCE_ID,
           }),
         });
-        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:sport');
+        throw new Error(
+          'API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:sport'
+        );
       } catch (error: unknown) {
         const err = error as Error;
         if (!err.message.includes('400')) {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:sport | ISSUE:missing_required_field`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:sport | ISSUE:missing_required_field`
+          );
         }
         expect(err.message).toContain('400');
       }
@@ -150,11 +154,15 @@ describe('POST /api/pull-games', () => {
             conferenceId: CONFERENCE_ID,
           }),
         });
-        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:league');
+        throw new Error(
+          'API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:league'
+        );
       } catch (error: unknown) {
         const err = error as Error;
         if (!err.message.includes('400')) {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:league | ISSUE:missing_required_field`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:league | ISSUE:missing_required_field`
+          );
         }
         expect(err.message).toContain('400');
       }
@@ -170,11 +178,15 @@ describe('POST /api/pull-games', () => {
             conferenceId: CONFERENCE_ID,
           }),
         });
-        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:season');
+        throw new Error(
+          'API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:season'
+        );
       } catch (error: unknown) {
         const err = error as Error;
         if (!err.message.includes('400')) {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:season | ISSUE:missing_required_field`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:season | ISSUE:missing_required_field`
+          );
         }
         expect(err.message).toContain('400');
       }
@@ -196,9 +208,11 @@ describe('POST /api/pull-games', () => {
       } catch (error: unknown) {
         const err = error as Error;
         if (err.message.includes('400')) {
-        expect(err.message).toContain('400');
+          expect(err.message).toContain('400');
         } else {
-          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:week | ISSUE:negative_value | VALUE:-1`);
+          throw new Error(
+            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:week | ISSUE:negative_value | VALUE:-1`
+          );
         }
       }
     });
