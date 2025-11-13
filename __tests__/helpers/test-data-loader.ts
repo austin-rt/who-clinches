@@ -1,6 +1,6 @@
 /**
  * Test Data Loader
- * 
+ *
  * Loads real ESPN API response snapshots from database for unit testing.
  * These snapshots are updated daily via cron job to ensure tests use current API format.
  */
@@ -118,4 +118,3 @@ export async function checkTestDataAvailable(): Promise<{
     missing,
   };
 }
-
