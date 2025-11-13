@@ -84,14 +84,25 @@ lib/
 └── types.ts                     # Internal application types
 
 docs/
-├── api-reference.md             # Complete API documentation
-├── ESPN-API-TESTING.md          # ESPN API patterns and testing
-├── CHANGELOG.md                 # Version history and changes
+├── ai-guide.md                  # AI assistant guidance (this file)
+├── guides/                      # How-to documentation
+│   ├── api-reference.md
+│   ├── changelog-guide.md
+│   ├── pre-commit-testing.md
+│   └── testing-quick-reference.md
 ├── tests/                       # Testing documentation
+│   ├── comprehensive-api-testing.md
 │   ├── cron-jobs-testing.md
+│   ├── espn-api-testing.md
 │   ├── espn-data-pipeline.md
 │   └── tiebreaker-and-simulate.md
-└── plans/                       # Historical planning documents
+├── plans/                       # Planning and specification documents
+│   ├── api-foundation.md
+│   ├── tech-spec.md
+│   ├── tiebreaker-logic.md
+│   ├── frontend/
+│   └── archive/                 # Completed phase records
+└── navigation-hub.md            # Documentation index and search guide
 
 vercel.json                      # Hobby plan cron schedules (2 jobs)
 vercel.pro.json                  # Pro plan cron schedules (6 jobs)
@@ -136,7 +147,7 @@ The navigation hub provides:
 
 1. **Start Here**: `/docs/ai-guide.md` - This document for core principles and architecture
 2. **Find What You Need**: `/docs/navigation-hub.md` - Documentation directory and search guide
-3. **API Documentation**: `/docs/api-reference.md` - Complete endpoint reference
+3. **API Documentation**: `/docs/guides/api-reference.md` - Complete endpoint reference
 4. **Code Organization**: See Repository Structure above for file purposes
 
 ### **First 5 Minutes**
@@ -253,19 +264,20 @@ The navigation hub provides:
 2. **Create API route** in `/app/api/[feature]/route.ts`
 3. **Add helper functions** in appropriate `/lib/*.ts` file
 4. **Update MongoDB schemas** if database changes needed
-5. **Document in** `/docs/api-reference.md`
+5. **Document in** `/docs/guides/api-reference.md`
 6. **Add tests** to appropriate `/docs/tests/*.md` file
 
 ## Documentation Structure
 
 ### **Reference Documentation**
 
-- **`/docs/api-reference.md`**: Complete API endpoint documentation
-- **`/docs/ESPN-API-TESTING.md`**: ESPN API patterns and field mappings
-- **`/docs/CHANGELOG.md`**: Version history and implemented features
+- **`/docs/guides/api-reference.md`**: Complete API endpoint documentation
+- **`/docs/guides/changelog-guide.md`**: How to maintain the changelog
+- **`/docs/tests/espn-api-testing.md`**: ESPN API patterns and field mappings
 
 ### **Testing Documentation**
 
+- **`/docs/tests/comprehensive-api-testing.md`**: API endpoint testing procedures
 - **`/docs/tests/espn-data-pipeline.md`**: Data ingestion testing procedures
 - **`/docs/tests/cron-jobs-testing.md`**: Cron job validation procedures
 - **`/docs/tests/tiebreaker-and-simulate.md`**: Tiebreaker logic testing
@@ -273,6 +285,7 @@ The navigation hub provides:
 ### **Planning Documents** (Historical Reference)
 
 - **`/docs/plans/*.md`**: Original planning documents - may not match current implementation
+- **`/docs/plans/archive/*.md`**: Completed work records and phase summaries
 - All planning docs now marked with **"⚠️ PLANNING DOCUMENT"** warnings
 
 ## Critical Accuracy Notes

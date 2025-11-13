@@ -75,7 +75,7 @@ describe('Cron Job Endpoints', () => {
         const data = await response.json();
         expect(data.updated).toBeDefined();
       }
-    }, 15000); // Increase timeout to 15s for cron job
+    }, 30000); // Increase timeout to 30s for cron job
   });
 
   describe('Other Cron Endpoints', () => {

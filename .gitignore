@@ -44,3 +44,6 @@ next-env.d.ts
 /temp
 temp-*
 test-*
+
+# audit files (local assessments)
+**/*audit*.md
