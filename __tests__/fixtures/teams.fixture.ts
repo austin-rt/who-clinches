@@ -139,9 +139,9 @@ export const secTeamsFixture: TeamMetadata[] = [
 ];
 
 export const getTeamById = (id: string): TeamMetadata | undefined => {
-  return secTeamsFixture.find(team => team.id === id);
+  return secTeamsFixture.find((team) => team.id === id);
 };
 
 export const getTeamByAbbrev = (abbrev: string): TeamMetadata | undefined => {
-  return secTeamsFixture.find(team => team.abbrev === abbrev);
+  return secTeamsFixture.find((team) => team.abbrev === abbrev);
 };

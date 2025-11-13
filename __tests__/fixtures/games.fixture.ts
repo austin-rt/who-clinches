@@ -133,13 +133,13 @@ export const gamesFixture = [
 ];
 
 export const getGameFixture = (espnId: string) => {
-  return gamesFixture.find(game => game.espnId === espnId);
+  return gamesFixture.find((game) => game.espnId === espnId);
 };
 
 export const getGamesByWeek = (week: number) => {
-  return gamesFixture.filter(game => game.week === week);
+  return gamesFixture.filter((game) => game.week === week);
 };
 
 export const getGamesByStatus = (status: 'scheduled' | 'in' | 'final') => {
-  return gamesFixture.filter(game => game.status === status);
+  return gamesFixture.filter((game) => game.status === status);
 };
