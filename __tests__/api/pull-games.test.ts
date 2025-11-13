@@ -51,6 +51,55 @@ describe('POST /api/pull-games', () => {
         typeof response.lastUpdated === 'number' || typeof response.lastUpdated === 'string'
       ).toBe(true);
     }, 60000);
+
+    it('pulls full season: database should have 128 total games (all SEC games)', async () => {
+      // Pull games first
+      await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
+      });
+
+      // Check total games in database (all SEC games: conference + non-conference)
+      const allGamesResponse = await fetchAPI<GamesResponse>(`/api/games?season=${SEASON}`);
+
+      // 16 SEC teams × 8 conference games per team = 128 total games (64 conference + 64 non-conference)
+      if (allGamesResponse.events.length !== 128) {
+        throw new Error(
+          `DATA_VALIDATION_FAILED | ENTITY:Games | ISSUE:incorrect_total_count | EXPECTED:128_total_games | ACTUAL:${allGamesResponse.events.length} | CALCULATION:16_teams_×_8_games_per_team_=_128_total_SEC_games | NOTE:Database should contain all SEC games (conference + non-conference)`
+        );
+      }
+      expect(allGamesResponse.events.length).toBe(128);
+    }, 60000);
+
+    it('conference games endpoint returns exactly 64 conference games', async () => {
+      // Check conference games only (with conferenceId filter)
+      const conferenceGamesResponse = await fetchAPI<GamesResponse>(
+        `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
+      );
+
+      // 16 teams × 8 conference games per team / 2 (each game counted once) = 64 conference games
+      if (conferenceGamesResponse.events.length !== 64) {
+        throw new Error(
+          `DATA_VALIDATION_FAILED | ENTITY:Games | ISSUE:incorrect_conference_count | EXPECTED:64_conference_games | ACTUAL:${conferenceGamesResponse.events.length} | CALCULATION:16_teams_×_8_conference_games_per_team_/_2_=_64_conference_games | NOTE:Endpoint with conferenceId should filter to only conference games`
+        );
+      }
+      expect(conferenceGamesResponse.events.length).toBe(64);
+
+      // Verify all returned games are conference games
+      const nonConferenceGames = conferenceGamesResponse.events.filter(
+        (game) => !game.conferenceGame
+      );
+      if (nonConferenceGames.length > 0) {
+        throw new Error(
+          `DATA_VALIDATION_FAILED | ENTITY:Games | ISSUE:non_conference_games_in_response | EXPECTED:all_conference_games | ACTUAL:${nonConferenceGames.length}_non_conference_games_found | NOTE:Endpoint with conferenceId=8 should only return games where conferenceGame=true`
+        );
+      }
+    });
   });
 
   describe('Specific Week Pull', () => {
