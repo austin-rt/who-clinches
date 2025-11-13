@@ -22,6 +22,7 @@ The pre-commit hook automatically runs your entire test suite before allowing co
 When you run `git commit`, the hook executes this sequence:
 
 ### Step 1: Branch Protection
+
 ```bash
 # Prevents accidental commits to main
 ✗ Cannot commit directly to main branch
@@ -29,6 +30,7 @@ When you run `git commit`, the hook executes this sequence:
 ```
 
 ### Step 2: ESLint Disable Check
+
 ```bash
 # Blocks file-level eslint-disable comments
 ✗ File-level eslint-disable not allowed
@@ -36,6 +38,7 @@ When you run `git commit`, the hook executes this sequence:
 ```
 
 ### Step 3: Linting + TypeScript
+
 ```bash
 # Via lint-staged
 ✓ Format code with Prettier
@@ -44,6 +47,7 @@ When you run `git commit`, the hook executes this sequence:
 ```
 
 ### Step 4: Run All Tests ⭐ NEW
+
 ```bash
 # NEW: Comprehensive test suite
 ✓ Database check & seeding (npm run db:check)
@@ -59,16 +63,19 @@ When you run `git commit`, the hook executes this sequence:
 **Location:** `.husky/pre-commit`
 
 **Test Command:**
+
 ```bash
 npm run test:all
 ```
 
 **What This Runs:**
+
 1. Database seeding check
 2. 240 passing tests (180 unit + 60 API)
 3. ~67 second execution time
 
 **If Tests Fail:**
+
 ```
 ERROR: Tests failed. Commit blocked.
 Fix test failures and try again.
@@ -129,21 +136,25 @@ git commit --no-verify -m "message"
 ## Benefits
 
 ### 1. **Prevents Broken Code**
+
 - No untested code can be committed
 - Catches regressions immediately
 - Maintains repository integrity
 
 ### 2. **Faster Development**
+
 - Find issues locally before pushing
 - No CI/CD failures later
 - Better debugging experience
 
 ### 3. **Team Protection**
+
 - Everyone's code is tested
 - Consistent quality standards
 - Prevents "it works on my machine" problems
 
 ### 4. **Clear Feedback**
+
 - See exactly which tests failed
 - Error messages explain what's wrong
 - Quick path to fixing issues
@@ -155,6 +166,7 @@ git commit --no-verify -m "message"
 The hook runs: `npm run test:all`
 
 This executes:
+
 ```bash
 # Step 1: Database check & seeding
 npm run db:check
@@ -165,15 +177,15 @@ npm run test
 
 ### Test Coverage
 
-| Category | Tests | Status |
-|----------|-------|--------|
-| API Integration | 60 | Must pass |
-| Reshape Functions | 54 | Must pass |
-| Tiebreaker Logic | 62 | Must pass |
-| Score Prediction | 59 | Must pass |
-| Constants | 38 | Must pass |
-| Types | 34 | Must pass |
-| **Total** | **240** | **ALL REQUIRED** |
+| Category          | Tests   | Status           |
+| ----------------- | ------- | ---------------- |
+| API Integration   | 60      | Must pass        |
+| Reshape Functions | 54      | Must pass        |
+| Tiebreaker Logic  | 62      | Must pass        |
+| Score Prediction  | 59      | Must pass        |
+| Constants         | 38      | Must pass        |
+| Types             | 34      | Must pass        |
+| **Total**         | **240** | **ALL REQUIRED** |
 
 ---
 
@@ -227,6 +239,7 @@ npm run test:all || exit 1  # BLOCKED if any test fails
 ### "Tests failed. Commit blocked."
 
 **Solution:**
+
 ```bash
 # Run tests locally to see failures
 npm run test:all
@@ -241,6 +254,7 @@ git commit -m "message"
 ### "npm command not found"
 
 **Solution:**
+
 ```bash
 # Install dependencies
 npm install
@@ -252,6 +266,7 @@ git commit -m "message"
 ### "Database connection failed"
 
 **Solution:**
+
 ```bash
 # Ensure dev server is running
 npm run dev
@@ -265,6 +280,7 @@ git commit -m "message"
 ### "Hook is not running at all"
 
 **Solution:**
+
 ```bash
 # Reinstall husky hooks
 npx husky install
@@ -378,20 +394,21 @@ git config --local core.hooksPath .husky
 
 ## Quick Reference
 
-| Task | Command |
-|------|---------|
-| Make a commit | `git commit -m "message"` |
-| See tests before commit | `npm run test:all` |
-| Watch tests while developing | `npm run test:watch` |
-| Check if hook is active | `cat .husky/pre-commit` |
-| Reinstall hook | `npx husky install` |
-| View hook status | `ls -la .husky/pre-commit` |
+| Task                         | Command                    |
+| ---------------------------- | -------------------------- |
+| Make a commit                | `git commit -m "message"`  |
+| See tests before commit      | `npm run test:all`         |
+| Watch tests while developing | `npm run test:watch`       |
+| Check if hook is active      | `cat .husky/pre-commit`    |
+| Reinstall hook               | `npx husky install`        |
+| View hook status             | `ls -la .husky/pre-commit` |
 
 ---
 
 ## Next Steps
 
 1. **Try it out:**
+
    ```bash
    git status  # See your changes
    git add .

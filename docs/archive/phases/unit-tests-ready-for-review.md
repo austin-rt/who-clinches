@@ -10,6 +10,7 @@
 ## What's Complete
 
 ### ✅ Helper Function Unit Tests
+
 Created comprehensive unit test coverage for all core application logic:
 
 1. **`__tests__/lib/reshape.test.ts`** (17 tests)
@@ -35,18 +36,21 @@ Created comprehensive unit test coverage for all core application logic:
    - Tie prevention logic
 
 ### ✅ Test Reliability
+
 - All 139 tests pass consistently
 - Proper timeout handling (30-70 seconds for slow endpoints)
 - Type flexibility for API response variations
 - Comprehensive edge case coverage
 
 ### ✅ Database Automation
+
 - Automatic seeding via `npm run db:check`
 - No manual database setup required
 - Verifies response structures before testing
 - Single command workflow
 
 ### ✅ Mock Infrastructure Ready
+
 - ESPN API mock (`__tests__/mocks/espn-client.mock.ts`)
 - MongoDB Memory Server setup (`__tests__/mocks/mongodb-memory-server.mock.ts`)
 - Prepared for Phase 3 integration
@@ -72,6 +76,7 @@ Time:        66.313 s
 ## How to Review
 
 ### Run the Tests
+
 ```bash
 npm run test:all
 ```
@@ -79,6 +84,7 @@ npm run test:all
 Expected output: All 139 tests pass in ~66 seconds
 
 ### Review Test Files
+
 ```
 __tests__/lib/reshape.test.ts        (340 lines - 17 tests)
 __tests__/lib/tiebreaker-helpers.test.ts  (734 lines - 62 tests)
@@ -86,11 +92,13 @@ __tests__/lib/prefill-helpers.test.ts     (497 lines - 59 tests)
 ```
 
 ### Check Test Coverage
+
 ```bash
 npm run test:coverage
 ```
 
 ### Run Specific Tests
+
 ```bash
 # Unit tests only
 npm run test -- __tests__/lib
@@ -109,12 +117,14 @@ npm run test -- __tests__/lib/reshape.test.ts
 ### Unit Tests by Category
 
 **Data Transformation (17 tests)**
+
 - ESPN API response parsing
 - Field mapping and validation
 - Logo selection algorithm
 - Record extraction
 
 **Tiebreaker Logic (62 tests)**
+
 - Rule A: Head-to-Head comparison
 - Rule B: Common opponents record
 - Rule C: Highest placed opponent
@@ -124,6 +134,7 @@ npm run test -- __tests__/lib/reshape.test.ts
 - Standing calculation and explanation
 
 **Scoring Calculations (59 tests)**
+
 - Game state detection (completed, in-progress, pre-game)
 - Real score usage
 - Spread-based predictions
@@ -135,6 +146,7 @@ npm run test -- __tests__/lib/reshape.test.ts
 ### API Integration Tests (60 tests)
 
 **Endpoint Coverage**
+
 - GET /api/games (16 tests)
 - POST /api/simulate (21 tests)
 - POST /api/pull-teams (10 tests)
@@ -148,18 +160,21 @@ npm run test -- __tests__/lib/reshape.test.ts
 ### What the Tests Validate
 
 **Correctness**
+
 - Win/loss calculations are accurate
 - Tiebreaker rules apply correctly
 - Scoring formulas produce valid results
 - No tie scores are ever produced
 
 **Error Handling**
+
 - Invalid scores are rejected (ties, negatives, non-integers)
 - Missing data is handled gracefully
 - Null/undefined team data returns null
 - Partial records work correctly
 
 **Edge Cases**
+
 - Empty team lists
 - Single team tiebreakers
 - No common opponents
@@ -169,6 +184,7 @@ npm run test -- __tests__/lib/reshape.test.ts
 - Push spreads (0 spread)
 
 **Integration**
+
 - Data flows correctly through transforms
 - Calculations build on each other
 - Overrides work with other logic
@@ -179,48 +195,54 @@ npm run test -- __tests__/lib/reshape.test.ts
 ## Files Created (Phase 2)
 
 ### Test Files
+
 - `__tests__/lib/reshape.test.ts` (340 lines)
 - `__tests__/lib/tiebreaker-helpers.test.ts` (734 lines)
 - `__tests__/lib/prefill-helpers.test.ts` (497 lines)
 
 ### Mock Infrastructure
+
 - `__tests__/mocks/espn-client.mock.ts` (231 lines)
 - `__tests__/mocks/mongodb-memory-server.mock.ts` (189 lines)
 
 ### Documentation
+
 - `TESTING-PHASE-2-COMPLETE.md` (This file's detailed companion)
 - `UNIT-TESTS-READY-FOR-REVIEW.md` (This file)
 
 ### Updated Files
+
 - `__tests__/api/pull-teams.test.ts` (timeout fixes + type flexibility)
 
 ---
 
 ## Statistics
 
-| Metric | Value |
-|--------|-------|
-| Total Tests | 139 |
-| Passing Tests | 139 |
-| Failing Tests | 0 |
-| Test Files | 8 |
-| Helper Function Tests | 79 |
-| API Integration Tests | 60 |
-| Code Covered | 100% of helpers |
-| Execution Time | ~66 seconds |
-| Coverage Threshold | 80% (enforced) |
+| Metric                | Value           |
+| --------------------- | --------------- |
+| Total Tests           | 139             |
+| Passing Tests         | 139             |
+| Failing Tests         | 0               |
+| Test Files            | 8               |
+| Helper Function Tests | 79              |
+| API Integration Tests | 60              |
+| Code Covered          | 100% of helpers |
+| Execution Time        | ~66 seconds     |
+| Coverage Threshold    | 80% (enforced)  |
 
 ---
 
 ## Next Steps
 
 ### To Accept These Tests
+
 1. Review the three test files above
 2. Run `npm run test:all` to verify
 3. Approve/comment on test coverage
 4. Ready to merge
 
 ### For Phase 3
+
 1. Wire mocks into existing API tests
 2. Use MongoDB Memory Server for isolation
 3. Convert integration → unit tests
@@ -248,6 +270,7 @@ npm run test -- __tests__/lib/reshape.test.ts
 ### reshape.test.ts (17 tests)
 
 Tests ESPN data transformation:
+
 - ✅ Transforms team responses to internal format
 - ✅ Preserves all required fields
 - ✅ Selects best logo by resolution
@@ -271,6 +294,7 @@ Tests ESPN data transformation:
 Tests SEC tiebreaker rules and calculations:
 
 **Team Records (5)**
+
 - Calculates wins/losses/winPct correctly
 - Skips games without scores
 - Returns correct win percentage
@@ -278,26 +302,30 @@ Tests SEC tiebreaker rules and calculations:
 - Calculates point averages
 
 **Tiebreaker Rules (9)**
+
 - Rule A: Head-to-head comparison
 - Rule B: Common opponents
 - Rule C: Highest placed opponent
 - Rule D: Opponent win percentage
 - Rule E: Scoring margin
-- + edge cases for each rule
+- - edge cases for each rule
 
 **Score Overrides (4)**
+
 - Applies overrides to games
 - Rejects tie scores (24-24)
 - Rejects negative scores
 - Rejects non-integer scores
 
 **Tiebreaker Engine (4)**
+
 - Cascades through rules
 - Handles single team
 - Explains ranking with steps
 - Returns ranked order
 
 **Standings (5)**
+
 - Calculates full standings
 - Includes win-loss records
 - Includes tiebreaker info
@@ -309,6 +337,7 @@ Tests SEC tiebreaker rules and calculations:
 Tests predicted score calculations:
 
 **Game States (5)**
+
 - Uses real scores for completed games
 - Ignores predicted for completed
 - Uses real scores in progress
@@ -316,23 +345,27 @@ Tests predicted score calculations:
 - Uses real scores if one team scored
 
 **Spread Calculations (4)**
+
 - Calculates from spread (home fav)
 - Calculates from spread (away fav)
 - Uses ceil to avoid ties
 - Handles fractional spreads
 
 **Average Calculations (4)**
+
 - Uses team averages
 - Adds 3-point home bonus
 - Prevents ties
 - Handles exact tie scenario
 
 **Default Values (3)**
+
 - Uses DEFAULT_AVG = 28
 - Handles missing team data
 - Handles partial structures
 
 **Edge Cases (30+)**
+
 - Never produces ties
 - Handles very low/high averages
 - Returns integers only

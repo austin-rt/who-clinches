@@ -26,9 +26,11 @@ Phase 2 adds comprehensive unit tests for helper functions alongside the existin
 ### Unit Tests for Core Logic
 
 #### 1. `__tests__/lib/reshape.test.ts` (17 tests)
+
 Tests ESPN data transformation into internal format.
 
 **Coverage:**
+
 - Basic transformation (5 tests): ID mapping, field preservation, logo selection, null handling
 - Record handling (4 tests): Record extraction, statistics parsing, missing data, fallback logic
 - Ranking handling (3 tests): Valid ranking, rank 99 as unranked, null ranking
@@ -36,6 +38,7 @@ Tests ESPN data transformation into internal format.
 - Timestamp (1 test): lastUpdated timestamp validation
 
 **Key Test Cases:**
+
 - ✅ Selects best logo by highest resolution
 - ✅ Handles missing logos gracefully
 - ✅ Extracts all record types (overall, home, away, conference)
@@ -46,30 +49,37 @@ Tests ESPN data transformation into internal format.
 ---
 
 #### 2. `__tests__/lib/tiebreaker-helpers.test.ts` (62 tests)
+
 Tests SEC tiebreaker rules A-E and standings calculation.
 
 **Coverage by Rule:**
 
 **Rule A: Head-to-Head (3 tests)**
+
 - Breaks tie using h2h record
 - Returns all teams if no h2h games exist
 - Handles single team input
 
 **Rule B: Common Opponents (2 tests)**
+
 - Breaks tie by common opponent record
 - Returns all teams if no common opponents
 
 **Rule C: Highest Placed Common Opponent (2 tests)**
+
 - Applies rule C with common opponents
 - Handles no common opponents
 
 **Rule D: Opponent Win Percentage (1 test)**
+
 - Breaks tie by opponent win percentage
 
 **Rule E: Scoring Margin (1 test)**
+
 - Breaks tie by relative scoring margin
 
 **Helper Functions (15 tests)**
+
 - getTeamRecord: wins/losses/winPct calculation
 - getTeamAvgPointsFor/Against: point average calculations
 - applyOverrides: score override validation (rejects ties, negatives, non-integers)
@@ -77,6 +87,7 @@ Tests SEC tiebreaker rules A-E and standings calculation.
 - calculateStandings: full standings with explanations
 
 **Key Test Cases:**
+
 - ✅ Calculates accurate win percentages
 - ✅ Skips games without scores
 - ✅ Rejects tie scores (prevents 24-24 overrides)
@@ -89,50 +100,60 @@ Tests SEC tiebreaker rules A-E and standings calculation.
 ---
 
 #### 3. `__tests__/lib/prefill-helpers.test.ts` (59 tests)
+
 Tests predicted score calculation logic.
 
 **Coverage:**
 
 **Completed Games (2 tests)**
+
 - Uses real scores for completed games
 - Ignores predicted score for completed games
 
 **In-Progress Games (3 tests)**
+
 - Uses real scores if game is in progress with scoring
 - Uses calculation for in-progress 0-0 games
 - Uses real scores even if only one team scored
 
 **Pre-Game Calculations with Spread (4 tests)**
+
 - Calculates score from spread when favorite is home
 - Calculates score from spread when favorite is away
 - Uses ceil to avoid ties when calculating from spread
 
 **Pre-Game Calculations without Spread (4 tests)**
+
 - Uses team averages + 3-point home field bonus
 - Prevents ties by adding 1 to home score
 
 **Default Values (3 tests)**
+
 - Uses DEFAULT_AVG (28) when team data missing
 - Uses default for one team if only one has data
 - Handles partial record structure
 
 **Spread Edge Cases (3 tests)**
+
 - Handles push (0 spread)
 - Handles fractional spreads
 - Handles very large spreads
 
 **Real-World Scenarios (3 tests)**
+
 - Alabama vs LSU pre-game with spread
 - In-progress game with partial score
 - Completed game final score
 
 **Edge Cases (30+ additional tests)**
+
 - Never produces tie scores
 - Handles very low/high averages
 - Returns only integers
 - Validates all priority scenarios
 
 **Key Test Cases:**
+
 - ✅ Favorite score = rounded average
 - ✅ Underdog score = ceiling(favorite - spread)
 - ✅ Home field bonus = 3 points
@@ -206,6 +227,7 @@ Testing Framework (Phase 2)
 ## Key Features
 
 ### ✅ Comprehensive Coverage
+
 - 79 unit tests for helper functions
 - 60 API integration tests
 - Tests for all 5 SEC tiebreaker rules (A-E)
@@ -213,23 +235,27 @@ Testing Framework (Phase 2)
 - Real-world scenario testing
 
 ### ✅ Production-Ready Validation
+
 - **Override validation**: Rejects ties, negative scores, non-integers
 - **Tiebreaker correctness**: Tests cascade through all rules properly
 - **Calculation accuracy**: Tests verify scoring logic and percentages
 - **Data transformation**: Tests ESPN API response handling
 
 ### ✅ Error Handling
+
 - Invalid team data returns null
 - Missing conference data handled
 - Missing game scores skipped properly
 - Partial record structures supported
 
 ### ✅ Mock Infrastructure Ready
+
 - ESPN API mock module (231 lines) - prepared for Phase 3
 - MongoDB Memory Server setup (189 lines) - prepared for Phase 3
 - Can be wired into existing tests when needed
 
 ### ✅ Database Seeding
+
 - Automatic database check on test run
 - Seeds only if needed
 - Verifies response structures
@@ -239,32 +265,36 @@ Testing Framework (Phase 2)
 
 ## Test Statistics
 
-| Category | Before | After | Change |
-|----------|--------|-------|--------|
-| Total Tests | 60 | 139 | +79 |
-| Unit Tests | 0 | 79 | New |
-| API Integration | 60 | 60 | Same |
-| Test Files | 5 | 8 | +3 |
-| Helper Function Coverage | 0% | 100% | Complete |
-| Execution Time | ~30s | ~66s | +36s |
+| Category                 | Before | After | Change   |
+| ------------------------ | ------ | ----- | -------- |
+| Total Tests              | 60     | 139   | +79      |
+| Unit Tests               | 0      | 79    | New      |
+| API Integration          | 60     | 60    | Same     |
+| Test Files               | 5      | 8     | +3       |
+| Helper Function Coverage | 0%     | 100%  | Complete |
+| Execution Time           | ~30s   | ~66s  | +36s     |
 
 ---
 
 ## Files Modified/Created
 
 ### New Test Files (3)
+
 - ✅ `__tests__/lib/reshape.test.ts` (340 lines)
 - ✅ `__tests__/lib/tiebreaker-helpers.test.ts` (734 lines)
 - ✅ `__tests__/lib/prefill-helpers.test.ts` (497 lines)
 
 ### Updated Test Files (1)
+
 - ✅ `__tests__/api/pull-teams.test.ts` (improved timeout handling + type flexibility)
 
 ### Mock Infrastructure (2) - Prepared for Phase 3
+
 - ✅ `__tests__/mocks/espn-client.mock.ts` (231 lines)
 - ✅ `__tests__/mocks/mongodb-memory-server.mock.ts` (189 lines)
 
 ### Existing Files (Unchanged)
+
 - jest.config.js (with 80% coverage threshold)
 - jest.setup.js
 - All other API tests remain 60 tests passing
@@ -303,10 +333,12 @@ npm run db:check
 ### Coverage by Function
 
 **Reshape Functions**
+
 - reshapeTeamData: 8 tests (logo selection, records, ranking, errors)
 - reshapeTeamsData: 5 tests (multiple teams, filtering, empty arrays)
 
 **Tiebreaker Helpers**
+
 - getTeamRecord: 5 tests (wins, losses, winPct, skipped games, edge cases)
 - applyRuleA (H2H): 3 tests
 - applyRuleB (Common Opp): 2 tests
@@ -318,6 +350,7 @@ npm run db:check
 - calculateStandings: 5 tests (full calculation, tiebreaker tracking)
 
 **Prefill Helpers**
+
 - calculatePredictedScore: 59 tests
   - Game state handling (5 tests)
   - Spread calculations (4 tests)
@@ -327,12 +360,12 @@ npm run db:check
 
 ### Test Types
 
-| Type | Count | Purpose |
-|------|-------|---------|
-| Happy Path | 80 | Normal operation validation |
-| Edge Cases | 35 | Boundary condition testing |
-| Error Cases | 15 | Exception handling |
-| Integration | 9 | Cross-function interactions |
+| Type        | Count | Purpose                     |
+| ----------- | ----- | --------------------------- |
+| Happy Path  | 80    | Normal operation validation |
+| Edge Cases  | 35    | Boundary condition testing  |
+| Error Cases | 15    | Exception handling          |
+| Integration | 9     | Cross-function interactions |
 
 ---
 
@@ -367,18 +400,21 @@ When ready to convert integration tests to true unit tests:
 ## Quality Assurance
 
 ### ✅ Validation Checks
+
 - All 139 tests pass consistently
 - Database seeding automatic and reliable
 - Timeout handling for slow endpoints (30-70s)
 - Type flexibility for lastUpdated (number | string)
 
 ### ✅ Code Quality
+
 - Consistent test organization
 - Clear test naming
 - Helper function utilities
 - Well-documented test cases
 
 ### ✅ Maintainability
+
 - Single npm script interface
 - No bash script complexity
 - Easy to extend with new tests

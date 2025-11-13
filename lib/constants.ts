@@ -7,7 +7,7 @@
  * Used for initial data seeding and batch operations
  */
 export const SEC_TEAMS = [
-  'ALA', // Alabama
+  'INVALID', // Alabama
   'ARK', // Arkansas
   'AUB', // Auburn
   'FLA', // Florida

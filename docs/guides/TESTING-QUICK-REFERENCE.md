@@ -44,13 +44,13 @@ __tests__/
 
 ## Test Coverage
 
-| Endpoint | Tests | Status |
-|----------|-------|--------|
-| GET /api/games | 16 | ✅ |
-| POST /api/simulate | 21 | ✅ |
-| POST /api/pull-teams | 10 | ✅ |
-| POST /api/pull-games | 10 | ✅ |
-| Cron endpoints | 3 | ✅ |
+| Endpoint             | Tests | Status |
+| -------------------- | ----- | ------ |
+| GET /api/games       | 16    | ✅     |
+| POST /api/simulate   | 21    | ✅     |
+| POST /api/pull-teams | 10    | ✅     |
+| POST /api/pull-games | 10    | ✅     |
+| Cron endpoints       | 3     | ✅     |
 
 **Total: 60 tests, 250+ assertions**
 
@@ -59,11 +59,13 @@ __tests__/
 ## What's Tested
 
 ### Cache Headers
+
 - ✅ Non-live games have 60s cache
 - ✅ Live games have shorter cache
 - ✅ Content-Type is JSON
 
 ### Error Messages
+
 - ✅ Missing season/conferenceId
 - ✅ Invalid parameters
 - ✅ Negative scores
@@ -71,6 +73,7 @@ __tests__/
 - ✅ Invalid overrides
 
 ### Data Validation
+
 - ✅ Required fields present
 - ✅ Color fields are valid hex
 - ✅ Team count is 16
@@ -78,6 +81,7 @@ __tests__/
 - ✅ Championship entries present
 
 ### Edge Cases
+
 - ✅ Week filtering
 - ✅ Multiple overrides
 - ✅ Tie score handling
@@ -102,6 +106,7 @@ Tests fail if coverage drops below threshold.
 ## Troubleshooting
 
 ### Tests timeout
+
 ```bash
 # Check if server is running
 npm run dev
@@ -111,12 +116,14 @@ npm run dev
 ```
 
 ### Tests fail with 401 (unauthorized)
+
 ```bash
 # Verify CRON_SECRET in .env.local
 # It's needed for cron endpoint tests
 ```
 
 ### Database errors
+
 ```bash
 # Reset and reseed
 npm run db:check
@@ -128,6 +135,7 @@ curl -X POST http://localhost:3000/api/pull-teams \
 ```
 
 ### Coverage report empty
+
 ```bash
 # Generate fresh report
 npm run test:coverage
@@ -141,11 +149,13 @@ open coverage/index.html
 ## For CI/CD
 
 ### GitHub Actions Command
+
 ```bash
 npm run test:api
 ```
 
 ### Expected Output
+
 ```
 PASS __tests__/api/games.test.ts
 PASS __tests__/api/simulate.test.ts

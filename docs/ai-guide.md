@@ -121,11 +121,23 @@ vercel.pro.json                  # Pro plan cron schedules (6 jobs)
 
 ## Quick Start for AI Assistants
 
+### **Documentation Navigation**
+
+**Not sure where to find something?** Use the [Documentation Navigation Hub](./navigation-hub.md) to quickly locate any guide, reference, or historical document in this repository.
+
+The navigation hub provides:
+
+- Quick links to common tasks ("I want to...")
+- Complete file location reference
+- Search guide by topic or problem
+- Guidance for adding new documentation
+
 ### **Essential Reading Order**
 
 1. **Start Here**: `/docs/ai-guide.md` - This document for core principles and architecture
-2. **API Documentation**: `/docs/api-reference.md` - Complete endpoint reference
-3. **Code Organization**: See Repository Structure above for file purposes
+2. **Find What You Need**: `/docs/navigation-hub.md` - Documentation directory and search guide
+3. **API Documentation**: `/docs/api-reference.md` - Complete endpoint reference
+4. **Code Organization**: See Repository Structure above for file purposes
 
 ### **First 5 Minutes**
 

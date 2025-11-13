@@ -17,7 +17,8 @@
       "Bash(git commit:*)",
       "Bash(npx eslint:*)",
       "Bash(npm test:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(cat > /tmp/*)"
     ],
     "deny": ["Bash(npm run dev:*)", "Bash(rm:*)", "Bash(git push:*)", "Bash(sudo:*)"],
     "ask": []
