@@ -11,6 +11,7 @@ Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
 **Branch**: `develop`
 
 **Environment Variables:**
+
 ```bash
 BASE_URL="http://localhost:3000"
 DATABASE="dev"
@@ -20,6 +21,7 @@ READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 ```
 
 **Notes:**
+
 - Local server must be running on port 3000
 - `BYPASS_TOKEN` can be empty or omitted (not required for localhost)
 - All credentials read from `.env.local`
