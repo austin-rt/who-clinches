@@ -138,11 +138,13 @@ Tests fail if coverage drops below threshold.
 The test database (`/test`) stores ESPN API response snapshots for reshape unit tests. This is separate from the main database.
 
 **Before running reshape tests:**
+
 - Run `npm run test:db:check` to ensure test data is seeded
 - Test data is populated via `/api/cron/update-test-data` endpoint
 - If test DB is empty, the script will automatically seed it
 
 **Test data models:**
+
 - `ESPNScoreboardTestData` - Scoreboard responses
 - `ESPNGameSummaryTestData` - Game summary responses
 - `ESPNTeamTestData` - Team metadata responses
