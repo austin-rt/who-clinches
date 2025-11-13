@@ -35,7 +35,7 @@ describe('GET /api/games', () => {
 
       expect(response.teams.length).toBeGreaterThan(0);
 
-      const requiredFields: (keyof typeof response.teams[0])[] = [
+      const requiredFields: (keyof (typeof response.teams)[0])[] = [
         'id',
         'abbrev',
         'displayName',
@@ -44,8 +44,11 @@ describe('GET /api/games', () => {
         'alternateColor',
       ];
 
-      response.teams.forEach(team => {
-        const validation = validateFields(team, requiredFields);
+      response.teams.forEach((team) => {
+        const validation = validateFields(
+          team as unknown as Record<string, unknown>,
+          requiredFields
+        );
         expect(validation.valid).toBe(true);
         if (!validation.valid) {
           throw new Error(`Team missing fields: ${validation.missingFields.join(', ')}`);
@@ -109,9 +112,7 @@ describe('GET /api/games', () => {
   describe('Error Handling', () => {
     it('handles missing season gracefully', async () => {
       try {
-        await fetchAPI<GamesResponse>(
-          `/api/games?conferenceId=${CONFERENCE_ID}`
-        );
+        await fetchAPI<GamesResponse>(`/api/games?conferenceId=${CONFERENCE_ID}`);
         // If it succeeds, that's fine too
       } catch (error) {
         // Should fail gracefully
@@ -135,7 +136,7 @@ describe('GET /api/games', () => {
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
-      response.teams.forEach(team => {
+      response.teams.forEach((team) => {
         expect(team.color).toBeDefined();
         expect(typeof team.color).toBe('string');
         // Should be hex without #
@@ -148,7 +149,7 @@ describe('GET /api/games', () => {
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
-      response.teams.forEach(team => {
+      response.teams.forEach((team) => {
         expect(team.alternateColor).toBeDefined();
         expect(typeof team.alternateColor).toBe('string');
         // Should be hex without #
@@ -161,7 +162,7 @@ describe('GET /api/games', () => {
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
-      response.teams.forEach(team => {
+      response.teams.forEach((team) => {
         expect(team.id).toBeDefined();
         expect(typeof team.id).toBe('string');
         expect(team.id.length).toBeGreaterThan(0);
@@ -197,9 +198,9 @@ describe('GET /api/games', () => {
       if (cacheControl && data.games && data.games.length > 0) {
         expect(
           cacheControl.includes('no-cache') ||
-          cacheControl.includes('no-store') ||
-          cacheControl.includes('max-age=10') ||
-          cacheControl.includes('max-age=60')
+            cacheControl.includes('no-store') ||
+            cacheControl.includes('max-age=10') ||
+            cacheControl.includes('max-age=60')
         ).toBe(true);
       }
     });
@@ -217,10 +218,11 @@ describe('GET /api/games', () => {
       try {
         await fetchAPI(`/api/games?season=invalid&conferenceId=${CONFERENCE_ID}`);
         // If it succeeds, that's okay
-      } catch (error: any) {
-        expect(error.message).toBeDefined();
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toBeDefined();
         // Should have status code in error
-        expect(/\d{3}/.test(error.message)).toBe(true);
+        expect(/\d{3}/.test(err.message)).toBe(true);
       }
     });
 
@@ -228,10 +230,11 @@ describe('GET /api/games', () => {
       try {
         await fetchAPI(`/api/games?season=${SEASON}&conferenceId=invalid`);
         // If it succeeds, that's okay
-      } catch (error: any) {
-        expect(error.message).toBeDefined();
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toBeDefined();
         // Should have status code in error
-        expect(/\d{3}/.test(error.message)).toBe(true);
+        expect(/\d{3}/.test(err.message)).toBe(true);
       }
     });
   });

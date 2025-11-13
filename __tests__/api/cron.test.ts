@@ -8,47 +8,31 @@
  * - Out-of-season handling
  */
 
-import { fetchAPI } from '../setup';
-
 const CRON_SECRET = process.env.CRON_SECRET || 'test-secret';
 
-/**
- * Helper to make authenticated cron requests
- */
-async function fetchCronAPI<T>(
+// Helper to make unauthenticated cron requests (for testing auth failures)
+function fetchUnauthenticatedCronAPI(
   endpoint: string,
   options: RequestInit & { method?: string } = {}
-): Promise<T> {
+): Promise<Response> {
   const url = `http://localhost:3000${endpoint}`;
-  const response = await fetch(url, {
+  return fetch(url, {
     ...options,
     headers: {
       'Content-Type': 'application/json',
-      Authorization: `Bearer ${CRON_SECRET}`,
       ...options.headers,
     },
   });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`${response.status}: ${text}`);
-  }
-
-  return response.json() as Promise<T>;
 }
 
 describe('Cron Job Endpoints', () => {
   describe('Authorization', () => {
     it('rejects requests without authorization header', async () => {
-      try {
-        await fetchAPI<any>('/api/cron/update-rankings', {
-          method: 'GET',
-          headers: { Authorization: '' },
-        });
-        fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('401');
-      }
+      const response = await fetchUnauthenticatedCronAPI('/api/cron/update-rankings', {
+        method: 'GET',
+      });
+      // Should return 401 for missing auth
+      expect([401, 403]).toContain(response.status);
     });
 
     it('rejects requests with invalid authorization token', async () => {
@@ -63,8 +47,9 @@ describe('Cron Job Endpoints', () => {
         if (response.status === 401) {
           throw new Error('401: Unauthorized');
         }
-      } catch (error: any) {
-        expect(error.message).toContain('401');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('401');
       }
     });
   });

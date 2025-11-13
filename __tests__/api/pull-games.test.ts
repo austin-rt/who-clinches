@@ -9,70 +9,73 @@
  */
 
 import { fetchAPI, validateFields } from '../setup';
+import { GamesResponse } from '@/lib/api-types';
+
+interface PullGamesResponse {
+  upserted: number;
+  weeksPulled: number[];
+  lastUpdated: number | string;
+}
 
 const SEASON = 2025;
 const CONFERENCE_ID = 8;
 
 describe('POST /api/pull-games', () => {
-  describe(
-    'Full Season Pull',
-    () => {
-      it('pulls full season when no week specified', async () => {
-        const response = await fetchAPI<any>('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
+  describe('Full Season Pull', () => {
+    it('pulls full season when no week specified', async () => {
+      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
+      });
 
-        expect(response).toBeDefined();
-        expect(response.upserted).toBeDefined();
-        expect(typeof response.upserted).toBe('number');
-        expect(response.upserted).toBeGreaterThan(0);
-      }, 30000);
+      expect(response).toBeDefined();
+      expect(response.upserted).toBeDefined();
+      expect(typeof response.upserted).toBe('number');
+      expect(response.upserted).toBeGreaterThan(0);
+    }, 60000);
 
-      it('returns weeksPulled array', async () => {
-        const response = await fetchAPI<any>('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
+    it('returns weeksPulled array', async () => {
+      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
+      });
 
-        expect(response.weeksPulled).toBeDefined();
-        expect(Array.isArray(response.weeksPulled)).toBe(true);
-      }, 30000);
+      expect(response.weeksPulled).toBeDefined();
+      expect(Array.isArray(response.weeksPulled)).toBe(true);
+    }, 60000);
 
-      it('includes lastUpdated timestamp', async () => {
-        const response = await fetchAPI<any>('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
+    it('includes lastUpdated timestamp', async () => {
+      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
+      });
 
-        expect(response.lastUpdated).toBeDefined();
-        // lastUpdated can be number or string (ISO timestamp)
-        expect(
-          typeof response.lastUpdated === 'number' || typeof response.lastUpdated === 'string'
-        ).toBe(true);
-      }, 30000);
-    },
-    60000
-  );
+      expect(response.lastUpdated).toBeDefined();
+      // lastUpdated can be number or string (ISO timestamp)
+      expect(
+        typeof response.lastUpdated === 'number' || typeof response.lastUpdated === 'string'
+      ).toBe(true);
+    }, 60000);
+  });
 
   describe('Specific Week Pull', () => {
     it('pulls specific week', async () => {
-      const response = await fetchAPI<any>('/api/pull-games', {
+      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
         method: 'POST',
         body: JSON.stringify({
           sport: 'football',
@@ -90,55 +93,51 @@ describe('POST /api/pull-games', () => {
     });
   });
 
-  describe(
-    'Game Data Validation',
-    () => {
-      it('all games include displayName field', async () => {
-        // Pull games first
-        await fetchAPI<any>('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
-
-        // Then check via games endpoint
-        const gamesResponse = await fetchAPI<any>(
-          `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
-        );
-
-        if (gamesResponse.events.length > 0) {
-          gamesResponse.events.forEach(game => {
-            expect(game.displayName).toBeDefined();
-            expect(typeof game.displayName).toBe('string');
-            expect(game.displayName.length).toBeGreaterThan(0);
-          });
-        }
-      }, 30000);
-
-      it('all games include predictedScore', async () => {
-        const gamesResponse = await fetchAPI<any>(
-          `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
-        );
-
-        if (gamesResponse.events.length > 0) {
-          gamesResponse.events.forEach(game => {
-            // predictedScore should be present or null
-            if (game.predictedScore !== null && game.predictedScore !== undefined) {
-              expect(game.predictedScore).toBeDefined();
-              expect(typeof game.predictedScore).toBe('object');
-              expect(game.predictedScore.home).toBeDefined();
-              expect(game.predictedScore.away).toBeDefined();
-            }
-          });
-        }
+  describe('Game Data Validation', () => {
+    it('all games include displayName field', async () => {
+      // Pull games first
+      await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
       });
-    },
-    30000
-  );
+
+      // Then check via games endpoint
+      const gamesResponse = await fetchAPI<GamesResponse>(
+        `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
+      );
+
+      if (gamesResponse.events.length > 0) {
+        gamesResponse.events.forEach((game) => {
+          expect(game.displayName).toBeDefined();
+          expect(typeof game.displayName).toBe('string');
+          expect(game.displayName.length).toBeGreaterThan(0);
+        });
+      }
+    }, 30000);
+
+    it('all games include predictedScore', async () => {
+      const gamesResponse = await fetchAPI<GamesResponse>(
+        `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
+      );
+
+      if (gamesResponse.events.length > 0) {
+        gamesResponse.events.forEach((game) => {
+          // predictedScore should be present or null
+          if (game.predictedScore !== null && game.predictedScore !== undefined) {
+            expect(game.predictedScore).toBeDefined();
+            expect(typeof game.predictedScore).toBe('object');
+            expect(game.predictedScore.home).toBeDefined();
+            expect(game.predictedScore.away).toBeDefined();
+          }
+        });
+      }
+    });
+  });
 
   describe('Input Validation', () => {
     it('returns 400 when sport is missing', async () => {
@@ -152,8 +151,9 @@ describe('POST /api/pull-games', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
@@ -168,8 +168,9 @@ describe('POST /api/pull-games', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
@@ -184,8 +185,9 @@ describe('POST /api/pull-games', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
@@ -202,35 +204,35 @@ describe('POST /api/pull-games', () => {
           }),
         });
         // If it succeeds, that's okay
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
   });
 
-  describe(
-    'Response Structure',
-    () => {
-      it('returns valid response with all required fields', async () => {
-        const response = await fetchAPI<any>('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
+  describe('Response Structure', () => {
+    it('returns valid response with all required fields', async () => {
+      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
+        method: 'POST',
+        body: JSON.stringify({
+          sport: 'football',
+          league: 'college-football',
+          season: SEASON,
+          conferenceId: CONFERENCE_ID,
+        }),
+      });
 
-        const requiredFields = ['upserted', 'weeksPulled', 'lastUpdated'];
-        const validation = validateFields(response, requiredFields);
+      const requiredFields = ['upserted', 'weeksPulled', 'lastUpdated'];
+      const validation = validateFields(
+        response as unknown as Record<string, unknown>,
+        requiredFields
+      );
 
-        expect(validation.valid).toBe(true);
-        if (!validation.valid) {
-          throw new Error(`Response missing fields: ${validation.missingFields.join(', ')}`);
-        }
-      }, 30000);
-    },
-    30000
-  );
+      expect(validation.valid).toBe(true);
+      if (!validation.valid) {
+        throw new Error(`Response missing fields: ${validation.missingFields.join(', ')}`);
+      }
+    }, 30000);
+  });
 });

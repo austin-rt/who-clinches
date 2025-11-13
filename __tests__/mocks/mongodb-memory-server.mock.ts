@@ -74,10 +74,10 @@ export function getMongoMemoryServerUri(): string {
 /**
  * Insert test data into MongoDB
  */
-export async function insertTestData(
+export async function insertTestData<T extends Record<string, unknown>>(
   collectionName: string,
-  data: any | any[]
-): Promise<any> {
+  data: T | T[]
+): Promise<mongoose.mongo.InsertManyResult | mongoose.mongo.InsertOneResult> {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error('MongoDB not connected');
@@ -85,8 +85,8 @@ export async function insertTestData(
 
   const collection = db.collection(collectionName);
   const result = Array.isArray(data)
-    ? await collection.insertMany(data)
-    : await collection.insertOne(data);
+    ? await collection.insertMany(data as mongoose.mongo.BSON.Document[])
+    : await collection.insertOne(data as mongoose.mongo.BSON.Document);
 
   return result;
 }
@@ -94,17 +94,17 @@ export async function insertTestData(
 /**
  * Query test data from MongoDB
  */
-export async function queryTestData(
+export async function queryTestData<T = Record<string, unknown>>(
   collectionName: string,
-  filter: Record<string, any> = {}
-): Promise<any[]> {
+  filter: Record<string, unknown> = {}
+): Promise<T[]> {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error('MongoDB not connected');
   }
 
   const collection = db.collection(collectionName);
-  return collection.find(filter).toArray();
+  return (await collection.find(filter).toArray()) as T[];
 }
 
 /**
@@ -112,7 +112,7 @@ export async function queryTestData(
  */
 export async function countTestData(
   collectionName: string,
-  filter: Record<string, any> = {}
+  filter: Record<string, unknown> = {}
 ): Promise<number> {
   const db = mongoose.connection.db;
   if (!db) {
@@ -120,7 +120,7 @@ export async function countTestData(
   }
 
   const collection = db.collection(collectionName);
-  return collection.countDocuments(filter);
+  return await collection.countDocuments(filter);
 }
 
 /**

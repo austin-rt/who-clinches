@@ -14,9 +14,12 @@
       "Bash(npm run test:*)",
       "Bash(chmod:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(npx eslint:*)",
+      "Bash(npm test:*)",
+      "Bash(npx tsc:*)"
     ],
-    "deny": ["Bash(npm run dev:*)"],
+    "deny": ["Bash(npm run dev:*)", "Bash(rm:*)", "Bash(git push:*)", "Bash(sudo:*)"],
     "ask": []
   }
 }

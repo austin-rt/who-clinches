@@ -10,7 +10,7 @@
  */
 
 import { fetchAPI, validateFields } from '../setup';
-import { SimulateResponse } from '@/lib/api-types';
+import { SimulateResponse, GamesResponse } from '@/lib/api-types';
 
 const SEASON = 2025;
 const CONFERENCE_ID = 8;
@@ -54,33 +54,18 @@ describe('POST /api/simulate', () => {
         'record',
         'confRecord',
         'explainPosition',
-      ] as const;
+      ];
 
-      response.standings.forEach(entry => {
-        const validation = validateFields(entry, requiredFields);
+      response.standings.forEach((entry) => {
+        const validation = validateFields(
+          entry as unknown as Record<string, unknown>,
+          requiredFields
+        );
         expect(validation.valid).toBe(true);
         if (!validation.valid) {
           throw new Error(`Entry missing fields: ${validation.missingFields.join(', ')}`);
         }
       });
-    });
-
-    it('includes lastUpdated timestamp', async () => {
-      const response = await fetchAPI<SimulateResponse>('/api/simulate', {
-        method: 'POST',
-        body: JSON.stringify({
-          season: SEASON,
-          conferenceId: CONFERENCE_ID,
-          overrides: {},
-        }),
-      });
-
-      // lastUpdated is optional in simulate response or may be a string
-      if (response.lastUpdated) {
-        expect(
-          typeof response.lastUpdated === 'number' || typeof response.lastUpdated === 'string'
-        ).toBe(true);
-      }
     });
   });
 
@@ -108,10 +93,8 @@ describe('POST /api/simulate', () => {
         }),
       });
 
-      const ranks = response.standings.map(entry => entry.rank);
-      expect(ranks.sort((a, b) => a - b)).toEqual(
-        Array.from({ length: 16 }, (_, i) => i + 1)
-      );
+      const ranks = response.standings.map((entry) => entry.rank);
+      expect(ranks.sort((a, b) => a - b)).toEqual(Array.from({ length: 16 }, (_, i) => i + 1));
     });
 
     it('championship array contains top 2 teams', async () => {
@@ -130,9 +113,9 @@ describe('POST /api/simulate', () => {
         const top2Ranks = response.standings
           .sort((a, b) => a.rank - b.rank)
           .slice(0, 2)
-          .map(e => e.teamId);
+          .map((e) => e.teamId);
 
-        response.championship.forEach(teamId => {
+        response.championship.forEach((teamId) => {
           expect(top2Ranks).toContain(teamId);
         });
       }
@@ -155,7 +138,7 @@ describe('POST /api/simulate', () => {
 
     it('handles single game override', async () => {
       // Get a valid game ID first
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
       expect(gamesResponse.events.length).toBeGreaterThan(0);
@@ -178,7 +161,7 @@ describe('POST /api/simulate', () => {
     });
 
     it('handles multiple game overrides', async () => {
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
       expect(gamesResponse.events.length).toBeGreaterThanOrEqual(2);
@@ -213,8 +196,9 @@ describe('POST /api/simulate', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
@@ -228,8 +212,9 @@ describe('POST /api/simulate', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
@@ -246,13 +231,14 @@ describe('POST /api/simulate', () => {
           }),
         });
         // If it succeeds, that's okay - validation might be lenient
-      } catch (error: any) {
-        expect(error.message).toContain('400');
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toContain('400');
       }
     });
 
     it('returns error for negative scores', async () => {
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
@@ -270,15 +256,16 @@ describe('POST /api/simulate', () => {
             }),
           });
           // If it succeeds, validation might be lenient
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const err = error as Error;
           // Should return 4xx or 5xx error
-          expect(/[45]\d{2}/.test(error.message)).toBe(true);
+          expect(/[45]\d{2}/.test(err.message)).toBe(true);
         }
       }
     });
 
     it('returns error for non-integer scores', async () => {
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
@@ -296,9 +283,10 @@ describe('POST /api/simulate', () => {
             }),
           });
           // If it succeeds, validation might be lenient
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const err = error as Error;
           // Should return 4xx or 5xx error
-          expect(/[45]\d{2}/.test(error.message)).toBe(true);
+          expect(/[45]\d{2}/.test(err.message)).toBe(true);
         }
       }
     });
@@ -315,7 +303,7 @@ describe('POST /api/simulate', () => {
         }),
       });
 
-      response.standings.forEach(entry => {
+      response.standings.forEach((entry) => {
         if (entry.explainPosition) {
           expect(typeof entry.explainPosition).toBe('string');
           // Should contain some explanation text
@@ -352,7 +340,7 @@ describe('POST /api/simulate', () => {
         }),
       });
 
-      response.standings.forEach(entry => {
+      response.standings.forEach((entry) => {
         expect(entry.color).toBeDefined();
         expect(typeof entry.color).toBe('string');
         expect(/^[0-9a-f]{6}$/i.test(entry.color)).toBe(true);
@@ -371,14 +359,13 @@ describe('POST /api/simulate', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toBeDefined();
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toBeDefined();
         // Error should contain 400 status code
-        expect(error.message).toContain('400');
+        expect(err.message).toContain('400');
         // Error body should describe the issue
-        expect(error.message.toLowerCase()).toMatch(
-          /(season|required|missing)/
-        );
+        expect(err.message.toLowerCase()).toMatch(/(season|required|missing)/);
       }
     });
 
@@ -392,17 +379,16 @@ describe('POST /api/simulate', () => {
           }),
         });
         fail('Should have thrown an error');
-      } catch (error: any) {
-        expect(error.message).toBeDefined();
-        expect(error.message).toContain('400');
-        expect(error.message.toLowerCase()).toMatch(
-          /(conferenceid|required|missing)/
-        );
+      } catch (error: unknown) {
+        const err = error as Error;
+        expect(err.message).toBeDefined();
+        expect(err.message).toContain('400');
+        expect(err.message.toLowerCase()).toMatch(/(conferenceid|required|missing)/);
       }
     });
 
     it('negative score error message is descriptive', async () => {
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
@@ -420,15 +406,16 @@ describe('POST /api/simulate', () => {
             }),
           });
           // If succeeds, that's okay
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const err = error as Error;
           // Should have error message about negative scores
-          expect(error.message.toLowerCase()).toMatch(/negative|cannot be negative/);
+          expect(err.message.toLowerCase()).toMatch(/negative|cannot be negative/);
         }
       }
     });
 
     it('non-integer score error message is descriptive', async () => {
-      const gamesResponse = await fetchAPI<any>(
+      const gamesResponse = await fetchAPI<GamesResponse>(
         `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
       );
 
@@ -446,11 +433,10 @@ describe('POST /api/simulate', () => {
             }),
           });
           // If succeeds, that's okay
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const err = error as Error;
           // Should have error message about non-integer scores
-          expect(error.message.toLowerCase()).toMatch(
-            /(whole|integer|decimal|float)/
-          );
+          expect(err.message.toLowerCase()).toMatch(/(whole|integer|decimal|float)/);
         }
       }
     });

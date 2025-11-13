@@ -29,7 +29,6 @@ describe('reshapeTeamData', () => {
       groups: {
         parent: {
           id: '8',
-          name: 'SEC',
         },
       },
     },
@@ -38,32 +37,49 @@ describe('reshapeTeamData', () => {
   const mockRecordResponse: ESPNCoreRecordResponse = {
     items: [
       {
+        id: '1',
+        name: 'total',
         type: 'total',
         summary: '8-1',
+        displayValue: '8-1',
         stats: [
-          { name: 'wins', value: 8 },
-          { name: 'losses', value: 1 },
-          { name: 'winPercent', value: 0.889 },
-          { name: 'pointsFor', value: 285 },
-          { name: 'pointsAgainst', value: 120 },
-          { name: 'pointDifferential', value: 165 },
-          { name: 'avgPointsFor', value: 31.67 },
-          { name: 'avgPointsAgainst', value: 13.33 },
+          { name: 'wins', type: 'wins', value: 8, displayValue: '8' },
+          { name: 'losses', type: 'losses', value: 1, displayValue: '1' },
+          { name: 'winPercent', type: 'winPercent', value: 0.889, displayValue: '0.889' },
+          { name: 'pointsFor', type: 'pointsFor', value: 285, displayValue: '285' },
+          { name: 'pointsAgainst', type: 'pointsAgainst', value: 120, displayValue: '120' },
+          { name: 'pointDifferential', type: 'pointDifferential', value: 165, displayValue: '165' },
+          { name: 'avgPointsFor', type: 'avgPointsFor', value: 31.67, displayValue: '31.67' },
+          {
+            name: 'avgPointsAgainst',
+            type: 'avgPointsAgainst',
+            value: 13.33,
+            displayValue: '13.33',
+          },
         ],
       },
       {
+        id: '2',
+        name: 'homerecord',
         type: 'homerecord',
         summary: '4-0',
+        displayValue: '4-0',
         stats: [],
       },
       {
+        id: '3',
+        name: 'awayrecord',
         type: 'awayrecord',
         summary: '4-1',
+        displayValue: '4-1',
         stats: [],
       },
       {
+        id: '4',
+        name: 'vsconf',
         type: 'vsconf',
         summary: '5-0',
+        displayValue: '5-0',
         stats: [],
       },
     ],
@@ -132,7 +148,7 @@ describe('reshapeTeamData', () => {
     it('extracts all record types from core API', () => {
       const result = reshapeTeamData(mockTeamResponse, mockRecordResponse);
 
-      expect(result?.record).toEqual(
+      expect(result!.record!).toEqual(
         expect.objectContaining({
           overall: '8-1',
           home: '4-0',
@@ -145,7 +161,7 @@ describe('reshapeTeamData', () => {
     it('extracts record statistics correctly', () => {
       const result = reshapeTeamData(mockTeamResponse, mockRecordResponse);
 
-      expect(result?.record.stats).toEqual(
+      expect(result!.record!.stats).toEqual(
         expect.objectContaining({
           wins: 8,
           losses: 1,
@@ -186,7 +202,7 @@ describe('reshapeTeamData', () => {
       };
 
       const result = reshapeTeamData(responseWithSiteAPI);
-      expect(result?.record.overall).toBe('8-1');
+      expect(result!.record!.overall).toBe('8-1');
     });
   });
 
@@ -214,7 +230,7 @@ describe('reshapeTeamData', () => {
         ...mockTeamResponse,
         team: {
           ...mockTeamResponse.team,
-          rank: null,
+          rank: undefined,
         },
       };
 
@@ -225,18 +241,18 @@ describe('reshapeTeamData', () => {
 
   describe('Error Handling', () => {
     it('returns null for null team data', () => {
-      const invalidResponse: ESPNTeamResponse = {
-        team: null as any,
-      };
+      const invalidResponse = {
+        team: null,
+      } as unknown as ESPNTeamResponse;
 
       const result = reshapeTeamData(invalidResponse);
       expect(result).toBeNull();
     });
 
     it('returns null for undefined team data', () => {
-      const invalidResponse: ESPNTeamResponse = {
-        team: undefined as any,
-      };
+      const invalidResponse = {
+        team: undefined,
+      } as unknown as ESPNTeamResponse;
 
       const result = reshapeTeamData(invalidResponse);
       expect(result).toBeNull();
@@ -285,11 +301,14 @@ describe('reshapeTeamsData', () => {
   const mockRecordResponse: ESPNCoreRecordResponse = {
     items: [
       {
+        id: '1',
+        name: 'total',
         type: 'total',
         summary: '8-1',
+        displayValue: '8-1',
         stats: [
-          { name: 'wins', value: 8 },
-          { name: 'losses', value: 1 },
+          { name: 'wins', type: 'wins', value: 8, displayValue: '8' },
+          { name: 'losses', type: 'losses', value: 1, displayValue: '1' },
         ],
       },
     ],
@@ -297,8 +316,8 @@ describe('reshapeTeamsData', () => {
 
   it('transforms multiple team responses', () => {
     const result = reshapeTeamsData([
-      { data: mockTeamResponse, recordData: mockRecordResponse },
-      { data: mockTeamResponse, recordData: mockRecordResponse },
+      { abbreviation: 'ALA', data: mockTeamResponse, recordData: mockRecordResponse },
+      { abbreviation: 'ALA', data: mockTeamResponse, recordData: mockRecordResponse },
     ]);
 
     expect(result).toHaveLength(2);
@@ -309,8 +328,12 @@ describe('reshapeTeamsData', () => {
   it('filters out null results', () => {
     const invalidResponse = { team: null };
     const result = reshapeTeamsData([
-      { data: mockTeamResponse, recordData: mockRecordResponse },
-      { data: invalidResponse as any, recordData: mockRecordResponse },
+      { abbreviation: 'ALA', data: mockTeamResponse, recordData: mockRecordResponse },
+      {
+        abbreviation: 'INV',
+        data: invalidResponse as unknown as ESPNTeamResponse,
+        recordData: mockRecordResponse,
+      },
     ]);
 
     expect(result).toHaveLength(1);
@@ -323,8 +346,12 @@ describe('reshapeTeamsData', () => {
 
   it('skips teams with missing data property', () => {
     const result = reshapeTeamsData([
-      { data: mockTeamResponse, recordData: mockRecordResponse },
-      { data: null, recordData: mockRecordResponse } as any,
+      { abbreviation: 'ALA', data: mockTeamResponse, recordData: mockRecordResponse },
+      {
+        abbreviation: 'INV',
+        data: null as unknown as ESPNTeamResponse,
+        recordData: mockRecordResponse,
+      },
     ]);
 
     expect(result).toHaveLength(1);

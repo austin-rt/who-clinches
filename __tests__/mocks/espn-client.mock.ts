@@ -5,6 +5,11 @@
  * making live API calls during test runs.
  */
 
+import {
+  ESPNTeamResponse,
+  ESPNCoreRecordResponse,
+  ESPNScoreboardResponse,
+} from '@/lib/espn-client';
 import { gamesFixture } from '../fixtures/games.fixture';
 import { secTeamsFixture } from '../fixtures/teams.fixture';
 
@@ -12,8 +17,8 @@ export const mockEspnClient = {
   /**
    * Mock getTeam - returns team metadata
    */
-  getTeam: jest.fn((abbrev: string) => {
-    const team = secTeamsFixture.find(t => t.abbrev === abbrev);
+  getTeam: jest.fn((abbrev: string): Promise<ESPNTeamResponse> => {
+    const team = secTeamsFixture.find((t) => t.abbrev === abbrev);
     if (!team) {
       throw new Error(`Team not found: ${abbrev}`);
     }
@@ -21,18 +26,29 @@ export const mockEspnClient = {
     return Promise.resolve({
       team: {
         id: team.id,
+        name: team.displayName,
         abbreviation: abbrev,
         displayName: team.displayName,
-        logo: team.logo,
+        logos: [
+          {
+            href: team.logo,
+            width: 500,
+            height: 500,
+          },
+        ],
         color: team.color,
         alternateColor: team.alternateColor,
         rank: Math.floor(Math.random() * 16) + 1,
         standingSummary: `${Math.floor(Math.random() * 12)}-${Math.floor(Math.random() * 4)}`,
+        groups: {
+          parent: {
+            id: '8',
+          },
+        },
         record: {
           items: [
             {
               summary: `${Math.floor(Math.random() * 12)}-${Math.floor(Math.random() * 4)}`,
-              type: 'total',
               stats: [
                 { name: 'wins', value: Math.floor(Math.random() * 12) },
                 { name: 'losses', value: Math.floor(Math.random() * 4) },
@@ -48,40 +64,88 @@ export const mockEspnClient = {
   /**
    * Mock getTeamRecords - returns team statistics
    */
-  getTeamRecords: jest.fn((teamId: string) => {
+  getTeamRecords: jest.fn((_teamId: string): Promise<ESPNCoreRecordResponse> => {
     return Promise.resolve({
       items: [
         {
+          id: '1',
           name: 'total',
           type: 'total',
           summary: `${Math.floor(Math.random() * 12)}-${Math.floor(Math.random() * 4)}`,
+          displayValue: `${Math.floor(Math.random() * 12)}-${Math.floor(Math.random() * 4)}`,
           stats: [
-            { name: 'wins', value: Math.floor(Math.random() * 12) },
-            { name: 'losses', value: Math.floor(Math.random() * 4) },
-            { name: 'winPercent', value: Math.random() },
-            { name: 'pointsFor', value: Math.floor(Math.random() * 500) + 200 },
-            { name: 'pointsAgainst', value: Math.floor(Math.random() * 500) + 200 },
-            { name: 'pointDifferential', value: Math.floor(Math.random() * 200) - 100 },
-            { name: 'avgPointsFor', value: Math.random() * 50 + 20 },
-            { name: 'avgPointsAgainst', value: Math.random() * 50 + 20 },
+            {
+              name: 'wins',
+              type: 'wins',
+              value: Math.floor(Math.random() * 12),
+              displayValue: String(Math.floor(Math.random() * 12)),
+            },
+            {
+              name: 'losses',
+              type: 'losses',
+              value: Math.floor(Math.random() * 4),
+              displayValue: String(Math.floor(Math.random() * 4)),
+            },
+            {
+              name: 'winPercent',
+              type: 'winPercent',
+              value: Math.random(),
+              displayValue: String(Math.random().toFixed(3)),
+            },
+            {
+              name: 'pointsFor',
+              type: 'pointsFor',
+              value: Math.floor(Math.random() * 500) + 200,
+              displayValue: String(Math.floor(Math.random() * 500) + 200),
+            },
+            {
+              name: 'pointsAgainst',
+              type: 'pointsAgainst',
+              value: Math.floor(Math.random() * 500) + 200,
+              displayValue: String(Math.floor(Math.random() * 500) + 200),
+            },
+            {
+              name: 'pointDifferential',
+              type: 'pointDifferential',
+              value: Math.floor(Math.random() * 200) - 100,
+              displayValue: String(Math.floor(Math.random() * 200) - 100),
+            },
+            {
+              name: 'avgPointsFor',
+              type: 'avgPointsFor',
+              value: Math.random() * 50 + 20,
+              displayValue: String((Math.random() * 50 + 20).toFixed(2)),
+            },
+            {
+              name: 'avgPointsAgainst',
+              type: 'avgPointsAgainst',
+              value: Math.random() * 50 + 20,
+              displayValue: String((Math.random() * 50 + 20).toFixed(2)),
+            },
           ],
         },
         {
+          id: '2',
           name: 'conference',
-          type: 'conference',
+          type: 'vsconf',
           summary: `${Math.floor(Math.random() * 10)}-${Math.floor(Math.random() * 6)}`,
+          displayValue: `${Math.floor(Math.random() * 10)}-${Math.floor(Math.random() * 6)}`,
           stats: [],
         },
         {
+          id: '3',
           name: 'home',
-          type: 'home',
+          type: 'homerecord',
           summary: `${Math.floor(Math.random() * 7)}-${Math.floor(Math.random() * 2)}`,
+          displayValue: `${Math.floor(Math.random() * 7)}-${Math.floor(Math.random() * 2)}`,
           stats: [],
         },
         {
+          id: '4',
           name: 'away',
-          type: 'away',
+          type: 'awayrecord',
           summary: `${Math.floor(Math.random() * 5)}-${Math.floor(Math.random() * 3)}`,
+          displayValue: `${Math.floor(Math.random() * 5)}-${Math.floor(Math.random() * 3)}`,
           stats: [],
         },
       ],
@@ -91,83 +155,109 @@ export const mockEspnClient = {
   /**
    * Mock getSchedule - returns games
    */
-  getSchedule: jest.fn((options: any) => {
-    const { season, week, conferenceId } = options;
-    let games = [...gamesFixture];
+  getSchedule: jest.fn(
+    (options: {
+      season?: number;
+      week?: number;
+      groups?: number;
+    }): Promise<ESPNScoreboardResponse> => {
+      const { season, week, groups } = options;
+      // Default to SEC (8) if no conference specified, but allow any conference for flexibility
+      const conferenceId = groups?.toString() || '8';
+      let games = [...gamesFixture];
 
-    if (season) {
-      games = games.filter(g => g.season === season);
-    }
-    if (week) {
-      games = games.filter(g => g.week === week);
-    }
+      if (season) {
+        games = games.filter((g) => g.season === season);
+      }
+      if (week) {
+        games = games.filter((g) => g.week === week);
+      }
 
-    return Promise.resolve({
-      events: games.map(g => ({
-        id: g.espnId,
-        uid: `s:${g.season}~l:25~e:${g.espnId}`,
-        date: g.date,
-        name: g.displayName,
-        shortName: g.displayName,
-        status: {
-          type: {
-            name: g.status,
-            state: g.status === 'final' ? 'post' : g.status === 'in' ? 'in' : 'pre',
-          },
+      const currentSeason = season || games[0]?.season || 2025;
+      const currentWeek = week || games[0]?.week || 1;
+
+      return Promise.resolve({
+        events: games.map((g) => ({
+          id: g.espnId,
+          competitions: [
+            {
+              id: g.espnId,
+              date: g.date,
+              conferenceCompetition: true,
+              neutralSite: false,
+              competitors: [
+                {
+                  homeAway: 'home' as const,
+                  team: {
+                    id: g.home.teamEspnId,
+                    abbreviation: g.home.abbrev,
+                    displayName: g.home.displayName || g.home.abbrev,
+                    logo: (g.home as { logo?: string }).logo || '',
+                    color: (g.home as { color?: string }).color || '000000',
+                    conferenceId,
+                  },
+                  score: g.home.score?.toString() || '0',
+                  records: [],
+                },
+                {
+                  homeAway: 'away' as const,
+                  team: {
+                    id: g.away.teamEspnId,
+                    abbreviation: g.away.abbrev,
+                    displayName: g.away.displayName || g.away.abbrev,
+                    logo: (g.away as { logo?: string }).logo || '',
+                    color: (g.away as { color?: string }).color || '000000',
+                    conferenceId,
+                  },
+                  score: g.away.score?.toString() || '0',
+                  records: [],
+                },
+              ],
+              status: {
+                type: {
+                  state: (g.status === 'final' ? 'post' : g.status === 'in' ? 'in' : 'pre') as
+                    | 'pre'
+                    | 'in'
+                    | 'post',
+                  completed: g.status === 'final',
+                },
+              },
+              week: {
+                number: g.week || currentWeek,
+              },
+              season: {
+                year: g.season || currentSeason,
+              },
+              odds: g.odds
+                ? [
+                    {
+                      details: g.odds.spread?.displayName || '',
+                      spread: g.odds.spread?.value || 0,
+                      overUnder: g.odds.overUnder || 0,
+                      awayTeamOdds: {
+                        favorite: (g.odds.spread?.value || 0) < 0,
+                      },
+                      homeTeamOdds: {
+                        favorite: (g.odds.spread?.value || 0) > 0,
+                      },
+                    },
+                  ]
+                : undefined,
+              groups: {
+                id: conferenceId,
+              },
+            },
+          ],
+        })),
+        season: {
+          year: currentSeason,
         },
-        competitions: [
-          {
-            id: g.espnId,
-            uid: `s:${g.season}~l:25~e:${g.espnId}`,
-            date: g.date,
-            attendance: g.status === 'final' ? Math.floor(Math.random() * 100000) + 50000 : null,
-            competitors: [
-              {
-                id: g.home.teamEspnId,
-                uid: `s:25~t:${g.home.teamEspnId}`,
-                team: {
-                  id: g.home.teamEspnId,
-                  abbreviation: g.home.abbrev,
-                  displayName: g.home.displayName,
-                },
-                homeAway: 'home',
-                score: g.home.score?.toString(),
-                curScore: g.home.score?.toString(),
-              },
-              {
-                id: g.away.teamEspnId,
-                uid: `s:25~t:${g.away.teamEspnId}`,
-                team: {
-                  id: g.away.teamEspnId,
-                  abbreviation: g.away.abbrev,
-                  displayName: g.away.displayName,
-                },
-                homeAway: 'away',
-                score: g.away.score?.toString(),
-                curScore: g.away.score?.toString(),
-              },
-            ],
-            odds: g.odds ? [
-              {
-                provider: {
-                  name: 'ESPN',
-                },
-                spread: {
-                  displayName: g.odds.spread.displayName,
-                  value: g.odds.spread.value,
-                },
-                overUnder: g.odds.overUnder,
-              },
-            ] : [],
-            predictor: g.predictedScore ? {
-              homeScore: g.predictedScore.home,
-              awayScore: g.predictedScore.away,
-            } : null,
-          },
-        ],
-      })),
-    });
-  }),
+        week: {
+          number: currentWeek,
+        },
+      });
+    }
+  ),
 
   /**
    * Mock reset - clears all mock call history

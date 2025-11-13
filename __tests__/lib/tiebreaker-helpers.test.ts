@@ -21,7 +21,7 @@ import {
 } from '@/lib/tiebreaker-helpers';
 import { GameLean } from '@/lib/types';
 
-// Mock game data for testing
+// Helper to create mock game data for testing
 const createMockGame = (
   espnId: string,
   homeTeamId: string,
@@ -31,17 +31,24 @@ const createMockGame = (
   homeAbbrev: string = 'H',
   awayAbbrev: string = 'A'
 ): GameLean => ({
+  _id: espnId,
   espnId,
   displayName: `${awayAbbrev} @ ${homeAbbrev}`,
   season: 2025,
   week: 1,
-  status: homeScore !== null && awayScore !== null ? 'final' : 'scheduled',
+  sport: 'football',
+  league: 'college-football',
+  state: homeScore !== null && awayScore !== null ? 'post' : 'pre',
+  completed: homeScore !== null && awayScore !== null,
+  conferenceGame: true,
+  neutralSite: false,
   date: '2025-09-06T12:00Z',
   home: {
     teamEspnId: homeTeamId,
     abbrev: homeAbbrev,
     displayName: homeAbbrev,
     score: homeScore,
+    rank: null,
     logo: '',
     color: '000000',
   },
@@ -50,6 +57,7 @@ const createMockGame = (
     abbrev: awayAbbrev,
     displayName: awayAbbrev,
     score: awayScore,
+    rank: null,
     logo: '',
     color: '000000',
   },
@@ -59,6 +67,7 @@ const createMockGame = (
     overUnder: null,
     favoriteTeamEspnId: null,
   },
+  lastUpdated: new Date('2025-09-06T12:00Z'),
 });
 
 describe('getTeamRecord', () => {
@@ -76,10 +85,7 @@ describe('getTeamRecord', () => {
   });
 
   it('calculates win percentage correctly', () => {
-    const games = [
-      createMockGame('1', 'A', 'B', 28, 24),
-      createMockGame('2', 'C', 'A', 21, 24),
-    ];
+    const games = [createMockGame('1', 'A', 'B', 28, 24), createMockGame('2', 'C', 'A', 21, 24)];
 
     const record = getTeamRecord('A', games);
 
@@ -238,10 +244,7 @@ describe('applyRuleB: Common Opponents', () => {
   });
 
   it('returns all teams if no common opponents', () => {
-    const games = [
-      createMockGame('1', 'A', 'C', 28, 24),
-      createMockGame('2', 'B', 'D', 21, 24),
-    ];
+    const games = [createMockGame('1', 'A', 'C', 28, 24), createMockGame('2', 'B', 'D', 21, 24)];
 
     const explanations = new Map<string, string[]>();
     const result = applyRuleB(['A', 'B'], games, explanations);
@@ -269,10 +272,7 @@ describe('applyRuleC: Highest Placed Common Opponent', () => {
   });
 
   it('handles no common opponents', () => {
-    const games = [
-      createMockGame('1', 'A', 'C', 28, 24),
-      createMockGame('2', 'B', 'D', 21, 24),
-    ];
+    const games = [createMockGame('1', 'A', 'C', 28, 24), createMockGame('2', 'B', 'D', 21, 24)];
 
     const explanations = new Map<string, string[]>();
     const result = applyRuleC(['A', 'B'], games, ['A', 'B', 'C', 'D'], explanations);
@@ -488,8 +488,11 @@ describe('calculateStandings', () => {
     const bStanding = result.standings.find((s) => s.teamId === 'B');
     const cStanding = result.standings.find((s) => s.teamId === 'C');
 
-    expect(aStanding?.rank).toBeLessThan(bStanding?.rank!);
-    expect(bStanding?.rank).toBeLessThan(cStanding?.rank!);
+    expect(aStanding).toBeDefined();
+    expect(bStanding).toBeDefined();
+    expect(cStanding).toBeDefined();
+    expect(aStanding!.rank).toBeLessThan(bStanding!.rank);
+    expect(bStanding!.rank).toBeLessThan(cStanding!.rank);
   });
 
   it('provides explanation for each team position', () => {

@@ -31,15 +31,19 @@ const createMockGame = (
   displayName: 'Test Game',
   season: 2025,
   week: 1,
-  status: state === 'post' ? 'final' : state === 'in' ? 'in' : 'scheduled',
-  state: state, // Add explicit state property
-  date: '2025-09-06T12:00Z',
+  sport: 'football',
+  league: 'college-football',
+  state: state,
   completed: state === 'post',
+  conferenceGame: true,
+  neutralSite: false,
+  date: '2025-09-06T12:00Z',
   home: {
     teamEspnId: '25',
     abbrev: 'ALA',
     displayName: 'Alabama',
     score: homeScore,
+    rank: null,
     logo: '',
     color: 'ba0c2f',
   },
@@ -48,6 +52,7 @@ const createMockGame = (
     abbrev: 'LSU',
     displayName: 'LSU',
     score: awayScore,
+    rank: null,
     logo: '',
     color: '4d1d4d',
   },
@@ -57,7 +62,8 @@ const createMockGame = (
     overUnder: null,
     favoriteTeamEspnId,
   },
-} as ReshapedGame);
+  lastUpdated: new Date(),
+});
 
 const createMockTeam = (
   avgPointsFor: number = 28,
@@ -173,13 +179,7 @@ describe('calculatePredictedScore', () => {
     });
 
     it('uses ceil to avoid ties when calculating from spread', () => {
-      const game = createMockGame(
-        'pre',
-        null,
-        null,
-        -5.5,
-        '25'
-      );
+      const game = createMockGame('pre', null, null, -5.5, '25');
       const homeTeam = createMockTeam(28.2);
       const awayTeam = createMockTeam(24);
 
