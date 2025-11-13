@@ -128,15 +128,25 @@ async function main() {
     console.log('');
     console.log('Step 2: Checking if games are seeded...');
     try {
-      const gamesResponse = await fetchAPI(
-        `${BASE_URL}/api/games?season=2025&conferenceId=8&limit=1`
-      );
-      if (gamesResponse.events && gamesResponse.events.length > 0) {
-        console.log(`[OK] Found ${gamesResponse.events.length} game(s) in response`);
+      // Check total games in database (should be 128: all SEC games)
+      const allGamesResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025`);
+      if (allGamesResponse.events && allGamesResponse.events.length >= 128) {
+        console.log(
+          `[OK] Found ${allGamesResponse.events.length} total game(s) in database (expected 128 for full season)`
+        );
       } else {
-        console.log('[INFO] No games in response, will seed...');
+        console.log(
+          `[INFO] Only ${allGamesResponse.events?.length || 0} games found, will seed full season...`
+        );
         await seedGames();
         await sleep(2000);
+        // Verify after seeding
+        const verifyResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025`);
+        if (verifyResponse.events && verifyResponse.events.length >= 128) {
+          console.log(
+            `[OK] Seeded ${verifyResponse.events.length} total games (expected 128 for full season)`
+          );
+        }
       }
     } catch {
       console.log('[INFO] Games check failed, attempting to seed...');
