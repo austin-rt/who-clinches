@@ -29,3 +29,14 @@ fi
 # 3. Run ESLint + TypeScript checks (via lint-staged)
 # This enforces: no console.log, no debugger, no 'any', no unused vars, etc.
 npx lint-staged
+
+# 4. Run all tests (unit + API integration)
+printf "${YELLOW}Running test suite...${NC}\n"
+npm run test:all
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: Tests failed. Commit blocked.${NC}\n"
+  printf "${YELLOW}Fix test failures and try again.${NC}\n"
+  printf "${YELLOW}Run 'npm run test:all' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${YELLOW}✓ All tests passed${NC}\n"
