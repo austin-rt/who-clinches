@@ -265,8 +265,16 @@ describe('reshapeTeamsData', () => {
 
   it('transforms multiple team responses', () => {
     const result = reshapeTeamsData([
-      { abbreviation: teamResponse.team.abbreviation, data: teamResponse, recordData: recordResponse },
-      { abbreviation: teamResponse.team.abbreviation, data: teamResponse, recordData: recordResponse },
+      {
+        abbreviation: teamResponse.team.abbreviation,
+        data: teamResponse,
+        recordData: recordResponse,
+      },
+      {
+        abbreviation: teamResponse.team.abbreviation,
+        data: teamResponse,
+        recordData: recordResponse,
+      },
     ]);
 
     expect(result).toHaveLength(2);
@@ -277,7 +285,11 @@ describe('reshapeTeamsData', () => {
   it('filters out null results', () => {
     const invalidResponse = { team: null };
     const result = reshapeTeamsData([
-      { abbreviation: teamResponse.team.abbreviation, data: teamResponse, recordData: recordResponse },
+      {
+        abbreviation: teamResponse.team.abbreviation,
+        data: teamResponse,
+        recordData: recordResponse,
+      },
       {
         abbreviation: 'INV',
         data: invalidResponse as unknown as ESPNTeamResponse,
@@ -295,7 +307,11 @@ describe('reshapeTeamsData', () => {
 
   it('skips teams with missing data property', () => {
     const result = reshapeTeamsData([
-      { abbreviation: teamResponse.team.abbreviation, data: teamResponse, recordData: recordResponse },
+      {
+        abbreviation: teamResponse.team.abbreviation,
+        data: teamResponse,
+        recordData: recordResponse,
+      },
       {
         abbreviation: 'INV',
         data: null as unknown as ESPNTeamResponse,
