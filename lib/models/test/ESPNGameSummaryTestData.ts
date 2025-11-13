@@ -3,7 +3,7 @@ import { ESPNGameSummaryResponse } from '@/lib/espn-client';
 
 /**
  * ESPN Game Summary Test Data
- * 
+ *
  * Stores real ESPN game summary API responses for use in unit tests.
  * Updated daily via cron job to ensure tests use current API format.
  * Uses dedicated test database connection.
@@ -67,4 +67,3 @@ export const getESPNGameSummaryTestData = async () => {
 };
 
 export default getESPNGameSummaryTestData;
-

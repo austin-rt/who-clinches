@@ -3,7 +3,7 @@ import { ESPNTeamResponse } from '@/lib/espn-client';
 
 /**
  * ESPN Team Test Data
- * 
+ *
  * Stores real ESPN team API responses for use in unit tests.
  * Updated daily via cron job to ensure tests use current API format.
  * Uses dedicated test database connection.
@@ -72,4 +72,3 @@ export const getESPNTeamTestData = async () => {
 };
 
 export default getESPNTeamTestData;
-

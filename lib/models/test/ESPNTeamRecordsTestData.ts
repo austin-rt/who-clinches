@@ -3,7 +3,7 @@ import { ESPNCoreRecordResponse } from '@/lib/espn-client';
 
 /**
  * ESPN Team Records Test Data
- * 
+ *
  * Stores real ESPN team records API responses for use in unit tests.
  * Updated daily via cron job to ensure tests use current API format.
  * Uses dedicated test database connection.
@@ -72,4 +72,3 @@ export const getESPNTeamRecordsTestData = async () => {
 };
 
 export default getESPNTeamRecordsTestData;
-
