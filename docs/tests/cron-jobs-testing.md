@@ -12,15 +12,23 @@ Tests all cron job endpoints for data updates, authentication, error handling, a
 
 ---
 
-## Test 1: Update Live Games Cron
+## Test 1: Update Games Cron
 
-Updates scores for in-progress and recently completed games.
+Updates scores for games. Can update all games or just incomplete ones.
 
-### Local Test
+### Local Test (All Games - for daily batch)
 
 ```bash
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
+  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
+```
+
+### Local Test (Incomplete Games Only - for frequent updates)
+
+```bash
+CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
+curl -X GET "http://localhost:3000/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -91,7 +99,7 @@ Tests that cron endpoints require authentication.
 ### Command
 
 ```bash
-curl -X GET "http://localhost:3000/api/cron/update-live-games"
+curl -X GET "http://localhost:3000/api/cron/update-games"
 ```
 
 ### Expected Results
@@ -113,7 +121,7 @@ Tests that invalid tokens are rejected.
 ### Command
 
 ```bash
-curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+curl -X GET "http://localhost:3000/api/cron/update-games" \
   -H "Authorization: Bearer invalid-token-12345"
 ```
 
@@ -189,7 +197,7 @@ Run during offseason or midweek when no games are active.
 
 ```bash
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+curl -X GET "http://localhost:3000/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -220,7 +228,7 @@ Run on Saturday during SEC game time (typically 12-8 PM ET).
 
 ```bash
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+curl -X GET "http://localhost:3000/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -274,7 +282,7 @@ curl "http://localhost:3000/api/games?season=2025&week=11&state=in" | jq '.event
 
 # Run cron
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
   -H "Authorization: Bearer ${CRON_SECRET}"
 
 # After cron
@@ -324,12 +332,8 @@ Tests that Vercel cron schedules are properly configured.
 {
   "crons": [
     {
-      "path": "/api/cron/update-live-games",
-      "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/update-rankings",
-      "schedule": "0 4 * * 3"
+      "path": "/api/cron/update-all",
+      "schedule": "0 9 * * *"
     }
   ]
 }
@@ -337,10 +341,10 @@ Tests that Vercel cron schedules are properly configured.
 
 ### Checks
 
-- [ ] `update-live-games`: Daily at 6 AM UTC (1 AM EST / 2 AM EDT)
-- [ ] `update-rankings`: Weekly Wednesday 4 AM UTC (11 PM EST Tuesday / 12 AM EDT Wednesday)
-- [ ] Only 2 crons (Hobby plan limit)
-- [ ] Crons show as "Active" in Vercel dashboard
+- [ ] `update-all`: Daily at 9 AM UTC (4 AM EST / 5 AM EDT)
+- [ ] Only 1 cron (Hobby plan allows 2, but we batch everything into one)
+- [ ] Cron shows as "Active" in Vercel dashboard
+- [ ] Batch endpoint calls: `update-games?allGames=true`, `update-rankings`, `update-test-data`
 
 ---
 
@@ -379,8 +383,8 @@ Configuration for when upgrading to Vercel Pro.
 ```json
 {
   "crons": [
-    { "path": "/api/cron/update-live-games", "schedule": "*/5 21-23,0-6 * * 4-5" },
-    { "path": "/api/cron/update-live-games", "schedule": "*/5 16-23,0-6 * * 6" },
+    { "path": "/api/cron/update-games", "schedule": "*/5 21-23,0-6 * * 4-5" },
+    { "path": "/api/cron/update-games", "schedule": "*/5 16-23,0-6 * * 6" },
     { "path": "/api/cron/update-spreads", "schedule": "0 13-5 * * *" },
     { "path": "/api/cron/update-team-averages", "schedule": "0 6 * * 0" },
     { "path": "/api/cron/update-rankings", "schedule": "0 3 * * 0" },
@@ -453,7 +457,7 @@ Tests that crons don't overwhelm ESPN API or database.
 
 **Hobby Plan:**
 
-- `update-live-games`: < 10s execution, ~2-5 ESPN calls
+- `update-games`: < 10s execution, ~2-5 ESPN calls
 - `update-rankings`: < 10s execution, 16 ESPN calls (one per team)
 
 **Pro Plan:**
@@ -482,7 +486,7 @@ CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 # Run cron 3 times in a row
 for i in {1..3}; do
   echo "Run $i:"
-  curl -X GET "http://localhost:3000/api/cron/update-live-games" \
+  curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
     -H "Authorization: Bearer ${CRON_SECRET}" | jq .
   sleep 2
 done
@@ -547,17 +551,73 @@ done
 
 ---
 
+## Test 15: Batch Update Endpoint (Hobby Tier)
+
+Tests the single batch endpoint that calls all cron jobs.
+
+### Local Test
+
+```bash
+CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
+curl -X GET "http://localhost:3000/api/cron/update-all" \
+  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
+```
+
+### Expected Response
+
+```json
+{
+  "success": true,
+  "jobsRun": 3,
+  "jobsSucceeded": 3,
+  "totalDuration": 15000,
+  "results": [
+    {
+      "job": "update-games",
+      "success": true,
+      "status": 200,
+      "duration": 200
+    },
+    {
+      "job": "update-rankings",
+      "success": true,
+      "status": 200,
+      "duration": 12000
+    },
+    {
+      "job": "update-test-data",
+      "success": true,
+      "status": 200,
+      "duration": 2800
+    }
+  ],
+  "lastUpdated": "2025-11-13T...",
+  "note": "update-test-data automatically triggers reshape tests in background"
+}
+```
+
+### Checks
+
+- [ ] Status 200 or 207 (Multi-Status if some jobs fail)
+- [ ] `jobsRun` = 3 (update-games, update-rankings, update-test-data)
+- [ ] `jobsSucceeded` = 3 (all jobs successful)
+- [ ] Each job in `results` has `success`, `status`, `duration`
+- [ ] `update-test-data` triggers reshape tests automatically (check ErrorLog for test results)
+
+---
+
 ## Testing Checklist
 
 ### Local Testing
 
-- [ ] Test 1: Update live games cron
+- [ ] Test 1: Update games cron (allGames=true and default)
 - [ ] Test 2: Update rankings cron
 - [ ] Test 3: Auth - missing token
 - [ ] Test 4: Auth - invalid token
 - [ ] Test 5: No active games behavior
 - [ ] Test 8: Database updates verified
 - [ ] Test 14: Idempotency test
+- [ ] Test 15: Batch update endpoint
 
 ### Vercel Testing (Hobby Plan)
 

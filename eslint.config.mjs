@@ -14,11 +14,8 @@ const eslintConfig = defineConfig([
       },
     },
     rules: {
-      // Prevent debugging code
       'no-console': 'error',
       'no-debugger': 'error',
-
-      // TypeScript strict rules
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
@@ -28,26 +25,21 @@ const eslintConfig = defineConfig([
         },
       ],
       '@typescript-eslint/no-floating-promises': 'error',
-
-      // Code quality
       'prefer-const': 'error',
       'no-var': 'error',
       eqeqeq: ['error', 'always'],
       'no-duplicate-imports': 'error',
-
-      // Catch bugs
       'no-unreachable': 'error',
       'require-await': 'error',
     },
   },
-  // Override default ignores of eslint-config-next.
-  globalIgnores([
-    // Default ignores of eslint-config-next:
-    '.next/**',
-    'out/**',
-    'build/**',
-    'next-env.d.ts',
-  ]),
+  {
+    files: ['**/*.js', 'scripts/**/*.js', 'jest.config.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
 ]);
 
 export default eslintConfig;

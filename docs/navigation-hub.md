@@ -5,7 +5,7 @@ This is your guide to finding documentation in the sec-tiebreaker project. Use t
 ## Quick Navigation
 
 - **Getting Started?** → [README.md](../README.md)
-- **Need to test something?** → [Testing Quick Reference](./guides/testing-quick-reference.md)
+- **Need to test something?** → [Testing Quick Reference](./guides/testing-quick-reference.md) (includes environment file documentation)
 - **Setting up pre-commit hooks?** → [Pre-Commit Testing Guide](./guides/pre-commit-testing.md)
 - **Building an API endpoint?** → [API Reference](./guides/api-reference.md)
 - **Understanding ESPN API patterns?** → [ESPN API Testing](./tests/espn-api-testing.md)
@@ -101,14 +101,23 @@ docs/plans/
 │   ├── phase3.md                       - Phase 3: Interactive features
 │   ├── phase4.md                       - Phase 4: Advanced features
 │   └── phase5.md                       - Phase 5: Optimization
-└── archive/                            - Completed work records
-    ├── comprehensive-test-suite.md     - 240-test suite completion
-    ├── fixes-applied-2025-11-12.md    - ESLint/type fixes applied
-    ├── test-delivery-summary.md       - Testing infrastructure summary
-    ├── testing-implementation-complete.md - Testing Phase 1 completion
-    ├── testing-phase2-complete.md     - Testing Phase 2 completion
-    └── unit-tests-ready-for-review.md - Unit test review status
+└── archive/                            - HISTORICAL ONLY - Do not consult for current implementation
+    ├── comprehensive-test-suite.md     - Historical test suite records
+    ├── cron-jobs-plan.md              - Outdated cron job planning (superseded by current implementation)
+    ├── cron-updates-plan.md           - Outdated cron update planning (superseded by current implementation)
+    ├── fixes-applied-2025-11-12.md    - Historical fix records
+    ├── test-delivery-summary.md       - Historical testing infrastructure
+    ├── testing-implementation-complete.md - Historical testing phase records
+    ├── testing-phase2-complete.md     - Historical testing phase records
+    └── unit-tests-ready-for-review.md - Historical test review status
 ```
+
+**IMPORTANT:** The `archive/` directory contains **historical planning documents only**. These documents reflect outdated designs and should **NOT** be consulted to understand the current application. For current implementation details, refer to:
+
+- **Current code** in `/app/api/cron/` endpoints
+- **Current API docs** in `/docs/guides/api-reference.md`
+- **Current test procedures** in `/docs/tests/`
+- **Active planning** in `/docs/plans/` (non-archive files)
 
 **When to use:**
 
@@ -116,7 +125,7 @@ docs/plans/
 - API Foundation → Understanding API architecture decisions
 - Tiebreaker Logic → Understanding ranking algorithm design
 - Frontend Plans → Understanding UI/UX phase planning
-- Archive → Reviewing completed work and historical context
+- Archive → **Historical reference only** - Do not use for current implementation
 
 ---
 
@@ -197,7 +206,7 @@ If you're looking for something specific:
 - **ESPN Integration** → See `tests/espn-api-testing.md` and `tests/espn-data-pipeline.md`
 - **Tiebreaker** → See `plans/tiebreaker-logic.md` and `tests/tiebreaker-and-simulate.md`
 - **Frontend** → See `plans/frontend/*`
-- **Cron Jobs** → See `plans/cron-jobs.md` and `tests/cron-jobs-testing.md`
+- **Cron Jobs** → See `tests/cron-jobs-testing.md` and `guides/api-reference.md` (do not use archived plans)
 
 ### By Problem
 

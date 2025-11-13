@@ -1,11 +1,11 @@
 {
   "crons": [
     {
-      "path": "/api/cron/update-live-games",
+      "path": "/api/cron/update-games",
       "schedule": "*/5 21-23,0-6 * * 4-5"
     },
     {
-      "path": "/api/cron/update-live-games",
+      "path": "/api/cron/update-games",
       "schedule": "*/5 16-23,0-6 * * 6"
     },
     {

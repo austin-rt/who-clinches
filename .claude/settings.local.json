@@ -19,7 +19,8 @@
       "Bash(npm test:*)",
       "Bash(npx tsc:*)",
       "Bash(cat > /tmp/*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(pkill -f \"next dev\")"
     ],
     "deny": ["Bash(rm:*)", "Bash(git push:*)", "Bash(sudo:*)", "Bash(git reset:*)"],
     "ask": []

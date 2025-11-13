@@ -56,7 +56,8 @@ This is a specialized college football application built for simulating SEC conf
 app/
 ├── api/
 │   ├── cron/                    # Automated update endpoints
-│   │   ├── update-live-games/   # Score updates during game windows
+│   │   ├── update-games/        # Score updates (allGames param for batch vs frequent)
+│   │   ├── update-all/          # Batch endpoint (Hobby plan - calls update-games, update-rankings, update-test-data)
 │   │   ├── update-rankings/     # Weekly team rankings/standings
 │   │   ├── update-spreads/      # Hourly betting odds (Pro mode)
 │   │   └── update-team-averages/ # Weekly season stats (Pro mode)

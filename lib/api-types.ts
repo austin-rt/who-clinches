@@ -101,10 +101,10 @@ export interface GamesResponse {
 }
 
 // ============================================================================
-// /api/cron/update-live-games
+// /api/cron/update-games
 // ============================================================================
 
-export interface CronLiveGamesResponse {
+export interface CronGamesResponse {
   updated: number;
   gamesChecked: number;
   activeGames: number;

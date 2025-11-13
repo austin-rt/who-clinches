@@ -16,17 +16,40 @@ Complete testing procedures for all SEC Tiebreaker API endpoints with valid and 
 
 ## Prerequisites
 
+### Environment Files
+
+The project uses environment-specific configuration files for testing different databases:
+
+- **`.env.local`** - Local development (default)
+  - Used by: Next.js dev server, API endpoints, Jest tests
+  - Contains: `MONGODB_DB=dev`, `CRON_SECRET`, `MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_HOST`, `MONGODB_APP_NAME`
+  - Also contains read-only credentials: `MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`
+- **`.env.preview`** - Preview/staging environment
+  - Used by: `npm run db:check -- --env preview`
+  - Contains: `MONGODB_DB=preview` and preview-specific config
+  - Uses read-only credentials from `.env.local` for database checks
+- **`.env.production`** - Production environment
+  - Used by: `npm run db:check -- --env production`
+  - Contains: `MONGODB_DB=production` and production-specific config
+  - Uses read-only credentials from `.env.local` for database checks
+
+The `db:check` script loads the appropriate `.env.{envName}` file based on the `--env` parameter to determine which database to check. Database verification uses MongoDB read-only credentials (`MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`) from `.env.local`.
+
+### Credentials
+
 **Credentials from `.env.local`:**
 
 - `VERCEL_AUTOMATION_BYPASS_SECRET` - For protected deployments (Vercel preview/production)
 - `CRON_SECRET` - For cron job endpoints
 - `MONGODB_PASSWORD_READONLY` - For database verification queries
+- `MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_HOST` - For database connections
 
 **Required for testing:**
 
 - Environment variables set: `BASE_URL`, `DATABASE`
 - Local server running (for local testing)
 - Database access for verification queries
+- Appropriate `.env.*` file for the environment being tested
 
 ---
 
@@ -408,12 +431,19 @@ Expected Result (based on 2025 data as of testing):
 
 **Authentication Required:** All cron endpoints require `Authorization: Bearer {CRON_SECRET}` header
 
-#### GET /api/cron/update-live-games
+#### GET /api/cron/update-games
 
-**Valid Request:**
+**Valid Request (All Games):**
 
 ```bash
-curl -X GET "{BASE_URL}/api/cron/update-live-games" \
+curl -X GET "{BASE_URL}/api/cron/update-games?allGames=true" \
+  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
+```
+
+**Valid Request (Incomplete Games Only):**
+
+```bash
+curl -X GET "{BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -430,16 +460,34 @@ curl -X GET "{BASE_URL}/api/cron/update-live-games" \
 
 ```bash
 # Test 1: Missing authentication
-curl -X GET "{BASE_URL}/api/cron/update-live-games"
+curl -X GET "{BASE_URL}/api/cron/update-games"
 
 # Test 2: Invalid token
-curl -X GET "{BASE_URL}/api/cron/update-live-games" \
+curl -X GET "{BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer invalid_token"
 
 # Test 3: Wrong HTTP method
-curl -X POST "{BASE_URL}/api/cron/update-live-games" \
+curl -X POST "{BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}"
 ```
+
+#### GET /api/cron/update-all
+
+**Valid Request (Hobby Plan Batch Endpoint):**
+
+```bash
+curl -X GET "{BASE_URL}/api/cron/update-all" \
+  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
+```
+
+**Expected:** Status 200, response includes:
+
+- `success`: boolean indicating if all jobs succeeded
+- `jobsRun`: total number of jobs executed
+- `jobsSucceeded`: number of jobs that succeeded
+- `totalDuration`: total execution time in milliseconds
+- `results`: array of job results
+- `lastUpdated`: timestamp
 
 **Expected:** Status 401 for auth failures, appropriate error for wrong method
 

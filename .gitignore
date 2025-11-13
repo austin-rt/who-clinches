@@ -43,7 +43,6 @@ next-env.d.ts
 # temp files and scratch work
 /temp
 temp-*
-test-*
 
 # audit files (local assessments)
 **/*audit*.md

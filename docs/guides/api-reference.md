@@ -9,7 +9,8 @@ Complete reference for all SEC Tiebreaker API endpoints.
   - [Pull Games](#post-apipull-games)
   - [Simulate Tiebreaker](#post-apisimulate)
 - [Cron Jobs](#cron-jobs)
-  - [Update Live Games](#get-apicronupdate-live-games)
+  - [Update Games](#get-apicronupdate-games)
+  - [Update All (Batch)](#get-apicronupdate-all)
   - [Update Spreads](#get-apicronupdate-spreads)
   - [Update Rankings](#get-apicronupdate-rankings)
   - [Update Team Averages](#get-apicronupdate-team-averages)
@@ -325,16 +326,20 @@ Authorization: Bearer {CRON_SECRET}
 
 ---
 
-### GET /api/cron/update-live-games
+### GET /api/cron/update-games
 
-Updates scores, states, and odds for active (incomplete) games.
+Updates scores, states, and odds for games. Can update all games or just incomplete ones.
 
 **Authentication:** Required (Bearer token)
 
+**Query Parameters:**
+
+- `allGames` (boolean, optional): If `true`, updates all games in current week (completed, in-progress, pre-game). If `false` or missing, only updates incomplete games.
+
 **Schedule:**
 
-- **Hobby Plan**: Daily at 6 AM ET (`0 6 * * *`)
-- **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 4 AM ET (`0 9 * * *` UTC) with `allGames=true`
+- **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET (without `allGames`, only incomplete games)
 
 **Response:**
 
@@ -382,7 +387,8 @@ Updates scores, states, and odds for active (incomplete) games.
 
 **Logic:**
 
-- Queries incomplete conference games for current season
+- If `allGames=true`: Queries all conference games in current week
+- If `allGames=false` or missing: Queries only incomplete conference games for current season
 - Fetches current week's scoreboard from ESPN
 - Compares ESPN data with database
 - Updates only if changes detected
@@ -405,7 +411,7 @@ Updates scores, states, and odds for active (incomplete) games.
 **Schedule:**
 
 - **Pro Plan**: Every hour 1PM-5AM ET (`0 13-5 * * *` - runs at minute 0 of hours 13-23,0-5 UTC)
-- **Hobby Plan**: Not used (combined with `update-live-games`)
+- **Hobby Plan**: Not used (combined with `update-games` in batch endpoint)
 
 **Response:**
 
@@ -419,7 +425,7 @@ Updates scores, states, and odds for active (incomplete) games.
 }
 ```
 
-**Response Fields:** Same as `update-live-games`
+**Response Fields:** Same as `update-games`
 
 **Updates:**
 
@@ -437,9 +443,78 @@ Updates scores, states, and odds for active (incomplete) games.
 
 **Notes:**
 
-- More frequent than `update-live-games` to catch line movements
+- More frequent than `update-games` to catch line movements
 - Only updates odds, not scores/states
 - Pro-only feature for more granular updates
+
+---
+
+### GET /api/cron/update-all
+
+**Hobby Plan Only**: Batch endpoint that orchestrates multiple cron jobs in a single call.
+
+**Authentication:** Required (Bearer token)
+
+**Schedule:**
+
+- **Hobby Plan**: Daily at 4 AM ET (`0 9 * * *` UTC)
+- **Pro Plan**: Not used (individual cron jobs run separately)
+
+**Response:**
+
+```json
+{
+  "success": true,
+  "jobsRun": 3,
+  "jobsSucceeded": 3,
+  "totalDuration": 15000,
+  "results": [
+    {
+      "job": "update-games",
+      "success": true,
+      "status": 200,
+      "duration": 200
+    },
+    {
+      "job": "update-rankings",
+      "success": true,
+      "status": 200,
+      "duration": 12000
+    },
+    {
+      "job": "update-test-data",
+      "success": true,
+      "status": 200,
+      "duration": 2800
+    }
+  ],
+  "lastUpdated": "2025-11-13T04:00:00.000Z",
+  "note": "update-test-data automatically triggers reshape tests in background"
+}
+```
+
+**Response Fields:**
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Whether all jobs succeeded |
+| `jobsRun` | number | Total number of jobs executed |
+| `jobsSucceeded` | number | Number of jobs that succeeded |
+| `totalDuration` | number | Total execution time in milliseconds |
+| `results` | array | Array of job results with `job`, `success`, `status`, `duration` |
+| `lastUpdated` | string | ISO timestamp of batch execution |
+| `note` | string | Optional informational message |
+
+**Jobs Executed:**
+
+1. **update-games** (with `allGames=true`): Updates all games for current week
+2. **update-rankings**: Updates team rankings and standings
+3. **update-test-data**: Updates test data snapshots and triggers reshape tests
+
+**Error Handling:**
+
+- If a job fails, it's included in `results` with `success: false`
+- Batch still returns 200 if some jobs fail (check `jobsSucceeded` vs `jobsRun`)
+- Individual job errors are logged to the `errors` collection
 
 ---
 
@@ -451,7 +526,7 @@ Updates team rankings, standings, and season statistics.
 
 **Schedule:**
 
-- **Hobby Plan**: Wednesday 4 AM ET (`0 4 * * 3`)
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 4 AM ET (`0 9 * * *` UTC)
 - **Pro Plan**: Sunday 3 AM ET + Wednesday 3 AM ET (`0 3 * * 0` + `0 3 * * 3`)
 
 **Response:**

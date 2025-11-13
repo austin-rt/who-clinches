@@ -3,11 +3,19 @@
 ## Common Commands
 
 ```bash
-# Check if DB is seeded (auto-seeds if needed)
-npm run db:check
+# Check if main DB is seeded (auto-seeds if needed)
+npm run db:check                    # Uses .env.local (dev database)
+npm run db:check -- --env preview   # Uses .env.preview (preview database)
+npm run db:check -- --env production # Uses .env.production (production database)
 
-# Run all API tests (auto-seeds first)
+# Check if test DB is seeded (auto-seeds if needed)
+npm run test:db:check
+
+# Run all API tests (auto-seeds main DB first)
 npm run test:api
+
+# Run reshape unit tests (auto-seeds test DB first)
+npm run test:reshape
 
 # Watch mode for development
 npm run test:watch
@@ -18,9 +26,27 @@ npm run test:coverage
 # Run specific test file
 npm run test -- __tests__/api/games.test.ts
 
-# Run all tests
+# Run all tests (auto-seeds main DB first)
 npm run test:all
 ```
+
+## Environment Files
+
+The project uses environment-specific configuration files for testing different databases:
+
+- **`.env.local`** - Local development (default)
+  - Used by: Next.js dev server, API endpoints, Jest tests
+  - Contains: `MONGODB_DB=dev`, `CRON_SECRET`, `MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_HOST`, `MONGODB_APP_NAME`
+- **`.env.preview`** - Preview/staging environment
+  - Used by: `npm run db:check -- --env preview`
+  - Contains: `MONGODB_DB=preview` and preview-specific config
+- **`.env.production`** - Production environment
+  - Used by: `npm run db:check -- --env production`
+  - Contains: `MONGODB_DB=production` and production-specific config
+
+The `db:check` script loads the appropriate `.env.{envName}` file based on the `--env` parameter to determine which database to check. The script uses MongoDB read-only credentials (`MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`) for database verification.
+
+**Note:** Seeding via API endpoints uses the server's `.env.local` configuration. See `docs/tests/comprehensive-api-testing.md` for full environment file documentation.
 
 ---
 
@@ -33,7 +59,10 @@ __tests__/
 │   ├── simulate.test.ts        (21 tests)
 │   ├── pull-teams.test.ts      (10 tests)
 │   ├── pull-games.test.ts      (10 tests)
-│   └── cron.test.ts            (3 tests)
+│   └── cron.test.ts            (4 tests - includes update-all)
+├── lib/
+│   ├── reshape-teams.test.ts   (uses test DB)
+│   └── reshape-games.test.ts   (uses test DB)
 ├── fixtures/
 │   ├── teams.fixture.ts        (16 SEC teams)
 │   └── games.fixture.ts        (4 games)
@@ -50,9 +79,10 @@ __tests__/
 | POST /api/simulate   | 21    | ✅     |
 | POST /api/pull-teams | 10    | ✅     |
 | POST /api/pull-games | 10    | ✅     |
-| Cron endpoints       | 3     | ✅     |
+| Cron endpoints       | 4     | ✅     |
+| Reshape functions    | ~30   | ✅     |
 
-**Total: 60 tests, 250+ assertions**
+**Total: ~90 tests, 300+ assertions**
 
 ---
 
@@ -103,7 +133,36 @@ Tests fail if coverage drops below threshold.
 
 ---
 
+## Test Database
+
+The test database (`/test`) stores ESPN API response snapshots for reshape unit tests. This is separate from the main database.
+
+**Before running reshape tests:**
+- Run `npm run test:db:check` to ensure test data is seeded
+- Test data is populated via `/api/cron/update-test-data` endpoint
+- If test DB is empty, the script will automatically seed it
+
+**Test data models:**
+- `ESPNScoreboardTestData` - Scoreboard responses
+- `ESPNGameSummaryTestData` - Game summary responses
+- `ESPNTeamTestData` - Team metadata responses
+- `ESPNTeamRecordsTestData` - Team records responses
+
+**Note:** Test database is separate from main database. Dropping the main database does not affect test database.
+
+---
+
 ## Troubleshooting
+
+### Reshape tests fail with "TEST_DATA_ERROR"
+
+The test database may be empty. Run:
+
+```bash
+npm run test:db:check
+```
+
+This will automatically seed the test database if needed.
 
 ### Tests timeout
 

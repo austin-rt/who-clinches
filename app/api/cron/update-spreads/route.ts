@@ -6,7 +6,7 @@ import ErrorLog from '@/lib/models/Error';
 import { espnClient } from '@/lib/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
-import { CronLiveGamesResponse } from '@/lib/api-types';
+import { CronGamesResponse } from '@/lib/api-types';
 import { calculatePredictedScore } from '@/lib/prefill-helpers';
 
 export const runtime = 'nodejs';
@@ -35,7 +35,7 @@ export const GET = async (request: NextRequest) => {
     }).lean();
 
     if (games.length === 0) {
-      return NextResponse.json<CronLiveGamesResponse>({
+      return NextResponse.json<CronGamesResponse>({
         updated: 0,
         gamesChecked: 0,
         activeGames: 0,
@@ -47,7 +47,7 @@ export const GET = async (request: NextRequest) => {
     // 4. Get week from first game
     const currentWeek = games[0].week;
     if (!currentWeek) {
-      return NextResponse.json<CronLiveGamesResponse>({
+      return NextResponse.json<CronGamesResponse>({
         updated: 0,
         gamesChecked: 0,
         activeGames: 0,
@@ -133,7 +133,7 @@ export const GET = async (request: NextRequest) => {
       }
     }
 
-    return NextResponse.json<CronLiveGamesResponse>({
+    return NextResponse.json<CronGamesResponse>({
       updated: updateCount,
       gamesChecked: gamesToUpdate.length,
       activeGames: games.length,

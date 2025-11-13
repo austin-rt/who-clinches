@@ -24,7 +24,7 @@ project/
 │   │   ├── pull-teams.test.ts
 │   │   └── pull-games.test.ts
 │   ├── lib/                    # Helper function tests
-│   │   ├── reshape.test.ts
+│   │   ├── reshape-teams.test.ts
 │   │   ├── tiebreaker.test.ts
 │   │   └── calculations.test.ts
 │   ├── fixtures/               # Test data
@@ -155,7 +155,8 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 #### Cron Job Endpoints (Authorization & Accessibility)
 **Tests:**
 - ✓ `/api/cron/update-rankings` - Protected with Bearer token
-- ✓ `/api/cron/update-live-games` - Accessible with valid auth
+- ✓ `/api/cron/update-games` - Accessible with valid auth
+- ✓ `/api/cron/update-all` - Accessible with valid auth (Hobby batch endpoint)
 - ✓ `/api/cron/update-spreads` - Accessible with valid auth
 - ✓ `/api/cron/update-team-averages` - Accessible with valid auth
 - ✓ Unauthorized requests return 401
@@ -184,7 +185,7 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 - `reshapeGamesResponse(games, teams) -> GamesResponse`
 - `reshapeSimulateResponse(standings, championship, tieLogs) -> SimulateResponse`
 
-**File:** `__tests__/lib/reshape.test.ts`
+**File:** `__tests__/lib/reshape-teams.test.ts`
 
 #### Tiebreaker Functions
 **Location:** `lib/tiebreaker.ts` (existing)

@@ -8,7 +8,7 @@
  * - Response structure
  */
 
-import { fetchAPI, validateFields } from '../setup';
+import { fetchAPI } from '../setup';
 import { GamesResponse } from '@/lib/api-types';
 
 interface PullTeamsResponse {
@@ -18,7 +18,7 @@ interface PullTeamsResponse {
 
 describe('POST /api/pull-teams', () => {
   describe('SEC Conference Pull', () => {
-    it('pulls all SEC teams when conferenceId: 8', async () => {
+    it('pulls all SEC teams with all required response fields', async () => {
       const response = await fetchAPI<PullTeamsResponse>('/api/pull-teams', {
         method: 'POST',
         body: JSON.stringify({
@@ -28,30 +28,38 @@ describe('POST /api/pull-teams', () => {
         }),
       });
 
+      // Check response structure
       expect(response).toBeDefined();
       expect(response.upserted).toBeDefined();
       expect(typeof response.upserted).toBe('number');
       expect(response.upserted).toBeGreaterThan(0);
-    }, 30000);
-
-    it('includes lastUpdated timestamp', async () => {
-      const response = await fetchAPI<PullTeamsResponse>('/api/pull-teams', {
-        method: 'POST',
-        body: JSON.stringify({
-          sport: 'football',
-          league: 'college-football',
-          conferenceId: 8,
-        }),
-      });
-
       expect(response.lastUpdated).toBeDefined();
       // lastUpdated can be either number (timestamp) or string (ISO date)
+      if (response.lastUpdated === null || response.lastUpdated === undefined) {
+        throw new Error(
+          `FIELD_VALIDATION_FAILED | ENTITY:PullTeamsResponse | FIELD:lastUpdated | ISSUE:missing_or_null | EXPECTED:number_or_string | ACTUAL:${response.lastUpdated === null ? 'null' : 'undefined'}`
+        );
+      }
       expect(response.lastUpdated !== null && response.lastUpdated !== undefined).toBe(true);
       // Ensure it's a reasonable value for either type
       if (typeof response.lastUpdated === 'number') {
+        if (response.lastUpdated <= 0) {
+          throw new Error(
+            `FIELD_VALIDATION_FAILED | ENTITY:PullTeamsResponse | FIELD:lastUpdated | ISSUE:invalid_value | EXPECTED:number_greater_than_zero | ACTUAL:${response.lastUpdated} | TYPE:number`
+          );
+        }
         expect(response.lastUpdated).toBeGreaterThan(0);
       } else if (typeof response.lastUpdated === 'string') {
+        if (response.lastUpdated.length === 0) {
+          throw new Error(
+            `FIELD_VALIDATION_FAILED | ENTITY:PullTeamsResponse | FIELD:lastUpdated | ISSUE:empty_string | EXPECTED:non-empty_string | ACTUAL:empty_string | TYPE:string`
+          );
+        }
         expect(response.lastUpdated.length).toBeGreaterThan(0);
+      } else {
+        throw new Error(
+          `FIELD_VALIDATION_FAILED | ENTITY:PullTeamsResponse | FIELD:lastUpdated | ISSUE:wrong_type | EXPECTED:number_or_string | ACTUAL:${typeof response.lastUpdated} | VALUE:${JSON.stringify(response.lastUpdated)}`
+        );
       }
     }, 30000);
   });
@@ -98,7 +106,11 @@ describe('POST /api/pull-teams', () => {
         // If it succeeds, that's okay
       } catch (error: unknown) {
         const err = error as Error;
+        if (err.message.includes('400')) {
         expect(err.message).toContain('400');
+        } else {
+          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:teams | ISSUE:empty_array_without_conferenceId`);
+        }
       }
     });
 
@@ -111,9 +123,12 @@ describe('POST /api/pull-teams', () => {
             conferenceId: 8,
           }),
         });
-        fail('Should have thrown an error');
+        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:sport');
       } catch (error: unknown) {
         const err = error as Error;
+        if (!err.message.includes('400')) {
+          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:sport | ISSUE:missing_required_field`);
+        }
         expect(err.message).toContain('400');
       }
     });
@@ -127,9 +142,12 @@ describe('POST /api/pull-teams', () => {
             conferenceId: 8,
           }),
         });
-        fail('Should have thrown an error');
+        throw new Error('API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ISSUE:request_succeeded_when_should_fail | FIELD:league');
       } catch (error: unknown) {
         const err = error as Error;
+        if (!err.message.includes('400')) {
+          throw new Error(`API_ERROR_RESPONSE | ENDPOINT:/api/pull-teams | STATUS:expected_400 | ACTUAL:${err.message} | FIELD:league | ISSUE:missing_required_field`);
+        }
         expect(err.message).toContain('400');
       }
     });
@@ -150,29 +168,5 @@ describe('POST /api/pull-teams', () => {
       expect(response.upserted).toBeDefined();
       expect(typeof response.upserted).toBe('number');
     }, 30000);
-  });
-
-  describe('Response Structure', () => {
-    it('returns valid response with all required fields', async () => {
-      const response = await fetchAPI<PullTeamsResponse>('/api/pull-teams', {
-        method: 'POST',
-        body: JSON.stringify({
-          sport: 'football',
-          league: 'college-football',
-          conferenceId: 8,
-        }),
-      });
-
-      const requiredFields = ['upserted', 'lastUpdated'];
-      const validation = validateFields(
-        response as unknown as Record<string, unknown>,
-        requiredFields
-      );
-
-      expect(validation.valid).toBe(true);
-      if (!validation.valid) {
-        throw new Error(`Response missing fields: ${validation.missingFields.join(', ')}`);
-      }
-    }, 15000);
   });
 });

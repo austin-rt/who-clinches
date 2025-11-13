@@ -27,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Returns full standings with explanations
   - Implements SEC Rules A-E
 - **Cron Jobs**: 4 endpoints for automated data updates
-  - `/api/cron/update-live-games`: Updates scores and states for active games
+  - `/api/cron/update-games`: Updates scores and states for games (supports allGames parameter)
   - `/api/cron/update-spreads`: Updates betting odds (Pro mode)
   - `/api/cron/update-rankings`: Updates team rankings and statistics
   - `/api/cron/update-team-averages`: Updates season averages (Pro mode)
