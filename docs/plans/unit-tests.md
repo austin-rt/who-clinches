@@ -9,12 +9,14 @@
 **Framework:** Jest (Next.js standard)
 
 **Dependencies to Add:**
+
 - `jest` - Test runner
 - `@testing-library/react` - React component testing (future phases)
 - `mongodb-memory-server` - In-memory MongoDB for unit tests
 - `@types/jest` - TypeScript support
 
 **Test Structure:**
+
 ```
 project/
 ├── __tests__/
@@ -47,6 +49,7 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ### Fixture Files to Create:
 
 **1. `__tests__/fixtures/teams.fixture.ts`**
+
 ```typescript
 // Real ESPN API team data for 16 SEC teams
 // Includes color, alternateColor, displayName, abbreviation, etc.
@@ -54,6 +57,7 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ```
 
 **2. `__tests__/fixtures/games.fixture.ts`**
+
 ```typescript
 // Real ESPN API game data for 2025 season
 // Includes predictedScore, home/away teams, odds, state, etc.
@@ -61,6 +65,7 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ```
 
 **3. `__tests__/fixtures/responses.fixture.ts`**
+
 ```typescript
 // Expected API response shapes
 // GamesResponse, SimulateResponse, PullTeamsResponse, etc.
@@ -68,6 +73,7 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ```
 
 **4. `__tests__/setup.ts`**
+
 ```typescript
 // Jest setup
 // MongoDB Memory Server initialization
@@ -82,7 +88,9 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ### 1. API Routes (100% coverage)
 
 #### `/api/games` (GET)
+
 **Tests:**
+
 - ✓ Returns GamesResponse with correct structure
 - ✓ Includes all 6 TeamMetadata fields (id, abbrev, displayName, logo, color, alternateColor)
 - ✓ Filter by season
@@ -100,7 +108,9 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/api/games.test.ts`
 
 #### `/api/simulate` (POST)
+
 **Tests:**
+
 - ✓ Returns SimulateResponse with correct structure
 - ✓ Includes all 9 StandingEntry fields (rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition)
 - ✓ Returns 16 teams (all SEC)
@@ -121,7 +131,9 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/api/simulate.test.ts`
 
 #### `/api/pull-teams` (POST)
+
 **Tests:**
+
 - ✓ Pulls all SEC teams when conferenceId: 8
 - ✓ Returns upserted count
 - ✓ Teams include color and alternateColor fields
@@ -136,7 +148,9 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/api/pull-teams.test.ts`
 
 #### `/api/pull-games` (POST)
+
 **Tests:**
+
 - ✓ Pulls full season when no week specified
 - ✓ Pulls specific week
 - ✓ Returns upserted count
@@ -153,7 +167,9 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/api/pull-games.test.ts`
 
 #### Cron Job Endpoints (Authorization & Accessibility)
+
 **Tests:**
+
 - ✓ `/api/cron/update-rankings` - Protected with Bearer token
 - ✓ `/api/cron/update-games` - Accessible with valid auth
 - ✓ `/api/cron/update-all` - Accessible with valid auth (Hobby batch endpoint)
@@ -170,15 +186,18 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 ### 2. Helper Functions (100% coverage)
 
 #### Reshape Functions
+
 **Location:** `lib/reshape.ts` (to be created if doesn't exist)
 
 **Tests for each reshape function:**
+
 - ✓ Transforms database format to API format
 - ✓ Handles null/undefined fields gracefully
 - ✓ Preserves all required fields
 - ✓ Correct type casting (string, number, etc.)
 
 **Reshape Functions to Test:**
+
 - `reshapeTeamMetadata(dbTeam) -> TeamMetadata`
 - `reshapeGameLean(dbGame) -> GameLean`
 - `reshapeStandingEntry(team, standings) -> StandingEntry`
@@ -188,9 +207,11 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/lib/reshape-teams.test.ts`
 
 #### Tiebreaker Functions
+
 **Location:** `lib/tiebreaker.ts` (existing)
 
 **Tests:**
+
 - ✓ Head-to-head rule (Rule A)
 - ✓ Divisional win percentage (Rule B)
 - ✓ Common opponent win percentage (Rule C)
@@ -203,9 +224,11 @@ All test fixtures will be generated from actual ESPN API responses and our type 
 **File:** `__tests__/lib/tiebreaker.test.ts`
 
 #### Calculation Functions
+
 **Location:** `lib/calculations.ts` (existing)
 
 **Tests:**
+
 - ✓ Conference record calculation (wins/losses)
 - ✓ Overall record calculation
 - ✓ Win percentage calculation
@@ -234,6 +257,7 @@ npm run test:coverage     # Generate coverage report with thresholds
 ```
 
 #### How It Works:
+
 1. **`npm run db:check`** - Runs Node.js script that:
    - Checks if teams/games are seeded via API calls
    - Auto-seeds via `/api/pull-teams` and `/api/pull-games` if empty
@@ -251,6 +275,7 @@ npm run test:coverage     # Generate coverage report with thresholds
    - Default 5s timeout for fast endpoints
 
 ### Local Development
+
 ```bash
 npm run test:api          # Primary workflow - check + test
 npm run test:watch       # Watch mode for TDD
@@ -258,6 +283,7 @@ npm run test:coverage    # Check coverage before committing
 ```
 
 ### Preview Environment
+
 ```bash
 # GitHub Actions workflow runs on every PR
 # Runs: npm run test:api
@@ -267,6 +293,7 @@ npm run test:coverage    # Check coverage before committing
 ```
 
 ### Production Environment
+
 ```bash
 # GitHub Actions workflow runs on merge to main
 # Runs: npm run test:api (read-only queries only)
@@ -282,23 +309,27 @@ npm run test:coverage    # Check coverage before committing
 **Workflow File:** `.github/workflows/test.yml`
 
 **Local Tests (Always Run):**
+
 - Unit tests with Jest
 - Generate coverage report
 - Fail if coverage < 100%
 
 **Preview Tests (On PR):**
+
 - Seed preview database
 - Run integration tests against preview DB
 - Report results on PR
 - Fail PR if tests don't pass
 
 **Production Tests (On Merge to Main):**
+
 - Seed temporary production dataset (or use read-only copy)
 - Run read-coverage tests
 - Report results in commit
 - Alert if tests fail
 
 **What's Free & Easy:**
+
 - GitHub Actions: Free tier includes 2000 minutes/month (more than enough)
 - No additional cost for running tests
 - Vercel integrations work natively with GitHub Actions
@@ -310,6 +341,7 @@ npm run test:coverage    # Check coverage before committing
 ## Implementation Phases
 
 ### Phase 1: Jest Setup & Fixtures ✅ COMPLETED
+
 - [x] Install Jest and dependencies
 - [x] Create fixture files using real ESPN API data (`teams.fixture.ts`)
 - [x] Setup Jest configuration (`jest.config.js`, `jest.setup.js`)
@@ -318,6 +350,7 @@ npm run test:coverage    # Check coverage before committing
 - [x] Add consolidated npm test scripts to `package.json`
 
 ### Phase 2: API Route Tests ✅ COMPLETED
+
 - [x] Implement `/api/games` tests (13 tests, 100+ assertions)
 - [x] Implement `/api/simulate` tests (16 tests, 100+ assertions)
 - [x] Implement `/api/pull-teams` tests (10 tests, 50+ assertions)
@@ -325,17 +358,20 @@ npm run test:coverage    # Check coverage before committing
 - [x] Implement `/api/cron/*` tests (3 tests, protection + accessibility)
 
 ### Phase 3: Helper Function Tests (Next)
+
 - [ ] Implement reshape function tests
 - [ ] Implement tiebreaker function tests
 - [ ] Implement calculation function tests
 
 ### Phase 4: GitHub Actions CI/CD
+
 - [ ] Create local test workflow
 - [ ] Create preview test workflow
 - [ ] Create production test workflow
 - [ ] Setup coverage reporting
 
 ### Phase 5: Ongoing
+
 - [ ] Maintain 100% coverage as new features added
 - [ ] Add frontend component tests (future phases)
 - [ ] Add E2E tests (future phases)
@@ -345,6 +381,7 @@ npm run test:coverage    # Check coverage before committing
 ## Implementation Details - What Was Created
 
 ### Scripts (`scripts/`)
+
 - **`db-check-and-seed.js`** (230 lines)
   - Checks database seeding status via API calls
   - Auto-seeds via pull-teams and pull-games endpoints
@@ -352,15 +389,18 @@ npm run test:coverage    # Check coverage before committing
   - Supports environment-specific configuration (--env flag)
 
 ### Test Configuration
+
 - **`jest.config.js`** - Jest configuration with Next.js integration
 - **`jest.setup.js`** - Global setup (suppress console, env vars)
 - **`__tests__/setup.ts`** - Test helpers (fetchAPI, validateFields, etc.)
 
 ### Test Fixtures
+
 - **`__tests__/fixtures/teams.fixture.ts`** - 16 SEC teams with ESPN colors
   - Includes all required TeamMetadata fields (id, abbrev, displayName, logo, color, alternateColor)
 
 ### API Integration Tests (49 tests, 200+ assertions)
+
 - **`__tests__/api/games.test.ts`** (13 tests)
 - **`__tests__/api/simulate.test.ts`** (16 tests)
 - **`__tests__/api/pull-teams.test.ts`** (10 tests)
@@ -368,6 +408,7 @@ npm run test:coverage    # Check coverage before committing
 - **`__tests__/api/cron.test.ts`** (3 tests)
 
 ### npm Scripts (added to package.json)
+
 ```json
 "test": "jest",
 "test:watch": "jest --watch",
@@ -378,6 +419,7 @@ npm run test:coverage    # Check coverage before committing
 ```
 
 ### Dependencies Added
+
 - `jest` - Test runner
 - `@testing-library/react` - Component testing (future)
 - `@testing-library/jest-dom` - DOM matchers
@@ -486,6 +528,7 @@ npm run test:coverage    # Check coverage before committing
 ## Notes
 
 **Test Data vs Live Data:**
+
 - Current: Integration tests call live ESPN API via `/api/pull-*` endpoints
 - Target: Unit tests with mocked ESPN API (Phase 3)
 - Integration tests can use preview/production DBs when needed
@@ -493,11 +536,13 @@ npm run test:coverage    # Check coverage before committing
 - No reliance on external ESPN API during test runs
 
 **Database Testing:**
+
 - Local: Currently uses live dev database (should use MongoDB Memory Server)
 - Preview: Real preview database (integration testing)
 - Production: Read-only queries only (verification testing)
 
 **Future Considerations:**
+
 - Visual regression tests for UI components (Phase 2+)
 - Performance benchmarks (Phase 3+)
 - Load testing (Phase 4+)

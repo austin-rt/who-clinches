@@ -11,12 +11,14 @@ Instead of using static mock data in unit tests, we store real ESPN API response
 **Location:** `lib/models/test/`
 
 Separate models for each ESPN API response type, stored in dedicated `/test` database:
+
 - `ESPNScoreboardTestData.ts` - ESPNScoreboardResponse (one week's games)
 - `ESPNGameSummaryTestData.ts` - ESPNGameSummaryResponse (one game's detailed data)
 - `ESPNTeamTestData.ts` - ESPNTeamResponse (one team's metadata)
 - `ESPNTeamRecordsTestData.ts` - ESPNCoreRecordResponse (one team's records)
 
 Each model:
+
 - Uses dedicated test database connection (`lib/mongodb-test.ts`)
 - Hardcoded to `/test` database
 - Unique constraint: one snapshot per `season` ensures we always have exactly one example of each type
@@ -27,11 +29,13 @@ Each model:
 **File:** `app/api/cron/update-test-data/route.ts`
 
 **Pro Tier:** Runs daily at low traffic time (e.g., 3 AM ET)
+
 - Schedule: `0 7 * * *` (7 AM UTC = 3 AM ET)
 - Pulls one example of each response type
 - Updates database with latest API format
 
 **Hobby Tier:** Runs as part of `update-all` batch cron job (daily)
+
 - Integrated into `/api/cron/update-all` endpoint
 - Pulls test data after other updates complete
 - Runs daily at 4 AM ET (9 AM UTC) - ensures test data stays current
@@ -41,6 +45,7 @@ Each model:
 **File:** `__tests__/helpers/test-data-loader.ts`
 
 Provides functions to load test data from test database:
+
 - `loadScoreboardTestData()` - Returns ESPNScoreboardResponse
 - `loadGameSummaryTestData()` - Returns ESPNGameSummaryResponse
 - `loadTeamTestData()` - Returns ESPNTeamResponse
@@ -94,6 +99,7 @@ describe('reshapeTeamData', () => {
 ## Setup
 
 1. **Initial Population:**
+
    ```bash
    # Call the cron endpoint once to populate initial test data
    curl -X GET "http://localhost:3000/api/cron/update-test-data" \
@@ -101,6 +107,7 @@ describe('reshapeTeamData', () => {
    ```
 
 2. **Vercel Cron (Pro Tier):**
+
    ```json
    {
      "crons": [
@@ -125,4 +132,3 @@ describe('reshapeTeamData', () => {
 6. ⏳ Remove static mock data files
 7. ⏳ Add cron schedule to vercel.json (Pro tier)
 8. ⏳ Integrate into batch pull (Hobby tier)
-
