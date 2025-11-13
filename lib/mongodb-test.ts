@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 /**
  * Test Database Connection
- * 
+ *
  * Hardcoded connection to /test database for storing ESPN API test data snapshots.
  * Separate from main application database to keep test data isolated.
  */
@@ -40,9 +40,11 @@ const dbConnectTest = async (): Promise<mongoose.Connection> => {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.createConnection(TEST_MONGODB_URI, {
-      bufferCommands: false,
-    }).asPromise();
+    cached.promise = mongoose
+      .createConnection(TEST_MONGODB_URI, {
+        bufferCommands: false,
+      })
+      .asPromise();
   }
 
   try {
@@ -56,4 +58,3 @@ const dbConnectTest = async (): Promise<mongoose.Connection> => {
 };
 
 export default dbConnectTest;
-
