@@ -15,36 +15,68 @@
 const fs = require('fs');
 const path = require('path');
 
-try {
-  require('dotenv').config();
-} catch (e) {
-  console.warn('dotenv not available, using process.env');
-}
-
 // Parse command line arguments
 const args = process.argv.slice(2);
-let envName = 'dev';
+let envName = 'local'; // Default to local
 const envIndex = args.indexOf('--env');
 if (envIndex !== -1 && args[envIndex + 1]) {
   envName = args[envIndex + 1];
 }
 
-// Try to load specific env file if available
-try {
-  const envFile = path.join(process.cwd(), `.env.${envName}`);
-  if (fs.existsSync(envFile)) {
-    require('dotenv').config({ path: envFile });
-  } else if (fs.existsSync(path.join(process.cwd(), '.env.local'))) {
-    require('dotenv').config({ path: '.env.local' });
-  }
-} catch (e) {
-  // dotenv already loaded from root
+// Load .env.local for read-only credentials (always needed)
+const localEnvFile = path.join(process.cwd(), '.env.local');
+if (!fs.existsSync(localEnvFile)) {
+  console.error(`[ERROR] .env.local file not found`);
+  console.error('  Required for read-only credentials');
+  process.exit(1);
 }
 
-const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
-const DATABASE = process.env.MONGODB_DB || 'dev';
-const MONGODB_USER_READONLY = process.env.MONGODB_USER_READONLY || 'readonly';
-const MONGODB_PASSWORD_READONLY = process.env.MONGODB_PASSWORD_READONLY || '';
+try {
+  require('dotenv').config({ path: localEnvFile });
+} catch (e) {
+  console.error(`[ERROR] Failed to load .env.local`);
+  console.error(e.message);
+  process.exit(1);
+}
+
+// Determine BASE_URL: hardcoded for preview/production, from .env.local or default for local
+let BASE_URL;
+if (envName === 'preview') {
+  BASE_URL = 'https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app';
+} else if (envName === 'production') {
+  BASE_URL = 'https://sec-tiebreaker-git-main-austinrts-projects.vercel.app';
+} else {
+  // For local, use from .env.local or default to localhost
+  BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
+}
+
+// Determine database name: derive from env name for preview/production, from .env.local for local
+let DATABASE;
+if (envName === 'preview') {
+  DATABASE = 'preview';
+} else if (envName === 'production') {
+  DATABASE = 'production';
+} else {
+  // For local, must be in .env.local
+  DATABASE = process.env.MONGODB_DB;
+  if (!DATABASE) {
+    console.error(`[ERROR] MONGODB_DB not found in .env.local`);
+    console.error('  Required for local testing');
+    process.exit(1);
+  }
+}
+
+// Get read-only credentials: from .env.local first, then process.env (for Vercel)
+const MONGODB_USER_READONLY = process.env.MONGODB_USER_READONLY;
+const MONGODB_PASSWORD_READONLY = process.env.MONGODB_PASSWORD_READONLY;
+
+if (!MONGODB_USER_READONLY || !MONGODB_PASSWORD_READONLY) {
+  console.error(`[ERROR] MongoDB read-only credentials not found`);
+  console.error('  Required: MONGODB_USER_READONLY, MONGODB_PASSWORD_READONLY');
+  console.error('  These should be in .env.local (or Vercel environment variables)');
+  process.exit(1);
+}
+
 const MONGODB_HOST = process.env.MONGODB_HOST || 'cluster0.rr6gggn.mongodb.net';
 const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME || 'SEC-Tiebreaker';
 
@@ -86,7 +118,7 @@ async function checkMongoDB() {
     // For now, we'll rely on the API endpoints to seed the DB
     return true;
   } catch (error) {
-    console.warn('⚠ MongoDB check skipped (mongoose not available)');
+    console.warn('WARNING: MongoDB check skipped (mongoose not available)');
     return false;
   }
 }
@@ -101,14 +133,14 @@ async function main() {
     try {
       const gamesResponse = await fetchAPI(`${BASE_URL}/api/games?limit=1`);
       if (gamesResponse.teams && gamesResponse.teams.length > 0) {
-        console.log(`✓ Found ${gamesResponse.teams.length} team(s) in response`);
+        console.log(`[OK] Found ${gamesResponse.teams.length} team(s) in response`);
       } else {
-        console.log('ℹ No teams in response, will seed...');
+        console.log('[INFO] No teams in response, will seed...');
         await seedTeams();
         await sleep(2000);
       }
     } catch (error) {
-      console.log('ℹ Teams check failed, attempting to seed...');
+      console.log('[INFO] Teams check failed, attempting to seed...');
       await seedTeams();
       await sleep(2000);
     }
@@ -119,14 +151,14 @@ async function main() {
     try {
       const gamesResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025&conferenceId=8&limit=1`);
       if (gamesResponse.events && gamesResponse.events.length > 0) {
-        console.log(`✓ Found ${gamesResponse.events.length} game(s) in response`);
+        console.log(`[OK] Found ${gamesResponse.events.length} game(s) in response`);
       } else {
-        console.log('ℹ No games in response, will seed...');
+        console.log('[INFO] No games in response, will seed...');
         await seedGames();
         await sleep(2000);
       }
     } catch (error) {
-      console.log('ℹ Games check failed, attempting to seed...');
+      console.log('[INFO] Games check failed, attempting to seed...');
       await seedGames();
       await sleep(2000);
     }
@@ -143,12 +175,12 @@ async function main() {
     // Success
     console.log('');
     console.log('================================================');
-    console.log('✓ Database ready for testing');
+    console.log('[OK] Database ready for testing');
     console.log('================================================');
     process.exit(0);
   } catch (error) {
     console.error('');
-    console.error('✗ Database check failed:');
+    console.error('[ERROR] Database check failed:');
     console.error(error.message);
     process.exit(1);
   }
@@ -169,7 +201,7 @@ async function seedTeams() {
         conferenceId: 8,
       }),
     });
-    console.log('✓ Teams seeded');
+    console.log('[OK] Teams seeded');
   } catch (error) {
     throw new Error(`Failed to seed teams: ${error.message}`);
   }
@@ -191,7 +223,7 @@ async function seedGames() {
         conferenceId: 8,
       }),
     });
-    console.log('✓ Games seeded');
+    console.log('[OK] Games seeded');
   } catch (error) {
     throw new Error(`Failed to seed games: ${error.message}`);
   }
@@ -220,9 +252,9 @@ async function verifyGamesResponse() {
       if (missingFields.length > 0) {
         throw new Error(`Team missing fields: ${missingFields.join(', ')}`);
       }
-      console.log(`✓ GamesResponse structure verified (${response.teams.length} teams, ${response.events.length} events)`);
-    } else {
-      console.log('⚠ No teams in response (games may not be fully seeded yet)');
+      console.log(`[OK] GamesResponse structure verified (${response.teams.length} teams, ${response.events.length} events)`);
+      } else {
+      console.log('[WARNING] No teams in response (games may not be fully seeded yet)');
     }
   } catch (error) {
     throw new Error(`GamesResponse verification failed: ${error.message}`);
@@ -260,7 +292,7 @@ async function verifySimulateResponse() {
       if (missingFields.length > 0) {
         throw new Error(`Standing entry missing fields: ${missingFields.join(', ')}`);
       }
-      console.log(`✓ SimulateResponse structure verified (${response.standings.length} standings)`);
+      console.log(`[OK] SimulateResponse structure verified (${response.standings.length} standings)`);
     }
   } catch (error) {
     throw new Error(`SimulateResponse verification failed: ${error.message}`);
