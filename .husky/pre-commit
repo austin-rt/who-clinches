@@ -27,9 +27,8 @@ if [ -n "$FILE_LEVEL_IGNORES" ]; then
 fi
 
 # 3. Run ESLint + TypeScript checks (via lint-staged)
-# COMMENTED OUT: Uncomment to require linting to pass before commits
 # This enforces: no console.log, no debugger, no 'any', no unused vars, etc.
-# npx lint-staged
+npx lint-staged
 
 # 4. Run all tests (unit + API integration)
 # COMMENTED OUT: Uncomment to require tests to pass before commits
