@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 /**
  * Run reshape function tests against test database
  * Called internally by update-test-data cron after successful data update
- * 
+ *
  * This endpoint:
  * - Verifies test data is available
  * - Runs reshape functions against real ESPN API snapshots
@@ -54,13 +54,13 @@ export const GET = async (request: NextRequest) => {
     try {
       const testStart = Date.now();
       const scoreboardData = await loadScoreboardTestData();
-      
+
       if (!scoreboardData.events || scoreboardData.events.length === 0) {
         throw new Error('Scoreboard test data has no events');
       }
 
       const reshaped = reshapeScoreboardData(scoreboardData);
-      
+
       if (!reshaped.games || reshaped.games.length === 0) {
         throw new Error('reshapeScoreboardData returned no games');
       }
@@ -171,4 +171,3 @@ export const GET = async (request: NextRequest) => {
     );
   }
 };
-
