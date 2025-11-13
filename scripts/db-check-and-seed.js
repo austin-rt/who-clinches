@@ -77,10 +77,6 @@ if (!MONGODB_USER_READONLY || !MONGODB_PASSWORD_READONLY) {
   process.exit(1);
 }
 
-const MONGODB_HOST = process.env.MONGODB_HOST || 'cluster0.rr6gggn.mongodb.net';
-const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME || 'SEC-Tiebreaker';
-
-const mongoUri = `mongodb+srv://${MONGODB_USER_READONLY}:${MONGODB_PASSWORD_READONLY}@${MONGODB_HOST}/${DATABASE}?appName=${MONGODB_APP_NAME}`;
 
 console.log('================================================');
 console.log('SEC Tiebreaker Database Check & Seed');
@@ -105,23 +101,6 @@ async function fetchAPI(url, options = {}) {
   }
 }
 
-/**
- * Check if MongoDB is accessible and count documents
- */
-async function checkMongoDB() {
-  try {
-    // Try to import mongoose dynamically
-    const mongoose = require('mongoose');
-
-    // Simple count via mongoose
-    // Note: In production, we'd use a proper connection pool
-    // For now, we'll rely on the API endpoints to seed the DB
-    return true;
-  } catch (error) {
-    console.warn('WARNING: MongoDB check skipped (mongoose not available)');
-    return false;
-  }
-}
 
 /**
  * Main execution flow
@@ -139,7 +118,7 @@ async function main() {
         await seedTeams();
         await sleep(2000);
       }
-    } catch (error) {
+    } catch {
       console.log('[INFO] Teams check failed, attempting to seed...');
       await seedTeams();
       await sleep(2000);
@@ -149,7 +128,9 @@ async function main() {
     console.log('');
     console.log('Step 2: Checking if games are seeded...');
     try {
-      const gamesResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025&conferenceId=8&limit=1`);
+      const gamesResponse = await fetchAPI(
+        `${BASE_URL}/api/games?season=2025&conferenceId=8&limit=1`
+      );
       if (gamesResponse.events && gamesResponse.events.length > 0) {
         console.log(`[OK] Found ${gamesResponse.events.length} game(s) in response`);
       } else {
@@ -157,7 +138,7 @@ async function main() {
         await seedGames();
         await sleep(2000);
       }
-    } catch (error) {
+    } catch {
       console.log('[INFO] Games check failed, attempting to seed...');
       await seedGames();
       await sleep(2000);
@@ -247,13 +228,15 @@ async function verifyGamesResponse() {
     if (response.teams.length > 0) {
       const requiredFields = ['id', 'abbrev', 'displayName', 'logo', 'color', 'alternateColor'];
       const team = response.teams[0];
-      const missingFields = requiredFields.filter(f => !(f in team));
+      const missingFields = requiredFields.filter((f) => !(f in team));
 
       if (missingFields.length > 0) {
         throw new Error(`Team missing fields: ${missingFields.join(', ')}`);
       }
-      console.log(`[OK] GamesResponse structure verified (${response.teams.length} teams, ${response.events.length} events)`);
-      } else {
+      console.log(
+        `[OK] GamesResponse structure verified (${response.teams.length} teams, ${response.events.length} events)`
+      );
+    } else {
       console.log('[WARNING] No teams in response (games may not be fully seeded yet)');
     }
   } catch (error) {
@@ -285,14 +268,26 @@ async function verifySimulateResponse() {
 
     // Check first team has required fields
     if (response.standings.length > 0) {
-      const requiredFields = ['rank', 'teamId', 'abbrev', 'displayName', 'logo', 'color', 'record', 'confRecord', 'explainPosition'];
+      const requiredFields = [
+        'rank',
+        'teamId',
+        'abbrev',
+        'displayName',
+        'logo',
+        'color',
+        'record',
+        'confRecord',
+        'explainPosition',
+      ];
       const team = response.standings[0];
-      const missingFields = requiredFields.filter(f => !(f in team));
+      const missingFields = requiredFields.filter((f) => !(f in team));
 
       if (missingFields.length > 0) {
         throw new Error(`Standing entry missing fields: ${missingFields.join(', ')}`);
       }
-      console.log(`[OK] SimulateResponse structure verified (${response.standings.length} standings)`);
+      console.log(
+        `[OK] SimulateResponse structure verified (${response.standings.length} standings)`
+      );
     }
   } catch (error) {
     throw new Error(`SimulateResponse verification failed: ${error.message}`);
@@ -303,7 +298,7 @@ async function verifySimulateResponse() {
  * Sleep helper
  */
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Run

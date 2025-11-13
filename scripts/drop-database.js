@@ -72,26 +72,26 @@ async function dropDatabase() {
   try {
     const { MongoClient } = require('mongodb');
     const client = new MongoClient(mongoUri);
-    
+
     await client.connect();
     console.log(`[INFO] Connected to MongoDB`);
-    
+
     const db = client.db(dbName);
     const collections = await db.listCollections().toArray();
-    
+
     if (collections.length === 0) {
       console.log(`[INFO] Database '${dbName}' is already empty`);
       await client.close();
       return;
     }
-    
+
     console.log(`[INFO] Found ${collections.length} collection(s) in '${dbName}'`);
     console.log(`[INFO] Dropping database '${dbName}'...`);
-    
+
     await db.dropDatabase();
-    
+
     console.log(`[OK] Database '${dbName}' dropped successfully`);
-    
+
     await client.close();
   } catch (error) {
     console.error(`[ERROR] Failed to drop database '${dbName}':`);
@@ -102,4 +102,3 @@ async function dropDatabase() {
 
 // Run
 dropDatabase();
-

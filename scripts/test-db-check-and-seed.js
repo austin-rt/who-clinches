@@ -61,25 +61,6 @@ if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_HOST || !MONGODB_APP_NAME) {
   process.exit(1);
 }
 
-/**
- * Fetch API endpoint
- */
-async function fetchAPI(url, options = {}) {
-  const response = await fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`API request failed: ${response.status} ${response.statusText} - ${text}`);
-  }
-
-  return response.json();
-}
 
 /**
  * Check MongoDB connection
@@ -148,7 +129,9 @@ async function seedTestData() {
 
     if (!response.ok) {
       const text = await response.text();
-      throw new Error(`Failed to seed test data: ${response.status} ${response.statusText} - ${text}`);
+      throw new Error(
+        `Failed to seed test data: ${response.status} ${response.statusText} - ${text}`
+      );
     }
 
     const data = await response.json();
@@ -223,4 +206,3 @@ async function main() {
 }
 
 main();
-
