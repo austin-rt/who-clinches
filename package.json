@@ -13,8 +13,15 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "db:check": "node scripts/db-check-and-seed.js",
+    "test:db:check": "node scripts/test-db-check-and-seed.js",
+    "drop:test": "node scripts/drop-database.js test",
+    "drop:dev": "node scripts/drop-database.js dev",
+    "drop:preview": "node scripts/drop-database.js preview",
+    "drop:production": "node scripts/drop-database.js production",
+    "drop:all": "npm run drop:test && npm run drop:dev && npm run drop:preview && npm run drop:production",
     "test:api": "npm run db:check && npm run test -- __tests__/api",
     "test:all": "npm run db:check && npm run test",
+    "test:reshape": "npm run test:db:check && npm run test -- __tests__/lib/reshape-teams",
     "prepare": "husky"
   },
   "lint-staged": {
