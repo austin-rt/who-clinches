@@ -31,13 +31,12 @@ fi
 npx lint-staged
 
 # 4. Run all tests (unit + API integration)
-# COMMENTED OUT: Uncomment to require tests to pass before commits
-# printf "${YELLOW}Running test suite...${NC}\n"
-# npm run test:all
-# if [ $? -ne 0 ]; then
-#   printf "${RED}ERROR: Tests failed. Commit blocked.${NC}\n"
-#   printf "${YELLOW}Fix test failures and try again.${NC}\n"
-#   printf "${YELLOW}Run 'npm run test:all' locally to debug.${NC}\n"
-#   exit 1
-# fi
-# printf "${YELLOW}✓ All tests passed${NC}\n"
+printf "${YELLOW}Running test suite...${NC}\n"
+npm run test:all
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: Tests failed. Commit blocked.${NC}\n"
+  printf "${YELLOW}Fix test failures and try again.${NC}\n"
+  printf "${YELLOW}Run 'npm run test:all' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${YELLOW}✓ All tests passed${NC}\n"
