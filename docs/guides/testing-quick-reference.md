@@ -37,6 +37,7 @@ The project uses environment-specific configuration files for testing different 
 - **`.env.local`** - Local development (default)
   - Used by: Next.js dev server, API endpoints, Jest tests
   - Contains: `MONGODB_DB=dev`, `CRON_SECRET`, `MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_HOST`, `MONGODB_APP_NAME`
+  - Also contains: `VERCEL_AUTOMATION_BYPASS_SECRET` (required for preview/production testing), `MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`
 - **`.env.preview`** - Preview/staging environment
   - Used by: `npm run db:check -- --env preview`
   - Contains: `MONGODB_DB=preview` and preview-specific config
@@ -45,6 +46,13 @@ The project uses environment-specific configuration files for testing different 
   - Contains: `MONGODB_DB=production` and production-specific config
 
 The `db:check` script loads the appropriate `.env.{envName}` file based on the `--env` parameter to determine which database to check. The script uses MongoDB read-only credentials (`MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`) for database verification.
+
+**Bypass Token Authentication:**
+
+- `VERCEL_AUTOMATION_BYPASS_SECRET` is required in `.env.local` for preview/production operations
+- The `db:check` script automatically handles bypass token injection when targeting preview/production deployments
+- Jest tests (via `__tests__/setup.ts`) automatically handle bypass token injection when `BASE_URL` points to vercel.app URLs
+- Manual curl commands require explicit bypass token in query parameters (see `docs/tests/comprehensive-api-testing.md`)
 
 **Note:** Seeding via API endpoints uses the server's `.env.local` configuration. See `docs/tests/comprehensive-api-testing.md` for full environment file documentation.
 
@@ -234,10 +242,9 @@ Time: ~70s
 
 ## Documentation
 
-- **Full Details:** [TESTING-IMPLEMENTATION-COMPLETE.md](TESTING-IMPLEMENTATION-COMPLETE.md)
-- **Audit Report:** [docs/TEST-AUDIT.md](docs/TEST-AUDIT.md)
-- **Fixes Applied:** [FIXES-APPLIED.md](FIXES-APPLIED.md)
-- **Implementation Plan:** [docs/plans/unit-tests.md](docs/plans/unit-tests.md)
+- **Full Details:** [Testing Implementation Complete](../plans/archive/testing-implementation-complete.md)
+- **Fixes Applied:** [Fixes Applied 2025-11-12](../plans/archive/fixes-applied-2025-11-12.md)
+- **Implementation Plan:** [Unit Tests Plan](../plans/unit-tests.md)
 
 ---
 
