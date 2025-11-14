@@ -17,8 +17,6 @@
 
 **Details:** See [phase0.md](./phase0.md) - "CRITICAL: API Fixes Required Before Implementation"
 
-**Full Audit Report:** [AUDIT_REPORT.md](../../AUDIT_REPORT.md)
-
 ---
 
 ## Table of Contents
