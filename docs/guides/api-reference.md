@@ -5,6 +5,7 @@ Complete reference for all SEC Tiebreaker API endpoints.
 ## Table of Contents
 
 - [Data Endpoints](#data-endpoints)
+  - [Get Games](#get-apigames)
   - [Pull Teams](#post-apipull-teams)
   - [Pull Games](#post-apipull-games)
   - [Simulate Tiebreaker](#post-apisimulate)
@@ -14,10 +15,109 @@ Complete reference for all SEC Tiebreaker API endpoints.
   - [Update Spreads](#get-apicronupdate-spreads)
   - [Update Rankings](#get-apicronupdate-rankings)
   - [Update Team Averages](#get-apicronupdate-team-averages)
+  - [Update Test Data](#get-apicronupdate-test-data)
+  - [Run Reshape Tests](#get-apicronrun-reshape-tests)
 
 ---
 
 ## Data Endpoints
+
+### GET /api/games
+
+Queries game data from the database with optional filtering.
+
+**Authentication:** None required
+
+**Query Parameters:**
+
+| Parameter      | Type   | Description                                   |
+| -------------- | ------ | --------------------------------------------- |
+| `conferenceId` | string | If provided, filters to conference games only |
+| `season`       | string | Filter by season year (e.g., "2025")          |
+| `week`         | string | Filter by week number (e.g., "1")             |
+| `state`        | string | Filter by game state: "pre", "in", or "post"  |
+| `from`         | string | Filter games from this date (ISO format)      |
+| `to`           | string | Filter games to this date (ISO format)        |
+| `sport`        | string | Filter by sport (e.g., "football")            |
+| `league`       | string | Filter by league (e.g., "college-football")   |
+
+**Response:**
+
+```json
+{
+  "events": [
+    {
+      "_id": "...",
+      "espnId": "401752772",
+      "displayName": "UGA @ ALA",
+      "date": "2025-11-15T19:30:00Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "pre",
+      "completed": false,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "home": {
+        "teamEspnId": "333",
+        "abbrev": "ALA",
+        "score": null,
+        "rank": 8
+      },
+      "away": {
+        "teamEspnId": "61",
+        "abbrev": "UGA",
+        "score": null,
+        "rank": 1
+      },
+      "odds": {
+        "favoriteTeamEspnId": "61",
+        "spread": -3.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 28
+      },
+      "lastUpdated": "2025-11-12T01:40:07.408Z"
+    }
+  ],
+  "teams": [
+    {
+      "id": "333",
+      "abbrev": "ALA",
+      "displayName": "Alabama Crimson Tide",
+      "logo": "https://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+      "color": "9e1632",
+      "alternateColor": "ffffff"
+    }
+  ],
+  "lastUpdated": "2025-11-12T01:40:07.408Z"
+}
+```
+
+**Response Fields:**
+
+| Field         | Type           | Description                                 |
+| ------------- | -------------- | ------------------------------------------- |
+| `events`      | GameLean[]     | Array of game objects matching query        |
+| `teams`       | TeamMetadata[] | Array of team metadata for teams in results |
+| `lastUpdated` | string         | ISO timestamp of response                   |
+
+**Caching:**
+
+- Games with live state (`state: "in"`): 10 seconds cache
+- All other games: 60 seconds cache
+
+**Notes:**
+
+- Results sorted by date, then week
+- If `conferenceId` is provided, only returns conference games
+- Team metadata included for all teams referenced in game results
+- Uses lean queries for performance (no Mongoose hydration)
+
+---
 
 ### POST /api/pull-teams
 
@@ -513,7 +613,7 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 **Error Handling:**
 
 - If a job fails, it's included in `results` with `success: false`
-- Batch still returns 200 if some jobs fail (check `jobsSucceeded` vs `jobsRun`)
+- Returns 200 if all jobs succeed, 207 (Multi-Status) if some jobs fail (check `jobsSucceeded` vs `jobsRun`)
 - Individual job errors are logged to the `errors` collection
 
 ---
@@ -597,7 +697,7 @@ Updates team rankings, standings, and season statistics.
 
 **Schedule:**
 
-- **Pro Plan**: Sunday 6 AM ET (`0 6 * * 0`)
+- **Pro Plan**: Sunday 1 AM ET (`0 6 * * 0` UTC)
 - **Hobby Plan**: Not used (combined with `update-rankings`)
 
 **Response:**
@@ -626,6 +726,224 @@ Updates team rankings, standings, and season statistics.
 - Pro-only optimization
 - Runs Sunday morning after week's games complete
 - Rankings cron still runs Wed for mid-week updates
+
+---
+
+### GET /api/cron/update-test-data
+
+Updates test data snapshots from ESPN API for unit testing. Pulls one example of each ESPN API response type.
+
+**Authentication:** Required (Bearer token)
+
+**Schedule:**
+
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 4 AM ET (`0 9 * * *` UTC)
+- **Pro Plan**: Not scheduled separately (can be called manually or via update-all)
+
+**Response:**
+
+```json
+{
+  "updated": 4,
+  "total": 4,
+  "results": [
+    {
+      "type": "scoreboard",
+      "success": true
+    },
+    {
+      "type": "gameSummary",
+      "success": true
+    },
+    {
+      "type": "team",
+      "success": true
+    },
+    {
+      "type": "teamRecords",
+      "success": true
+    }
+  ],
+  "lastUpdated": "2025-11-13T04:00:00.000Z",
+  "testsTriggered": true
+}
+```
+
+**Response (With Errors):**
+
+```json
+{
+  "updated": 3,
+  "total": 4,
+  "results": [
+    {
+      "type": "scoreboard",
+      "success": true
+    },
+    {
+      "type": "gameSummary",
+      "success": false,
+      "error": "No games in scoreboard"
+    },
+    {
+      "type": "team",
+      "success": true
+    },
+    {
+      "type": "teamRecords",
+      "success": true
+    }
+  ],
+  "lastUpdated": "2025-11-13T04:00:00.000Z",
+  "testsTriggered": true
+}
+```
+
+**Response Fields:**
+
+| Field            | Type    | Description                                                          |
+| ---------------- | ------- | -------------------------------------------------------------------- |
+| `updated`        | number  | Number of test data types successfully updated                       |
+| `total`          | number  | Total number of test data types attempted (4)                        |
+| `results`        | array   | Array of update results with `type`, `success`, optional `error`     |
+| `lastUpdated`    | string  | ISO timestamp of update execution                                    |
+| `testsTriggered` | boolean | Whether reshape tests were triggered (true if any updates succeeded) |
+
+**Test Data Types Updated:**
+
+1. **scoreboard**: One week's scoreboard data (week 1, season 2025)
+2. **gameSummary**: Game summary for first game from scoreboard
+3. **team**: Team data for first SEC team
+4. **teamRecords**: Team records for same team as above
+
+**Logic:**
+
+- Connects to test database (separate from production)
+- Pulls example data from ESPN API for each type
+- Stores snapshots in test database collections
+- Automatically triggers `/api/cron/run-reshape-tests` on success (non-blocking, fire-and-forget)
+
+**Notes:**
+
+- Used for unit testing reshape functions
+- Test data stored in separate test database
+- Automatically triggers reshape tests after successful update
+- Test failures logged to ErrorLog collection
+
+---
+
+### GET /api/cron/run-reshape-tests
+
+Runs reshape function tests against test data snapshots. Called automatically by `update-test-data` after successful data updates.
+
+**Authentication:** Required (Bearer token)
+
+**Schedule:**
+
+- Not scheduled directly
+- Triggered automatically by `/api/cron/update-test-data` after successful updates
+- Can be called manually for testing
+
+**Response (Success):**
+
+```json
+{
+  "success": true,
+  "passed": 2,
+  "failed": 0,
+  "total": 2,
+  "duration": 150,
+  "results": [
+    {
+      "test": "reshapeScoreboardData",
+      "passed": true,
+      "duration": 80
+    },
+    {
+      "test": "reshapeTeamData",
+      "passed": true,
+      "duration": 70
+    }
+  ],
+  "message": "All reshape tests passed"
+}
+```
+
+**Response (Failure):**
+
+```json
+{
+  "success": false,
+  "passed": 1,
+  "failed": 1,
+  "total": 2,
+  "duration": 150,
+  "results": [
+    {
+      "test": "reshapeScoreboardData",
+      "passed": true,
+      "duration": 80
+    },
+    {
+      "test": "reshapeTeamData",
+      "passed": false,
+      "error": "Reshaped team missing required fields",
+      "duration": 0
+    }
+  ],
+  "message": "RESHAPE_TEST_FAILURE | FAILED_TESTS:1 | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Review failed tests and update reshape functions if API format changed"
+}
+```
+
+**Response (Test Data Missing):**
+
+```json
+{
+  "success": false,
+  "error": "TEST_DATA_MISSING",
+  "missing": ["scoreboard", "team"],
+  "message": "Test data not available - reshape tests cannot run"
+}
+```
+
+**Response Fields:**
+
+| Field      | Type    | Description                                                               |
+| ---------- | ------- | ------------------------------------------------------------------------- |
+| `success`  | boolean | Whether all tests passed                                                  |
+| `passed`   | number  | Number of tests that passed                                               |
+| `failed`   | number  | Number of tests that failed                                               |
+| `total`    | number  | Total number of tests run (2)                                             |
+| `duration` | number  | Total execution time in milliseconds                                      |
+| `results`  | array   | Array of test results with `test`, `passed`, optional `error`, `duration` |
+| `message`  | string  | Human-readable status message                                             |
+
+**Tests Performed:**
+
+1. **reshapeScoreboardData**: Tests reshaping ESPN scoreboard data to game format
+2. **reshapeTeamData**: Tests reshaping ESPN team data to team format
+
+**Logic:**
+
+- Connects to test database
+- Verifies test data snapshots are available
+- Runs reshape functions against test data
+- Validates reshaped output has required fields
+- Logs failures to ErrorLog collection
+- Returns 200 if all pass, 500 if any fail
+
+**Error Handling:**
+
+- If test data missing: Returns 500 with `TEST_DATA_MISSING` error
+- If reshape fails: Logs to ErrorLog, returns 500 with failure details
+- Test failures don't block deployment (non-blocking design)
+
+**Notes:**
+
+- Internal endpoint (called by update-test-data, not scheduled)
+- Failures indicate ESPN API format may have changed
+- Results logged to ErrorLog for monitoring
+- Used to catch API format changes early
 
 ---
 
