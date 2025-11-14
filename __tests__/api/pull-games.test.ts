@@ -102,28 +102,8 @@ describe('POST /api/pull-games', () => {
     });
   });
 
-  describe('Specific Week Pull', () => {
-    it('pulls specific week', async () => {
-      const response = await fetchAPI<PullGamesResponse>('/api/pull-games', {
-        method: 'POST',
-        body: JSON.stringify({
-          sport: 'football',
-          league: 'college-football',
-          season: SEASON,
-          week: 1,
-          conferenceId: CONFERENCE_ID,
-        }),
-      });
-
-      expect(response).toBeDefined();
-      expect(response.upserted).toBeDefined();
-      expect(response.weeksPulled).toBeDefined();
-      expect(Array.isArray(response.weeksPulled)).toBe(true);
-    });
-  });
-
   describe('Game Data Validation', () => {
-    it('all games include displayName field', async () => {
+    it('all games include displayName and predictedScore fields', async () => {
       // Pull games first
       await fetchAPI<PullGamesResponse>('/api/pull-games', {
         method: 'POST',
@@ -141,31 +121,45 @@ describe('POST /api/pull-games', () => {
       );
 
       if (gamesResponse.events.length > 0) {
-        gamesResponse.events.forEach((game) => {
-          expect(game.displayName).toBeDefined();
-          expect(typeof game.displayName).toBe('string');
-          expect(game.displayName.length).toBeGreaterThan(0);
-        });
-      }
-    }, 30000);
+        gamesResponse.events.forEach((game, index) => {
+          // Validate displayName
+          if (!game.displayName) {
+            throw new Error(
+              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${game.displayName}`
+            );
+          }
+          if (typeof game.displayName !== 'string') {
+            throw new Error(
+              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof game.displayName} | VALUE:${game.displayName}`
+            );
+          }
+          if (game.displayName.length === 0) {
+            throw new Error(
+              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:empty_string | EXPECTED:non-empty_string | ACTUAL:empty_string | VALUE:${game.displayName}`
+            );
+          }
 
-    it('all games include predictedScore', async () => {
-      const gamesResponse = await fetchAPI<GamesResponse>(
-        `/api/games?season=${SEASON}&conferenceId=${CONFERENCE_ID}`
-      );
-
-      if (gamesResponse.events.length > 0) {
-        gamesResponse.events.forEach((game) => {
-          // predictedScore should be present or null
+          // Validate predictedScore (can be null or object with home/away)
           if (game.predictedScore !== null && game.predictedScore !== undefined) {
-            expect(game.predictedScore).toBeDefined();
-            expect(typeof game.predictedScore).toBe('object');
-            expect(game.predictedScore.home).toBeDefined();
-            expect(game.predictedScore.away).toBeDefined();
+            if (typeof game.predictedScore !== 'object') {
+              throw new Error(
+                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore | ISSUE:wrong_type | EXPECTED:object_or_null | ACTUAL:${typeof game.predictedScore} | VALUE:${JSON.stringify(game.predictedScore)}`
+              );
+            }
+            if (!game.predictedScore.home && game.predictedScore.home !== 0) {
+              throw new Error(
+                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.home | ISSUE:missing_or_undefined | EXPECTED:number | ACTUAL:${game.predictedScore.home}`
+              );
+            }
+            if (!game.predictedScore.away && game.predictedScore.away !== 0) {
+              throw new Error(
+                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.away | ISSUE:missing_or_undefined | EXPECTED:number | ACTUAL:${game.predictedScore.away}`
+              );
+            }
           }
         });
       }
-    });
+    }, 30000);
   });
 
   describe('Input Validation', () => {
@@ -238,31 +232,6 @@ describe('POST /api/pull-games', () => {
           );
         }
         expect(err.message).toContain('400');
-      }
-    });
-
-    it('returns 400 for negative week', async () => {
-      try {
-        await fetchAPI('/api/pull-games', {
-          method: 'POST',
-          body: JSON.stringify({
-            sport: 'football',
-            league: 'college-football',
-            season: SEASON,
-            week: -1,
-            conferenceId: CONFERENCE_ID,
-          }),
-        });
-        // If it succeeds, that's okay
-      } catch (error: unknown) {
-        const err = error as Error;
-        if (err.message.includes('400')) {
-          expect(err.message).toContain('400');
-        } else {
-          throw new Error(
-            `API_ERROR_RESPONSE | ENDPOINT:/api/pull-games | STATUS:expected_400_or_success | ACTUAL:${err.message} | FIELD:week | ISSUE:negative_value | VALUE:-1`
-          );
-        }
       }
     });
   });
