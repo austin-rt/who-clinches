@@ -77,6 +77,14 @@ if (!MONGODB_USER_READONLY || !MONGODB_PASSWORD_READONLY) {
   process.exit(1);
 }
 
+// Get Vercel bypass token for preview/production deployments
+const VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+if ((envName === 'preview' || envName === 'production') && !VERCEL_AUTOMATION_BYPASS_SECRET) {
+  console.error(`[ERROR] VERCEL_AUTOMATION_BYPASS_SECRET not found`);
+  console.error('  Required for preview/production deployments');
+  console.error('  This should be in .env.local');
+  process.exit(1);
+}
 
 console.log('================================================');
 console.log('SEC Tiebreaker Database Check & Seed');
@@ -87,10 +95,19 @@ console.log('');
 
 /**
  * Fetch helper - simple wrapper around fetch API
+ * Automatically adds bypass token for preview/production deployments
  */
 async function fetchAPI(url, options = {}) {
   try {
-    const response = await fetch(url, options);
+    // Add bypass token for preview/production deployments
+    let finalUrl = url;
+    if ((envName === 'preview' || envName === 'production') && VERCEL_AUTOMATION_BYPASS_SECRET) {
+      const urlObj = new URL(url);
+      urlObj.searchParams.set('x-vercel-protection-bypass', VERCEL_AUTOMATION_BYPASS_SECRET);
+      finalUrl = urlObj.toString();
+    }
+
+    const response = await fetch(finalUrl, options);
     if (!response.ok) {
       const text = await response.text();
       throw new Error(`HTTP ${response.status}: ${text}`);
@@ -100,7 +117,6 @@ async function fetchAPI(url, options = {}) {
     throw new Error(`API request failed: ${error.message}`);
   }
 }
-
 
 /**
  * Main execution flow
