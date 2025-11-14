@@ -440,11 +440,10 @@ Phase 2 successfully adds comprehensive unit test coverage for all helper functi
 
 ## Documentation References
 
-- [Testing Plan](docs/plans/unit-tests.md)
-- [Test Audit Report](docs/TEST-AUDIT.md)
-- [Fixes Applied](FIXES-APPLIED.md)
-- [Quick Reference](TESTING-QUICK-REFERENCE.md)
-- [Initial Summary](TESTING-IMPLEMENTATION-COMPLETE.md)
+- [Testing Plan](../unit-tests.md)
+- [Fixes Applied](./fixes-applied-2025-11-12.md)
+- [Quick Reference](../guides/testing-quick-reference.md)
+- [Initial Summary](./testing-implementation-complete.md)
 
 ---
 
