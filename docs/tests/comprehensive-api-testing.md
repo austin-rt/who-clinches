@@ -8,8 +8,8 @@ Complete testing procedures for all SEC Tiebreaker API endpoints with valid and 
 
 ## References
 
-- `docs/api-reference.md` - Complete API endpoint documentation
-- `docs/ESPN-API-TESTING.md` - ESPN API reference and known issues
+- `docs/guides/api-reference.md` - Complete API endpoint documentation
+- `docs/tests/espn-api-testing.md` - ESPN API reference and known issues
 - `lib/api-types.ts` - Request/response type definitions
 
 ---
@@ -39,7 +39,10 @@ The `db:check` script loads the appropriate `.env.{envName}` file based on the `
 
 **Credentials from `.env.local`:**
 
-- `VERCEL_AUTOMATION_BYPASS_SECRET` - For protected deployments (Vercel preview/production)
+- `VERCEL_AUTOMATION_BYPASS_SECRET` - Required for protected deployments (Vercel preview/production)
+  - Automatically handled by `scripts/db-check-and-seed.js` when using `--env preview` or `--env production`
+  - Automatically handled by Jest tests (via `__tests__/setup.ts`) when `BASE_URL` contains `vercel.app`
+  - Must be manually added to curl commands when testing preview/production deployments directly
 - `CRON_SECRET` - For cron job endpoints
 - `MONGODB_PASSWORD_READONLY` - For database verification queries
 - `MONGODB_USER`, `MONGODB_PASSWORD`, `MONGODB_HOST` - For database connections
@@ -47,9 +50,14 @@ The `db:check` script loads the appropriate `.env.{envName}` file based on the `
 **Required for testing:**
 
 - Environment variables set: `BASE_URL`, `DATABASE`
-- Local server running (for local testing)
+- **Dev server running** (for local testing) - **AI agents must check and start if needed:**
+  ```bash
+  # Check if server is running
+  curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server running" || npm run dev
+  ```
 - Database access for verification queries
 - Appropriate `.env.*` file for the environment being tested
+- `VERCEL_AUTOMATION_BYPASS_SECRET` in `.env.local` when testing preview/production deployments
 
 ---
 
@@ -79,7 +87,12 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 
 **Valid Payloads:**
 
+**Note:** For preview/production deployments, bypass token is required. The `db:check` script and Jest tests handle this automatically. For manual curl commands, use the token from `.env.local`:
+
 ```bash
+# Get bypass token (for manual curl commands only)
+BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+
 # Test 1: Pull all SEC teams (REQUIRED - run this first)
 curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" \
@@ -99,6 +112,8 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=${BYPASS_TOKE
 **Before proceeding to games seeding, verify all 16 teams are in database.**
 
 **Invalid Payloads:**
+
+**Note:** Replace `${BYPASS_TOKEN}` with actual token for preview/production, or omit for local testing:
 
 ```bash
 # Test 3: Missing sport
@@ -156,6 +171,8 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 - If testing specific week and it exists: **SKIP**, report as "Week {X} already seeded with {count} games"
 
 **Valid Payloads:**
+
+**Note:** For preview/production deployments, bypass token is required. Replace `${BYPASS_TOKEN}` with actual token from `.env.local`, or omit for local testing:
 
 ```bash
 # Test 1: Pull full season (no week specified - dynamically fetches all regular season weeks)
@@ -656,8 +673,10 @@ Verify `VERCEL_ENV` is set correctly in Vercel.
 
 ### Bypass Token Not Working
 
-Verify token in `.env.local` matches Vercel deployment setting.
-Token only required for Vercel deployments, not local.
+- Verify `VERCEL_AUTOMATION_BYPASS_SECRET` in `.env.local` matches Vercel deployment setting
+- Token is automatically handled by `scripts/db-check-and-seed.js` and Jest tests
+- For manual curl commands, ensure token is correctly extracted from `.env.local`
+- Token only required for Vercel deployments (preview/production), not local testing
 
 ### ESPN API Rate Limiting
 

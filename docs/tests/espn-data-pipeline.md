@@ -37,7 +37,10 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 
 All credentials stored in `.env.local`:
 
-- `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token for protected deployments
+- `VERCEL_AUTOMATION_BYPASS_SECRET` - Required bypass token for protected deployments (preview/production)
+  - Automatically handled by `scripts/db-check-and-seed.js` when using `--env preview` or `--env production`
+  - Automatically handled by Jest tests (via `__tests__/setup.ts`) when `BASE_URL` contains `vercel.app`
+  - Must be manually added to curl commands when testing preview/production deployments directly
 - `MONGODB_PASSWORD_READONLY` - Read-only password for database verification
 - Read-only user: `readonly`
 
@@ -75,8 +78,11 @@ Replace `{BASE_URL}` and `{DATABASE}` based on environment:
 
 **⚠️ IMPORTANT: Always seed ALL teams (conferenceId: 8) before proceeding with remaining tests**
 
+**Note:** For preview/production deployments, bypass token is automatically handled by `scripts/db-check-and-seed.js`. For manual curl commands, use:
+
 ```bash
 # Seed all SEC teams (required for accurate predictedScore calculations)
+# Bypass token automatically handled by db:check script, or manually for curl:
 curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
   -H "Content-Type: application/json" \
   -d '{"sport": "football", "league": "college-football", "conferenceId": 8}'
@@ -147,6 +153,8 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 
 #### Command Template (Full Season - Recommended)
 
+**Note:** Bypass token is automatically handled by `scripts/db-check-and-seed.js`. For manual curl commands:
+
 ```bash
 curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
   -H "Content-Type: application/json" \
@@ -167,7 +175,7 @@ This will:
 
 #### Command Template (Single Week - Optional)
 
-Use this to update only a specific week:
+Use this to update only a specific week. **Note:** Bypass token automatically handled by `scripts/db-check-and-seed.js`:
 
 ```bash
 curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
@@ -224,6 +232,8 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 Queries stored game data from MongoDB.
 
 #### Command Template
+
+**Note:** Bypass token automatically handled by Jest tests. For manual curl commands:
 
 ```bash
 # Get all games for season/week
@@ -360,7 +370,9 @@ Verify `VERCEL_ENV` is set correctly in Vercel.
 
 ### Bypass Token Not Working
 
-Verify token in `.env.local` matches Vercel deployment setting.
+- Verify `VERCEL_AUTOMATION_BYPASS_SECRET` in `.env.local` matches Vercel deployment setting
+- Token is automatically handled by `scripts/db-check-and-seed.js` and Jest tests
+- For manual curl commands, ensure token is correctly extracted from `.env.local`
 
 ### ESPN API Rate Limiting
 
