@@ -13,7 +13,19 @@ if [ "$branch" = "main" ]; then
   exit 1
 fi
 
-# 2. Check for file-level eslint-disable comments
+# 2. Block commits to temp/ directory (except README.md)
+TEMP_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep "^temp/" | grep -v "^temp/README.md$" || true)
+if [ -n "$TEMP_FILES" ]; then
+  printf "${RED}ERROR: Cannot commit files in temp/ directory (except README.md)${NC}\n"
+  printf "${YELLOW}Found:${NC}\n"
+  echo "$TEMP_FILES" | while read -r file; do
+    printf "  ${YELLOW}$file${NC}\n"
+  done
+  printf "${YELLOW}Only temp/README.md is allowed to be committed.${NC}\n"
+  exit 1
+fi
+
+# 3. Check for file-level eslint-disable comments
 FILE_LEVEL_IGNORES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '\.(ts|tsx|js|jsx)$' | xargs grep -l "eslint-disable\s*$" 2>/dev/null || true)
 if [ -n "$FILE_LEVEL_IGNORES" ]; then
   printf "${RED}ERROR: File-level eslint-disable comments are not allowed${NC}\n"
@@ -26,11 +38,11 @@ if [ -n "$FILE_LEVEL_IGNORES" ]; then
   exit 1
 fi
 
-# 3. Run ESLint + TypeScript checks (via lint-staged)
+# 4. Run ESLint + TypeScript checks (via lint-staged)
 # This enforces: no console.log, no debugger, no 'any', no unused vars, etc.
 npx lint-staged
 
-# 4. Run all tests (unit + API integration)
+# 5. Run all tests (unit + API integration)
 printf "${YELLOW}Running test suite...${NC}\n"
 npm run test:all
 if [ $? -ne 0 ]; then

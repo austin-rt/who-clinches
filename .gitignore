@@ -41,8 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # temp files and scratch work
-/temp
+# Ignore everything in temp/ except the directory itself and README.md
+/temp/*
+!/temp/README.md
 temp-*
-
-# audit files (local assessments)
-**/*audit*.md
