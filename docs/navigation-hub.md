@@ -90,10 +90,10 @@ Planning documents, technical specifications, and completed phase records:
 docs/plans/
 ├── tech-spec.md                        - Technical specification (historical)
 ├── api-foundation.md                   - API architecture and endpoints
-├── cron-jobs.md                        - Background job design
-├── cron-updates.md                     - Cron job update patterns
 ├── tiebreaker-logic.md                 - SEC tiebreaker implementation
 ├── unit-tests.md                       - Testing strategy and coverage
+├── test-data-snapshots.md              - Test data snapshot planning
+├── test-data-auto-retesting.md         - Auto-retesting strategy
 ├── frontend/                           - Frontend phase planning
 │   ├── phase0.md                       - Phase 0: Foundation setup
 │   ├── phase1.md                       - Phase 1: Teams and Rankings
@@ -159,7 +159,7 @@ docs/plans/
 
 1. Read [tests/espn-api-testing.md](./tests/espn-api-testing.md) - Field verification
 2. Review [tests/espn-data-pipeline.md](./tests/espn-data-pipeline.md) - Testing procedures
-3. Check [plans/cron-updates.md](./plans/cron-updates.md) - Update patterns
+3. Check [guides/api-reference.md](./guides/api-reference.md) - Current cron job patterns
 
 #### **Implement Tiebreaker Logic**
 
