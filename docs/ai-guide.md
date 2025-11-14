@@ -40,7 +40,7 @@ This is a specialized college football application built for simulating SEC conf
 
 - **Simulate Endpoint**: `/api/simulate` - Accepts game score overrides and returns full standings
 - **Data Ingestion**: `/api/pull-games` and `/api/pull-teams` - Populate database from ESPN API
-- **Automated Updates**: 4 cron jobs for live scores, spreads, rankings, and team statistics
+- **Automated Updates**: Multiple cron jobs for live scores, spreads, rankings, and team statistics (see `vercel.json` and `vercel.pro.json` for schedules)
 - **Predicted Scores**: Server-calculated predictions using spreads + team season averages for incomplete games
 
 ### **Key Concepts**
@@ -60,7 +60,9 @@ app/
 │   │   ├── update-all/          # Batch endpoint (Hobby plan - calls update-games, update-rankings, update-test-data)
 │   │   ├── update-rankings/     # Weekly team rankings/standings
 │   │   ├── update-spreads/      # Hourly betting odds (Pro mode)
-│   │   └── update-team-averages/ # Weekly season stats (Pro mode)
+│   │   ├── update-team-averages/ # Weekly season stats (Pro mode)
+│   │   ├── update-test-data/    # Test data snapshot updates (triggers reshape tests)
+│   │   └── run-reshape-tests/   # Reshape function tests (called by update-test-data)
 │   ├── games/                   # Query games endpoint
 │   ├── pull-games/              # Seed/update games from ESPN
 │   ├── pull-teams/              # Seed/update teams from ESPN
@@ -105,8 +107,8 @@ docs/
 │   └── archive/                 # Completed phase records
 └── navigation-hub.md            # Documentation index and search guide
 
-vercel.json                      # Hobby plan cron schedules (2 jobs)
-vercel.pro.json                  # Pro plan cron schedules (6 jobs)
+vercel.json                      # Hobby plan cron schedules (1 job: update-all batch)
+vercel.pro.json                  # Pro plan cron schedules (6 jobs: individual cron endpoints)
 ```
 
 ## High-Level Architecture
@@ -164,6 +166,15 @@ The navigation hub provides:
 - Check MongoDB schema definitions before database operations
 - Consider Vercel serverless function timeout (60s Pro, 10s Hobby)
 - Review existing helper functions before creating new ones
+
+### **Before Running Tests**
+
+- **Check if dev server is running** (required for `npm run test:all` and `npm run db:check`):
+  ```bash
+  curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server running" || npm run dev
+  ```
+- If server is not running, start it with `npm run dev` before running tests
+- The pre-commit hook expects the dev server to be running - ensure it's started before committing
 
 ## Finding Implementation Details
 
