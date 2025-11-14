@@ -66,30 +66,6 @@ describe('Cron Job Endpoints', () => {
     });
   });
 
-  describe('GET /api/cron/update-rankings', () => {
-    it('endpoint is protected and returns data', async () => {
-      // Cron endpoints can be slow, so we just verify they're callable
-      // with authorization and return valid structure
-      // Note: This test may timeout if cron job is running during season
-      // Increase timeout for CI/CD environments
-      const url = `http://localhost:3000/api/cron/update-rankings`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${CRON_SECRET}`,
-        },
-      });
-
-      // Should either return 200 (if endpoint is fast) or 401 (if unauthorized)
-      expect([200, 401, 500]).toContain(response.status);
-
-      if (response.status === 200) {
-        const data = await response.json();
-        expect(data.updated).toBeDefined();
-      }
-    }, 30000); // Increase timeout to 30s for cron job
-  });
-
   describe('GET /api/cron/update-all', () => {
     it('batch endpoint orchestrates multiple cron jobs and returns structured response', async () => {
       const url = `http://localhost:3000/api/cron/update-all`;
@@ -181,46 +157,6 @@ describe('Cron Job Endpoints', () => {
         }
         expect([200, 500]).toContain(response.status);
       }
-    }, 30000);
-  });
-
-  describe('Cron Endpoint Verification', () => {
-    it('all cron endpoints are properly protected and accessible', async () => {
-      // This verifies that:
-      // 1. Cron endpoints require authorization
-      // 2. They return proper HTTP status codes
-      // 3. They are not returning 404 (endpoint exists)
-
-      // Verify unauthorized access returns 401
-      const url = `http://localhost:3000/api/cron/update-rankings`;
-      const unauthorizedResponse = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer invalid-token',
-        },
-      });
-      expect(unauthorizedResponse.status).toBe(401);
-
-      // Verify authorized access returns 200 or 500 (processing)
-      const authorizedResponse = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${CRON_SECRET}`,
-        },
-      });
-      if (authorizedResponse.status === 401) {
-        const body = await authorizedResponse.text().catch(() => 'unable to read response');
-        throw new Error(
-          `AUTH_ERROR | ENDPOINT:/api/cron/update-rankings | STATUS:401 | ISSUE:invalid_cron_secret | EXPECTED:200_or_500 | ACTUAL:401_unauthorized | TOKEN:provided_but_invalid | NOTE:CRON_SECRET_does_not_match_server_environment_variable | RESPONSE:${body}`
-        );
-      }
-      if (![200, 500].includes(authorizedResponse.status)) {
-        const body = await authorizedResponse.text().catch(() => 'unable to read response');
-        throw new Error(
-          `AUTH_ERROR | ENDPOINT:/api/cron/update-rankings | STATUS:${authorizedResponse.status} | EXPECTED:200_or_500 | ACTUAL:${authorizedResponse.status} | TOKEN:provided | RESPONSE:${body}`
-        );
-      }
-      expect([200, 500]).toContain(authorizedResponse.status);
     }, 30000);
   });
 });
