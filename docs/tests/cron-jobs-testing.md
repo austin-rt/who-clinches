@@ -341,7 +341,7 @@ Tests that Vercel cron schedules are properly configured.
 
 ### Checks
 
-- [ ] `update-all`: Daily at 9 AM UTC (4 AM EST / 5 AM EDT)
+- [ ] `update-all`: Daily at 11:45 PM UTC (7:45 PM EST / 8:45 PM EDT)
 - [ ] Only 1 cron (Hobby plan allows 2, but we batch everything into one)
 - [ ] Cron shows as "Active" in Vercel dashboard
 - [ ] Batch endpoint calls: `update-games?allGames=true`, `update-rankings`, `update-test-data`
