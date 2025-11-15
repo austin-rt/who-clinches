@@ -224,6 +224,98 @@ The navigation hub provides:
 - **Cron Authentication**: `authHeader === \`Bearer ${process.env.CRON_SECRET}\``
 - **Type Casting**: `.lean<GameLean[]>()` for MongoDB queries with type safety
 
+### **Frontend Component Pattern**
+
+**All React components MUST use arrow function syntax with default export:**
+
+```typescript
+const ComponentName = () => {
+  // Component logic
+  return (
+    // JSX
+  );
+};
+
+export default ComponentName;
+```
+
+**Key Rules:**
+
+- Use `const ComponentName = () => {}` syntax (arrow function)
+- Export using `export default ComponentName` (separate from declaration)
+- Import using `import ComponentName from './ComponentName'` (default import)
+- Apply this pattern to ALL components in `app/components/` directory
+- Apply to page components in `app/` directory (e.g., `page.tsx`)
+
+**Example:**
+
+```typescript
+'use client';
+
+import { useState } from 'react';
+
+const MyComponent = () => {
+  const [state, setState] = useState(false);
+
+  return <div>Content</div>;
+};
+
+export default MyComponent;
+```
+
+**Why this pattern:**
+
+- Consistent code style across all frontend components
+- Easier to refactor and maintain
+- Clear separation between component definition and export
+- Matches Next.js App Router conventions
+
+### **Type Definition Pattern**
+
+**NEVER use inline literal union types. Always define types/interfaces:**
+
+```typescript
+// ❌ BAD - Inline literal type
+const [mode, setMode] = useState<'light' | 'dark'>('light');
+state: 'pre' | 'in' | 'post';
+
+// ✅ GOOD - Defined type
+export type ThemeMode = 'light' | 'dark';
+export type GameState = 'pre' | 'in' | 'post';
+
+const [mode, setMode] = useState<ThemeMode>('light');
+state: GameState;
+```
+
+**Key Rules:**
+
+- Define all literal union types as `type` or `interface` in appropriate type files
+- Frontend-specific types go in `types/frontend.ts`
+- Backend/shared types go in `lib/types.ts` or `lib/api-types.ts`
+- Import and use the defined type instead of inline literals
+- Apply to ALL literal union types (e.g., `'light' | 'dark'`, `'pre' | 'in' | 'post'`)
+
+**Example:**
+
+```typescript
+// types/frontend.ts
+export type ThemeMode = 'light' | 'dark';
+
+// lib/types.ts
+export type GameState = 'pre' | 'in' | 'post';
+
+// Component usage
+import { ThemeMode } from '@/types/frontend';
+const [mode, setMode] = useState<ThemeMode>('light');
+```
+
+**Why this pattern:**
+
+- Single source of truth for type definitions
+- Easier to refactor and maintain
+- Better IDE autocomplete and type checking
+- Consistent type usage across codebase
+
 ### **Common Helper Functions**
 
 - **calculatePredictedScore**: Generates predicted scores from spread + team averages

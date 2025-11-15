@@ -10,28 +10,29 @@
 - `app/components/GameCard.tsx` (new)
 - `app/components/WeekAccordion.tsx` (new)
 - `app/components/GamesFilter.tsx` (new)
-- `app/hooks/useGames.ts` (new)
 - `app/page.tsx` (update to use GamesList)
 
-**API Integration:**
+**API Integration (RTK Query):**
+
+RTK Query is already set up in `app/store/apiSlice.ts` with `useGetGamesQuery` hook.
 
 ```typescript
-// app/hooks/useGames.ts
-export function useGames(season: number, conferenceId: number) {
-  const [games, setGames] = useState<FrontendGame[]>([]);
-  const [teams, setTeams] = useState<TeamMetadata[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// app/components/GamesList.tsx
+import { useGetGamesQuery } from '@/app/store/apiSlice';
+import { useMemo } from 'react';
 
-  useEffect(() => {
-    async function fetchGames() {
-      try {
-        const response = await fetch(`/api/games?season=${season}&conferenceId=${conferenceId}`);
-        const data: GamesResponse = await response.json();
+const GamesList = ({ season, conferenceId }: { season: number; conferenceId: number }) => {
+  // RTK Query hook - automatically handles loading, error, caching, and refetching
+  const { data, isLoading, isError, error } = useGetGamesQuery({
+    season: season.toString(),
+    conferenceId: conferenceId.toString(),
+  });
 
         // Enrich games with team metadata
+  const enrichedGames = useMemo(() => {
+    if (!data) return [];
         const teamMap = new Map(data.teams.map((t) => [t.id, t]));
-        const enrichedGames: FrontendGame[] = data.events.map((game) => ({
+    return data.events.map((game) => ({
           ...game,
           home: {
             ...game.home,
@@ -46,21 +47,22 @@ export function useGames(season: number, conferenceId: number) {
             color: teamMap.get(game.away.teamEspnId)?.color || '',
           },
         }));
+  }, [data]);
 
-        setGames(enrichedGames);
-        setTeams(data.teams);
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch games');
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchGames();
-  }, [season, conferenceId]);
+  // Handle loading/error states
+  if (isLoading) return <div className="loading loading-spinner" />;
+  if (isError) return <div className="alert alert-error">Error: {error?.toString()}</div>;
 
-  return { games, teams, loading, error };
-}
+  // Render games list...
+};
 ```
+
+**RTK Query Benefits:**
+
+- Automatic caching - games data cached and reused
+- Loading/error states - `isLoading`, `isError`, `error` provided automatically
+- Refetching - can easily poll for live game updates
+- TypeScript support - full type safety from API types
 
 **Component Definitions:**
 
@@ -89,15 +91,15 @@ export function useGames(season: number, conferenceId: number) {
 
 **Implementation Checklist:**
 
-- [ ] Create `useGames` hook to fetch from `/api/games`
+- [ ] Use `useGetGamesQuery` from RTK Query (already set up in `app/store/apiSlice.ts`)
 - [ ] Handle API response structure: `{ events, teams, lastUpdated }`
-- [ ] Enrich games with team metadata from `teams` array
+- [ ] Enrich games with team metadata from `teams` array (use `useMemo` for performance)
 - [ ] Create GamesList component with filtering logic
 - [ ] Create WeekAccordion with checkbox-based collapse
 - [ ] Create GameCard to display individual game
 - [ ] Create GamesFilter toggle component
-- [ ] Handle loading state (DaisyUI spinner)
-- [ ] Handle error state (DaisyUI alert)
+- [ ] Handle loading state using `isLoading` from RTK Query (DaisyUI spinner)
+- [ ] Handle error state using `isError` from RTK Query (DaisyUI alert)
 - [ ] Update `app/page.tsx` to use GamesList
 - [ ] Test: multiple weeks can be open simultaneously
 

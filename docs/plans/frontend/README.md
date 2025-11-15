@@ -53,11 +53,14 @@ app/
 │   ├── StandingRow.tsx
 │   ├── TieBreakerExplainer.tsx
 │   └── TeamThemeSelector.tsx
-├── hooks/                   # React hooks
-│   ├── useGames.ts
-│   ├── useSimulate.ts
-│   ├── useGameOverrides.ts
-│   └── useTheme.ts
+├── store/                   # Redux store and RTK Query
+│   ├── store.ts             # Redux store configuration
+│   ├── uiSlice.ts           # UI state (theme, mode)
+│   ├── apiSlice.ts          # RTK Query API endpoints (useGetGamesQuery, useSimulateMutation)
+│   ├── hooks.ts             # Typed Redux hooks
+│   └── useUI.ts             # Custom hook for UI state
+├── hooks/                   # React hooks (non-API, localStorage management)
+│   └── useGameOverrides.ts  # Manage game override state in localStorage
 ├── lib/                     # Backend types/helpers (existing - DO NOT MODIFY)
 │   ├── types.ts             # Backend types (existing)
 │   ├── api-types.ts         # API request/response types (existing)
@@ -81,9 +84,10 @@ types/                       # Frontend types (new)
 
 ### State Management
 
-- **React Hooks:** `useState`, `useEffect`, `useCallback`, `useMemo`
-- **localStorage:** User preferences and game overrides
-- **No external state management:** Keep it simple initially
+- **Redux Toolkit:** Global state management for UI (theme, mode)
+- **RTK Query:** Data fetching and caching for API calls (`/api/games`, `/api/simulate`)
+- **React Hooks:** `useState`, `useEffect`, `useCallback`, `useMemo` for local component state
+- **localStorage:** User preferences (synced via Redux and ThemeSync component)
 
 ### Component Hierarchy
 

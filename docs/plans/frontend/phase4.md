@@ -10,43 +10,50 @@
 - `app/components/StandingsTable.tsx` (new)
 - `app/components/StandingRow.tsx` (new)
 - `app/components/TieBreakerExplainer.tsx` (new)
-- `app/hooks/useSimulate.ts` (new)
 - `app/page.tsx` (update to show standings after simulate)
 
-**API Integration:**
+**API Integration (RTK Query):**
+
+RTK Query is already set up in `app/store/apiSlice.ts` with `useSimulateMutation` hook.
 
 ```typescript
-// app/hooks/useSimulate.ts
-export function useSimulate() {
-  const [standings, setStandings] = useState<StandingEntry[]>([]);
-  const [tieLogs, setTieLogs] = useState<TieLog[]>([]);
-  const [championship, setChampionship] = useState<[string, string] | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// app/components/SimulateButton.tsx
+import { useSimulateMutation } from '@/app/store/apiSlice';
+import { SimulateRequest } from '@/lib/api-types';
 
-  const simulate = async (season: number, conferenceId: string, overrides: UserOverrides) => {
-    setLoading(true);
-    setError(null);
+const SimulateButton = ({ season, conferenceId, overrides }: SimulateRequest) => {
+  // RTK Query mutation hook - automatically handles loading, error states
+  const [simulate, { isLoading, isError, error, data }] = useSimulateMutation();
+
+  const handleSimulate = async () => {
     try {
-      const response = await fetch('/api/simulate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ season, conferenceId, overrides }),
-      });
-      const data: SimulateResponse = await response.json();
-      setStandings(data.standings);
-      setTieLogs(data.tieLogs);
-      setChampionship(data.championship);
+      await simulate({ season, conferenceId, overrides }).unwrap();
+      // Success - data is available in `data` property
+      // data.standings, data.tieLogs, data.championship
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Simulation failed');
-    } finally {
-      setLoading(false);
+      // Error handled automatically by RTK Query
+      // Can show toast notification here
     }
   };
 
-  return { standings, tieLogs, championship, loading, error, simulate };
-}
+  return (
+    <button
+      className="btn btn-primary"
+      onClick={handleSimulate}
+      disabled={isLoading}
+    >
+      {isLoading ? 'Simulating...' : 'Simulate Standings'}
+    </button>
+  );
+};
 ```
+
+**RTK Query Benefits:**
+
+- Automatic loading/error states - `isLoading`, `isError`, `error` provided automatically
+- TypeScript support - full type safety from API types
+- Optimistic updates - can implement optimistic UI updates if needed
+- Cache invalidation - automatically invalidates related cache tags
 
 **Component Definitions:**
 
@@ -74,13 +81,13 @@ export function useSimulate() {
 
 **Implementation Checklist:**
 
-- [ ] Create `useSimulate` hook to POST to `/api/simulate`
-- [ ] Create SimulateButton component with loading state
+- [ ] Use `useSimulateMutation` from RTK Query (already set up in `app/store/apiSlice.ts`)
+- [ ] Create SimulateButton component using mutation hook with loading state
 - [ ] Create StandingsTable using DaisyUI table component
 - [ ] Create StandingRow to display team standings
 - [ ] Create TieBreakerExplainer to show tiebreaker details
 - [ ] Highlight championship matchup (top 2 teams) with different styling
-- [ ] Add error handling (API errors, invalid overrides)
+- [ ] Add error handling using `isError` and `error` from RTK Query mutation
 - [ ] Display standings on same page as games (below games list)
 - [ ] Make standings table responsive
 - [ ] Test: standings update when overrides change
