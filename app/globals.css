@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Light/Dark Mode Base Colors (independent of team selection) */
+/* These control backgrounds and text - mild, readable colors */
+/* Applied via data-mode attribute, works with any team theme */
+html[data-mode='light'],
+html:not([data-mode]) {
+  /* Light mode base colors (default) */
+  --color-base-100: #ffffff; /* Main background */
+  --color-base-200: #f5f5f5; /* Secondary background */
+  --color-base-300: #e5e5e5; /* Tertiary background */
+  --color-base-content: #1f2937; /* Main text color (dark gray) */
+}
+
+html[data-mode='dark'] {
+  /* Dark mode base colors */
+  --color-base-100: #1a1a1a; /* Main background (dark) */
+  --color-base-200: #2d2d2d; /* Secondary background */
+  --color-base-300: #404040; /* Tertiary background */
+  --color-base-content: #f5f5f5; /* Main text color (light) */
+}
+
+/* SEC Default Theme - Team Colors Only */
+/* Background/text controlled by light/dark mode above */
+[data-theme='sec'] {
+  --color-primary: #004b8d; /* SEC Blue - Pantone PMS 2945 XGC */
+  --color-primary-content: #ffffff;
+  --color-secondary: #ffd046; /* SEC Gold - Pantone PMS 7404 U */
+  --color-secondary-content: #000000;
+  --color-accent: #ffffff;
+  --color-accent-content: #000000;
+}
+
+/* Team themes will be dynamically injected in Phase 5 from database */
+/* Each team theme only defines primary, secondary, accent colors */
+/* Base colors inherited from light/dark mode */

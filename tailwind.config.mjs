@@ -12,7 +12,12 @@ const config = {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ['light', 'dark'],
+    themes: [
+      'light', // DaisyUI default (light mode base)
+      'dark', // DaisyUI default (dark mode base)
+      'sec', // Custom SEC theme (Phase 0)
+      // Team themes will be added dynamically in Phase 5
+    ],
   },
 };
 
