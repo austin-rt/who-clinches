@@ -78,16 +78,41 @@ lib/
 ├── models/                      # Mongoose schemas
 │   ├── Error.ts                 # Error logging
 │   ├── Game.ts                  # Game data model
-│   └── Team.ts                  # Team data model
+│   ├── Team.ts                  # Team data model
+│   └── test/                    # Test data models
+│       ├── ESPNScoreboardTestData.ts
+│       ├── ESPNTeamTestData.ts
+│       ├── ESPNGameSummaryTestData.ts
+│       └── ESPNTeamRecordsTestData.ts
+├── espn/                        # Generated ESPN API types (auto-generated)
+│   ├── espn-scoreboard-generated.ts
+│   ├── espn-team-generated.ts
+│   ├── espn-team-records-generated.ts
+│   └── espn-game-summary-generated.ts
 ├── api-types.ts                 # Request/response interfaces
 ├── constants.ts                 # SEC_TEAMS, conference IDs, constants
-├── espn-client.ts               # ESPN API client
+├── espn-client.ts               # ESPN API client (uses generated types)
 ├── mongodb.ts                   # MongoDB connection singleton
+├── mongodb-test.ts              # Test database connection
 ├── prefill-helpers.ts           # Predicted score calculation
 ├── reshape-games.ts             # ESPN scoreboard data transformation
-├── reshape-teams.ts             # ESPN team data transformation
+├── reshape-teams.ts            # ESPN team data transformation
 ├── tiebreaker-helpers.ts        # SEC tiebreaker rules A-E implementation
 └── types.ts                     # Internal application types
+
+scripts/
+├── analyze-test-data.ts         # Analyze test database contents
+├── db-check-and-seed.js         # Database seeding and verification
+├── drop-database.js             # Database deletion utility (requires confirmation)
+├── extract-espn-types.ts        # Generate TypeScript types from ESPN API responses
+├── extract-used-types.ts        # Track and compare used ESPN type fields
+├── fix-scoreboard-index.ts      # Fix MongoDB index issues
+├── test-api-pipeline.sh         # API pipeline testing script
+├── test-db-check-and-seed.js    # Test database seeding
+└── verify-espn-types.ts        # Verify generated types match usage
+
+.github/workflows/
+└── update-espn-types.yml        # Automated ESPN type generation (daily)
 
 docs/
 ├── ai-guide.md                  # AI assistant guidance (this file)
@@ -190,6 +215,10 @@ The navigation hub provides:
 ### **ESPN API Integration**
 
 - **Client**: `/lib/espn-client.ts` - ESPNClient class with scoreboard, team, and records methods
+- **Generated Types**: `/lib/espn/*-generated.ts` - TypeScript types auto-generated from ESPN API responses using `quicktype`
+- **Type Generation**: `/scripts/extract-espn-types.ts` - Extracts ESPN responses from test database and generates types
+- **Type Tracking**: `/scripts/extract-used-types.ts` - Tracks which ESPN fields are used in reshape functions
+- **Automated Updates**: `.github/workflows/update-espn-types.yml` - Daily GitHub Action to regenerate types and create PRs if ESPN types change
 - **Reshaping**: `/lib/reshape-games.ts` and `/lib/reshape-teams.ts` - Transform ESPN data to our schema
 - **Constants**: `/lib/constants.ts` - SEC_TEAMS array, SEC_CONFERENCE_ID (8), record type constants
 
