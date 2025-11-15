@@ -2,6 +2,11 @@
  * Internal application types for reshaped data
  */
 
+/**
+ * Game state type - represents the current state of a game
+ */
+export type GameState = 'pre' | 'in' | 'post';
+
 export interface ReshapedGame {
   espnId: string;
   displayName: string; // "{away abbrev} @ {home abbrev}"
@@ -10,7 +15,7 @@ export interface ReshapedGame {
   season: number;
   sport: string;
   league: string;
-  state: 'pre' | 'in' | 'post';
+  state: GameState;
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
@@ -114,7 +119,7 @@ export interface GameLean {
   season: number;
   sport: string;
   league: string;
-  state: 'pre' | 'in' | 'post';
+  state: GameState;
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;

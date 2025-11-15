@@ -3,6 +3,11 @@
 import { TeamMetadata, StandingEntry, GamesResponse } from '@/lib/api-types';
 
 /**
+ * Theme mode type for light/dark mode switching
+ */
+export type ThemeMode = 'light' | 'dark';
+
+/**
  * Game from API response
  */
 export interface GameFromResponse {
