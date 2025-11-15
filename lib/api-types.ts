@@ -2,7 +2,7 @@
  * Shared API request and response types
  */
 
-import { GameLean } from './types';
+import { GameLean, GameState } from './types';
 
 // ============================================================================
 // Error Types
@@ -78,7 +78,7 @@ export interface GamesQueryParams {
   conferenceId?: string;
   season?: string;
   week?: string;
-  state?: 'pre' | 'in' | 'post';
+  state?: GameState;
   from?: string;
   to?: string;
   sport?: string;

@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
+import { GameState } from '../types';
 
 export interface IGame extends Document {
   espnId: string;
@@ -8,7 +9,7 @@ export interface IGame extends Document {
   season: number;
   sport: string;
   league: string;
-  state: 'pre' | 'in' | 'post';
+  state: GameState;
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;

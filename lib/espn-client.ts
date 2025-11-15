@@ -3,6 +3,8 @@
  * Based on tech spec endpoints and field mappings
  */
 
+import { GameState } from './types';
+
 export interface ESPNCompetitor {
   homeAway: 'home' | 'away';
   team: {
@@ -31,7 +33,7 @@ export interface ESPNCompetition {
   competitors: ESPNCompetitor[];
   status: {
     type: {
-      state: 'pre' | 'in' | 'post';
+      state: GameState;
       completed: boolean;
     };
     clock?: number;

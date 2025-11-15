@@ -7,7 +7,7 @@ import { espnClient } from '@/lib/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { CronGamesResponse } from '@/lib/api-types';
-import { GameLean } from '@/lib/types';
+import { GameLean, GameState } from '@/lib/types';
 import { calculatePredictedScore } from '@/lib/prefill-helpers';
 
 export const runtime = 'nodejs';
@@ -72,7 +72,7 @@ export const GET = async (request: NextRequest) => {
       season: Number(g.season),
       sport: String(g.sport),
       league: String(g.league),
-      state: g.state as 'pre' | 'in' | 'post',
+      state: g.state as GameState,
       completed: Boolean(g.completed),
       conferenceGame: Boolean(g.conferenceGame),
       neutralSite: Boolean(g.neutralSite),

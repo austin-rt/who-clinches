@@ -7,7 +7,7 @@
  */
 
 import { calculatePredictedScore } from '@/lib/prefill-helpers';
-import { ReshapedGame } from '@/lib/types';
+import { GameState, ReshapedGame } from '@/lib/types';
 
 // Mock team data for testing
 interface TeamForPrediction {
@@ -20,7 +20,7 @@ interface TeamForPrediction {
 }
 
 const createMockGame = (
-  state: 'pre' | 'in' | 'post' = 'pre',
+  state: GameState = 'pre',
   homeScore: number | null = null,
   awayScore: number | null = null,
   spread: number | null = null,

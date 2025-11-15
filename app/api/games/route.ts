@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Game from '@/lib/models/Game';
 import Team from '@/lib/models/Team';
-import { MongoQuery, GameLean, TeamLean } from '@/lib/types';
+import { MongoQuery, GameLean, TeamLean, GameState } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 
 export const runtime = 'nodejs';
@@ -72,7 +72,7 @@ export const GET = async (request: NextRequest) => {
         season: Number(game.season),
         sport: String(game.sport),
         league: String(game.league),
-        state: game.state as 'pre' | 'in' | 'post',
+        state: game.state as GameState,
         completed: Boolean(game.completed),
         conferenceGame: Boolean(game.conferenceGame),
         neutralSite: Boolean(game.neutralSite),
