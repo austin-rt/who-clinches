@@ -1,6 +1,6 @@
 'use client';
 
-export function Footer() {
+const Footer = () => {
   const currentYear = new Date().getFullYear();
   const currentSeason = 2025; // TODO: Get from API or context
 
@@ -16,4 +16,6 @@ export function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

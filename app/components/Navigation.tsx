@@ -1,6 +1,6 @@
 'use client';
 
-export function Navigation() {
+const Navigation = () => {
   // Placeholder for future navigation
   // Single page app for now, but structure ready for multi-page expansion
   return (
@@ -14,4 +14,6 @@ export function Navigation() {
       </div>
     </nav>
   );
-}
+};
+
+export default Navigation;
