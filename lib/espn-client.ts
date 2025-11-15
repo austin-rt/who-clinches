@@ -1,153 +1,27 @@
 /**
  * ESPN API Client for College Football Data
  * Based on tech spec endpoints and field mappings
+ *
+ * Types are now generated from ESPN API responses via quicktype.
+ * See lib/espn/ for generated type definitions.
  */
 
-import { GameState } from './types';
+// Import generated types for use in method signatures
+import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
+import type { EspnTeamGenerated } from './espn/espn-team-generated';
+import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
+import type { EspnGameSummaryGenerated } from './espn/espn-game-summary-generated';
 
-export interface ESPNCompetitor {
-  homeAway: 'home' | 'away';
-  team: {
-    id: string;
-    abbreviation: string;
-    displayName: string;
-    logo: string;
-    color: string;
-    conferenceId: string;
-  };
-  score: string;
-  curatedRank?: {
-    current: number;
-  };
-  records: Array<{
-    type: string;
-    summary: string;
-  }>;
-}
-
-export interface ESPNCompetition {
-  id: string;
-  date: string;
-  conferenceCompetition: boolean;
-  neutralSite?: boolean;
-  competitors: ESPNCompetitor[];
-  status: {
-    type: {
-      state: GameState;
-      completed: boolean;
-    };
-    clock?: number;
-    period?: number;
-  };
-  week?: {
-    number: number;
-  };
-  season?: {
-    year: number;
-  };
-  odds?: Array<{
-    details: string;
-    spread: number;
-    overUnder: number;
-    awayTeamOdds: {
-      favorite: boolean;
-    };
-    homeTeamOdds: {
-      favorite: boolean;
-    };
-  }>;
-  groups?: {
-    id: string;
-  };
-}
-
-export interface ESPNEvent {
-  id: string;
-  competitions: ESPNCompetition[];
-}
-
-export interface ESPNScoreboardResponse {
-  events: ESPNEvent[];
-  season: {
-    year: number;
-  };
-  week: {
-    number: number;
-  };
-  leagues?: Array<{
-    calendar?: Array<{
-      label: string;
-      value: string;
-      entries?: Array<{
-        label: string;
-        value: string;
-      }>;
-    }>;
-  }>;
-}
-
-export interface ESPNGameSummaryResponse {
-  header: {
-    competitions: ESPNCompetition[];
-  };
-}
-
-export interface ESPNTeamLogo {
-  href: string;
-  width: number;
-  height: number;
-}
-
-export interface ESPNTeamRecord {
-  items: Array<{
-    summary: string;
-    stats?: Array<{
-      name: string;
-      value: number;
-    }>;
-  }>;
-}
-
-export interface ESPNTeamResponse {
-  team: {
-    id: string;
-    name: string;
-    displayName: string;
-    abbreviation: string;
-    logos?: ESPNTeamLogo[];
-    color: string;
-    alternateColor: string;
-    groups?: {
-      parent?: {
-        id: string;
-      };
-    };
-    record?: ESPNTeamRecord;
-    rank?: number; // Current ranking (99 or null for unranked)
-    standingSummary?: string; // "3rd in SEC"
-  };
-  nextEvent?: Array<{
-    id: string;
-  }>;
-}
-
-export interface ESPNRecordItem {
-  id: string;
-  name: string;
-  type: string;
-  summary: string;
-  displayValue: string;
-  stats?: Array<{
-    name: string;
-    type: string;
-    value: number;
-    displayValue: string;
-  }>;
-}
-
-export interface ESPNCoreRecordResponse {
-  items: ESPNRecordItem[];
-}
+// Re-export generated types for convenience
+export type {
+  EspnScoreboardGenerated,
+  Event,
+  Competition,
+  Competitor,
+} from './espn/espn-scoreboard-generated';
+export type { EspnTeamGenerated, Logo, Record } from './espn/espn-team-generated';
+export type { EspnTeamRecordsGenerated, Item } from './espn/espn-team-records-generated';
+export type { EspnGameSummaryGenerated } from './espn/espn-game-summary-generated';
 
 export class ESPNClient {
   private baseUrl: string;
@@ -179,7 +53,7 @@ export class ESPNClient {
       season?: number; // YYYY
       week?: number; // Week number (varies by sport)
     } = {}
-  ): Promise<ESPNScoreboardResponse> {
+  ): Promise<EspnScoreboardGenerated> {
     const searchParams = new URLSearchParams();
 
     if (params.groups) searchParams.set('groups', params.groups.toString());
@@ -209,7 +83,7 @@ export class ESPNClient {
   /**
    * Fetch individual game summary (for live polling)
    */
-  async getGameSummary(gameId: string): Promise<ESPNGameSummaryResponse> {
+  async getGameSummary(gameId: string): Promise<EspnGameSummaryGenerated> {
     const url = `${this.baseUrl}/summary?event=${gameId}`;
 
     try {
@@ -233,7 +107,7 @@ export class ESPNClient {
   /**
    * Fetch team metadata (for manual seeding)
    */
-  async getTeam(teamAbbrev: string): Promise<ESPNTeamResponse> {
+  async getTeam(teamAbbrev: string): Promise<EspnTeamGenerated> {
     const url = `${this.baseUrl}/teams/${teamAbbrev}`;
 
     try {
@@ -262,7 +136,7 @@ export class ESPNClient {
     teamId: string,
     season: number = 2025,
     seasonType: number = 2
-  ): Promise<ESPNCoreRecordResponse> {
+  ): Promise<EspnTeamRecordsGenerated> {
     const url = `http://sports.core.api.espn.com/v2/sports/${this.sport}/leagues/${this.league}/seasons/${season}/types/${seasonType}/teams/${teamId}/record?lang=en&region=us`;
 
     try {

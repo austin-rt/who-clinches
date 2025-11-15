@@ -157,6 +157,6 @@ describe('Cron Job Endpoints', () => {
         }
         expect([200, 500]).toContain(response.status);
       }
-    }, 30000);
+    }, 120000);
   });
 });

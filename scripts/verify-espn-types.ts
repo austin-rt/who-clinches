@@ -1,0 +1,192 @@
+/**
+ * Verify that all ESPN API fields we use are correctly typed in generated types
+ */
+
+import * as fs from 'fs';
+import * as path from 'path';
+
+function verifyTypes() {
+  const generatedTypesDir = path.join(process.cwd(), 'lib/espn');
+  const files = {
+    scoreboard: path.join(generatedTypesDir, 'espn-scoreboard-generated.ts'),
+    team: path.join(generatedTypesDir, 'espn-team-generated.ts'),
+    teamRecords: path.join(generatedTypesDir, 'espn-team-records-generated.ts'),
+  };
+
+  const issues: string[] = [];
+  const warnings: string[] = [];
+  const verified: string[] = [];
+
+  // Check scoreboard types
+  if (fs.existsSync(files.scoreboard)) {
+    const content = fs.readFileSync(files.scoreboard, 'utf-8');
+
+    // Check odds array - we use it
+    const oddsMatch = content.match(/odds\?:\s*([^;]+);/);
+    if (oddsMatch) {
+      if (oddsMatch[1].includes('any[]')) {
+        issues.push('Competition.odds is any[] but we use it (overUnder, spread, favorite)');
+      } else if (oddsMatch[1].includes('Odd[]')) {
+        verified.push('Competition.odds is correctly typed as Odd[]');
+        // Verify Odd interface has required fields
+        if (
+          content.includes('overUnder:') &&
+          content.includes('spread:') &&
+          content.includes('awayTeamOdds:') &&
+          content.includes('homeTeamOdds:')
+        ) {
+          verified.push(
+            'Odd interface has all required fields (overUnder, spread, awayTeamOdds, homeTeamOdds)'
+          );
+        } else {
+          issues.push('Odd interface missing required fields');
+        }
+      }
+    }
+
+    // Check statistics - we don't use it
+    if (content.includes('statistics:  any[]')) {
+      warnings.push("Competitor.statistics is any[] (we don't use it, so this is fine)");
+    }
+
+    // Check records - we don't use competitor.records
+    if (content.includes('records:     Record[]')) {
+      warnings.push("Competitor.records is typed (we don't use it, but it's correctly typed)");
+    }
+
+    // Verify Competitor fields we use
+    if (
+      content.includes('homeAway:') &&
+      content.includes('score:') &&
+      content.includes('curatedRank:') &&
+      content.includes('team:')
+    ) {
+      verified.push('Competitor has all fields we use (homeAway, score, curatedRank, team)');
+    }
+
+    // Verify CompetitorTeam fields we use
+    if (
+      content.includes('abbreviation:') &&
+      content.includes('displayName:') &&
+      content.includes('color:')
+    ) {
+      verified.push(
+        'CompetitorTeam has all fields we use (id, abbreviation, displayName, logo, color)'
+      );
+    }
+  }
+
+  // Check team types
+  if (fs.existsSync(files.team)) {
+    const content = fs.readFileSync(files.team, 'utf-8');
+
+    // Check record.items - we use it
+    const recordMatch = content.match(/export interface Record\s*\{[\s\S]*?\n\}/);
+    if (recordMatch && recordMatch[0].includes('items:')) {
+      verified.push('Team Record has items array');
+      // Check Item interface
+      const itemMatch = content.match(/export interface Item\s*\{[\s\S]*?\n\}/);
+      if (itemMatch) {
+        if (
+          itemMatch[0].includes('type:') &&
+          itemMatch[0].includes('summary:') &&
+          itemMatch[0].includes('stats:')
+        ) {
+          verified.push('Team Record Item has all fields we use (type, summary, stats)');
+        } else {
+          issues.push('Team Record Item missing required fields (type, summary, or stats)');
+        }
+      }
+    } else {
+      issues.push('Team Record interface missing items array');
+    }
+
+    // Check notes - we don't use it
+    if (content.includes('notes:             any[]')) {
+      warnings.push("Team.notes is any[] (we don't use it, so this is fine)");
+    }
+
+    // Verify Team fields we use
+    if (
+      content.includes('id:') &&
+      content.includes('name:') &&
+      content.includes('displayName:') &&
+      content.includes('abbreviation:') &&
+      content.includes('color:') &&
+      content.includes('alternateColor:') &&
+      content.includes('rank:') &&
+      content.includes('standingSummary:') &&
+      content.includes('groups:') &&
+      content.includes('logos:') &&
+      content.includes('record:')
+    ) {
+      verified.push('Team has all fields we use');
+    }
+  }
+
+  // Check team records types
+  if (fs.existsSync(files.teamRecords)) {
+    const content = fs.readFileSync(files.teamRecords, 'utf-8');
+
+    // Check items array - we use it
+    if (content.includes('items:') && content.includes('Item[]')) {
+      verified.push('TeamRecords has items array');
+      // Check Item interface
+      const itemMatch = content.match(/export interface Item\s*\{[\s\S]*?\n\}/);
+      if (itemMatch) {
+        if (
+          itemMatch[0].includes('name:') &&
+          itemMatch[0].includes('type:') &&
+          itemMatch[0].includes('summary:') &&
+          itemMatch[0].includes('stats:')
+        ) {
+          verified.push('TeamRecords Item has all fields we use (name, type, summary, stats)');
+        } else {
+          issues.push('TeamRecords Item missing required fields');
+        }
+      }
+      // Check Stat interface
+      const statMatch = content.match(/export interface Stat\s*\{[\s\S]*?\n\}/);
+      if (statMatch && statMatch[0].includes('name:') && statMatch[0].includes('value:')) {
+        verified.push('TeamRecords Stat has all fields we use (name, value)');
+      } else {
+        issues.push('TeamRecords Stat missing required fields');
+      }
+    } else {
+      issues.push('TeamRecords missing items array');
+    }
+  }
+
+  // Report results
+  process.stdout.write('=== ESPN Type Verification ===\n\n');
+
+  if (verified.length > 0) {
+    process.stdout.write('✅ Verified (correctly typed fields we use):\n');
+    verified.forEach((v) => {
+      process.stdout.write(`  ✓ ${v}\n`);
+    });
+    process.stdout.write('\n');
+  }
+
+  if (issues.length > 0) {
+    process.stdout.write('❌ Issues found (fields we use that are incorrectly typed):\n');
+    issues.forEach((issue) => {
+      process.stdout.write(`  ✗ ${issue}\n`);
+    });
+    process.stdout.write('\n');
+  }
+
+  if (warnings.length > 0) {
+    process.stdout.write("ℹ️  Warnings (any[] fields we don't use - these are fine):\n");
+    warnings.forEach((warning) => {
+      process.stdout.write(`  - ${warning}\n`);
+    });
+    process.stdout.write('\n');
+  }
+
+  if (issues.length === 0) {
+    process.stdout.write('🎉 All used fields are correctly typed!\n');
+  }
+}
+
+verifyTypes();

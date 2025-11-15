@@ -1,5 +1,5 @@
 import { Schema, Document } from 'mongoose';
-import { ESPNScoreboardResponse } from '@/lib/espn-client';
+import type { EspnScoreboardGenerated } from '@/lib/espn/espn-scoreboard-generated';
 
 /**
  * ESPN Scoreboard Test Data
@@ -12,7 +12,7 @@ export interface IESPNScoreboardTestData extends Document {
   season: number;
   week: number;
   endpoint: string; // Full endpoint URL
-  response: ESPNScoreboardResponse; // Raw ESPN API response
+  response: EspnScoreboardGenerated; // Raw ESPN API response
   pulledAt: Date; // When this snapshot was captured
   lastUpdated: Date;
 }
@@ -53,8 +53,8 @@ const ESPNScoreboardTestDataSchema = new Schema<IESPNScoreboardTestData>(
   }
 );
 
-// Unique index: one snapshot per season
-ESPNScoreboardTestDataSchema.index({ season: 1 }, { unique: true });
+// Unique index: one snapshot per season/week combination
+ESPNScoreboardTestDataSchema.index({ season: 1, week: 1 }, { unique: true });
 
 // Get model using test database connection
 export const getESPNScoreboardTestData = async () => {

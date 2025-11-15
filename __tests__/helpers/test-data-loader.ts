@@ -10,19 +10,17 @@ import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestD
 import { getESPNGameSummaryTestData } from '@/lib/models/test/ESPNGameSummaryTestData';
 import { getESPNTeamTestData } from '@/lib/models/test/ESPNTeamTestData';
 import { getESPNTeamRecordsTestData } from '@/lib/models/test/ESPNTeamRecordsTestData';
-import {
-  ESPNScoreboardResponse,
-  ESPNGameSummaryResponse,
-  ESPNTeamResponse,
-  ESPNCoreRecordResponse,
-} from '@/lib/espn-client';
+import type { EspnScoreboardGenerated } from '@/lib/espn/espn-scoreboard-generated';
+import type { EspnGameSummaryGenerated } from '@/lib/espn/espn-game-summary-generated';
+import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
+import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 
 const SEASON = 2025;
 
 /**
  * Load scoreboard test data from test database
  */
-export async function loadScoreboardTestData(): Promise<ESPNScoreboardResponse> {
+export async function loadScoreboardTestData(): Promise<EspnScoreboardGenerated> {
   await dbConnectTest();
   const Model = await getESPNScoreboardTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -39,7 +37,7 @@ export async function loadScoreboardTestData(): Promise<ESPNScoreboardResponse> 
 /**
  * Load team test data from test database
  */
-export async function loadTeamTestData(): Promise<ESPNTeamResponse> {
+export async function loadTeamTestData(): Promise<EspnTeamGenerated> {
   await dbConnectTest();
   const Model = await getESPNTeamTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -56,7 +54,7 @@ export async function loadTeamTestData(): Promise<ESPNTeamResponse> {
 /**
  * Load game summary test data from test database
  */
-export async function loadGameSummaryTestData(): Promise<ESPNGameSummaryResponse> {
+export async function loadGameSummaryTestData(): Promise<EspnGameSummaryGenerated> {
   await dbConnectTest();
   const Model = await getESPNGameSummaryTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -73,7 +71,7 @@ export async function loadGameSummaryTestData(): Promise<ESPNGameSummaryResponse
 /**
  * Load team records test data from test database
  */
-export async function loadTeamRecordsTestData(): Promise<ESPNCoreRecordResponse> {
+export async function loadTeamRecordsTestData(): Promise<EspnTeamRecordsGenerated> {
   await dbConnectTest();
   const Model = await getESPNTeamRecordsTestData();
   const data = await Model.findOne({ season: SEASON });

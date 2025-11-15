@@ -64,6 +64,15 @@ console.log('SEC Tiebreaker Database Drop');
 console.log('================================================');
 console.log(`Database: ${dbName}`);
 console.log('');
+console.log('⚠️  WARNING: This will PERMANENTLY DELETE all data in this database!');
+console.log('');
+
+// Require explicit confirmation
+const readline = require('readline');
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
 /**
  * Drop database
@@ -100,5 +109,14 @@ async function dropDatabase() {
   }
 }
 
-// Run
-dropDatabase();
+// Require confirmation before dropping
+rl.question('Type "drop" to confirm database deletion: ', (answer) => {
+  if (answer.toLowerCase() === 'drop') {
+    rl.close();
+    dropDatabase();
+  } else {
+    console.log('[CANCELLED] Database drop cancelled. No changes made.');
+    rl.close();
+    process.exit(0);
+  }
+});

@@ -1,0 +1,152 @@
+name: Update ESPN Types
+
+on:
+  schedule:
+    # Run daily at 00:15 UTC (15 minutes after cron job at 23:45 UTC / 7:45 PM ET)
+    - cron: '15 0 * * *'
+  workflow_dispatch: # Allow manual trigger from GitHub UI
+
+jobs:
+  generate-types:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install quicktype
+        run: npm install -g quicktype@latest
+
+      - name: Extract ESPN responses and generate types
+        id: generate
+        env:
+          MONGODB_USER: ${{ secrets.MONGODB_USER }}
+          MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+          MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
+          MONGODB_APP_NAME: ${{ secrets.MONGODB_APP_NAME }}
+        run: |
+          npx tsx scripts/extract-espn-types.ts && echo "generated=true" >> $GITHUB_OUTPUT || (echo "generated=false" >> $GITHUB_OUTPUT && exit 1)
+
+      - name: Configure git
+        if: steps.generate.outputs.generated == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Check for ESPN type changes in used fields
+        if: steps.generate.outputs.generated == 'true'
+        id: check-changes
+        run: |
+          # Create new snapshot from generated types (always updates tracking)
+          npx tsx scripts/extract-used-types.ts create
+
+          # Check if snapshot file exists in git (from previous run)
+          if git ls-files --error-unmatch temp/type-snapshots/used-types-snapshot.json > /dev/null 2>&1; then
+            # File exists in git - compare ESPN types
+            git show HEAD:temp/type-snapshots/used-types-snapshot.json > temp/type-snapshots/used-types-snapshot-old.json 2>/dev/null || true
+            
+            if [ -f temp/type-snapshots/used-types-snapshot-old.json ]; then
+              # Compare snapshots - only triggers PR if ESPN types changed
+              npx tsx scripts/extract-used-types.ts compare temp/type-snapshots/used-types-snapshot-old.json temp/type-snapshots/used-types-snapshot.json > used-fields-diff.txt 2>&1 || EXIT_CODE=$?
+              
+              if [ "${EXIT_CODE:-0}" = "1" ]; then
+                # ESPN type changed - trigger PR
+                echo "changed=true" >> $GITHUB_OUTPUT
+                echo "=== ESPN Type Changes (triggers PR) ==="
+                cat used-fields-diff.txt
+                echo "USED_FIELDS_DIFF<<EOF" >> $GITHUB_OUTPUT
+                cat used-fields-diff.txt >> $GITHUB_OUTPUT
+                echo "EOF" >> $GITHUB_OUTPUT
+              else
+                # No ESPN type changes - snapshot updated silently if usage changed
+                echo "changed=false" >> $GITHUB_OUTPUT
+                echo "No ESPN type changes"
+                cat used-fields-diff.txt || true
+              fi
+            else
+              # Couldn't get old snapshot - first run, no PR
+              echo "changed=false" >> $GITHUB_OUTPUT
+              echo "First run - snapshot created for future comparisons"
+            fi
+          else
+            # First run - no PR, just create snapshot
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "First run - snapshot created for future comparisons"
+          fi
+
+      - name: Stage snapshot file (always update tracking)
+        if: steps.generate.outputs.generated == 'true'
+        run: |
+          # Always stage snapshot to keep tracking up to date
+          git add temp/type-snapshots/used-types-snapshot.json || true
+
+      - name: Commit snapshot (usage changes only, no PR)
+        if: steps.generate.outputs.generated == 'true' && steps.check-changes.outputs.changed == 'false'
+        run: |
+          # Commit snapshot when only usage changed (no PR needed)
+          # This keeps tracking current for next comparison
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: update ESPN type tracking snapshot
+
+            Tracking updated to reflect current field usage in reshape functions.
+            No ESPN type changes detected."
+            git push origin HEAD:auto/espn-type-tracking || echo "Push skipped (may not have permissions)"
+          fi
+
+      - name: Create Pull Request (only for ESPN type changes)
+        if: steps.generate.outputs.generated == 'true' && steps.check-changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore: auto-update ESPN API types from test database
+
+            ESPN type changes detected in fields we use.
+          title: '🤖 Auto: Update ESPN API Types (ESPN Type Changes Detected)'
+          body: |
+            ESPN API types have been automatically generated from test database responses.
+
+            **⚠️ Review Required Before Merging:**
+            - [ ] Check if types match existing patterns in `lib/espn-client.ts`
+            - [ ] Verify domain types (GameState, etc.) are correctly applied
+            - [ ] Add JSDoc comments as needed
+            - [ ] Ensure types are compatible with existing code
+            - [ ] Test that reshape functions still work
+
+            **Changes in Used Fields:**
+            ${{ steps.check-changes.outputs.USED_FIELDS_DIFF }}
+
+            **Note:** This PR only includes changes to fields we actually use in reshape functions. Changes to unused fields are ignored.
+
+            **Generated from:** Test database responses (updated daily via cron at 7:45 PM ET / 23:45 UTC)
+            **Generated at:** ${{ github.run_id }}
+
+            This PR was automatically created. Review carefully before merging.
+          branch: auto/update-espn-types
+          delete-branch: true
+          labels: |
+            automated
+            types
+            needs-review
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Type Generation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Generated: ${{ steps.generate.outputs.generated }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Changed: ${{ steps.check-changes.outputs.changed }}" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.generate.outputs.generated }}" == "false" ]; then
+            echo "⚠️ No ESPN responses found in test database. Ensure cron job has run." >> $GITHUB_STEP_SUMMARY
+          fi

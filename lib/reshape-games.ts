@@ -3,14 +3,14 @@
  * Transform raw ESPN data into our desired format
  */
 
-import { ESPNScoreboardResponse } from './espn-client';
+import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import { ReshapedGame, ReshapeResult } from './types';
 
 /**
  * Reshape ESPN scoreboard response for our needs
  */
 export const reshapeScoreboardData = (
-  espnResponse: ESPNScoreboardResponse,
+  espnResponse: EspnScoreboardGenerated,
   sport: string = 'football',
   league: string = 'college-football'
 ): ReshapeResult<ReshapedGame> => {
@@ -78,8 +78,9 @@ export const reshapeScoreboardData = (
         espnId: event.id,
         displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
         date: competition.date,
-        week: competition.week?.number || espnResponse.week?.number || null,
-        season: competition.season?.year || espnResponse.season?.year || new Date().getFullYear(),
+        attendance: competition.attendance,
+        week: event.week?.number || espnResponse.week?.number || null,
+        season: event.season?.year || espnResponse.season?.year || new Date().getFullYear(),
         sport,
         league,
         state: competition.status.type.state,
@@ -93,7 +94,7 @@ export const reshapeScoreboardData = (
           score: homeScore,
           rank: homeRank,
           logo: homeTeam.team.logo,
-          color: homeTeam.team.color,
+          color: homeTeam.team.color || '',
         },
         away: {
           teamEspnId: awayTeam.team.id,
@@ -102,7 +103,7 @@ export const reshapeScoreboardData = (
           score: awayScore,
           rank: awayRank,
           logo: awayTeam.team.logo,
-          color: awayTeam.team.color,
+          color: awayTeam.team.color || '',
         },
         odds: {
           favoriteTeamEspnId,

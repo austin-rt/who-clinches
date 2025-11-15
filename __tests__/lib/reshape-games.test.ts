@@ -7,14 +7,138 @@
  */
 
 import { reshapeScoreboardData } from '@/lib/reshape-games';
-import { ESPNScoreboardResponse, ESPNEvent } from '@/lib/espn-client';
+import type {
+  Competition,
+  Event,
+  EspnScoreboardGenerated,
+  Odd,
+} from '@/lib/espn/espn-scoreboard-generated';
 import { loadScoreboardTestData, checkTestDataAvailable } from '../helpers/test-data-loader';
 
+// Helper to create a minimal Odd object for testing
+const createTestOdd = (overrides: Partial<Odd>): Odd => ({
+  provider: {
+    id: '1',
+    name: 'ESPN',
+    priority: 1,
+    logos: [],
+  },
+  details: '',
+  spread: 0,
+  overUnder: 0,
+  awayTeamOdds: {
+    favorite: false,
+    underdog: true,
+    team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+    favoriteAtOpen: false,
+  },
+  homeTeamOdds: {
+    favorite: false,
+    underdog: true,
+    team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+    favoriteAtOpen: false,
+  },
+  moneyline: {
+    displayName: 'Moneyline',
+    shortDisplayName: 'ML',
+    home: { close: { odds: '0' }, open: { odds: '0' } },
+    away: { close: { odds: '0' }, open: { odds: '0' } },
+  },
+  pointSpread: {
+    displayName: 'Spread',
+    shortDisplayName: 'Spr',
+    home: {
+      close: {
+        line: '0',
+        odds: '0',
+        link: {
+          language: 'en',
+          rel: [],
+          href: '',
+          text: '',
+          shortText: '',
+          isExternal: false,
+          isPremium: false,
+        },
+      },
+      open: { line: '0', odds: '0' },
+    },
+    away: {
+      close: {
+        line: '0',
+        odds: '0',
+        link: {
+          language: 'en',
+          rel: [],
+          href: '',
+          text: '',
+          shortText: '',
+          isExternal: false,
+          isPremium: false,
+        },
+      },
+      open: { line: '0', odds: '0' },
+    },
+  },
+  total: {
+    displayName: 'Total',
+    shortDisplayName: 'Tot',
+    over: {
+      close: {
+        line: '0',
+        odds: '0',
+        link: {
+          language: 'en',
+          rel: [],
+          href: '',
+          text: '',
+          shortText: '',
+          isExternal: false,
+          isPremium: false,
+        },
+      },
+      open: { line: '0', odds: '0' },
+    },
+    under: {
+      close: {
+        line: '0',
+        odds: '0',
+        link: {
+          language: 'en',
+          rel: [],
+          href: '',
+          text: '',
+          shortText: '',
+          isExternal: false,
+          isPremium: false,
+        },
+      },
+      open: { line: '0', odds: '0' },
+    },
+  },
+  link: {
+    language: 'en',
+    rel: ['odds'],
+    href: '',
+    text: '',
+    shortText: '',
+    isExternal: false,
+    isPremium: false,
+  },
+  header: {
+    logo: {
+      dark: '',
+      light: '',
+      exclusivesLogoDark: '',
+      exclusivesLogoLight: '',
+    },
+    text: '',
+  },
+  ...overrides,
+});
+
 // Helper to create modified events for edge case testing
-const createTestEvent = (
-  baseEvent: ESPNEvent,
-  overrides: Partial<ESPNEvent['competitions'][0]>
-): ESPNEvent => {
+const createTestEvent = (baseEvent: Event, overrides: Partial<Event['competitions'][0]>): Event => {
   const competition = baseEvent.competitions[0];
   return {
     ...baseEvent,
@@ -28,7 +152,7 @@ const createTestEvent = (
 };
 
 describe('reshapeScoreboardData', () => {
-  let scoreboardResponse: ESPNScoreboardResponse;
+  let scoreboardResponse: EspnScoreboardGenerated;
 
   beforeAll(async () => {
     try {
@@ -60,9 +184,18 @@ describe('reshapeScoreboardData', () => {
       const firstEvent = scoreboardResponse.events[0];
       const preGameEvent = createTestEvent(firstEvent, {
         status: {
-          type: { state: 'pre', completed: false },
-          clock: undefined,
-          period: undefined,
+          type: {
+            id: '1',
+            name: 'STATUS_SCHEDULED',
+            state: 'pre',
+            completed: false,
+            description: 'Scheduled',
+            detail: 'Scheduled',
+            shortDetail: 'Scheduled',
+          },
+          clock: 0,
+          displayClock: '0:00',
+          period: 0,
         },
         competitors: firstEvent.competitions[0].competitors.map((comp) => ({
           ...comp,
@@ -70,7 +203,7 @@ describe('reshapeScoreboardData', () => {
         })),
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [preGameEvent],
       };
@@ -93,8 +226,17 @@ describe('reshapeScoreboardData', () => {
       const firstEvent = scoreboardResponse.events[0];
       const inProgressEvent = createTestEvent(firstEvent, {
         status: {
-          type: { state: 'in', completed: false },
+          type: {
+            id: '2',
+            name: 'STATUS_IN_PROGRESS',
+            state: 'in',
+            completed: false,
+            description: 'In Progress',
+            detail: 'Q2 15:00',
+            shortDetail: 'Q2 15:00',
+          },
           clock: 1800,
+          displayClock: '15:00',
           period: 2,
         },
         competitors: firstEvent.competitions[0].competitors.map((comp, idx) => ({
@@ -103,7 +245,7 @@ describe('reshapeScoreboardData', () => {
         })),
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [inProgressEvent],
       };
@@ -132,7 +274,7 @@ describe('reshapeScoreboardData', () => {
         })),
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [rankedEvent],
       };
@@ -159,7 +301,7 @@ describe('reshapeScoreboardData', () => {
         })),
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [unrankedEvent],
       };
@@ -183,17 +325,27 @@ describe('reshapeScoreboardData', () => {
       const firstEvent = scoreboardResponse.events[0];
       const oddsEvent = createTestEvent(firstEvent, {
         odds: [
-          {
+          createTestOdd({
             details: 'Spread',
             spread: -7,
             overUnder: 54.5,
-            awayTeamOdds: { favorite: false },
-            homeTeamOdds: { favorite: true },
-          },
+            awayTeamOdds: {
+              favorite: false,
+              underdog: true,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: false,
+            },
+            homeTeamOdds: {
+              favorite: true,
+              underdog: false,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: true,
+            },
+          }),
         ],
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [oddsEvent],
       };
@@ -217,17 +369,27 @@ describe('reshapeScoreboardData', () => {
         ?.team.id;
       const oddsEvent = createTestEvent(firstEvent, {
         odds: [
-          {
+          createTestOdd({
             details: 'Spread',
             spread: -7,
             overUnder: 54.5,
-            awayTeamOdds: { favorite: false },
-            homeTeamOdds: { favorite: true },
-          },
+            awayTeamOdds: {
+              favorite: false,
+              underdog: true,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: false,
+            },
+            homeTeamOdds: {
+              favorite: true,
+              underdog: false,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: true,
+            },
+          }),
         ],
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [oddsEvent],
       };
@@ -252,7 +414,7 @@ describe('reshapeScoreboardData', () => {
         odds: undefined,
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [noOddsEvent],
       };
@@ -275,17 +437,27 @@ describe('reshapeScoreboardData', () => {
       const firstEvent = scoreboardResponse.events[0];
       const pushEvent = createTestEvent(firstEvent, {
         odds: [
-          {
+          createTestOdd({
             details: 'Spread',
             spread: 0,
             overUnder: 54.5,
-            awayTeamOdds: { favorite: false },
-            homeTeamOdds: { favorite: false },
-          },
+            awayTeamOdds: {
+              favorite: false,
+              underdog: true,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: false,
+            },
+            homeTeamOdds: {
+              favorite: false,
+              underdog: true,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: false,
+            },
+          }),
         ],
       });
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [pushEvent],
       };
@@ -306,12 +478,12 @@ describe('reshapeScoreboardData', () => {
       }
 
       const validEvent = scoreboardResponse.events[0];
-      const invalidEvent: ESPNEvent = {
+      const invalidEvent = {
         id: '999',
         competitions: [], // Missing competition
-      };
+      } as unknown as Event;
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [validEvent, invalidEvent],
       };
@@ -330,20 +502,33 @@ describe('reshapeScoreboardData', () => {
       }
 
       const validEvent = scoreboardResponse.events[0];
-      const invalidEvent: ESPNEvent = {
+      const invalidEvent = {
         id: '999',
         competitions: [
           {
             id: 'comp-999',
             competitors: [], // Missing competitors
             conferenceCompetition: false,
-            status: { type: { state: 'post', completed: true } },
+            status: {
+              type: {
+                id: '3',
+                name: 'STATUS_FINAL',
+                state: 'post',
+                completed: true,
+                description: 'Final',
+                detail: 'Final',
+                shortDetail: 'Final',
+              },
+              clock: 0,
+              displayClock: '0:00',
+              period: 4,
+            },
             date: '2025-09-06T12:00Z',
-          },
+          } as unknown as Competition,
         ],
-      };
+      } as unknown as Event;
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [validEvent, invalidEvent],
       };
@@ -362,7 +547,8 @@ describe('reshapeScoreboardData', () => {
 
       const validEvent = scoreboardResponse.events[0];
       const firstComp = validEvent.competitions[0];
-      const invalidEvent: ESPNEvent = {
+      const invalidEvent = {
+        ...validEvent,
         id: '999',
         competitions: [
           {
@@ -373,9 +559,9 @@ describe('reshapeScoreboardData', () => {
             ],
           },
         ],
-      };
+      } as Event;
 
-      const response: ESPNScoreboardResponse = {
+      const response: EspnScoreboardGenerated = {
         ...scoreboardResponse,
         events: [validEvent, invalidEvent],
       };

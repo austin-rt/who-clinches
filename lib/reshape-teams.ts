@@ -3,15 +3,16 @@
  * Transform raw ESPN team data into our desired format
  */
 
-import { ESPNTeamResponse, ESPNTeamLogo, ESPNCoreRecordResponse } from './espn-client';
+import type { EspnTeamGenerated, Logo } from './espn/espn-team-generated';
+import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
 import { ReshapedTeam, TeamRecord, TeamDataResponse } from './types';
 
 /**
  * Reshape ESPN team response into our team format
  */
 export const reshapeTeamData = (
-  espnTeamResponse: ESPNTeamResponse,
-  coreRecordResponse?: ESPNCoreRecordResponse
+  espnTeamResponse: EspnTeamGenerated,
+  coreRecordResponse?: EspnTeamRecordsGenerated
 ): ReshapedTeam | null => {
   const team = espnTeamResponse.team;
   if (!team) {
@@ -19,8 +20,7 @@ export const reshapeTeamData = (
   }
 
   // Find the best logo (prefer larger sizes)
-  const logo: ESPNTeamLogo | undefined =
-    team.logos?.find((l: ESPNTeamLogo) => l.width >= 500) || team.logos?.[0];
+  const logo: Logo | undefined = team.logos?.find((l: Logo) => l.width >= 500) || team.logos?.[0];
 
   // Parse records from core API if available
   let record: TeamRecord = {};
@@ -90,7 +90,7 @@ export const reshapeTeamData = (
   const conferenceStanding = espnTeamResponse.team.standingSummary;
 
   // Parse next game
-  const nextGameId = espnTeamResponse.nextEvent?.[0]?.id;
+  const nextGameId = espnTeamResponse.team.nextEvent?.[0]?.id;
 
   return {
     _id: team.id,

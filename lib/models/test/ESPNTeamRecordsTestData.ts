@@ -1,5 +1,5 @@
 import { Schema, Document } from 'mongoose';
-import { ESPNCoreRecordResponse } from '@/lib/espn-client';
+import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 
 /**
  * ESPN Team Records Test Data
@@ -13,7 +13,7 @@ export interface IESPNTeamRecordsTestData extends Document {
   teamId: string;
   teamAbbrev: string;
   endpoint: string; // Full endpoint URL
-  response: ESPNCoreRecordResponse; // Raw ESPN API response
+  response: EspnTeamRecordsGenerated; // Raw ESPN API response
   pulledAt: Date; // When this snapshot was captured
   lastUpdated: Date;
 }

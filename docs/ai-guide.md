@@ -19,6 +19,9 @@ This is a specialized college football application built for simulating SEC conf
 - **Be concise and efficient in your responses**: Do not use overly verbose language. Do not offer observations regarding the quality of my prompts or requests. Phrases like "That's an excellent question" or "You're right to ask that" are not efficient or helpful.
 - **No Automated npm Commands**: Do not run npm commands (build, start, install, etc.) without explicit request. If npm commands are needed for validation or troubleshooting, recommend the user run it and inform the user why it is needed.
 - **Communicate context window**: When your context window reaches 95% capacity, inform me that you are at 95% of your limit and suggest I request a handoff prompt and start a new chat.
+- **NEVER Disable ESLint Rules**: ESLint rules are intentionally configured and must be followed. NEVER use `eslint-disable` comments. If code violates lint rules, fix the code to comply with the rules instead. This includes `no-console` - use proper logging or remove console statements entirely.
+- **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
+- **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
 
 ### **Development Approach**
 

@@ -7,7 +7,8 @@
  */
 
 import { reshapeTeamData, reshapeTeamsData } from '@/lib/reshape-teams';
-import { ESPNTeamResponse, ESPNCoreRecordResponse } from '@/lib/espn-client';
+import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
+import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 import {
   loadTeamTestData,
   loadTeamRecordsTestData,
@@ -15,7 +16,7 @@ import {
 } from '../helpers/test-data-loader';
 
 describe('reshapeTeamData', () => {
-  let teamResponse: ESPNTeamResponse;
+  let teamResponse: EspnTeamGenerated;
 
   beforeAll(async () => {
     try {
@@ -37,7 +38,7 @@ describe('reshapeTeamData', () => {
 
   describe('Basic Transformation', () => {
     it('handles null/missing logos gracefully', () => {
-      const responseNoLogos: ESPNTeamResponse = {
+      const responseNoLogos: EspnTeamGenerated = {
         ...teamResponse,
         team: {
           ...teamResponse.team,
@@ -52,13 +53,15 @@ describe('reshapeTeamData', () => {
 
   describe('Record Handling', () => {
     it('falls back to site API records', () => {
-      const responseWithSiteAPI: ESPNTeamResponse = {
+      const responseWithSiteAPI: EspnTeamGenerated = {
         ...teamResponse,
         team: {
           ...teamResponse.team,
           record: {
             items: [
               {
+                description: 'Overall Record',
+                type: 'total',
                 summary: '8-1',
                 stats: [
                   { name: 'wins', value: 8 },
@@ -77,7 +80,7 @@ describe('reshapeTeamData', () => {
 
   describe('Ranking Handling', () => {
     it('treats rank 99 as unranked', () => {
-      const unrankedResponse: ESPNTeamResponse = {
+      const unrankedResponse: EspnTeamGenerated = {
         ...teamResponse,
         team: {
           ...teamResponse.team,
@@ -90,11 +93,11 @@ describe('reshapeTeamData', () => {
     });
 
     it('treats null rank as unranked', () => {
-      const unrankedResponse: ESPNTeamResponse = {
+      const unrankedResponse: EspnTeamGenerated = {
         ...teamResponse,
         team: {
           ...teamResponse.team,
-          rank: undefined,
+          rank: 0,
         },
       };
 
@@ -107,18 +110,22 @@ describe('reshapeTeamData', () => {
     it('returns null for null team data', () => {
       const invalidResponse = {
         team: null,
-      } as unknown as ESPNTeamResponse;
+      } as unknown as EspnTeamGenerated;
 
       const result = reshapeTeamData(invalidResponse);
       expect(result).toBeNull();
     });
 
     it('handles missing conference data', () => {
-      const responseNoConf: ESPNTeamResponse = {
+      const responseNoConf: EspnTeamGenerated = {
         ...teamResponse,
         team: {
           ...teamResponse.team,
-          groups: undefined,
+          groups: {
+            id: '',
+            parent: { id: '' },
+            isConference: false,
+          },
         },
       };
 
@@ -130,8 +137,8 @@ describe('reshapeTeamData', () => {
 });
 
 describe('reshapeTeamsData', () => {
-  let teamResponse: ESPNTeamResponse;
-  let recordResponse: ESPNCoreRecordResponse;
+  let teamResponse: EspnTeamGenerated;
+  let recordResponse: EspnTeamRecordsGenerated;
 
   beforeAll(async () => {
     try {
@@ -181,7 +188,7 @@ describe('reshapeTeamsData', () => {
       },
       {
         abbreviation: 'INV',
-        data: invalidResponse as unknown as ESPNTeamResponse,
+        data: invalidResponse as unknown as EspnTeamGenerated,
         recordData: recordResponse,
       },
     ]);

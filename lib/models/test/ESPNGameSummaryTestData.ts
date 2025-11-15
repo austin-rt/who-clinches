@@ -1,5 +1,5 @@
 import { Schema, Document } from 'mongoose';
-import { ESPNGameSummaryResponse } from '@/lib/espn-client';
+import type { EspnGameSummaryGenerated } from '@/lib/espn/espn-game-summary-generated';
 
 /**
  * ESPN Game Summary Test Data
@@ -12,7 +12,7 @@ export interface IESPNGameSummaryTestData extends Document {
   season: number;
   gameId: string;
   endpoint: string; // Full endpoint URL
-  response: ESPNGameSummaryResponse; // Raw ESPN API response
+  response: EspnGameSummaryGenerated; // Raw ESPN API response
   pulledAt: Date; // When this snapshot was captured
   lastUpdated: Date;
 }

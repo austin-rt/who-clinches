@@ -31,29 +31,89 @@ export const GET = async (request: NextRequest) => {
     const season = 2025;
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
 
-    // 3. Pull scoreboard example (one week's games)
+    // 3. Pull scoreboard data for all weeks
     try {
-      const scoreboard = await espnClient.getScoreboard({
-        groups: 8, // SEC
-        week: 1, // Use week 1 as example
-        season,
-      });
+      // Get all available weeks from ESPN calendar
+      let weeksToPull: number[] = [];
+      try {
+        const calendarResponse = await espnClient.getScoreboard({
+          groups: 8, // SEC
+          season,
+        });
+
+        const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
+          (cal) => cal.label === 'Regular Season'
+        );
+
+        if (regularSeason?.entries) {
+          weeksToPull = regularSeason.entries
+            .map((entry) => parseInt(entry.value, 10))
+            .filter((val: number) => !isNaN(val));
+        }
+
+        // Fallback to weeks 1-15 if calendar not available
+        if (weeksToPull.length === 0) {
+          const maxWeek = 15;
+          weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
+        }
+      } catch {
+        // If calendar fetch fails, fall back to weeks 1-15
+        const maxWeek = 15;
+        weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
+      }
 
       const ScoreboardModel = await getESPNScoreboardTestData();
-      await ScoreboardModel.findOneAndUpdate(
-        { season },
-        {
-          season,
-          week: 1,
-          endpoint: `/v2/sports/football/leagues/college-football/scoreboard?groups=8&week=1&seasontype=2&dates=${season}`,
-          response: scoreboard,
-          pulledAt: new Date(),
-          lastUpdated: new Date(),
-        },
-        { upsert: true }
-      );
+      let weeksPulled = 0;
+      const weekErrors: string[] = [];
 
-      results.push({ type: 'scoreboard', success: true });
+      // Pull scoreboard for each week
+      for (const week of weeksToPull) {
+        try {
+          const scoreboard = await espnClient.getScoreboard({
+            groups: 8, // SEC
+            week,
+            season,
+          });
+
+          // Store each week as separate document (remove unique constraint on season)
+          await ScoreboardModel.findOneAndUpdate(
+            { season, week },
+            {
+              season,
+              week,
+              endpoint: `/v2/sports/football/leagues/college-football/scoreboard?groups=8&week=${week}&seasontype=2&dates=${season}`,
+              response: scoreboard,
+              pulledAt: new Date(),
+              lastUpdated: new Date(),
+            },
+            { upsert: true }
+          );
+
+          weeksPulled++;
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+          weekErrors.push(`Week ${week}: ${errorMessage}`);
+        }
+
+        // Rate limiting between weeks
+        if (weeksToPull.length > 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500));
+        }
+      }
+
+      if (weeksPulled > 0) {
+        results.push({
+          type: 'scoreboard',
+          success: true,
+          error: weekErrors.length > 0 ? weekErrors.join('; ') : undefined,
+        });
+      } else {
+        results.push({
+          type: 'scoreboard',
+          success: false,
+          error: `Failed to pull any weeks. Errors: ${weekErrors.join('; ')}`,
+        });
+      }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       results.push({ type: 'scoreboard', success: false, error: errorMessage });

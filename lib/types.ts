@@ -2,6 +2,9 @@
  * Internal application types for reshaped data
  */
 
+import type { EspnTeamGenerated } from './espn/espn-team-generated';
+import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
+
 /**
  * Game state type - represents the current state of a game
  */
@@ -90,8 +93,8 @@ export interface ReshapeResult<T> {
 
 export interface TeamDataResponse {
   abbreviation: string;
-  data: import('./espn-client').ESPNTeamResponse | null;
-  recordData?: import('./espn-client').ESPNCoreRecordResponse | null;
+  data: EspnTeamGenerated | null;
+  recordData?: EspnTeamRecordsGenerated | null;
 }
 
 export interface MongoQuery {

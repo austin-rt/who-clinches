@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
  * Batch Cron Endpoint - Hobby Tier
  *
  * Calls all cron jobs from a single endpoint to work around Vercel's
- * "2 cron jobs, once per day" limit. Runs daily at 4 AM ET (9 AM UTC).
+ * "2 cron jobs, once per day" limit. Runs daily at 7:45 PM ET (11:45 PM UTC / 00:45 UTC next day).
  *
  * Each sub-job handles its own:
  * - Authentication (uses same CRON_SECRET)
