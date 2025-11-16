@@ -333,7 +333,7 @@ Tests that Vercel cron schedules are properly configured.
   "crons": [
     {
       "path": "/api/cron/update-all",
-      "schedule": "0 9 * * *"
+      "schedule": "45 23 * * *"
     }
   ]
 }
