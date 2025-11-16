@@ -22,6 +22,7 @@ This is a specialized college football application built for simulating SEC conf
 - **NEVER Disable ESLint Rules**: ESLint rules are intentionally configured and must be followed. NEVER use `eslint-disable` comments. If code violates lint rules, fix the code to comply with the rules instead. This includes `no-console` - use proper logging or remove console statements entirely.
 - **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
 - **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
+- **NEVER Bypass Pre-Commit Hooks**: NEVER use `--no-verify` or `--no-gpg-sign` flags with git commit. Pre-commit hooks are mandatory and must run on all commits. If code doesn't pass hooks, fix the code rather than bypassing the checks.
 
 ### **Development Approach**
 
