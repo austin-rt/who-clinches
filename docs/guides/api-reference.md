@@ -557,7 +557,7 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 
 **Schedule:**
 
-- **Hobby Plan**: Daily at 4 AM ET (`0 9 * * *` UTC)
+- **Hobby Plan**: Daily at 7:45 PM ET (`45 23 * * *` UTC)
 - **Pro Plan**: Not used (individual cron jobs run separately)
 
 **Response:**
