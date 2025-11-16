@@ -9,9 +9,9 @@ export interface EspnGameSummaryGenerated {
   pickcenter: Pickcenter[];
   againstTheSpread: AgainstTheSpread[];
   odds: any[];
-  news: News;
   header: EspnGameSummaryGeneratedHeader;
   scoringPlays: ScoringPlay[];
+  news: News;
   winprobability: Winprobability[];
   article: EspnGameSummaryGeneratedArticle;
   videos: EspnGameSummaryGeneratedVideo[];
@@ -66,7 +66,7 @@ export interface EspnGameSummaryGeneratedArticle {
   published: Date;
   section: string;
   source: string;
-  images: PurpleImage[];
+  images: ArticleImage[];
   video: ArticleVideo[];
   categories: PurpleCategory[];
   keywords: string[];
@@ -99,7 +99,7 @@ export interface Event {
   sport: string;
   league: string;
   description: string;
-  links?: EventLinks;
+  links: EventLinks;
 }
 
 export interface EventLinks {
@@ -146,13 +146,15 @@ export interface TentacledMobile {
   teams: SelfClass;
 }
 
-export interface PurpleImage {
-  type: string;
+export interface ArticleImage {
+  type?: string;
   name: string;
-  caption: string;
-  height: number;
-  width: number;
+  caption?: string;
+  height?: number;
+  width?: number;
   url: string;
+  alt?: string;
+  ratio?: string;
 }
 
 export interface PurpleLinks {
@@ -217,6 +219,23 @@ export interface VideoCategory {
   event?: Event;
   leagueId?: number;
   league?: CategoryLeague;
+  athleteId?: number;
+  athlete?: CategoryAthlete;
+}
+
+export interface CategoryAthlete {
+  id: number;
+  description: string;
+  links: AthleteLinks;
+}
+
+export interface AthleteLinks {
+  web: StickyMobile;
+  mobile: StickyMobile;
+}
+
+export interface StickyMobile {
+  athletes: SelfClass;
 }
 
 export interface DeviceRestrictions {
@@ -236,7 +255,7 @@ export interface VideoImage {
 
 export interface FluffyLinks {
   web: Web;
-  mobile: StickyMobile;
+  mobile: IndigoMobile;
   api: Fluffyapi;
   source: PurpleSource;
   sportscenter: SelfClass;
@@ -247,7 +266,7 @@ export interface Fluffyapi {
   artwork?: SelfClass;
 }
 
-export interface StickyMobile {
+export interface IndigoMobile {
   source: SelfClass;
   alert: SelfClass;
   streaming: SelfClass;
@@ -742,64 +761,18 @@ export interface ArticleElement {
   description: string;
   lastModified: Date;
   published: Date;
-  images: FluffyImage[];
-  categories: FluffyCategory[];
+  images: ArticleImage[];
+  categories: VideoCategory[];
   premium: boolean;
   links: TentacledLinks;
-  byline?: string;
-}
-
-export interface FluffyCategory {
-  type: string;
-  uid?: string;
-  guid: string;
-  description?: string;
-  eventId?: number;
-  event?: Event;
-  id?: number;
-  sportId?: number;
-  teamId?: number;
-  team?: CategoryTeam;
-  leagueId?: number;
-  league?: CategoryLeague;
-  topicId?: number;
-  slug?: string;
-  contributor?: Contributor;
-}
-
-export interface Contributor {
-  id: number;
-  description: string;
-  links: ContributorLinks;
-}
-
-export interface ContributorLinks {
-  web: IndigoMobile;
-  mobile: IndigoMobile;
-}
-
-export interface IndigoMobile {}
-
-export interface FluffyImage {
-  type?: string;
-  name: string;
-  url: string;
-  ratio?: string;
-  height?: number;
-  width?: number;
-  caption?: string;
-  dataSourceIdentifier?: string;
-  id?: number;
-  credit?: string;
-  alt?: string;
 }
 
 export interface TentacledLinks {
   web: Web;
-  mobile?: SelfClass;
   api: Fluffyapi;
-  app?: App;
   sportscenter?: SelfClass;
+  mobile?: SelfClass;
+  app?: App;
 }
 
 export interface Pickcenter {
@@ -924,7 +897,7 @@ export interface EspnGameSummaryGeneratedVideo {
 
 export interface StickyLinks {
   web: Web;
-  mobile: StickyMobile;
+  mobile: IndigoMobile;
   api: Fluffyapi;
   source: FluffySource;
   sportscenter: SelfClass;

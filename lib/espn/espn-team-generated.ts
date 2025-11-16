@@ -17,7 +17,7 @@ export interface EspnTeamGeneratedTeam {
   alternateColor: string;
   isActive: boolean;
   logos: Logo[];
-  record: Record;
+  record: TeamRecord;
   groups: Groups;
   links: NextEventLink[];
   nextEvent: NextEvent[];
@@ -80,7 +80,6 @@ export interface Competition {
   competitors: Competitor[];
   notes: any[];
   broadcasts: Broadcast[];
-  tickets: Ticket[];
   status: Status;
 }
 
@@ -100,8 +99,6 @@ export interface Market {
 
 export interface Media {
   shortName: string;
-  logo: string;
-  darkLogo: string;
 }
 
 export interface BroadcastType {
@@ -114,12 +111,30 @@ export interface Competitor {
   type: string;
   order: number;
   homeAway: string;
+  winner: boolean;
   team: CompetitorTeam;
+  score: Score;
+  record: RecordElement[];
   curatedRank: CuratedRank;
 }
 
 export interface CuratedRank {
   current: number;
+}
+
+export interface RecordElement {
+  id: string;
+  abbreviation?: string;
+  displayName: string;
+  shortDisplayName: string;
+  description: string;
+  type: string;
+  displayValue: string;
+}
+
+export interface Score {
+  value: number;
+  displayValue: string;
 }
 
 export interface CompetitorTeam {
@@ -154,22 +169,6 @@ export interface StatusType {
   description: string;
   detail: string;
   shortDetail: string;
-}
-
-export interface Ticket {
-  id: string;
-  summary: string;
-  description: string;
-  maxPrice: number;
-  startingPrice: number;
-  numberAvailable: number;
-  totalPostings: number;
-  links: TicketLink[];
-}
-
-export interface TicketLink {
-  rel: string[];
-  href: string;
 }
 
 export interface CompetitionType {
@@ -209,7 +208,7 @@ export interface Week {
   text: string;
 }
 
-export interface Record {
+export interface TeamRecord {
   items: Item[];
 }
 

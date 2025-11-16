@@ -16,7 +16,7 @@ export interface Event {
   season: EventSeason;
   week: Week;
   competitions: Competition[];
-  links: OddLink[];
+  links: EventLink[];
   status: Status;
   weather?: Weather;
 }
@@ -62,7 +62,7 @@ export interface Competitor {
   order: number;
   homeAway: string;
   winner?: boolean;
-  team: CompetitorTeam;
+  team: Team;
   score: string;
   linescores?: Linescore[];
   statistics: any[];
@@ -95,7 +95,7 @@ export interface Athlete {
   fullName: string;
   displayName: string;
   shortName: string;
-  links: LinkElement[];
+  links: AthleteLink[];
   headshot: string;
   jersey: string;
   position: Position;
@@ -103,7 +103,7 @@ export interface Athlete {
   active: boolean;
 }
 
-export interface LinkElement {
+export interface AthleteLink {
   rel: string[];
   href: string;
 }
@@ -129,7 +129,7 @@ export interface Record {
   summary: string;
 }
 
-export interface CompetitorTeam {
+export interface Team {
   id: string;
   uid: string;
   location: string;
@@ -206,7 +206,7 @@ export interface Video {
   headline: string;
   thumbnail: string;
   duration: number;
-  tracking: VideoTracking;
+  tracking: Tracking;
   deviceRestrictions: DeviceRestrictions;
   links: Links;
 }
@@ -274,7 +274,7 @@ export interface Self {
   dsi: Sportscenter;
 }
 
-export interface VideoTracking {
+export interface Tracking {
   sportName: string;
   leagueName: string;
   coverageType: string;
@@ -296,7 +296,7 @@ export interface Highlight {
   thumbnail: string;
   links: Links;
   ad: Ad;
-  tracking: VideoTracking;
+  tracking: Tracking;
 }
 
 export interface Ad {
@@ -314,6 +314,23 @@ export interface Note {
   headline: string;
 }
 
+export interface Status {
+  clock: number;
+  displayClock: string;
+  period: number;
+  type: StatusType;
+}
+
+export interface StatusType {
+  id: string;
+  name: string;
+  state: GameState;
+  completed: boolean;
+  description: string;
+  detail: string;
+  shortDetail: string;
+  altDetail?: string;
+}
 export interface Odd {
   provider: Provider;
   details: string;
@@ -429,7 +446,7 @@ export interface Provider {
   id: string;
   name: string;
   priority: number;
-  logos: LinkElement[];
+  logos: any[];
 }
 
 export interface Total {
@@ -437,24 +454,6 @@ export interface Total {
   shortDisplayName: string;
   over: OverClass;
   under: OverClass;
-}
-
-export interface Status {
-  clock: number;
-  displayClock: string;
-  period: number;
-  type: StatusType;
-}
-
-export interface StatusType {
-  id: string;
-  name: string;
-  state: GameState;
-  completed: boolean;
-  description: string;
-  detail: string;
-  shortDetail: string;
-  altDetail?: string;
 }
 
 export interface Ticket {
@@ -481,6 +480,16 @@ export interface Address {
   country: string;
 }
 
+export interface EventLink {
+  language: string;
+  rel: string[];
+  href: string;
+  text: string;
+  shortText: string;
+  isExternal: boolean;
+  isPremium: boolean;
+}
+
 export interface EventSeason {
   year: number;
   type: number;
@@ -492,7 +501,7 @@ export interface Weather {
   temperature: number;
   highTemperature: number;
   conditionId: string;
-  link: OddLink;
+  link: EventLink;
 }
 
 export interface Week {
@@ -507,7 +516,7 @@ export interface League {
   midsizeName: string;
   slug: string;
   season: LeagueSeason;
-  logos: LeagueLogo[];
+  logos: Logo[];
   calendarType: string;
   calendarIsWhitelist: boolean;
   calendarStartDate: string;
@@ -532,7 +541,7 @@ export interface Entry {
   endDate: string;
 }
 
-export interface LeagueLogo {
+export interface Logo {
   href: string;
   width: number;
   height: number;
