@@ -442,7 +442,7 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 
 **Schedule:**
 
-- **Hobby Plan**: Called via `/api/cron/update-all` daily at 7:45 PM ET (`45 23 * * *` UTC) with `allGames=true`
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 10:00 PM ET (`0 2 * * *` UTC) with `allGames=true`
 - **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET (without `allGames`, only incomplete games)
 
 **Response:**
@@ -561,7 +561,7 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 
 **Schedule:**
 
-- **Hobby Plan**: Daily at 7:45 PM ET (`45 23 * * *` UTC)
+- **Hobby Plan**: Daily at 10:00 PM ET (`0 2 * * *` UTC)
 - **Pro Plan**: Not used (individual cron jobs run separately)
 
 **Response:**
@@ -630,7 +630,7 @@ Updates team rankings, standings, and season statistics.
 
 **Schedule:**
 
-- **Hobby Plan**: Called via `/api/cron/update-all` daily at 7:45 PM ET (`45 23 * * *` UTC)
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 10:00 PM ET (`0 2 * * *` UTC)
 - **Pro Plan**: Sunday 3 AM ET + Wednesday 3 AM ET (`0 3 * * 0` + `0 3 * * 3`)
 
 **Response:**
@@ -741,7 +741,7 @@ Updates test data snapshots from ESPN API for unit testing. Pulls one example of
 
 **Schedule:**
 
-- **Hobby Plan**: Called via `/api/cron/update-all` daily at 7:45 PM ET (`45 23 * * *` UTC)
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 10:00 PM ET (`0 2 * * *` UTC)
 - **Pro Plan**: Not scheduled separately (can be called manually or via update-all)
 
 **Response:**
