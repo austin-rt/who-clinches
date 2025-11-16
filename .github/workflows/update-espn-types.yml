@@ -9,12 +9,14 @@ on:
 jobs:
   generate-types:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node.js
@@ -28,6 +30,7 @@ jobs:
 
       - name: Install quicktype
         run: npm install -g quicktype@latest
+        # Note: Using global install for quicktype CLI tool
 
       - name: Extract ESPN responses and generate types
         id: generate
@@ -102,7 +105,10 @@ jobs:
 
             Tracking updated to reflect current field usage in reshape functions.
             No ESPN type changes detected."
-            git push origin HEAD:auto/espn-type-tracking || echo "Push skipped (may not have permissions)"
+            if ! git push origin HEAD:auto/espn-type-tracking; then
+              echo "⚠️ Warning: Failed to push to auto/espn-type-tracking branch"
+              echo "This may occur if the branch doesn't exist yet or on first run"
+            fi
           fi
 
       - name: Create Pull Request (only for ESPN type changes)
