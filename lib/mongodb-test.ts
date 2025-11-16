@@ -40,6 +40,7 @@ const dbConnectTest = async (): Promise<mongoose.Connection> => {
   }
 
   if (!cached.promise) {
+    // Using createConnection() instead of mongoose.connect() to avoid conflicts with main connection
     cached.promise = mongoose
       .createConnection(TEST_MONGODB_URI, {
         bufferCommands: false,
@@ -55,6 +56,18 @@ const dbConnectTest = async (): Promise<mongoose.Connection> => {
   }
 
   return cached.conn;
+};
+
+/**
+ * Close test database connection
+ * Call this in test afterAll hooks to prevent Jest from hanging
+ */
+export const dbDisconnectTest = async (): Promise<void> => {
+  if (cached.conn) {
+    await cached.conn.close();
+    cached.conn = null;
+    cached.promise = null;
+  }
 };
 
 export default dbConnectTest;

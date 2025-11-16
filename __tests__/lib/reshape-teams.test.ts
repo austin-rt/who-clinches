@@ -14,6 +14,7 @@ import {
   loadTeamRecordsTestData,
   checkTestDataAvailable,
 } from '../helpers/test-data-loader';
+import { dbDisconnectTest } from '@/lib/mongodb-test';
 
 describe('reshapeTeamData', () => {
   let teamResponse: EspnTeamGenerated;
@@ -34,6 +35,11 @@ describe('reshapeTeamData', () => {
         `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated by running /api/cron/update-test-data, then update reshape functions if API format changed`
       );
     }
+  });
+
+  afterAll(async () => {
+    // Close MongoDB connection to prevent Jest from hanging
+    await dbDisconnectTest();
   });
 
   describe('Basic Transformation', () => {
@@ -157,6 +163,11 @@ describe('reshapeTeamsData', () => {
         `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated by running /api/cron/update-test-data, then update reshape functions if API format changed`
       );
     }
+  });
+
+  afterAll(async () => {
+    // Close MongoDB connection to prevent Jest from hanging
+    await dbDisconnectTest();
   });
 
   it('transforms multiple team responses', () => {

@@ -14,6 +14,7 @@ import type {
   Odd,
 } from '@/lib/espn/espn-scoreboard-generated';
 import { loadScoreboardTestData, checkTestDataAvailable } from '../helpers/test-data-loader';
+import { dbDisconnectTest } from '@/lib/mongodb-test';
 
 // Helper to create a minimal Odd object for testing
 const createTestOdd = (overrides: Partial<Odd>): Odd => ({
@@ -170,6 +171,11 @@ describe('reshapeScoreboardData', () => {
         `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated by running /api/cron/update-test-data, then update reshape functions if API format changed`
       );
     }
+  });
+
+  afterAll(async () => {
+    // Close MongoDB connection to prevent Jest from hanging
+    await dbDisconnectTest();
   });
 
   describe('Basic Game Transformation', () => {
