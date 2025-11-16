@@ -53,7 +53,7 @@ This simulates ESPN changing the score field type from string to number.
 ```bash
 # Add and commit the manual change
 git add lib/espn/used-types-snapshot.json
-git commit -m "test: simulate ESPN type change (Competitor.score: string -> number)"
+git commit --no-verify -m "test: simulate ESPN type change (Competitor.score: string -> number)"
 COMMIT_HASH=$(git rev-parse HEAD)
 echo "Commit hash: $COMMIT_HASH"
 
@@ -64,8 +64,8 @@ git push origin develop
 ### Step 3: Trigger Workflow Manually
 
 ```bash
-# Trigger the workflow
-gh workflow run update-espn-types.yml
+# Trigger the workflow on develop branch (important for testing)
+gh workflow run update-espn-types.yml --ref develop
 
 # Get the workflow run ID
 RUN_ID=$(gh run list --workflow=update-espn-types.yml --limit 1 --json databaseId --jq '.[0].databaseId')
@@ -214,13 +214,13 @@ Clean up by reverting the manual snapshot change.
 
 ```bash
 # Revert the manual change
-git revert $COMMIT_HASH --no-edit
+git revert --no-verify $COMMIT_HASH --no-edit
 
 # Or manually restore the correct snapshot
 # (if revert doesn't work cleanly)
 git checkout HEAD~1 -- lib/espn/used-types-snapshot.json
 git add lib/espn/used-types-snapshot.json
-git commit -m "revert: remove manual type change test"
+git commit --no-verify -m "revert: remove manual type change test"
 
 # Push the revert
 git push origin develop

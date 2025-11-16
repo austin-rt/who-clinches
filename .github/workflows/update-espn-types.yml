@@ -112,6 +112,11 @@ jobs:
             fi
           fi
 
+      - name: Disable git hooks for PR creation
+        if: steps.generate.outputs.generated == 'true' && steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local core.hooksPath /dev/null
+
       - name: Create Pull Request (only for ESPN type changes)
         if: steps.generate.outputs.generated == 'true' && steps.check-changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v5
