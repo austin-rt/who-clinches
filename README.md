@@ -27,24 +27,27 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 sec-tiebreaker/
 ├── app/
 │   ├── api/
-│   │   ├── games/route.ts      # Query games from database
-│   │   ├── pull/route.ts        # Ingest game data from ESPN
-│   │   └── pull-teams/route.ts  # Ingest team data from ESPN
-│   ├── page.tsx                 # Main UI (future)
+│   │   ├── games/route.ts       # Query games from database
+│   │   ├── pull-games/route.ts  # Ingest game data from ESPN
+│   │   ├── pull-teams/route.ts  # Ingest team data from ESPN
+│   │   ├── simulate/route.ts    # Tiebreaker simulation endpoint
+│   │   └── cron/                # Automated update endpoints
+│   ├── page.tsx                 # Main UI
 │   └── layout.tsx
 ├── lib/
 │   ├── mongodb.ts               # MongoDB connection singleton
 │   ├── espn-client.ts           # ESPN API client
-│   ├── reshape.ts               # Game data transformation
+│   ├── reshape-games.ts         # Game data transformation
 │   ├── reshape-teams.ts         # Team data transformation
-│   ├── parsers.ts               # ESPN data parsers
-│   ├── types.ts                 # Shared TypeScript types
+│   ├── tiebreaker-helpers.ts    # SEC tiebreaker rules implementation
+│   ├── prefill-helpers.ts       # Predicted score calculation
+│   ├── api-types.ts             # API request/response types
+│   ├── types.ts                 # Internal application types
 │   └── models/
 │       ├── Game.ts              # Game schema
 │       ├── Team.ts              # Team schema
 │       └── Error.ts             # Error logging schema
-├── tech-spec.md                 # Detailed technical specification
-└── plan.md                      # Implementation roadmap
+└── docs/                        # Documentation (see docs/navigation-hub.md)
 ```
 
 ## Getting Started
@@ -146,7 +149,7 @@ ESPN API → reshape functions → MongoDB
 
 **Endpoints:**
 
-- `POST /api/pull` - Fetch and store game data
+- `POST /api/pull-games` - Fetch and store game data
 - `POST /api/pull-teams` - Fetch and store team data
 
 ### 2. Data Retrieval (MongoDB → Frontend)
@@ -159,11 +162,15 @@ MongoDB → lean queries → strongly typed transformations → API response
 
 - `GET /api/games` - Query games with filters (season, week, team, etc.)
 
-### 3. Future: Simulation Engine
+### 3. Simulation Engine
 
 ```
 User overrides → tiebreaker calculation → standings display
 ```
+
+**Endpoints:**
+
+- `POST /api/simulate` - Simulate SEC standings with optional game overrides
 
 ## Key Design Decisions
 
@@ -237,7 +244,7 @@ Query stored games with filters.
 }
 ```
 
-### POST /api/pull
+### POST /api/pull-games
 
 Fetch game data from ESPN and store in database.
 
@@ -245,7 +252,7 @@ Fetch game data from ESPN and store in database.
 
 ```json
 {
-  "season": 2024,
+  "season": 2025,
   "conferenceId": 8,
   "week": 12,
   "sport": "football",
@@ -345,8 +352,10 @@ npm run lint
 
 ## Documentation
 
-- **`tech-spec.md`**: Comprehensive technical specification
-- **`plan.md`**: Implementation roadmap and architecture decisions
+- **Getting Started**: See [docs/navigation-hub.md](docs/navigation-hub.md) for complete documentation index
+- **API Reference**: [docs/guides/api-reference.md](docs/guides/api-reference.md) - Complete endpoint documentation
+- **Technical Spec**: [docs/plans/tech-spec.md](docs/plans/tech-spec.md) - Comprehensive technical specification
+- **AI Development Guide**: [docs/ai-guide.md](docs/ai-guide.md) - AI assistant development guidelines
 
 ## Current Status
 
@@ -357,11 +366,12 @@ npm run lint
 - Strongly typed API layer
 - Game and team data storage
 
-🚧 **Phase 2 In Progress**: Tiebreaker Engine
+✅ **Phase 2 Complete**: Tiebreaker Engine
 
-- SEC rules implementation
-- Simulation endpoint
-- User overrides
+- SEC rules implementation (Rules A-E)
+- Simulation endpoint (`/api/simulate`)
+- User score overrides
+- Automated cron jobs for data updates
 
 📋 **Phase 3 Planned**: Frontend UI
 
