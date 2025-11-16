@@ -2,6 +2,10 @@
 
 Complete reference for all SEC Tiebreaker API endpoints.
 
+**Related Documentation:**
+- [Comprehensive API Testing](../tests/comprehensive-api-testing.md) - Detailed testing procedures for all endpoints
+- [ESPN API Testing](../tests/espn-api-testing.md) - ESPN API field verification patterns
+
 ## Table of Contents
 
 - [Data Endpoints](#data-endpoints)

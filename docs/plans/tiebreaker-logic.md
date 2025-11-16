@@ -5,7 +5,8 @@
 >
 > - Actual code in `/app/api/simulate/route.ts`
 > - `/lib/tiebreaker-helpers.ts` for tiebreaker logic
-> - `/docs/api-reference.md` for current API documentation
+> - [API Reference](../guides/api-reference.md) for current API documentation
+> - [Tiebreaker Testing](../tests/tiebreaker-and-simulate.md) for test procedures
 > - `/lib/constants.ts` for actual constant definitions (SEC_TEAMS is string[], not objects)
 
 ## Overview

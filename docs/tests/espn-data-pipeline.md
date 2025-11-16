@@ -4,6 +4,10 @@ Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformat
 
 **Note:** All credentials must be read from `.env.local` - do not hardcode secrets.
 
+**Related Documentation:**
+- [ESPN API Testing](./espn-api-testing.md) - Field verification patterns and API inconsistencies
+- [API Reference](../guides/api-reference.md) - Complete endpoint documentation
+
 ---
 
 ## Environments

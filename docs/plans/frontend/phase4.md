@@ -4,6 +4,10 @@
 
 **Dependencies:** Phase 3 (overrides working)
 
+**Related Documentation:**
+- [API Reference](../../guides/api-reference.md) - `/api/simulate` endpoint documentation
+- [Tiebreaker Testing](../../tests/tiebreaker-and-simulate.md) - Test procedures for simulate endpoint
+
 **Files to Create/Modify:**
 
 - `app/components/SimulateButton.tsx` (new)

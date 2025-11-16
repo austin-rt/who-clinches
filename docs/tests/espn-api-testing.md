@@ -5,6 +5,10 @@ Testing results from actual ESPN API calls to verify our type definitions and us
 **Test Date**: 2025-11-12  
 **Season Tested**: 2025, Week 12
 
+**Related Documentation:**
+- [ESPN Data Pipeline Testing](./espn-data-pipeline.md) - Complete data ingestion and transformation testing
+- [Generated Types Workflow Testing](./generated-types-workflow-testing.md) - Automated type generation testing
+
 ---
 
 ## API Inconsistencies Discovered

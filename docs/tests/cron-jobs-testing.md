@@ -2,6 +2,9 @@
 
 Tests all cron job endpoints for data updates, authentication, error handling, and response consistency.
 
+**Related Documentation:**
+- [API Reference](../guides/api-reference.md) - Complete cron endpoint documentation
+
 ---
 
 ## Prerequisites

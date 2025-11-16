@@ -2,6 +2,10 @@
 
 Tests the complete tiebreaker implementation: Game model updates, simulate endpoint, SEC tiebreaker rules A-E, and standings generation.
 
+**Related Documentation:**
+- [API Reference](../guides/api-reference.md) - `/api/simulate` endpoint documentation
+- [Tiebreaker Logic Plan](../plans/tiebreaker-logic.md) - Original planning document (historical reference)
+
 ---
 
 ## Prerequisites

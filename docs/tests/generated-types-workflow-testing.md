@@ -2,6 +2,14 @@
 
 Tests the automated GitHub Actions workflow that generates ESPN types, compares snapshots, and creates PRs when ESPN API types change.
 
+**Related Documentation:**
+- [ESPN API Integration](../ai-guide.md#espn-api-integration) - Overview of type generation system
+- [ESPN API Testing](./espn-api-testing.md) - Field verification patterns
+- [ESPN Data Pipeline](./espn-data-pipeline.md) - Data transformation testing
+- [Navigation Hub](../navigation-hub.md) - Complete documentation index
+
+**Workflow File:** `.github/workflows/update-espn-types.yml`
+
 ---
 
 ## Prerequisites
@@ -286,6 +294,7 @@ gh run watch $NEW_RUN_ID
 1. Check workflow file syntax: `.github/workflows/update-espn-types.yml`
 2. Verify GitHub Actions are enabled in repository settings
 3. Check that `gh` CLI is authenticated: `gh auth status`
+4. **Important**: When manually triggering, use `--ref develop` flag: `gh workflow run update-espn-types.yml --ref develop`
 
 ### Type Generation Fails
 
@@ -299,7 +308,7 @@ gh run watch $NEW_RUN_ID
 
 ### PR Not Created
 
-**Cause**: Type change not detected or comparison logic issue
+**Cause**: Type change not detected, comparison logic issue, or repository permissions
 
 **Fix**:
 
@@ -307,6 +316,20 @@ gh run watch $NEW_RUN_ID
 2. Verify snapshot comparison script: `npx tsx scripts/extract-used-types.ts compare`
 3. Check that both old and new snapshots exist
 4. Verify the field exists in both snapshots (only compares fields in both)
+5. **Repository Permissions**: Ensure GitHub Actions has "Read and write permissions" enabled in repository settings:
+   - Go to Settings → Actions → General → Workflow permissions
+   - Select "Read and write permissions"
+   - This allows the workflow to create pull requests
+
+### PR Creation Fails Due to Pre-Commit Hooks
+
+**Cause**: Pre-commit hooks (tests, linting) run during PR creation and fail in CI environment
+
+**Fix**:
+
+1. The workflow now includes a step to disable git hooks before PR creation
+2. Verify the "Disable git hooks for PR creation" step exists in the workflow
+3. This step runs `git config --local core.hooksPath /dev/null` to bypass hooks
 
 ### PR Has Linting Errors
 
@@ -386,9 +409,27 @@ No ESPN type changes. 2 usage change(s) (tracking updated silently)
 
 ---
 
+## Testing Results
+
+**Status**: ✅ All tests completed successfully (November 16, 2025)
+
+**Verified**:
+- ✅ Workflow detects type changes correctly
+- ✅ PR creation works with proper repository permissions
+- ✅ Git hooks are bypassed during automated PR creation
+- ✅ PR includes correct generated types and snapshot updates
+- ✅ Workflow handles PR denial gracefully
+- ✅ Branch reuse pattern works correctly (`auto/update-espn-types`)
+
+**Key Learnings**:
+- Must use `--ref develop` when manually triggering workflow
+- Repository must have "Read and write permissions" enabled for GitHub Actions
+- Pre-commit hooks must be disabled for automated PR creation
+- Branch `auto/update-espn-types` is deleted and recreated for each PR (safe pattern)
+
 ## Next Steps
 
-1. Complete manual workflow testing
+1. ✅ Manual workflow testing completed
 2. Monitor workflow for 1 week in production
 3. Verify PRs are created when ESPN actually changes types
 4. Test PR merge process
