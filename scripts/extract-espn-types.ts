@@ -114,6 +114,175 @@ function generateTypesWithQuicktype(
         content = content.replace(statusTypeMatch[0], updatedBlock);
       }
 
+      // Post-process: Add Odd interface and odds field to Competition if missing
+      // ESPN doesn't always provide odds, so test data may not have it, but our code expects it
+      if (outputName === 'espn-scoreboard') {
+        // Check if Odd interface exists
+        if (!content.includes('export interface Odd {')) {
+          // Find where to insert (before the last closing brace or after StatusType)
+          const oddInterface = `
+export interface Odd {
+  provider: Provider;
+  details: string;
+  overUnder: number;
+  spread: number;
+  awayTeamOdds: TeamOdds;
+  homeTeamOdds: TeamOdds;
+  moneyline: Moneyline;
+  pointSpread: PointSpread;
+  total: Total;
+  link: OddLink;
+  header: Header;
+}
+
+export interface TeamOdds {
+  favorite: boolean;
+  underdog: boolean;
+  team: AwayTeamOddsTeam;
+  favoriteAtOpen: boolean;
+}
+
+export interface AwayTeamOddsTeam {
+  id: string;
+  uid: string;
+  abbreviation: string;
+  name: string;
+  displayName: string;
+  logo: string;
+}
+
+export interface Header {
+  logo: HeaderLogo;
+  text: string;
+}
+
+export interface HeaderLogo {
+  dark: string;
+  light: string;
+  exclusivesLogoDark: string;
+  exclusivesLogoLight: string;
+}
+
+export interface OddLink {
+  language: string;
+  rel: string[];
+  href: string;
+  text: string;
+  shortText: string;
+  isExternal: boolean;
+  isPremium: boolean;
+  tracking?: LinkTracking;
+}
+
+export interface LinkTracking {
+  campaign: string;
+  tags: Tags;
+}
+
+export interface Tags {
+  league: string;
+  sport: string;
+  gameId: number;
+  betSide: string;
+  betType: string;
+  betDetails?: string;
+}
+
+export interface Moneyline {
+  displayName: string;
+  shortDisplayName: string;
+  home: MoneylineAway;
+  away: MoneylineAway;
+}
+
+export interface MoneylineAway {
+  close: PurpleClose;
+  open: PurpleOpen;
+}
+
+export interface PurpleClose {
+  odds: string;
+  link?: OddLink;
+}
+
+export interface PurpleOpen {
+  odds: string;
+}
+
+export interface PointSpread {
+  displayName: string;
+  shortDisplayName: string;
+  home: OverClass;
+  away: OverClass;
+}
+
+export interface OverClass {
+  close: OverClose;
+  open: OverOpen;
+}
+
+export interface OverClose {
+  line: string;
+  odds: string;
+  link: OddLink;
+}
+
+export interface OverOpen {
+  line: string;
+  odds: string;
+}
+
+export interface Provider {
+  id: string;
+  name: string;
+  priority: number;
+  logos: any[];
+}
+
+export interface Total {
+  displayName: string;
+  shortDisplayName: string;
+  over: OverClass;
+  under: OverClass;
+}
+`;
+
+          // Insert before the last closing brace (end of file) or after StatusType
+          const statusTypeEnd = content.lastIndexOf('export interface StatusType');
+          if (statusTypeEnd !== -1) {
+            // Find the end of StatusType interface
+            const afterStatusType = content.indexOf('\n}', statusTypeEnd);
+            if (afterStatusType !== -1) {
+              content =
+                content.slice(0, afterStatusType + 2) +
+                oddInterface +
+                content.slice(afterStatusType + 2);
+            } else {
+              // Fallback: add at end before last brace
+              content = content.replace(/\n}$/, oddInterface + '\n}');
+            }
+          } else {
+            // Fallback: add at end before last brace
+            content = content.replace(/\n}$/, oddInterface + '\n}');
+          }
+        }
+
+        // Add odds?: Odd[] to Competition interface if missing
+        if (
+          content.includes('export interface Competition {') &&
+          !content.includes('odds?: Odd[]')
+        ) {
+          // Find Competition interface and add odds field before closing brace
+          const competitionMatch = content.match(/export interface Competition\s*\{[\s\S]*?\n\}/);
+          if (competitionMatch) {
+            const competitionBlock = competitionMatch[0];
+            // Add odds field before the closing brace (after last field)
+            const updatedCompetition = competitionBlock.replace(/(\n\})$/, '\n  odds?: Odd[]$1');
+            content = content.replace(competitionMatch[0], updatedCompetition);
+          }
+        }
+      }
+
       fs.writeFileSync(outputPath, content);
     }
 
