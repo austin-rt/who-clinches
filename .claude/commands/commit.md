@@ -8,10 +8,12 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 
 ## Critical Requirements
 
-1. **Execute commits** - Use `run_terminal_cmd` tool to run git commands, DO NOT generate code blocks
-2. **Sequential execution** - Run one commit at a time, verify success before proceeding
-3. **Stop on failure** - If any commit fails, halt execution and report the error
-4. **Minimal commits** - Each commit must be the smallest logical unit that doesn't break the build
+1. **Run validation upfront** - Execute `npm run lint`, `npx tsc --noEmit`, and `npm run test:all` BEFORE any commits
+2. **Use --no-verify flag** - Always use `--no-verify` on all git commits to skip husky pre-commit hooks (validation already done)
+3. **Execute commits** - Use `run_terminal_cmd` tool to run git commands, DO NOT generate code blocks
+4. **Sequential execution** - Run one commit at a time, verify success before proceeding
+5. **Stop on failure** - If any commit fails, halt execution and report the error
+6. **Minimal commits** - Each commit must be the smallest logical unit that doesn't break the build
 
 ## Commit Grouping Rules
 
@@ -53,22 +55,34 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 
 ## Execution Protocol
 
-### Step 1: Pre-Commit Validation
+### Step 1: Pre-Commit Validation (Run Once Upfront)
 
-Run linters to catch errors before attempting commits:
+Run all validation checks before attempting any commits:
 
 ```
 run_terminal_cmd(
   command: "npm run lint",
   required_permissions: ["all"]
 )
+
+run_terminal_cmd(
+  command: "npx tsc --noEmit",
+  required_permissions: ["all"]
+)
+
+run_terminal_cmd(
+  command: "npm run test:all",
+  required_permissions: ["all"]
+)
 ```
 
-If linting fails:
+If any validation fails:
 
 - Fix all errors before proceeding
 - Use `read_lints` tool to identify specific issues
-- Do not attempt to commit until all linting passes
+- Do not attempt to commit until all checks pass
+
+**Important:** Once all checks pass, use `--no-verify` flag on all commits to skip husky pre-commit hooks (since we've already validated everything).
 
 ### Step 2: Analyze
 
@@ -84,14 +98,16 @@ Determine commit structure:
 
 ### Step 4: Execute
 
-For each planned commit:
+For each planned commit, use `--no-verify` to skip pre-commit hooks:
 
 ```
 run_terminal_cmd(
-  command: "git add <files> && git commit -m '<message>'",
-  required_permissions: ["git_write"]
+  command: "git add <files> && git commit --no-verify -m '<message>'",
+  required_permissions: ["all"]
 )
 ```
+
+**Note:** The `--no-verify` flag is required because we've already run all validation checks upfront. This speeds up the commit process significantly.
 
 ### Step 5: Verify
 
@@ -115,9 +131,15 @@ Summarize executed commits:
 
 **Execution:**
 
-1. `git add src/utils/constants.js && git commit -m "add API_BASE_URL constant"`
-2. `git add src/services/api.js && git commit -m "implement API_BASE_URL in service"`
-3. `git add src/components/Button.js && git commit -m "add disabled styles to Button component"`
+1. Run all validation checks upfront:
+   - `npm run lint`
+   - `npx tsc --noEmit`
+   - `npm run test:all`
+
+2. Once all checks pass, commit with `--no-verify`:
+   - `git add src/utils/constants.js && git commit --no-verify -m "add API_BASE_URL constant"`
+   - `git add src/services/api.js && git commit --no-verify -m "implement API_BASE_URL in service"`
+   - `git add src/components/Button.js && git commit --no-verify -m "add disabled styles to Button component"`
 
 **Report:**
 
