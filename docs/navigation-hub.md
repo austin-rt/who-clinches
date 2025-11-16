@@ -4,9 +4,9 @@ This is your guide to finding documentation in the sec-tiebreaker project. Use t
 
 ## Quick Navigation
 
+- **Domain-specific quick reference** → [Quick Reference](./guides/quick-reference.md) - "If you need to test, go here", etc.
 - **Getting Started?** → [README.md](../README.md)
-- **Need to test something?** → [Testing Quick Reference](./guides/testing-quick-reference.md) (includes environment file documentation)
-- **Setting up pre-commit hooks?** → [Pre-Commit Testing Guide](./guides/pre-commit-testing.md)
+- **Need to test something?** → [Testing Quick Reference](./guides/testing-quick-reference.md)
 - **Building an API endpoint?** → [API Reference](./guides/api-reference.md)
 - **Understanding ESPN API patterns?** → [ESPN API Testing](./tests/espn-api-testing.md)
 - **Need AI development guidance?** → [AI Development Guide](./ai-guide.md)
@@ -44,14 +44,16 @@ How-to documentation and API reference for common development tasks:
 
 ```
 docs/guides/
-├── api-reference.md                    - Complete API endpoint documentation
-├── changelog-guide.md                  - How to maintain the changelog
-├── pre-commit-testing.md               - Git hook setup, pre-commit workflow
-└── testing-quick-reference.md          - Testing commands, coverage checks
+├── quick-reference.md                   - Domain-specific content locations
+├── api-reference.md                     - Complete API endpoint documentation
+├── changelog-guide.md                   - How to maintain the changelog
+├── pre-commit-testing.md                - Git hook setup, pre-commit workflow
+└── testing-quick-reference.md           - Testing commands, coverage checks
 ```
 
 **When to use:**
 
+- Quick Reference → Finding domain-specific content ("if you need to test, go here")
 - API Reference → Building endpoints, understanding request/response types
 - Changelog Guide → Maintaining version history and releases
 - Pre-Commit Testing → Setting up or troubleshooting git hooks
@@ -69,6 +71,7 @@ docs/tests/
 ├── cron-jobs-testing.md                - Cron job verification guide
 ├── espn-api-testing.md                 - ESPN API field verification patterns
 ├── espn-data-pipeline.md               - ESPN data transformation testing
+├── generated-types-workflow-testing.md - Automated ESPN type generation workflow testing
 └── tiebreaker-and-simulate.md          - Tiebreaker logic and simulation tests
 ```
 
@@ -78,6 +81,7 @@ docs/tests/
 - Cron Jobs Testing → Testing background job endpoints
 - ESPN API Testing → Verifying ESPN data transformations
 - ESPN Data Pipeline → Verifying data transformation quality
+- Generated Types Workflow Testing → Testing automated type generation and PR creation
 - Tiebreaker & Simulate → Understanding ranking and prediction logic tests
 
 ---
@@ -160,6 +164,7 @@ docs/plans/
 1. Read [tests/espn-api-testing.md](./tests/espn-api-testing.md) - Field verification
 2. Review [tests/espn-data-pipeline.md](./tests/espn-data-pipeline.md) - Testing procedures
 3. Check [guides/api-reference.md](./guides/api-reference.md) - Current cron job patterns
+4. Test type generation workflow → [tests/generated-types-workflow-testing.md](./tests/generated-types-workflow-testing.md)
 
 #### **Implement Tiebreaker Logic**
 
@@ -179,12 +184,14 @@ docs/plans/
 
 | Document          | Location                                  | Purpose                       |
 | ----------------- | ----------------------------------------- | ----------------------------- |
+| Quick Reference   | `docs/guides/quick-reference.md`          | Domain-specific content guide |
 | API Endpoints     | `docs/guides/api-reference.md`            | Current API documentation     |
 | ESPN Patterns     | `docs/tests/espn-api-testing.md`          | Data transformation reference |
 | AI Development    | `docs/ai-guide.md`                        | Using AI for coding           |
 | API Testing       | `docs/tests/comprehensive-api-testing.md` | API test procedures           |
 | Changelog Guide   | `docs/guides/changelog-guide.md`          | Maintaining version history   |
 | ESPN Pipeline     | `docs/tests/espn-data-pipeline.md`        | Data import testing           |
+| Generated Types   | `docs/tests/generated-types-workflow-testing.md` | Type generation workflow testing |
 | Pre-Commit Setup  | `docs/guides/pre-commit-testing.md`       | Git hook configuration        |
 | Test Commands     | `docs/guides/testing-quick-reference.md`  | Quick test reference          |
 | Tech Spec         | `docs/plans/tech-spec.md`                 | Technical specification       |
@@ -204,6 +211,7 @@ If you're looking for something specific:
 - **API** → See `guides/api-reference.md` and `plans/api-foundation.md`
 - **Testing** → See `guides/testing-quick-reference.md` and `tests/*`
 - **ESPN Integration** → See `tests/espn-api-testing.md` and `tests/espn-data-pipeline.md`
+- **ESPN Type Generation** → See `tests/generated-types-workflow-testing.md`
 - **Tiebreaker** → See `plans/tiebreaker-logic.md` and `tests/tiebreaker-and-simulate.md`
 - **Frontend** → See `plans/frontend/*`
 - **Cron Jobs** → See `tests/cron-jobs-testing.md` and `guides/api-reference.md` (do not use archived plans)
