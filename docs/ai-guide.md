@@ -166,28 +166,15 @@ vercel.pro.json                  # Pro plan cron schedules (6 jobs: individual c
 
 ### **Documentation Navigation**
 
-**Not sure where to find something?** Use the [Documentation Navigation Hub](./navigation-hub.md) to quickly locate any guide, reference, or historical document in this repository.
-
-The navigation hub provides:
-
-- Quick links to common tasks ("I want to...")
-- Complete file location reference
-- Search guide by topic or problem
-- Guidance for adding new documentation
+- **Domain-specific content**: [Quick Reference](./guides/quick-reference.md) - "If you need to test, go here", etc.
+- **Full index**: [Navigation Hub](./navigation-hub.md) - Complete documentation directory
 
 ### **Essential Reading Order**
 
-1. **Start Here**: `/docs/ai-guide.md` - This document for core principles and architecture
-2. **Find What You Need**: `/docs/navigation-hub.md` - Documentation directory and search guide
-3. **API Documentation**: `/docs/guides/api-reference.md` - Complete endpoint reference
-4. **Code Organization**: See Repository Structure above for file purposes
-
-### **First 5 Minutes**
-
-- Review [Application Overview](#application-overview) for context
-- Understand [Key Concepts](#key-concepts) - conference games, tiebreakers, predicted scores
-- Check [Repository Structure](#repository-structure) for codebase organization
-- Note [Development Constraints](#development-constraints) - ESPN API limitations, Vercel timeouts
+1. This document (`ai-guide.md`) - Core principles and architecture
+2. [Quick Reference](./guides/quick-reference.md) - Domain-specific content locations
+3. [API Reference](./guides/api-reference.md) - Complete endpoint documentation
+4. Repository Structure (above) - Codebase organization
 
 ### **Before Writing Code**
 
@@ -198,45 +185,38 @@ The navigation hub provides:
 
 ### **Before Running Tests**
 
-- **Check if dev server is running** (required for `npm run test:all` and `npm run db:check`):
-  ```bash
-  curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server running" || npm run dev
-  ```
-- If server is not running, start it with `npm run dev` before running tests
-- The pre-commit hook expects the dev server to be running - ensure it's started before committing
+- **Check dev server**: `curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server running" || npm run dev`
+- Pre-commit hook requires dev server running
+- **Testing**: [Quick Reference](./guides/quick-reference.md) → Testing section
 
-## Finding Implementation Details
+## Implementation Details
+
+**Quick Reference**: See [Quick Reference](./guides/quick-reference.md) for domain-specific content locations.
 
 ### **Data Models**
-
-- **Game Schema**: `/lib/models/Game.ts` - espnId, displayName, scores, odds, predictedScore
-- **Team Schema**: `/lib/models/Team.ts` - ESPN ID as \_id, records, rankings, season averages
-- **Type Definitions**: `/lib/types.ts` - GameLean, TeamLean, ReshapedGame interfaces
+- Game: `lib/models/Game.ts` - espnId, displayName, scores, odds, predictedScore
+- Team: `lib/models/Team.ts` - ESPN ID as _id, records, rankings, season averages
+- Types: `lib/types.ts` - GameLean, TeamLean, ReshapedGame
 
 ### **ESPN API Integration**
-
-- **Client**: `/lib/espn-client.ts` - ESPNClient class with scoreboard, team, and records methods
-- **Generated Types**: `/lib/espn/*-generated.ts` - TypeScript types auto-generated from ESPN API responses using `quicktype`
-- **Type Generation**: `/scripts/extract-espn-types.ts` - Extracts ESPN responses from test database and generates types
-- **Type Tracking**: `/scripts/extract-used-types.ts` - Tracks which ESPN fields are used in reshape functions
-- **Automated Updates**: `.github/workflows/update-espn-types.yml` - Daily GitHub Action to regenerate types and create PRs if ESPN types change
-- **Reshaping**: `/lib/reshape-games.ts` and `/lib/reshape-teams.ts` - Transform ESPN data to our schema
-- **Constants**: `/lib/constants.ts` - SEC_TEAMS array, SEC_CONFERENCE_ID (8), record type constants
+- Client: `lib/espn-client.ts` - ESPNClient (scoreboard, team, records)
+- Generated Types: `lib/espn/*-generated.ts` - Auto-generated from ESPN responses
+- Reshape: `lib/reshape-games.ts`, `lib/reshape-teams.ts` - Transform ESPN → DB
+- Constants: `lib/constants.ts` - SEC_TEAMS, SEC_CONFERENCE_ID (8)
+- Type Generation: `scripts/extract-espn-types.ts` - Generate types from test DB
+- Type Tracking: `scripts/extract-used-types.ts` - Track used ESPN fields
+- Auto Updates: `.github/workflows/update-espn-types.yml` - Daily type regeneration
 
 ### **Tiebreaker Logic**
-
-- **Implementation**: `/lib/tiebreaker-helpers.ts` - All SEC rules A-E
-- **Rule A**: Head-to-head record
-- **Rule B**: Record vs common conference opponents
-- **Rule C**: Record within division (highest-placed common opponent)
-- **Rule D**: Cumulative opponent win percentage
-- **Rule E**: Relative scoring margin (capped)
+- Implementation: `lib/tiebreaker-helpers.ts` - SEC rules A-E
+- Rules: A (head-to-head), B (common opponents), C (division), D (opponent win%), E (scoring margin)
+- Testing: [Tiebreaker Testing](./tests/tiebreaker-and-simulate.md)
 
 ### **Cron Jobs**
-
-- **Authentication**: All require `Bearer ${CRON_SECRET}` header
-- **Schedules**: Defined in `vercel.json` (Hobby) and `vercel.pro.json` (Pro)
-- **Response Format**: Consistent `{ updated, checked, espnCalls, lastUpdated, errors? }`
+- Auth: `Bearer ${CRON_SECRET}` header required
+- Schedules: `vercel.json` (Hobby), `vercel.pro.json` (Pro)
+- Response: `{ updated, checked, espnCalls, lastUpdated, errors? }`
+- Testing: [Cron Jobs Testing](./tests/cron-jobs-testing.md)
 
 ### **Development Constraints**
 
@@ -406,24 +386,13 @@ const [mode, setMode] = useState<ThemeMode>('light');
 
 ## Documentation Structure
 
-### **Reference Documentation**
+See [Quick Reference](./guides/quick-reference.md) for domain-specific locations.
 
-- **`/docs/guides/api-reference.md`**: Complete API endpoint documentation
-- **`/docs/guides/changelog-guide.md`**: How to maintain the changelog
-- **`/docs/tests/espn-api-testing.md`**: ESPN API patterns and field mappings
-
-### **Testing Documentation**
-
-- **`/docs/tests/comprehensive-api-testing.md`**: API endpoint testing procedures
-- **`/docs/tests/espn-data-pipeline.md`**: Data ingestion testing procedures
-- **`/docs/tests/cron-jobs-testing.md`**: Cron job validation procedures
-- **`/docs/tests/tiebreaker-and-simulate.md`**: Tiebreaker logic testing
-
-### **Planning Documents** (Historical Reference)
-
-- **`/docs/plans/*.md`**: Original planning documents - may not match current implementation
-- **`/docs/plans/archive/*.md`**: Completed work records and phase summaries
-- All planning docs now marked with **"⚠️ PLANNING DOCUMENT"** warnings
+**Key Docs:**
+- API: `docs/guides/api-reference.md`
+- Testing: `docs/tests/` (comprehensive-api-testing, cron-jobs-testing, etc.)
+- ESPN: `docs/tests/espn-api-testing.md`, `docs/tests/espn-data-pipeline.md`
+- Planning: `docs/plans/*.md` (⚠️ Historical - may not match implementation)
 
 ## Critical Accuracy Notes
 
