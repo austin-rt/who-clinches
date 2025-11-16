@@ -88,18 +88,6 @@ function generateTypesWithQuicktype(
     if (fs.existsSync(outputPath)) {
       let content = fs.readFileSync(outputPath, 'utf-8');
 
-      // Add import for GameState at the top
-      const gameStateImport = "import { GameState } from '@/lib/types';\n";
-      if (!content.includes('import { GameState }')) {
-        // Find the first import or add at the top
-        const importMatch = content.match(/^import .+$/m);
-        if (importMatch) {
-          content = content.replace(/^(import .+)$/m, `${gameStateImport}$1`);
-        } else {
-          content = gameStateImport + content;
-        }
-      }
-
       // Replace state: string with state: GameState only in StatusType interface
       // Match StatusType interface block and replace state field within the interface block only
       // Use a more precise match that stops at the closing brace
@@ -110,6 +98,19 @@ function generateTypesWithQuicktype(
           /(\s+state\s*:\s*)string(\s*[;|,])/,
           '$1GameState$2'
         );
+
+        // Only add import if we actually replaced something and GameState is now used
+        if (updatedBlock !== statusTypeBlock && !content.includes('import { GameState }')) {
+          const gameStateImport = "import { GameState } from '@/lib/types';\n";
+          // Find the first import or add at the top
+          const importMatch = content.match(/^import .+$/m);
+          if (importMatch) {
+            content = content.replace(/^(import .+)$/m, `${gameStateImport}$1`);
+          } else {
+            content = gameStateImport + content;
+          }
+        }
+
         content = content.replace(statusTypeMatch[0], updatedBlock);
       }
 
