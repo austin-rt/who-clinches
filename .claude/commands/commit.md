@@ -76,11 +76,13 @@ run_terminal_cmd(
 )
 ```
 
-If any validation fails:
+**CRITICAL: If any validation fails, you MUST fix all errors before proceeding to git commit.**
 
-- Fix all errors before proceeding
-- Use `read_lints` tool to identify specific issues
-- Do not attempt to commit until all checks pass
+- If linting fails: Use `read_lints` tool to identify specific issues, fix all linting errors, then re-run `npm run lint` until it passes
+- If TypeScript fails: Fix all type errors, then re-run `npx tsc --noEmit` until it passes
+- If tests fail: Fix all failing tests, then re-run `npm run test:all` until all tests pass
+- **DO NOT proceed to Step 2 (Analyze) or Step 4 (Execute) until ALL validation checks pass**
+- **DO NOT use `--no-verify` flag if validation checks have not passed**
 
 **Important:** Once all checks pass, use `--no-verify` flag on all commits to skip husky pre-commit hooks (since we've already validated everything).
 
