@@ -292,11 +292,8 @@ function extractTypeFromGeneratedTypes(
 
 function createTypeSnapshot(): SnapshotData {
   const generatedTypesDir = path.join(process.cwd(), 'lib/espn');
-  const snapshotDir = path.join(process.cwd(), 'temp/type-snapshots');
-
-  if (!fs.existsSync(snapshotDir)) {
-    fs.mkdirSync(snapshotDir, { recursive: true });
-  }
+  // Save snapshot alongside generated types so it's tracked in git
+  const snapshotDir = generatedTypesDir;
 
   // Automatically extract field paths from reshape functions
   const fieldPaths = extractFieldPathsFromReshapeFunctions();
@@ -321,7 +318,7 @@ function createTypeSnapshot(): SnapshotData {
     },
   };
 
-  // Save snapshot
+  // Save snapshot alongside generated types
   const snapshotPath = path.join(snapshotDir, 'used-types-snapshot.json');
   fs.writeFileSync(snapshotPath, JSON.stringify(snapshots, null, 2));
 
@@ -418,10 +415,9 @@ const command = process.argv[2];
 if (command === 'create') {
   createTypeSnapshot();
 } else if (command === 'compare') {
-  const oldPath =
-    process.argv[3] || path.join(process.cwd(), 'temp/type-snapshots/used-types-snapshot.json');
-  const newPath =
-    process.argv[4] || path.join(process.cwd(), 'temp/type-snapshots/used-types-snapshot.json');
+  const defaultPath = path.join(process.cwd(), 'lib/espn/used-types-snapshot.json');
+  const oldPath = process.argv[3] || defaultPath;
+  const newPath = process.argv[4] || defaultPath;
 
   // Create new snapshot first
   createTypeSnapshot();

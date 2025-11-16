@@ -1,0 +1,46 @@
+{
+  "scoreboard": {
+    "Event.id": "string",
+    "Event.competitions": "Competition[]",
+    "EspnScoreboardGenerated.events": "Event[]",
+    "EspnScoreboardGenerated.week.number": "number",
+    "EspnScoreboardGenerated.season.year": "number",
+    "Competition.date": "string",
+    "Competition.competitors": "Competitor[]",
+    "Competition.status.type.state": "GameState",
+    "Competition.status.type.completed": "boolean",
+    "Competition.conferenceCompetition": "boolean",
+    "Competition.neutralSite": "boolean",
+    "Competitor.score": "string",
+    "Competitor.curatedRank.current": "number",
+    "Competitor.team.id": "string",
+    "Competitor.team.abbreviation": "string",
+    "Competitor.team.displayName": "string",
+    "Competitor.team.logo": "string",
+    "Odd.overUnder": "number",
+    "Odd.spread": "number",
+    "Odd.awayTeamOdds.favorite": "boolean",
+    "Odd.homeTeamOdds.favorite": "boolean"
+  },
+  "team": {
+    "Logo.href": "string",
+    "Item.summary": "string",
+    "Item.stats": "Stat[]",
+    "Stat.name": "string",
+    "Stat.value": "number",
+    "NextEvent.id": "string"
+  },
+  "teamRecords": {
+    "Item.type": "string",
+    "Item.summary": "string",
+    "Item.stats": "Stat[]",
+    "Stat.name": "string",
+    "Stat.value": "number"
+  },
+  "extractedAt": "2025-11-16T04:37:16.437Z",
+  "fieldCount": {
+    "scoreboard": 23,
+    "team": 17,
+    "teamRecords": 6
+  }
+}

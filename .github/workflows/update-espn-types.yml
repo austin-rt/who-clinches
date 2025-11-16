@@ -56,13 +56,13 @@ jobs:
           npx tsx scripts/extract-used-types.ts create
 
           # Check if snapshot file exists in git (from previous run)
-          if git ls-files --error-unmatch temp/type-snapshots/used-types-snapshot.json > /dev/null 2>&1; then
+          if git ls-files --error-unmatch lib/espn/used-types-snapshot.json > /dev/null 2>&1; then
             # File exists in git - compare ESPN types
-            git show HEAD:temp/type-snapshots/used-types-snapshot.json > temp/type-snapshots/used-types-snapshot-old.json 2>/dev/null || true
+            git show HEAD:lib/espn/used-types-snapshot.json > lib/espn/used-types-snapshot-old.json 2>/dev/null || true
             
-            if [ -f temp/type-snapshots/used-types-snapshot-old.json ]; then
+            if [ -f lib/espn/used-types-snapshot-old.json ]; then
               # Compare snapshots - only triggers PR if ESPN types changed
-              npx tsx scripts/extract-used-types.ts compare temp/type-snapshots/used-types-snapshot-old.json temp/type-snapshots/used-types-snapshot.json > used-fields-diff.txt 2>&1 || EXIT_CODE=$?
+              npx tsx scripts/extract-used-types.ts compare lib/espn/used-types-snapshot-old.json lib/espn/used-types-snapshot.json > used-fields-diff.txt 2>&1 || EXIT_CODE=$?
               
               if [ "${EXIT_CODE:-0}" = "1" ]; then
                 # ESPN type changed - trigger PR
@@ -93,7 +93,7 @@ jobs:
         if: steps.generate.outputs.generated == 'true'
         run: |
           # Always stage snapshot to keep tracking up to date
-          git add temp/type-snapshots/used-types-snapshot.json || true
+          git add lib/espn/used-types-snapshot.json || true
 
       - name: Commit snapshot (usage changes only, no PR)
         if: steps.generate.outputs.generated == 'true' && steps.check-changes.outputs.changed == 'false'
