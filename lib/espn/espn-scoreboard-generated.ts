@@ -63,7 +63,7 @@ export interface Competitor {
   homeAway: string;
   winner?: boolean;
   team: CompetitorTeam;
-  score: string;
+  score: number; // TEST: Changed from string to number to simulate ESPN API change
   linescores?: Linescore[];
   statistics: any[];
   curatedRank: CuratedRank;
