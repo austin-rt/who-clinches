@@ -5,7 +5,7 @@
 
 import type { EspnTeamGenerated, Logo } from './espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
-import { ReshapedTeam, TeamRecord, TeamDataResponse } from './types';
+import { ReshapedTeam, ReshapedTeamRecord, TeamDataResponse } from './types';
 
 /**
  * Reshape ESPN team response into our team format
@@ -23,7 +23,7 @@ export const reshapeTeamData = (
   const logo: Logo | undefined = team.logos?.find((l: Logo) => l.width >= 500) || team.logos?.[0];
 
   // Parse records from core API if available
-  let record: TeamRecord = {};
+  let record: ReshapedTeamRecord = {};
   if (coreRecordResponse?.items) {
     const items = coreRecordResponse.items;
 

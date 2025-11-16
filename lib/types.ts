@@ -52,7 +52,7 @@ export interface ReshapedGame {
   lastUpdated: Date;
 }
 
-export interface TeamRecord {
+export interface ReshapedTeamRecord {
   overall?: string;
   conference?: string | null;
   home?: string | null;
@@ -78,7 +78,7 @@ export interface ReshapedTeam {
   color: string;
   alternateColor: string;
   conferenceId: string;
-  record?: TeamRecord;
+  record?: ReshapedTeamRecord;
   conferenceStanding?: string;
   nationalRanking?: number | null;
   playoffSeed?: number | null;

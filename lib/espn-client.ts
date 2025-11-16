@@ -12,17 +12,6 @@ import type { EspnTeamGenerated } from './espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
 import type { EspnGameSummaryGenerated } from './espn/espn-game-summary-generated';
 
-// Re-export generated types for convenience
-export type {
-  EspnScoreboardGenerated,
-  Event,
-  Competition,
-  Competitor,
-} from './espn/espn-scoreboard-generated';
-export type { EspnTeamGenerated, Logo, Record } from './espn/espn-team-generated';
-export type { EspnTeamRecordsGenerated, Item } from './espn/espn-team-records-generated';
-export type { EspnGameSummaryGenerated } from './espn/espn-game-summary-generated';
-
 export class ESPNClient {
   private baseUrl: string;
 
