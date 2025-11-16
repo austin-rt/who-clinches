@@ -11,7 +11,7 @@
     "Competition.status.type.completed": "boolean",
     "Competition.conferenceCompetition": "boolean",
     "Competition.neutralSite": "boolean",
-    "Competitor.score": "string",
+    "Competitor.score": "number",
     "Competitor.curatedRank.current": "number",
     "Competitor.team.id": "string",
     "Competitor.team.abbreviation": "string",
