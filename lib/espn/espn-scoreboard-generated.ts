@@ -1,335 +1,335 @@
 import { GameState } from '@/lib/types';
 export interface EspnScoreboardGenerated {
-  leagues: League[];
-  groups: string[];
-  season: EspnScoreboardGeneratedSeason;
-  week: Week;
-  events: Event[];
+    leagues: League[];
+    groups:  string[];
+    season:  EspnScoreboardGeneratedSeason;
+    week:    Week;
+    events:  Event[];
 }
 
 export interface Event {
-  id: string;
-  uid: string;
-  date: string;
-  name: string;
-  shortName: string;
-  season: EventSeason;
-  week: Week;
-  competitions: Competition[];
-  links: EventLink[];
-  status: Status;
-  weather?: Weather;
+    id:           string;
+    uid:          string;
+    date:         string;
+    name:         string;
+    shortName:    string;
+    season:       EventSeason;
+    week:         Week;
+    competitions: Competition[];
+    links:        EventLink[];
+    status:       Status;
+    weather?:     Weather;
 }
 
 export interface Competition {
-  id: string;
-  uid: string;
-  date: string;
-  attendance: number;
-  type: CompetitionType;
-  timeValid: boolean;
-  dateValid: boolean;
-  neutralSite: boolean;
-  conferenceCompetition: boolean;
-  playByPlayAvailable: boolean;
-  recent: boolean;
-  venue: CompetitionVenue;
-  competitors: Competitor[];
-  notes: Note[];
-  status: Status;
-  broadcasts: Broadcast[];
-  leaders: CompetitorLeader[];
-  format: Format;
-  startDate: string;
-  broadcast: string;
-  geoBroadcasts: GeoBroadcast[];
-  highlights: Highlight[];
-  headlines?: Headline[];
-  groups?: Groups;
-  tickets?: Ticket[];
-  odds?: Odd[];
+    id:                    string;
+    uid:                   string;
+    date:                  string;
+    attendance:            number;
+    type:                  CompetitionType;
+    timeValid:             boolean;
+    dateValid:             boolean;
+    neutralSite:           boolean;
+    conferenceCompetition: boolean;
+    playByPlayAvailable:   boolean;
+    recent:                boolean;
+    venue:                 CompetitionVenue;
+    competitors:           Competitor[];
+    notes:                 Note[];
+    status:                Status;
+    broadcasts:            Broadcast[];
+    leaders:               CompetitorLeader[];
+    format:                Format;
+    startDate:             string;
+    broadcast:             string;
+    geoBroadcasts:         GeoBroadcast[];
+    highlights:            Highlight[];
+    headlines?:            Headline[];
+    groups?:               Groups;
+    tickets?:              Ticket[];
+  odds?: Odd[]
 }
 
 export interface Broadcast {
-  market: string;
-  names: string[];
+    market: string;
+    names:  string[];
 }
 
 export interface Competitor {
-  id: string;
-  uid: string;
-  type: string;
-  order: number;
-  homeAway: string;
-  winner?: boolean;
-  team: Team;
-  score: string;
-  linescores?: Linescore[];
-  statistics: any[];
-  curatedRank: CuratedRank;
-  records: Record[];
-  leaders?: CompetitorLeader[];
+    id:          string;
+    uid:         string;
+    type:        string;
+    order:       number;
+    homeAway:    string;
+    winner?:     boolean;
+    team:        Team;
+    score:       string;
+    linescores?: Linescore[];
+    statistics:  any[];
+    curatedRank: CuratedRank;
+    records:     Record[];
+    leaders?:    CompetitorLeader[];
 }
 
 export interface CuratedRank {
-  current: number;
+    current: number;
 }
 
 export interface CompetitorLeader {
-  name: string;
-  displayName: string;
-  shortDisplayName: string;
-  abbreviation: string;
-  leaders: LeaderLeader[];
+    name:             string;
+    displayName:      string;
+    shortDisplayName: string;
+    abbreviation:     string;
+    leaders:          LeaderLeader[];
 }
 
 export interface LeaderLeader {
-  displayValue: string;
-  value: number;
-  athlete: Athlete;
-  team: TeamClass;
+    displayValue: string;
+    value:        number;
+    athlete:      Athlete;
+    team:         TeamClass;
 }
 
 export interface Athlete {
-  id: string;
-  fullName: string;
-  displayName: string;
-  shortName: string;
-  links: AthleteLink[];
-  headshot: string;
-  jersey: string;
-  position: Position;
-  team: TeamClass;
-  active: boolean;
+    id:          string;
+    fullName:    string;
+    displayName: string;
+    shortName:   string;
+    links:       AthleteLink[];
+    headshot:    string;
+    jersey:      string;
+    position:    Position;
+    team:        TeamClass;
+    active:      boolean;
 }
 
 export interface AthleteLink {
-  rel: string[];
-  href: string;
+    rel:  string[];
+    href: string;
 }
 
 export interface Position {
-  abbreviation: string;
+    abbreviation: string;
 }
 
 export interface TeamClass {
-  id: string;
+    id: string;
 }
 
 export interface Linescore {
-  value: number;
-  displayValue: string;
-  period: number;
+    value:        number;
+    displayValue: string;
+    period:       number;
 }
 
 export interface Record {
-  name: string;
-  abbreviation?: string;
-  type: string;
-  summary: string;
+    name:          string;
+    abbreviation?: string;
+    type:          string;
+    summary:       string;
 }
 
 export interface Team {
-  id: string;
-  uid: string;
-  location: string;
-  name: string;
-  abbreviation: string;
-  displayName: string;
-  shortDisplayName: string;
-  color?: string;
-  alternateColor?: string;
-  isActive: boolean;
-  venue: TeamClass;
-  links: TeamLink[];
-  logo: string;
-  conferenceId: string;
+    id:               string;
+    uid:              string;
+    location:         string;
+    name:             string;
+    abbreviation:     string;
+    displayName:      string;
+    shortDisplayName: string;
+    color?:           string;
+    alternateColor?:  string;
+    isActive:         boolean;
+    venue:            TeamClass;
+    links:            TeamLink[];
+    logo:             string;
+    conferenceId:     string;
 }
 
 export interface TeamLink {
-  rel: string[];
-  href: string;
-  text: string;
-  isExternal: boolean;
-  isPremium: boolean;
+    rel:        string[];
+    href:       string;
+    text:       string;
+    isExternal: boolean;
+    isPremium:  boolean;
 }
 
 export interface Format {
-  regulation: Regulation;
+    regulation: Regulation;
 }
 
 export interface Regulation {
-  periods: number;
+    periods: number;
 }
 
 export interface GeoBroadcast {
-  type: GeoBroadcastType;
-  market: Market;
-  media: Media;
-  lang: string;
-  region: string;
+    type:   GeoBroadcastType;
+    market: Market;
+    media:  Media;
+    lang:   string;
+    region: string;
 }
 
 export interface Market {
-  id: string;
-  type: string;
+    id:   string;
+    type: string;
 }
 
 export interface Media {
-  shortName: string;
-  logo?: string;
-  darkLogo?: string;
+    shortName: string;
+    logo?:     string;
+    darkLogo?: string;
 }
 
 export interface GeoBroadcastType {
-  id: string;
-  shortName: string;
+    id:        string;
+    shortName: string;
 }
 
 export interface Groups {
-  id: string;
-  name: string;
-  shortName: string;
-  isConference: boolean;
+    id:           string;
+    name:         string;
+    shortName:    string;
+    isConference: boolean;
 }
 
 export interface Headline {
-  type: string;
-  description: string;
-  shortLinkText: string;
-  video?: Video[];
+    type:          string;
+    description:   string;
+    shortLinkText: string;
+    video?:        Video[];
 }
 
 export interface Video {
-  id: number;
-  source: string;
-  headline: string;
-  thumbnail: string;
-  duration: number;
-  tracking: Tracking;
-  deviceRestrictions: DeviceRestrictions;
-  links: Links;
+    id:                 number;
+    source:             string;
+    headline:           string;
+    thumbnail:          string;
+    duration:           number;
+    tracking:           Tracking;
+    deviceRestrictions: DeviceRestrictions;
+    links:              Links;
 }
 
 export interface DeviceRestrictions {
-  type: string;
-  devices: string[];
+    type:    string;
+    devices: string[];
 }
 
 export interface Links {
-  web: Web;
-  mobile: Mobile;
-  api: Api;
-  source: Source;
-  sportscenter: Sportscenter;
+    web:          Web;
+    mobile:       Mobile;
+    api:          Api;
+    source:       Source;
+    sportscenter: Sportscenter;
 }
 
 export interface Api {
-  self: Sportscenter;
-  artwork: Sportscenter;
+    self:    Sportscenter;
+    artwork: Sportscenter;
 }
 
 export interface Sportscenter {
-  href: string;
+    href: string;
 }
 
 export interface Mobile {
-  source: Sportscenter;
-  alert: Sportscenter;
-  streaming: Sportscenter;
-  progressiveDownload: Sportscenter;
+    source:              Sportscenter;
+    alert:               Sportscenter;
+    streaming:           Sportscenter;
+    progressiveDownload: Sportscenter;
 }
 
 export interface Source {
-  href: string;
-  mezzanine: Sportscenter;
-  flash: Sportscenter;
-  hds: Sportscenter;
-  HLS: HLS;
-  HD: Sportscenter;
-  full: Sportscenter;
+    href:      string;
+    mezzanine: Sportscenter;
+    flash:     Sportscenter;
+    hds:       Sportscenter;
+    HLS:       HLS;
+    HD:        Sportscenter;
+    full:      Sportscenter;
 }
 
 export interface HLS {
-  href: string;
-  HD: Sportscenter;
-  cmaf: Cmaf;
-  '9x16'?: Sportscenter;
-  shield: Sportscenter;
+    href:    string;
+    HD:      Sportscenter;
+    cmaf:    Cmaf;
+    "9x16"?: Sportscenter;
+    shield:  Sportscenter;
 }
 
 export interface Cmaf {
-  href: string;
-  '9x16'?: Sportscenter;
+    href:    string;
+    "9x16"?: Sportscenter;
 }
 
 export interface Web {
-  href: string;
-  self: Self;
-  seo: Sportscenter;
+    href: string;
+    self: Self;
+    seo:  Sportscenter;
 }
 
 export interface Self {
-  href: string;
-  dsi: Sportscenter;
+    href: string;
+    dsi:  Sportscenter;
 }
 
 export interface Tracking {
-  sportName: string;
-  leagueName: string;
-  coverageType: string;
-  trackingName: string;
-  trackingId: string;
+    sportName:    string;
+    leagueName:   string;
+    coverageType: string;
+    trackingName: string;
+    trackingId:   string;
 }
 
 export interface Highlight {
-  id: number;
-  cerebroId: string;
-  source: string;
-  headline: string;
-  description: string;
-  lastModified: Date;
-  originalPublishDate: Date;
-  duration: number;
-  timeRestrictions: TimeRestrictions;
-  deviceRestrictions: DeviceRestrictions;
-  thumbnail: string;
-  links: Links;
-  ad: Ad;
-  tracking: Tracking;
+    id:                  number;
+    cerebroId:           string;
+    source:              string;
+    headline:            string;
+    description:         string;
+    lastModified:        Date;
+    originalPublishDate: Date;
+    duration:            number;
+    timeRestrictions:    TimeRestrictions;
+    deviceRestrictions:  DeviceRestrictions;
+    thumbnail:           string;
+    links:               Links;
+    ad:                  Ad;
+    tracking:            Tracking;
 }
 
 export interface Ad {
-  sport: string;
-  bundle: string;
+    sport:  string;
+    bundle: string;
 }
 
 export interface TimeRestrictions {
-  embargoDate: Date;
-  expirationDate: Date;
+    embargoDate:    Date;
+    expirationDate: Date;
 }
 
 export interface Note {
-  type: string;
-  headline: string;
+    type:     string;
+    headline: string;
 }
 
 export interface Status {
-  clock: number;
-  displayClock: string;
-  period: number;
-  type: StatusType;
+    clock:        number;
+    displayClock: string;
+    period:       number;
+    type:         StatusType;
 }
 
 export interface StatusType {
-  id: string;
-  name: string;
-  state: GameState;
-  completed: boolean;
-  description: string;
-  detail: string;
-  shortDetail: string;
-  altDetail?: string;
+    id:          string;
+    name:        string;
+    state:       GameState;
+    completed:   boolean;
+    description: string;
+    detail:      string;
+    shortDetail: string;
+    altDetail?:  string;
 }
 export interface Odd {
   provider: Provider;
@@ -456,116 +456,117 @@ export interface Total {
   under: OverClass;
 }
 
+
 export interface Ticket {
-  summary: string;
-  numberAvailable: number;
-  links: Sportscenter[];
+    summary:         string;
+    numberAvailable: number;
+    links:           Sportscenter[];
 }
 
 export interface CompetitionType {
-  id: string;
-  abbreviation: string;
+    id:           string;
+    abbreviation: string;
 }
 
 export interface CompetitionVenue {
-  id: string;
-  fullName: string;
-  address: Address;
-  indoor: boolean;
+    id:       string;
+    fullName: string;
+    address:  Address;
+    indoor:   boolean;
 }
 
 export interface Address {
-  city: string;
-  state: string;
-  country: string;
+    city:    string;
+    state:   string;
+    country: string;
 }
 
 export interface EventLink {
-  language: string;
-  rel: string[];
-  href: string;
-  text: string;
-  shortText: string;
-  isExternal: boolean;
-  isPremium: boolean;
+    language:   string;
+    rel:        string[];
+    href:       string;
+    text:       string;
+    shortText:  string;
+    isExternal: boolean;
+    isPremium:  boolean;
 }
 
 export interface EventSeason {
-  year: number;
-  type: number;
-  slug: string;
+    year: number;
+    type: number;
+    slug: string;
 }
 
 export interface Weather {
-  displayValue: string;
-  temperature: number;
-  highTemperature: number;
-  conditionId: string;
-  link: EventLink;
+    displayValue:    string;
+    temperature:     number;
+    highTemperature: number;
+    conditionId:     string;
+    link:            EventLink;
 }
 
 export interface Week {
-  number: number;
+    number: number;
 }
 
 export interface League {
-  id: string;
-  uid: string;
-  name: string;
-  abbreviation: string;
-  midsizeName: string;
-  slug: string;
-  season: LeagueSeason;
-  logos: Logo[];
-  calendarType: string;
-  calendarIsWhitelist: boolean;
-  calendarStartDate: string;
-  calendarEndDate: string;
-  calendar: Calendar[];
+    id:                  string;
+    uid:                 string;
+    name:                string;
+    abbreviation:        string;
+    midsizeName:         string;
+    slug:                string;
+    season:              LeagueSeason;
+    logos:               Logo[];
+    calendarType:        string;
+    calendarIsWhitelist: boolean;
+    calendarStartDate:   string;
+    calendarEndDate:     string;
+    calendar:            Calendar[];
 }
 
 export interface Calendar {
-  label: string;
-  value: string;
-  startDate: string;
-  endDate: string;
-  entries: Entry[];
+    label:     string;
+    value:     string;
+    startDate: string;
+    endDate:   string;
+    entries:   Entry[];
 }
 
 export interface Entry {
-  label: string;
-  alternateLabel: string;
-  detail: string;
-  value: string;
-  startDate: string;
-  endDate: string;
+    label:          string;
+    alternateLabel: string;
+    detail:         string;
+    value:          string;
+    startDate:      string;
+    endDate:        string;
 }
 
 export interface Logo {
-  href: string;
-  width: number;
-  height: number;
-  alt: string;
-  rel: string[];
-  lastUpdated: string;
+    href:        string;
+    width:       number;
+    height:      number;
+    alt:         string;
+    rel:         string[];
+    lastUpdated: string;
 }
 
 export interface LeagueSeason {
-  year: number;
-  startDate: string;
-  endDate: string;
-  displayName: string;
-  type: SeasonType;
+    year:        number;
+    startDate:   string;
+    endDate:     string;
+    displayName: string;
+    type:        SeasonType;
 }
 
 export interface SeasonType {
-  id: string;
-  type: number;
-  name: string;
-  abbreviation: string;
+    id:           string;
+    type:         number;
+    name:         string;
+    abbreviation: string;
 }
 
 export interface EspnScoreboardGeneratedSeason {
-  type: number;
-  year: number;
+    type: number;
+    year: number;
 }

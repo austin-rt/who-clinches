@@ -1,0 +1,7 @@
+Type snapshot saved to /home/runner/work/sec-tiebreaker/sec-tiebreaker/lib/espn/used-types-snapshot.json
+Fields tracked: 46
+
+1 ESPN type change(s) detected
+
+=== ESPN TYPE CHANGES (triggers PR) ===
+~ scoreboard.Competitor.score: number → string
