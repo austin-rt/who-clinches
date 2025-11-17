@@ -28,11 +28,11 @@ function fetchUnauthenticatedCronAPI(
   return fetchWithTimeout(
     url,
     {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
     },
     REQUEST_TIMEOUT_MS
   );
@@ -54,10 +54,10 @@ describe('Cron Job Endpoints', () => {
         const response = await fetchWithTimeout(
           url,
           {
-            method: 'GET',
-            headers: {
-              Authorization: 'Bearer invalid-token',
-            },
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer invalid-token',
+          },
           },
           REQUEST_TIMEOUT_MS
         );
@@ -84,10 +84,10 @@ describe('Cron Job Endpoints', () => {
       const response = await fetchWithTimeout(
         url,
         {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${CRON_SECRET}`,
-          },
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${CRON_SECRET}`,
+        },
         },
         REQUEST_TIMEOUT_MS
       );
@@ -125,9 +125,10 @@ describe('Cron Job Endpoints', () => {
 
         // Verify expected jobs are present
         const jobNames = data.results.map((r: { job: string }) => r.job);
-        expect(jobNames).toContain('update-games');
+        expect(jobNames).toContain('pull-teams');
+        expect(jobNames).toContain('update-games-season');
         expect(jobNames).toContain('update-rankings');
-        expect(jobNames).toContain('update-test-data');
+        expect(jobNames).toContain('update-spreads');
       } else if (response.status !== 500) {
         const body = await response.text().catch(() => 'unable to read response');
         throw new Error(
@@ -153,10 +154,10 @@ describe('Cron Job Endpoints', () => {
         const response = await fetchWithTimeout(
           url,
           {
-            method: 'GET',
-            headers: {
-              Authorization: `Bearer ${CRON_SECRET}`,
-            },
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${CRON_SECRET}`,
+          },
           },
           REQUEST_TIMEOUT_MS
         );

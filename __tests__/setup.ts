@@ -38,11 +38,11 @@ export async function fetchAPI<T = unknown>(
   const response = await fetchWithTimeout(
     url,
     {
-      ...options,
-      headers: {
-        ...defaultHeaders,
-        ...options.headers,
-      },
+    ...options,
+    headers: {
+      ...defaultHeaders,
+      ...options.headers,
+    },
     },
     REQUEST_TIMEOUT_MS
   );
@@ -85,6 +85,53 @@ export function validateFields<T extends Record<string, unknown>>(
     valid: missingFields.length === 0,
     missingFields,
   };
+}
+
+/**
+ * Validate nested required fields using dot-notation paths
+ * Example: ['espnId', 'venue.fullName', 'home.teamEspnId']
+ */
+export function validateNestedFields(
+  obj: Record<string, unknown>,
+  requiredPaths: string[]
+): { valid: boolean; missingPaths: string[]; errors: string[] } {
+  const missingPaths: string[] = [];
+  const errors: string[] = [];
+
+  for (const path of requiredPaths) {
+    const value = getNestedValue(obj, path);
+    if (value === undefined) {
+      missingPaths.push(path);
+      errors.push(`Missing required field: ${path}`);
+    }
+  }
+
+  return {
+    valid: missingPaths.length === 0,
+    missingPaths,
+    errors,
+  };
+}
+
+/**
+ * Get nested value from object using dot-notation path
+ * Example: getNestedValue(obj, 'venue.fullName') => obj.venue.fullName
+ */
+function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+  const parts = path.split('.');
+  let current: unknown = obj;
+
+  for (const part of parts) {
+    if (current === null || current === undefined) {
+      return undefined;
+    }
+    if (typeof current !== 'object') {
+      return undefined;
+    }
+    current = (current as Record<string, unknown>)[part];
+  }
+
+  return current;
 }
 
 // Global test configuration

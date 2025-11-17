@@ -8,7 +8,7 @@
  * - Input validation
  */
 
-import { fetchAPI } from '../setup';
+import { fetchAPI, validateNestedFields } from '../setup';
 import { GamesResponse } from '@/lib/api-types';
 
 interface PullGamesResponse {
@@ -103,7 +103,7 @@ describe('POST /api/pull-games', () => {
   });
 
   describe('Game Data Validation', () => {
-    it('all games include displayName and predictedScore fields', async () => {
+    it('all games include all required ReshapedGame fields', async () => {
       // Pull games first
       await fetchAPI<PullGamesResponse>('/api/pull-games', {
         method: 'POST',
@@ -121,39 +121,81 @@ describe('POST /api/pull-games', () => {
       );
 
       if (gamesResponse.events.length > 0) {
+        // Define all required field paths for GameLean (what the API returns)
+        // This is the single source of truth - update this when GameLean changes
+        // Note: displayName, logo, color are optional in GameLean but required in ReshapedGame
+        const requiredFields = [
+          'espnId',
+          'displayName',
+          'date',
+          'week',
+          'season',
+          'sport',
+          'league',
+          'state',
+          'completed',
+          'conferenceGame',
+          'neutralSite',
+          'venue',
+          'venue.fullName',
+          'venue.city',
+          'venue.state',
+          'venue.timezone',
+          'home',
+          'home.teamEspnId',
+          'home.abbrev',
+          'home.score',
+          'home.rank',
+          'away',
+          'away.teamEspnId',
+          'away.abbrev',
+          'away.score',
+          'away.rank',
+          'odds',
+          'odds.favoriteTeamEspnId',
+          'odds.spread',
+          'odds.overUnder',
+          'lastUpdated',
+          // Optional fields in GameLean (not required):
+          // - home.displayName, home.logo, home.color
+          // - away.displayName, away.logo, away.color
+          // - predictedScore
+        ];
+
         gamesResponse.events.forEach((game, index) => {
-          // Validate displayName
-          if (!game.displayName) {
+          const validation = validateNestedFields(
+            game as unknown as Record<string, unknown>,
+            requiredFields
+          );
+
+          if (!validation.valid) {
             throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${game.displayName}`
-            );
-          }
-          if (typeof game.displayName !== 'string') {
-            throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof game.displayName} | VALUE:${game.displayName}`
-            );
-          }
-          if (game.displayName.length === 0) {
-            throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:empty_string | EXPECTED:non-empty_string | ACTUAL:empty_string | VALUE:${game.displayName}`
+              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | MISSING_FIELDS:${validation.missingPaths.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
             );
           }
 
-          // Validate predictedScore (can be null or object with home/away)
+          // Additional type validations for critical fields
+          if (typeof game.displayName !== 'string' || game.displayName.length === 0) {
+            throw new Error(
+              `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:displayName | ISSUE:invalid_value | EXPECTED:non-empty_string | ACTUAL:${typeof game.displayName} | VALUE:${game.displayName}`
+            );
+          }
+
+          // Validate predictedScore structure if present (it's optional)
           if (game.predictedScore !== null && game.predictedScore !== undefined) {
             if (typeof game.predictedScore !== 'object') {
               throw new Error(
                 `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore | ISSUE:wrong_type | EXPECTED:object_or_null | ACTUAL:${typeof game.predictedScore} | VALUE:${JSON.stringify(game.predictedScore)}`
               );
             }
-            if (!game.predictedScore.home && game.predictedScore.home !== 0) {
+            if (typeof game.predictedScore.home !== 'number') {
               throw new Error(
-                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.home | ISSUE:missing_or_undefined | EXPECTED:number | ACTUAL:${game.predictedScore.home}`
+                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.home | ISSUE:wrong_type | EXPECTED:number | ACTUAL:${typeof game.predictedScore.home} | VALUE:${game.predictedScore.home}`
               );
             }
-            if (!game.predictedScore.away && game.predictedScore.away !== 0) {
+            if (typeof game.predictedScore.away !== 'number') {
               throw new Error(
-                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.away | ISSUE:missing_or_undefined | EXPECTED:number | ACTUAL:${game.predictedScore.away}`
+                `FIELD_VALIDATION_FAILED | ENTITY:ReshapedGame | INDEX:${index} | ID:${game.espnId || 'unknown'} | FIELD:predictedScore.away | ISSUE:wrong_type | EXPECTED:number | ACTUAL:${typeof game.predictedScore.away} | VALUE:${game.predictedScore.away}`
               );
             }
           }

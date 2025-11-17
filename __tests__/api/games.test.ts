@@ -8,7 +8,7 @@
  * - Caching headers
  */
 
-import { fetchAPI, validateFields } from '../setup';
+import { fetchAPI, validateNestedFields } from '../setup';
 import { GamesResponse } from '@/lib/api-types';
 
 const SEASON = 2025;
@@ -35,73 +35,38 @@ describe('GET /api/games', () => {
 
       // Check teams have all required TeamMetadata fields
       expect(response.teams.length).toBeGreaterThan(0);
-      const requiredFields: (keyof (typeof response.teams)[0])[] = [
-        'id',
-        'abbrev',
-        'displayName',
-        'logo',
-        'color',
-        'alternateColor',
-      ];
+      // Define all required field paths for TeamMetadata
+      // This is the single source of truth - update this when TeamMetadata changes
+      const requiredFields = ['id', 'abbrev', 'displayName', 'logo', 'color', 'alternateColor'];
 
       response.teams.forEach((team, index) => {
-        const validation = validateFields(
+        const validation = validateNestedFields(
           team as unknown as Record<string, unknown>,
           requiredFields
         );
         if (!validation.valid) {
           throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingFields.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
-          );
-        }
-        expect(validation.valid).toBe(true);
-
-        // Validate ID field
-        if (!team.id) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:unknown | ABBREV:${team.abbrev || 'unknown'} | FIELD:id | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${team.id}`
-          );
-        }
-        if (typeof team.id !== 'string') {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:unknown | ABBREV:${team.abbrev || 'unknown'} | FIELD:id | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof team.id} | VALUE:${team.id}`
-          );
-        }
-        if (team.id.length === 0) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:unknown | ABBREV:${team.abbrev || 'unknown'} | FIELD:id | ISSUE:empty_string | EXPECTED:non-empty_string | ACTUAL:empty_string | VALUE:${team.id}`
+            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingPaths.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
           );
         }
 
-        // Validate color field
-        if (!team.color) {
+        // Additional type and format validations for critical fields
+        if (typeof team.id !== 'string' || team.id.length === 0) {
           throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${team.color}`
+            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:unknown | ABBREV:${team.abbrev || 'unknown'} | FIELD:id | ISSUE:invalid_value | EXPECTED:non-empty_string | ACTUAL:${typeof team.id} | VALUE:${team.id}`
           );
         }
-        if (typeof team.color !== 'string') {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof team.color} | VALUE:${team.color}`
-          );
-        }
-        if (!/^[0-9a-f]{6}$/i.test(team.color)) {
+
+        if (typeof team.color !== 'string' || !/^[0-9a-f]{6}$/i.test(team.color)) {
           throw new Error(
             `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${team.color} | PATTERN:^[0-9a-f]{6}$`
           );
         }
 
-        // Validate alternateColor field
-        if (!team.alternateColor) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${team.alternateColor}`
-          );
-        }
-        if (typeof team.alternateColor !== 'string') {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof team.alternateColor} | VALUE:${team.alternateColor}`
-          );
-        }
-        if (!/^[0-9a-f]{6}$/i.test(team.alternateColor)) {
+        if (
+          typeof team.alternateColor !== 'string' ||
+          !/^[0-9a-f]{6}$/i.test(team.alternateColor)
+        ) {
           throw new Error(
             `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${team.alternateColor} | PATTERN:^[0-9a-f]{6}$`
           );

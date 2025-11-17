@@ -8,7 +8,7 @@
  * - Response structure
  */
 
-import { fetchAPI } from '../setup';
+import { fetchAPI, validateNestedFields } from '../setup';
 import { GamesResponse } from '@/lib/api-types';
 
 interface PullTeamsResponse {
@@ -82,36 +82,32 @@ describe('POST /api/pull-teams', () => {
       const gamesResponse = await fetchAPI<GamesResponse>('/api/games?season=2025&conferenceId=8');
 
       if (gamesResponse.teams.length > 0) {
+        // Define all required field paths for TeamMetadata
+        // This is the single source of truth - update this when TeamMetadata changes
+        const requiredFields = ['id', 'abbrev', 'displayName', 'logo', 'color', 'alternateColor'];
+
         gamesResponse.teams.forEach((team, index) => {
-          // Validate color field
-          if (!team.color) {
+          const validation = validateNestedFields(
+            team as unknown as Record<string, unknown>,
+            requiredFields
+          );
+          if (!validation.valid) {
             throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${team.color}`
+              `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingPaths.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
             );
           }
-          if (typeof team.color !== 'string') {
-            throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof team.color} | VALUE:${team.color}`
-            );
-          }
-          if (!/^[0-9a-f]{6}$/i.test(team.color)) {
+
+          // Additional type and format validations for critical fields
+          if (typeof team.color !== 'string' || !/^[0-9a-f]{6}$/i.test(team.color)) {
             throw new Error(
               `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:color | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${team.color} | PATTERN:^[0-9a-f]{6}$`
             );
           }
 
-          // Validate alternateColor field
-          if (!team.alternateColor) {
-            throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${team.alternateColor}`
-            );
-          }
-          if (typeof team.alternateColor !== 'string') {
-            throw new Error(
-              `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof team.alternateColor} | VALUE:${team.alternateColor}`
-            );
-          }
-          if (!/^[0-9a-f]{6}$/i.test(team.alternateColor)) {
+          if (
+            typeof team.alternateColor !== 'string' ||
+            !/^[0-9a-f]{6}$/i.test(team.alternateColor)
+          ) {
             throw new Error(
               `FIELD_VALIDATION_FAILED | ENTITY:TeamMetadata | INDEX:${index} | ID:${team.id || 'unknown'} | ABBREV:${team.abbrev || 'unknown'} | FIELD:alternateColor | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${team.alternateColor} | PATTERN:^[0-9a-f]{6}$`
             );

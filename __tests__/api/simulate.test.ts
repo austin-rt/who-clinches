@@ -9,7 +9,7 @@
  * - Input validation
  */
 
-import { fetchAPI, validateFields } from '../setup';
+import { fetchAPI, validateNestedFields } from '../setup';
 import { SimulateResponse } from '@/lib/api-types';
 
 const SEASON = 2025;
@@ -39,6 +39,8 @@ describe('POST /api/simulate', () => {
 
       // Check standings entries have all required fields
       expect(response.standings.length).toBeGreaterThan(0);
+      // Define all required field paths for StandingEntry
+      // This is the single source of truth - update this when StandingEntry changes
       const requiredFields = [
         'rank',
         'teamId',
@@ -47,34 +49,27 @@ describe('POST /api/simulate', () => {
         'logo',
         'color',
         'record',
+        'record.wins',
+        'record.losses',
         'confRecord',
+        'confRecord.wins',
+        'confRecord.losses',
         'explainPosition',
       ];
 
       response.standings.forEach((entry, index) => {
-        const validation = validateFields(
+        const validation = validateNestedFields(
           entry as unknown as Record<string, unknown>,
           requiredFields
         );
         if (!validation.valid) {
           throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingFields.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
+            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingPaths.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
           );
         }
-        expect(validation.valid).toBe(true);
 
-        // Validate color field format
-        if (!entry.color) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | FIELD:color | ISSUE:missing_or_undefined | EXPECTED:non-empty_string | ACTUAL:${entry.color}`
-          );
-        }
-        if (typeof entry.color !== 'string') {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | FIELD:color | ISSUE:wrong_type | EXPECTED:string | ACTUAL:${typeof entry.color} | VALUE:${entry.color}`
-          );
-        }
-        if (!/^[0-9a-f]{6}$/i.test(entry.color)) {
+        // Additional type and format validations for critical fields
+        if (typeof entry.color !== 'string' || !/^[0-9a-f]{6}$/i.test(entry.color)) {
           throw new Error(
             `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | FIELD:color | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${entry.color} | PATTERN:^[0-9a-f]{6}$`
           );

@@ -38,6 +38,12 @@ const createMockGame = (
   completed: homeScore !== null && awayScore !== null,
   conferenceGame: true,
   neutralSite: false,
+  venue: {
+    fullName: 'Test Stadium',
+    city: 'Atlanta',
+    state: 'GA',
+    timezone: 'America/New_York',
+  },
   date: '2025-09-06T12:00Z',
   home: {
     teamEspnId: homeTeamId,
