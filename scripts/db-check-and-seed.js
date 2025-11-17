@@ -99,10 +99,13 @@ console.log(`Database: ${DATABASE}`);
 console.log('');
 
 /**
- * Fetch helper - simple wrapper around fetch API
+ * Fetch helper with timeout - simple wrapper around fetch API
  * Automatically adds bypass token for preview/production deployments
+ * Includes 60-second timeout to prevent hanging requests
  */
 async function fetchAPI(url, options = {}) {
+  const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+
   try {
     // Add bypass token for preview/production deployments
     let finalUrl = url;
@@ -112,12 +115,37 @@ async function fetchAPI(url, options = {}) {
       finalUrl = urlObj.toString();
     }
 
-    const response = await fetch(finalUrl, options);
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`HTTP ${response.status}: ${text}`);
+    // Create AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(finalUrl, {
+        ...options,
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status}: ${text}`);
+      }
+      return await response.json();
+    } catch (fetchError) {
+      clearTimeout(timeoutId);
+
+      // Check if the error was due to timeout
+      if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+        throw new Error(
+          `Request timeout: ${finalUrl} did not complete within ${REQUEST_TIMEOUT_MS}ms`
+        );
+      }
+
+      throw fetchError;
     }
-    return await response.json();
   } catch (error) {
     throw new Error(`API request failed: ${error.message}`);
   }
