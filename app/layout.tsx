@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'SEC Tiebreaker',
-  description: 'SEC Football Tiebreaker Simulator',
+  description: 'SEC Football Tiebreaker Calculator',
 };
 
 export default function RootLayout({
