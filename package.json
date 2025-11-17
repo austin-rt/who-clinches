@@ -22,6 +22,11 @@
     "test:api": "npm run db:check && npm run test -- __tests__/api",
     "test:all": "npm run db:check && npm run test",
     "test:reshape": "npm run test:db:check && npm run test -- __tests__/lib/reshape-teams",
+    "cron:games": "bash scripts/run-cron.sh update-games",
+    "cron:season": "bash scripts/run-cron.sh update-games allGames=true",
+    "cron:rankings": "bash scripts/run-cron.sh update-rankings",
+    "cron:spreads": "bash scripts/run-cron.sh update-spreads",
+    "cron:all": "bash scripts/run-cron.sh update-all",
     "prepare": "husky"
   },
   "lint-staged": {
