@@ -25,9 +25,9 @@ html[data-mode='dark'] {
 /* SEC Default Theme - Team Colors Only */
 /* Background/text controlled by light/dark mode above */
 [data-theme='sec'] {
-  --color-primary: #004b8d; /* SEC Blue - Pantone PMS 2945 XGC */
+  --color-primary: #002d74; /* SEC Blue - Pantone PMS288 C */
   --color-primary-content: #ffffff;
-  --color-secondary: #ffd046; /* SEC Gold - Pantone PMS 7404 U */
+  --color-secondary: #ffd040; /* SEC Gold - Pantone PMS 122 */
   --color-secondary-content: #000000;
   --color-accent: #ffffff;
   --color-accent-content: #000000;

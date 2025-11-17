@@ -4,7 +4,6 @@ import StoreProvider from './components/StoreProvider';
 import ThemeInitializer from './components/ThemeInitializer';
 import ThemeSync from './components/ThemeSync';
 import Header from './components/Header';
-import Navigation from './components/Navigation';
 import Footer from './components/Footer';
 import './globals.css';
 
@@ -29,16 +28,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" data-theme="sec" data-mode="light">
+    <html lang="en" data-theme="sec" data-mode="light" className="h-full">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} flex min-h-screen flex-col antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} flex h-full min-h-screen flex-col antialiased`}
       >
         <StoreProvider>
           <ThemeInitializer />
           <ThemeSync />
           <Header />
-          <Navigation />
-          <main className="flex-1">{children}</main>
+          <main className="h-full flex-1">{children}</main>
           <Footer />
         </StoreProvider>
       </body>
