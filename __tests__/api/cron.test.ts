@@ -8,6 +8,8 @@
  * - Out-of-season handling
  */
 
+import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
+
 const CRON_SECRET = process.env.CRON_SECRET;
 if (!CRON_SECRET) {
   throw new Error(
@@ -15,19 +17,25 @@ if (!CRON_SECRET) {
   );
 }
 
+const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+
 // Helper to make unauthenticated cron requests (for testing auth failures)
 function fetchUnauthenticatedCronAPI(
   endpoint: string,
   options: RequestInit & { method?: string } = {}
 ): Promise<Response> {
   const url = `http://localhost:3000${endpoint}`;
-  return fetch(url, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
+  return fetchWithTimeout(
+    url,
+    {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
     },
-  });
+    REQUEST_TIMEOUT_MS
+  );
 }
 
 describe('Cron Job Endpoints', () => {
@@ -43,12 +51,16 @@ describe('Cron Job Endpoints', () => {
     it('rejects requests with invalid authorization token', async () => {
       try {
         const url = `http://localhost:3000/api/cron/update-rankings`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer invalid-token',
+        const response = await fetchWithTimeout(
+          url,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer invalid-token',
+            },
           },
-        });
+          REQUEST_TIMEOUT_MS
+        );
         if (response.status === 401) {
           throw new Error(
             'AUTH_ERROR | ENDPOINT:/api/cron/update-rankings | STATUS:401 | ISSUE:unauthorized | TOKEN:invalid-token'
@@ -69,12 +81,16 @@ describe('Cron Job Endpoints', () => {
   describe('GET /api/cron/update-all', () => {
     it('batch endpoint orchestrates multiple cron jobs and returns structured response', async () => {
       const url = `http://localhost:3000/api/cron/update-all`;
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${CRON_SECRET}`,
+      const response = await fetchWithTimeout(
+        url,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${CRON_SECRET}`,
+          },
         },
-      });
+        REQUEST_TIMEOUT_MS
+      );
 
       // Should return 200 or 500 (if processing), not 404 or 401
       expect(response.status).not.toBe(404);
@@ -134,12 +150,16 @@ describe('Cron Job Endpoints', () => {
 
       for (const endpoint of endpoints) {
         const url = `http://localhost:3000${endpoint}`;
-        const response = await fetch(url, {
-          method: 'GET',
-          headers: {
-            Authorization: `Bearer ${CRON_SECRET}`,
+        const response = await fetchWithTimeout(
+          url,
+          {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${CRON_SECRET}`,
+            },
           },
-        });
+          REQUEST_TIMEOUT_MS
+        );
 
         // Should return 200 or 500 (if processing), not 404 or 401
         expect(response.status).not.toBe(404);
