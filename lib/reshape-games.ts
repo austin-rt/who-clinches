@@ -5,6 +5,7 @@
 
 import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import { ReshapedGame, ReshapeResult } from './types';
+import cityTimezones from 'city-timezones';
 
 /**
  * Reshape ESPN scoreboard response for our needs
@@ -73,11 +74,27 @@ export const reshapeScoreboardData = (
         overUnder = null;
       }
 
+      // Look up timezone from city and state
+      const venueCity = competition.venue.address?.city || '';
+      const venueState = competition.venue.address?.state || '';
+      let timezone = 'America/New_York'; // Default to ET
+
+      if (venueCity && venueState) {
+        // city-timezones expects "City State" format (e.g., "Springfield MO")
+        const cityStateQuery = `${venueCity} ${venueState}`;
+        const matches = cityTimezones.findFromCityStateProvince(cityStateQuery);
+        if (matches && matches.length > 0) {
+          // Use the first match (most common case)
+          timezone = matches[0].timezone;
+        }
+      }
+
       // Our reshaped format
+      // Use startDate if available (local time), otherwise fall back to date (UTC)
       return {
         espnId: event.id,
         displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
-        date: competition.date,
+        date: competition.startDate || competition.date,
         attendance: competition.attendance,
         week: event.week?.number || espnResponse.week?.number || null,
         season: event.season?.year || espnResponse.season?.year || new Date().getFullYear(),
@@ -87,6 +104,12 @@ export const reshapeScoreboardData = (
         completed: competition.status.type.completed,
         conferenceGame: competition.conferenceCompetition || false,
         neutralSite: competition.neutralSite || false,
+        venue: {
+          fullName: competition.venue.fullName || '',
+          city: venueCity,
+          state: venueState,
+          timezone,
+        },
         home: {
           teamEspnId: homeTeam.team.id,
           abbrev: homeTeam.team.abbreviation,

@@ -22,6 +22,12 @@ export interface ReshapedGame {
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
+  venue: {
+    fullName: string;
+    city: string;
+    state: string;
+    timezone: string;
+  };
   home: {
     teamEspnId: string;
     abbrev: string;
@@ -126,12 +132,19 @@ export interface GameLean {
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
+  venue: {
+    fullName: string;
+    city: string;
+    state: string;
+    timezone: string;
+  };
   home: {
     teamEspnId: string;
     abbrev: string;
     displayName?: string;
     logo?: string;
     color?: string;
+    alternateColor?: string;
     score: number | null;
     rank: number | null;
   };
@@ -141,6 +154,7 @@ export interface GameLean {
     displayName?: string;
     logo?: string;
     color?: string;
+    alternateColor?: string;
     score: number | null;
     rank: number | null;
   };

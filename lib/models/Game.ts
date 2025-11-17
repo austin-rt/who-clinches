@@ -13,6 +13,12 @@ export interface IGame extends Document {
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
+  venue: {
+    fullName: string;
+    city: string;
+    state: string;
+    timezone: string;
+  };
   home: {
     teamEspnId: string;
     abbrev: string;
@@ -95,6 +101,24 @@ const GameSchema = new Schema<IGame>(
     neutralSite: {
       type: Boolean,
       default: false,
+    },
+    venue: {
+      fullName: {
+        type: String,
+        required: true,
+      },
+      city: {
+        type: String,
+        required: true,
+      },
+      state: {
+        type: String,
+        required: true,
+      },
+      timezone: {
+        type: String,
+        required: true,
+      },
     },
     home: {
       teamEspnId: {

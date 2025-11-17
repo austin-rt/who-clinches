@@ -58,8 +58,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-          headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+        headers: {
+          'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -86,8 +86,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-          headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+        headers: {
+          'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -114,8 +114,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-          headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+        headers: {
+          'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -147,8 +147,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-          headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+        headers: {
+          'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
