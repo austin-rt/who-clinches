@@ -129,11 +129,11 @@ async function fetchAPI(url, options = {}) {
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        const text = await response.text();
-        throw new Error(`HTTP ${response.status}: ${text}`);
-      }
-      return await response.json();
+    if (!response.ok) {
+      const text = await response.text();
+      throw new Error(`HTTP ${response.status}: ${text}`);
+    }
+    return await response.json();
     } catch (fetchError) {
       clearTimeout(timeoutId);
 

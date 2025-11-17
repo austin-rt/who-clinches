@@ -11,15 +11,15 @@ ARG2=$2
 ARG3=$3
 
 # Determine query params and environment
-# If $2 is dev/preview/production, it's the environment (no query params)
+# If $2 is dev/preview/production/all, it's the environment (no query params)
 # Otherwise, $2 is query params and $3 is environment (or defaults to dev)
-if [[ "$ARG2" == "dev" || "$ARG2" == "preview" || "$ARG2" == "production" ]]; then
+if [[ "$ARG2" == "dev" || "$ARG2" == "preview" || "$ARG2" == "production" || "$ARG2" == "all" ]]; then
   QUERY_PARAMS=""
   ENV=$ARG2
 elif [[ -n "$ARG3" ]]; then
   # $3 is explicitly provided - validate it
-  if [[ "$ARG3" != "dev" && "$ARG3" != "preview" && "$ARG3" != "production" ]]; then
-    echo "Error: Invalid environment '$ARG3'. Use: dev, preview, or production"
+  if [[ "$ARG3" != "dev" && "$ARG3" != "preview" && "$ARG3" != "production" && "$ARG3" != "all" ]]; then
+    echo "Error: Invalid environment '$ARG3'. Use: dev, preview, production, or all"
     exit 1
   fi
   QUERY_PARAMS=$ARG2
@@ -27,7 +27,7 @@ elif [[ -n "$ARG3" ]]; then
 elif [[ -n "$ARG2" && "$ARG2" != *"="* ]]; then
   # $2 is provided, doesn't contain "=" (so not query params), and isn't a valid environment
   # This looks like someone tried to pass an invalid environment name
-  echo "Error: Invalid environment '$ARG2'. Use: dev, preview, or production"
+  echo "Error: Invalid environment '$ARG2'. Use: dev, preview, production, or all"
   echo "Note: If you meant to pass query params, they must contain '=' (e.g., 'allGames=true')"
   exit 1
 else
@@ -40,6 +40,36 @@ fi
 # Get secrets from .env.local
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+
+# Handle "all" environment - run for all environments sequentially
+if [[ "$ENV" == "all" ]]; then
+  echo "Running for all environments: dev, preview, production"
+  echo ""
+  
+  # Run for dev
+  echo "=== DEV ==="
+  bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "dev"
+  DEV_EXIT=$?
+  echo ""
+  
+  # Run for preview
+  echo "=== PREVIEW ==="
+  bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "preview"
+  PREVIEW_EXIT=$?
+  echo ""
+  
+  # Run for production
+  echo "=== PRODUCTION ==="
+  bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "production"
+  PROD_EXIT=$?
+  echo ""
+  
+  # Exit with error if any failed
+  if [[ $DEV_EXIT -ne 0 || $PREVIEW_EXIT -ne 0 || $PROD_EXIT -ne 0 ]]; then
+    exit 1
+  fi
+  exit 0
+fi
 
 # Set base URL and build full URL based on environment
 case $ENV in
@@ -56,7 +86,7 @@ case $ENV in
     BYPASS_PARAM="x-vercel-protection-bypass=${BYPASS_TOKEN}"
     ;;
   *)
-    echo "Error: Invalid environment. Use: dev, preview, or production"
+    echo "Error: Invalid environment. Use: dev, preview, production, or all"
     exit 1
     ;;
 esac

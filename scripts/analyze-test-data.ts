@@ -68,14 +68,22 @@ async function analyzeTestData() {
       teamAbbrev: (doc as { teamAbbrev?: string }).teamAbbrev,
     }));
 
-    // Extract state values from scoreboard events
+    // Extract state values and date formats from scoreboard events
     const allStates: string[] = [];
+    const dateFormats: Array<{ date: string; startDate: string; venue: string }> = [];
     scoreboardDocs.forEach((doc) => {
       const events =
         (
           doc as {
             response?: {
-              events?: Array<{ competitions?: Array<{ status?: { type?: { state?: string } } }> }>;
+              events?: Array<{
+                competitions?: Array<{
+                  status?: { type?: { state?: string } };
+                  date?: string;
+                  startDate?: string;
+                  venue?: { address?: { city?: string; state?: string } };
+                }>;
+              }>;
             };
           }
         ).response?.events || [];
@@ -84,6 +92,14 @@ async function analyzeTestData() {
           const state = comp.status?.type?.state;
           if (state) {
             allStates.push(state);
+          }
+          // Collect date format samples
+          if (comp.date || comp.startDate) {
+            dateFormats.push({
+              date: comp.date || '',
+              startDate: comp.startDate || '',
+              venue: `${comp.venue?.address?.city || ''}, ${comp.venue?.address?.state || ''}`,
+            });
           }
         });
       });
@@ -134,6 +150,26 @@ async function analyzeTestData() {
       const count = allStates.filter((s) => s === state).length;
       process.stdout.write(`  "${state}": ${count} occurrence(s)\n`);
     });
+
+    process.stdout.write('\n=== Date Format Analysis ===\n');
+    if (dateFormats.length > 0) {
+      process.stdout.write(`Total date samples: ${dateFormats.length}\n`);
+      process.stdout.write('\nSample date formats:\n');
+      dateFormats.slice(0, 5).forEach((df, i) => {
+        process.stdout.write(`  Sample ${i + 1} (${df.venue}):\n`);
+        process.stdout.write(`    date: "${df.date}"\n`);
+        process.stdout.write(`    startDate: "${df.startDate}"\n`);
+        process.stdout.write(
+          `    Has timezone in date: ${df.date.match(/[+-]\d{2}:?\d{2}|Z$/) ? 'YES' : 'NO'}\n`
+        );
+        process.stdout.write(
+          `    Has timezone in startDate: ${df.startDate.match(/[+-]\d{2}:?\d{2}|Z$/) ? 'YES' : 'NO'}\n`
+        );
+        process.stdout.write('\n');
+      });
+    } else {
+      process.stdout.write('No date samples found\n');
+    }
 
     process.exit(0);
   } catch (error) {
