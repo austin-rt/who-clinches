@@ -1,4 +1,4 @@
-# SEC Football Standings Simulator - Technical Specification
+# SEC Football Standings Calculator - Technical Specification
 
 **Last Updated:** 2024-11-05  
 **Status:** ESPN API R&D Phase
@@ -622,13 +622,6 @@ All endpoints return errors as:
 - Should we cache tiebreaker calculations for common scenarios?
 - Compound MongoDB indexes - which query patterns are most common?
 - Should we precompute standings nightly and cache?
-
-### Features
-
-- Shareable scenario URLs (encode overrides in URL params)
-- Historical season replays
-- "What if" simulator with undo/redo
-- Export standings to image/PDF
 
 ### Scaling
 
