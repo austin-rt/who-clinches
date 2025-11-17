@@ -1,4 +1,4 @@
-# generate-and-run-commits
+# commit
 
 ## Objective
 
@@ -14,6 +14,7 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 4. **Sequential execution** - Run one commit at a time, verify success before proceeding
 5. **Stop on failure** - If any commit fails, halt execution and report the error
 6. **Minimal commits** - Each commit must be the smallest logical unit that doesn't break the build
+7. **File deletions are last** - NEVER delete files until the very end, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted.
 
 ## Commit Grouping Rules
 
