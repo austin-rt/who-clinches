@@ -31,6 +31,7 @@ const eslintConfig = defineConfig([
       'no-duplicate-imports': 'error',
       'no-unreachable': 'error',
       'require-await': 'error',
+      'react/no-unescaped-entities': 'off',
     },
   },
   {
