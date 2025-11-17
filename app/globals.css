@@ -36,3 +36,10 @@ html[data-mode='dark'] {
 /* Team themes will be dynamically injected in Phase 5 from database */
 /* Each team theme only defines primary, secondary, accent colors */
 /* Base colors inherited from light/dark mode */
+
+@layer components {
+  .btn {
+    padding-left: var(--btn-p, 1rem);
+    padding-right: var(--btn-p, 1rem);
+  }
+}
