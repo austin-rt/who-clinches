@@ -4,10 +4,13 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Batch Cron Endpoint - Hobby Tier
+ * Batch Cron Endpoint - Pull Everything
  *
- * Calls all cron jobs from a single endpoint to work around Vercel's
- * "2 cron jobs, once per day" limit. Runs daily at 7:45 PM ET (11:45 PM UTC / 00:45 UTC next day).
+ * Calls all cron jobs to pull/update all data:
+ * - Games (entire season)
+ * - Teams
+ * - Rankings
+ * - Spreads
  *
  * Each sub-job handles its own:
  * - Authentication (uses same CRON_SECRET)
@@ -15,10 +18,10 @@ export const dynamic = 'force-dynamic';
  * - Early exits (e.g., update-rankings only runs in season)
  *
  * Flow:
- * 1. update-games?allGames=true - Updates ALL games (completed, in-progress, pre-game) for current week
- * 2. update-rankings - Updates team rankings (only runs in season, weekly logic)
- * 3. update-test-data - Updates test data snapshots
- *    → Triggers run-reshape-tests automatically (non-blocking)
+ * 1. pull-teams - Pull all SEC teams
+ * 2. update-games?mode=season - Pull/update entire season (all weeks)
+ * 3. update-rankings - Update team rankings
+ * 4. update-spreads - Update game spreads
  */
 export const GET = async (request: NextRequest) => {
   // 1. Verify cron secret
@@ -43,33 +46,63 @@ export const GET = async (request: NextRequest) => {
     duration: number;
   }> = [];
 
-  // 2. Call update-games with allGames=true (updates ALL games, not just active ones)
-  // Hobby tier: Daily batch update at 4 AM when no games are active
-  // Pro tier: update-games without allGames handles active games during game windows
+  // 1. Pull teams (POST endpoint, requires body)
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/cron/update-games?allGames=true`, {
-      method: 'GET',
-      headers: authHeaders,
+    const response = await fetch(`${baseUrl}/api/pull-teams`, {
+      method: 'POST',
+      headers: {
+        ...authHeaders,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        sport: 'football',
+        league: 'college-football',
+        conferenceId: 8, // SEC
+      }),
     });
     const duration = Date.now() - start;
 
     results.push({
-      job: 'update-games',
+      job: 'pull-teams',
       success: response.ok,
       status: response.status,
       duration,
     });
   } catch (error) {
     results.push({
-      job: 'update-games',
+      job: 'pull-teams',
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       duration: 0,
     });
   }
 
-  // 3. Call update-rankings (handles its own season check)
+  // 2. Pull/update games for entire season
+  try {
+    const start = Date.now();
+    const response = await fetch(`${baseUrl}/api/cron/update-games?mode=season`, {
+      method: 'GET',
+      headers: authHeaders,
+    });
+    const duration = Date.now() - start;
+
+    results.push({
+      job: 'update-games-season',
+      success: response.ok,
+      status: response.status,
+      duration,
+    });
+  } catch (error) {
+    results.push({
+      job: 'update-games-season',
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      duration: 0,
+    });
+  }
+
+  // 3. Update rankings
   try {
     const start = Date.now();
     const response = await fetch(`${baseUrl}/api/cron/update-rankings`, {
@@ -93,28 +126,24 @@ export const GET = async (request: NextRequest) => {
     });
   }
 
-  // 4. Call update-test-data (triggers reshape tests automatically)
+  // 4. Update spreads
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/cron/update-test-data`, {
+    const response = await fetch(`${baseUrl}/api/cron/update-spreads`, {
       method: 'GET',
       headers: authHeaders,
     });
     const duration = Date.now() - start;
 
     results.push({
-      job: 'update-test-data',
+      job: 'update-spreads',
       success: response.ok,
       status: response.status,
       duration,
     });
-
-    // Note: update-test-data automatically triggers run-reshape-tests
-    // Tests run in background (non-blocking, fire-and-forget)
-    // Results logged to ErrorLog database for monitoring
   } catch (error) {
     results.push({
-      job: 'update-test-data',
+      job: 'update-spreads',
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
       duration: 0,
@@ -133,7 +162,6 @@ export const GET = async (request: NextRequest) => {
       totalDuration,
       results,
       lastUpdated: new Date().toISOString(),
-      note: 'update-test-data automatically triggers reshape tests in background',
     },
     { status: successCount === results.length ? 200 : 207 } // 207 = Multi-Status
   );

@@ -76,6 +76,12 @@ export const GET = async (request: NextRequest) => {
         completed: Boolean(game.completed),
         conferenceGame: Boolean(game.conferenceGame),
         neutralSite: Boolean(game.neutralSite),
+        venue: {
+          fullName: String(game.venue.fullName || ''),
+          city: String(game.venue.city || ''),
+          state: String(game.venue.state || ''),
+          timezone: String(game.venue.timezone || 'America/New_York'),
+        },
         home: {
           teamEspnId: String(game.home.teamEspnId),
           abbrev: String(game.home.abbrev),
