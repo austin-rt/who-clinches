@@ -11,6 +11,9 @@ import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import type { EspnTeamGenerated } from './espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
 import type { EspnGameSummaryGenerated } from './espn/espn-game-summary-generated';
+import { fetchWithTimeout } from './fetch-with-timeout';
+
+const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
 
 export class ESPNClient {
   private baseUrl: string;
@@ -52,11 +55,15 @@ export class ESPNClient {
     const url = `${this.baseUrl}/scoreboard?${searchParams.toString()}`;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+      const response = await fetchWithTimeout(
+        url,
+        {
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
+          },
         },
-      });
+        REQUEST_TIMEOUT_MS
+      );
 
       if (!response.ok) {
         throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
@@ -76,11 +83,15 @@ export class ESPNClient {
     const url = `${this.baseUrl}/summary?event=${gameId}`;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+      const response = await fetchWithTimeout(
+        url,
+        {
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
+          },
         },
-      });
+        REQUEST_TIMEOUT_MS
+      );
 
       if (!response.ok) {
         throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
@@ -100,11 +111,15 @@ export class ESPNClient {
     const url = `${this.baseUrl}/teams/${teamAbbrev}`;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+      const response = await fetchWithTimeout(
+        url,
+        {
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
+          },
         },
-      });
+        REQUEST_TIMEOUT_MS
+      );
 
       if (!response.ok) {
         throw new Error(`ESPN API error: ${response.status} ${response.statusText}`);
@@ -129,11 +144,15 @@ export class ESPNClient {
     const url = `http://sports.core.api.espn.com/v2/sports/${this.sport}/leagues/${this.league}/seasons/${season}/types/${seasonType}/teams/${teamId}/record?lang=en&region=us`;
 
     try {
-      const response = await fetch(url, {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+      const response = await fetchWithTimeout(
+        url,
+        {
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
+          },
         },
-      });
+        REQUEST_TIMEOUT_MS
+      );
 
       if (!response.ok) {
         throw new Error(`ESPN Core API error: ${response.status} ${response.statusText}`);
