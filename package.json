@@ -22,11 +22,15 @@
     "test:api": "npm run db:check && npm run test -- __tests__/api",
     "test:all": "npm run db:check && npm run test",
     "test:reshape": "npm run test:db:check && npm run test -- __tests__/lib/reshape-teams",
-    "cron:games": "bash scripts/run-cron.sh update-games",
-    "cron:season": "bash scripts/run-cron.sh update-games allGames=true",
+    "cron:active": "bash scripts/run-cron.sh update-games mode=active",
+    "cron:week": "bash scripts/run-cron.sh update-games mode=week",
+    "cron:season": "bash scripts/run-cron.sh update-games mode=season",
     "cron:rankings": "bash scripts/run-cron.sh update-rankings",
     "cron:spreads": "bash scripts/run-cron.sh update-spreads",
-    "cron:all": "bash scripts/run-cron.sh update-all",
+    "cron:all:dev": "bash scripts/run-cron.sh update-all dev",
+    "cron:all:preview": "bash scripts/run-cron.sh update-all preview",
+    "cron:all:prod": "bash scripts/run-cron.sh update-all production",
+    "cron:all:all": "bash scripts/run-cron.sh update-all all",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -42,13 +46,16 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.10.1",
     "@types/mongoose": "^5.11.96",
+    "city-timezones": "^1.3.2",
+    "clsx": "^2.1.1",
     "daisyui": "^5.5.0",
     "mongoose": "^8.19.3",
     "next": "16.0.1",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "react-icons": "^5.5.0",
-    "react-redux": "^9.2.0"
+    "react-redux": "^9.2.0",
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.5",
