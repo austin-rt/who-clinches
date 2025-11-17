@@ -10,7 +10,7 @@ interface WeekAccordionProps {
 }
 
 const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); // Default to open
 
   return (
     <div className="collapse collapse-arrow bg-base-200">
@@ -23,7 +23,7 @@ const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
         Week {weekNumber} ({games.length} {games.length === 1 ? 'game' : 'games'})
       </div>
       <div className="collapse-content">
-        <div className="space-y-3 pt-2">
+        <div className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-3">
           {games.length === 0 ? (
             <p className="text-base-content/60 text-sm">No games this week</p>
           ) : (

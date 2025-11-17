@@ -1,10 +1,10 @@
 'use client';
 
 import { HiSun, HiMoon } from 'react-icons/hi2';
-import { useUI } from '@/app/store/useUI';
+import { useUIState } from '@/app/store/useUI';
 
 const DarkModeToggle = () => {
-  const { mode, setMode } = useUI();
+  const { mode, setMode } = useUIState();
 
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newMode = e.target.checked ? 'dark' : 'light';

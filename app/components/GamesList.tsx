@@ -4,8 +4,9 @@ import { useMemo, useState } from 'react';
 import { useGetGamesQuery } from '@/app/store/apiSlice';
 import { GameLean } from '@/lib/types';
 import { TeamMetadata } from '@/lib/api-types';
-import GameCard from './GameCard';
 import GamesFilter from './GamesFilter';
+import LoadingSpinner from './LoadingSpinner';
+import WeekAccordion from './WeekAccordion';
 
 interface GamesListProps {
   season: number;
@@ -15,7 +16,7 @@ interface GamesListProps {
 const GamesList = ({ season, conferenceId }: GamesListProps) => {
   const [showCompleted, setShowCompleted] = useState(false);
 
-  const { data, isLoading, isError, error } = useGetGamesQuery({
+  const { data, isLoading, isError, isUninitialized } = useGetGamesQuery({
     season: season.toString(),
     conferenceId: conferenceId.toString(),
   });
@@ -37,12 +38,14 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
           displayName: homeTeam?.displayName || game.home.abbrev,
           logo: homeTeam?.logo || game.home.logo || '',
           color: homeTeam?.color || game.home.color || '',
+          alternateColor: homeTeam?.alternateColor || game.home.alternateColor || '',
         },
         away: {
           ...game.away,
           displayName: awayTeam?.displayName || game.away.abbrev,
           logo: awayTeam?.logo || game.away.logo || '',
           color: awayTeam?.color || game.away.color || '',
+          alternateColor: awayTeam?.alternateColor || game.away.alternateColor || '',
         },
       };
     }) as GameLean[];
@@ -77,41 +80,21 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
   }, [filteredGames]);
 
   // Handle loading state
-  if (isLoading) {
+  if (!isLoading) {
     return (
-      <div className="flex justify-center py-8">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className="flex h-full items-center justify-center py-8">
+        <LoadingSpinner size="h-12 w-12" />
       </div>
     );
   }
 
   // Handle error state
   if (isError) {
-    return (
-      <div className="alert alert-error">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 shrink-0 stroke-current"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        <span>
-          Error loading games:{' '}
-          {error ? ('message' in error ? error.message : String(error)) : 'Unknown error'}
-        </span>
-      </div>
-    );
+    return <div>Error loading games</div>;
   }
 
-  // Handle empty state
-  if (filteredGames.length === 0) {
+  // Handle empty state - only show if query has been initialized and completed
+  if (!isUninitialized && !isLoading && filteredGames.length === 0) {
     return (
       <div className="py-8 text-center">
         <p className="text-base-content/70">No games found</p>
@@ -132,32 +115,27 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
     return a - b;
   });
 
+  // Extract lastUpdated before TypeScript narrows data to never
+  const lastUpdated =
+    data && typeof data === 'object' && 'lastUpdated' in data
+      ? (data as { lastUpdated?: string }).lastUpdated
+      : undefined;
+
   return (
     <div>
       <GamesFilter showCompleted={showCompleted} onToggle={setShowCompleted} />
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {sortedWeeks.map((week) => {
           const weekGames = gamesByWeek.get(week) || [];
-          return (
-            <div key={week}>
-              <h2 className="mb-3 text-xl font-semibold">
-                Week {week || 0} ({weekGames.length} {weekGames.length === 1 ? 'game' : 'games'})
-              </h2>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                {weekGames.map((game) => (
-                  <GameCard key={game._id} game={game} />
-                ))}
-              </div>
-            </div>
-          );
+          return <WeekAccordion key={week} weekNumber={week || 0} games={weekGames} />;
         })}
       </div>
 
-      {data?.lastUpdated && (
+      {lastUpdated && (
         <div className="text-base-content/50 mt-4 text-right text-xs">
           Last updated:{' '}
-          {new Date(data.lastUpdated).toLocaleString('en-US', {
+          {new Date(lastUpdated).toLocaleString('en-US', {
             month: 'numeric',
             day: 'numeric',
             year: 'numeric',
