@@ -23,6 +23,7 @@ This is a specialized college football application built for simulating SEC conf
 - **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
 - **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
 - **NEVER Bypass Pre-Commit Hooks**: NEVER use `--no-verify` or `--no-gpg-sign` flags with git commit. Pre-commit hooks are mandatory and must run on all commits. If code doesn't pass hooks, fix the code rather than bypassing the checks.
+- **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
 
 ### **Development Approach**
 
@@ -383,6 +384,8 @@ const [mode, setMode] = useState<ThemeMode>('light');
 4. **Update MongoDB schemas** if database changes needed
 5. **Document in** `/docs/guides/api-reference.md`
 6. **Add tests** to appropriate `/docs/tests/*.md` file
+7. **Validate and test** - Run `npm run lint`, `npx tsc --noEmit`, and `npm run test:all` before any file deletions
+8. **Delete files last** - Only delete unused files after all changes are complete, tested, and verified working
 
 ## Documentation Structure
 

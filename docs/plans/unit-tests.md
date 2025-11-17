@@ -29,10 +29,6 @@ project/
 │   │   ├── reshape-teams.test.ts
 │   │   ├── tiebreaker.test.ts
 │   │   └── calculations.test.ts
-│   ├── fixtures/               # Test data
-│   │   ├── teams.fixture.ts
-│   │   ├── games.fixture.ts
-│   │   └── responses.fixture.ts
 │   └── setup.ts                # Jest configuration & helpers
 ├── jest.config.js              # Jest configuration
 └── package.json                # Test scripts
@@ -42,43 +38,28 @@ project/
 
 ## Test Data Strategy
 
-**Fixture Generation Using Real API Types:**
+**Real ESPN API Data in Test Database:**
 
-All test fixtures will be generated from actual ESPN API responses and our type definitions, ensuring test data always matches production contracts.
+All tests use real ESPN API data stored in the test database (`/test`). The test database is automatically seeded with actual ESPN API responses via cron jobs, ensuring test data always matches production contracts.
 
-### Fixture Files to Create:
+**Test Database Setup:**
 
-**1. `__tests__/fixtures/teams.fixture.ts`**
+- Separate `/test` database stores ESPN API snapshots
+- Populated via `/api/cron/update-test-data` endpoint
+- Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+- Auto-seeded before tests run via `npm run test:db:check`
 
-```typescript
-// Real ESPN API team data for 16 SEC teams
-// Includes color, alternateColor, displayName, abbreviation, etc.
-// Used across all tests that need team metadata
-```
+**Test Helpers:**
 
-**2. `__tests__/fixtures/games.fixture.ts`**
-
-```typescript
-// Real ESPN API game data for 2025 season
-// Includes predictedScore, home/away teams, odds, state, etc.
-// Multiple game states: pre, in, post
-```
-
-**3. `__tests__/fixtures/responses.fixture.ts`**
-
-```typescript
-// Expected API response shapes
-// GamesResponse, SimulateResponse, PullTeamsResponse, etc.
-// Generated from lib/api-types.ts
-```
-
-**4. `__tests__/setup.ts`**
+**`__tests__/setup.ts`**
 
 ```typescript
 // Jest setup
 // MongoDB Memory Server initialization
 // Global mocks/stubs
 // Helper functions for test data creation
+// fetchAPI - HTTP request helper with timeout
+// validateNestedFields - Programmatic field validation
 ```
 
 ---
@@ -340,10 +321,10 @@ npm run test:coverage    # Check coverage before committing
 
 ## Implementation Phases
 
-### Phase 1: Jest Setup & Fixtures ✅ COMPLETED
+### Phase 1: Jest Setup & Test Database ✅ COMPLETED
 
 - [x] Install Jest and dependencies
-- [x] Create fixture files using real ESPN API data (`teams.fixture.ts`)
+- [x] Setup test database with real ESPN API data (stored in `/test` database)
 - [x] Setup Jest configuration (`jest.config.js`, `jest.setup.js`)
 - [x] Create test setup helpers (`__tests__/setup.ts`)
 - [x] Create database check & seed script (`scripts/db-check-and-seed.js`)
@@ -394,9 +375,12 @@ npm run test:coverage    # Check coverage before committing
 - **`jest.setup.js`** - Global setup (suppress console, env vars)
 - **`__tests__/setup.ts`** - Test helpers (fetchAPI, validateFields, etc.)
 
-### Test Fixtures
+### Test Database
 
-- **`__tests__/fixtures/teams.fixture.ts`** - 16 SEC teams with ESPN colors
+- **`/test` database** - Stores real ESPN API data for testing
+  - Populated via `/api/cron/update-test-data` endpoint
+  - Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+  - Auto-seeded before tests run via `npm run test:db:check`
   - Includes all required TeamMetadata fields (id, abbrev, displayName, logo, color, alternateColor)
 
 ### API Integration Tests (49 tests, 200+ assertions)
@@ -477,20 +461,19 @@ npm run test:coverage    # Check coverage before committing
 5. **⚠️ Timeout Handling**
    - Pull-games tests timeout at 30s (ESPN API can be slower)
    - Cron tests timeout at 15-30s (arbitrary limits)
-   - Better: Add retry logic or use test fixtures
+   - Better: Add retry logic or use test database data
    - Impact: CI/CD pipelines may fail intermittently
 
 6. **⚠️ Test Flakiness - Data Dependency**
    - Tests assume 16 SEC teams always seeded
    - Tests assume games exist for season 2025
    - If ESPN data structure changes, tests break
-   - Better: Test against stable test fixtures instead
+   - Better: Test against stable test database snapshots
 
-7. **❌ Missing Fixture Completeness**
-   - `teams.fixture.ts` created, but `games.fixture.ts` not created
-   - Tests don't use fixtures, they call live APIs
-   - Impact: Can't test without running live ESPN API calls
-   - Fix: Create `games.fixture.ts` with 2-3 game examples
+7. **✅ Test Data Strategy**
+   - Tests use real ESPN API data stored in `/test` database
+   - Test database is automatically seeded before tests run
+   - No fixture files needed - tests query the test database directly
 
 8. **⚠️ No Test Isolation for Score Validation**
    - Pull-games tests run full season (expensive)
@@ -518,7 +501,7 @@ npm run test:coverage    # Check coverage before committing
 
 1. **HIGH**: Mock ESPN API calls - Tests should not depend on live APIs
 2. **HIGH**: Add coverage thresholds - Jest should fail if coverage drops
-3. **MEDIUM**: Complete game fixtures - Use test data instead of live data
+3. **MEDIUM**: Optimize test database seeding - Ensure test data is always up to date
 4. **MEDIUM**: Add error message verification - Check exact error codes
 5. **LOW**: Add missing test cases - Cache headers, edge cases
 6. **LOW**: Optimize timeouts - Use retries or reduce test scope
@@ -529,11 +512,11 @@ npm run test:coverage    # Check coverage before committing
 
 **Test Data vs Live Data:**
 
-- Current: Integration tests call live ESPN API via `/api/pull-*` endpoints
-- Target: Unit tests with mocked ESPN API (Phase 3)
+- Current: Tests use real ESPN API data stored in `/test` database
+- Test database is automatically seeded with ESPN API responses via cron jobs
 - Integration tests can use preview/production DBs when needed
-- Fixtures are version-controlled and repeatable
-- No reliance on external ESPN API during test runs
+- Test database provides version-controlled, repeatable test data
+- No reliance on external ESPN API during test runs (data is pre-seeded)
 
 **Database Testing:**
 

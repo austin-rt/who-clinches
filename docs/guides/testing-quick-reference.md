@@ -49,9 +49,8 @@ npm run test:all
 ## Test Structure
 
 - `__tests__/api/` - API endpoint tests (games, simulate, pull-teams, pull-games, cron)
-- `__tests__/lib/` - Reshape function tests (uses test DB)
-- `__tests__/fixtures/` - Test data (teams, games)
-- `__tests__/setup.ts` - Test helpers
+- `__tests__/lib/` - Reshape function tests (uses test DB with real ESPN data)
+- `__tests__/setup.ts` - Test helpers (fetchAPI, validateNestedFields)
 
 ---
 

@@ -567,9 +567,11 @@ All endpoints return errors as:
 - Full flow: `/api/pull` → `/api/games` → `/api/simulate`
 - Test with 2024 actual SEC season data
 
-### Fixtures
+### Test Data
 
-- Store past season JSON responses for regression testing
+- Tests use real ESPN API data stored in the `/test` database
+- Test database is automatically seeded with ESPN API responses via cron jobs
+- No fixture files needed - tests query the test database directly
 
 ---
 
