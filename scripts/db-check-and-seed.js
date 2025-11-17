@@ -17,10 +17,15 @@ const path = require('path');
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-let envName = 'local'; // Default to local
+let envName = 'dev'; // Default to dev
 const envIndex = args.indexOf('--env');
 if (envIndex !== -1 && args[envIndex + 1]) {
   envName = args[envIndex + 1];
+}
+
+// Treat 'local' as alias for 'dev' for backward compatibility
+if (envName === 'local') {
+  envName = 'dev';
 }
 
 // Load .env.local for read-only credentials (always needed)
@@ -39,29 +44,29 @@ try {
   process.exit(1);
 }
 
-// Determine BASE_URL: hardcoded for preview/production, from .env.local or default for local
+// Determine BASE_URL: hardcoded for preview/production, from .env.local or default for dev
 let BASE_URL;
 if (envName === 'preview') {
   BASE_URL = 'https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app';
 } else if (envName === 'production') {
   BASE_URL = 'https://sec-tiebreaker-git-main-austinrts-projects.vercel.app';
 } else {
-  // For local, use from .env.local or default to localhost
+  // For dev, use from .env.local or default to localhost
   BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 }
 
-// Determine database name: derive from env name for preview/production, from .env.local for local
+// Determine database name: derive from env name for preview/production, from .env.local for dev
 let DATABASE;
 if (envName === 'preview') {
   DATABASE = 'preview';
 } else if (envName === 'production') {
   DATABASE = 'production';
 } else {
-  // For local, must be in .env.local
+  // For dev, must be in .env.local
   DATABASE = process.env.MONGODB_DB;
   if (!DATABASE) {
     console.error(`[ERROR] MONGODB_DB not found in .env.local`);
-    console.error('  Required for local testing');
+    console.error('  Required for dev testing');
     process.exit(1);
   }
 }
