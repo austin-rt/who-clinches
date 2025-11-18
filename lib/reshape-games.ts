@@ -84,8 +84,19 @@ export const reshapeScoreboardData = (
         const cityStateQuery = `${venueCity} ${venueState}`;
         const matches = cityTimezones.findFromCityStateProvince(cityStateQuery);
         if (matches && matches.length > 0) {
-          // Use the first match (most common case)
-          timezone = matches[0].timezone;
+          // Find the match that matches the state (to avoid picking wrong country)
+          // First try to find a US match with matching state
+          const usMatch = matches.find(
+            (match) =>
+              match.country === 'United States of America' &&
+              (match.state_ansi === venueState || match.province === venueState)
+          );
+          if (usMatch) {
+            timezone = usMatch.timezone;
+          } else {
+            // Fall back to first match if no state match found
+            timezone = matches[0].timezone;
+          }
         }
       }
 
