@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useGetGamesQuery } from '@/app/store/apiSlice';
 import { GameLean } from '@/lib/types';
 import { TeamMetadata } from '@/lib/api-types';
@@ -14,8 +14,6 @@ interface GamesListProps {
 }
 
 const GamesList = ({ season, conferenceId }: GamesListProps) => {
-  const [showCompleted, setShowCompleted] = useState(false);
-
   const { data, isLoading, isError, isUninitialized } = useGetGamesQuery({
     season: season.toString(),
     conferenceId: conferenceId.toString(),
@@ -51,19 +49,27 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
     }) as GameLean[];
   }, [data]);
 
-  // Filter games based on showCompleted toggle
-  const filteredGames = useMemo(() => {
-    if (showCompleted) {
-      return enrichedGames;
-    }
-    return enrichedGames.filter((game) => !game.completed);
-  }, [enrichedGames, showCompleted]);
+  // Separate completed and incomplete games
+  const { completedGames, incompleteGames } = useMemo(() => {
+    const completed: GameLean[] = [];
+    const incomplete: GameLean[] = [];
 
-  // Group games by week
+    enrichedGames.forEach((game) => {
+      if (game.completed) {
+        completed.push(game);
+      } else {
+        incomplete.push(game);
+      }
+    });
+
+    return { completedGames: completed, incompleteGames: incomplete };
+  }, [enrichedGames]);
+
+  // Group incomplete games by week
   const gamesByWeek = useMemo(() => {
     const grouped = new Map<number, GameLean[]>();
 
-    filteredGames.forEach((game) => {
+    incompleteGames.forEach((game) => {
       const week = game.week ?? 0;
       if (!grouped.has(week)) {
         grouped.set(week, []);
@@ -77,7 +83,7 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
     });
 
     return grouped;
-  }, [filteredGames]);
+  }, [incompleteGames]);
 
   // Handle loading state
   if (isLoading) {
@@ -94,15 +100,15 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
   }
 
   // Handle empty state - only show if query has been initialized and completed
-  if (!isUninitialized && !isLoading && filteredGames.length === 0) {
+  if (
+    !isUninitialized &&
+    !isLoading &&
+    incompleteGames.length === 0 &&
+    completedGames.length === 0
+  ) {
     return (
       <div className="py-8 text-center">
         <p className="text-base-content/70">No games found</p>
-        {!showCompleted && (
-          <p className="text-base-content/50 mt-2 text-sm">
-            Try enabling "Show Completed Games" to see all games
-          </p>
-        )}
       </div>
     );
   }
@@ -123,7 +129,7 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
 
   return (
     <div>
-      <GamesFilter showCompleted={showCompleted} onToggle={setShowCompleted} />
+      <GamesFilter completedGames={completedGames} />
 
       <div className="space-y-4">
         {sortedWeeks.map((week) => {
