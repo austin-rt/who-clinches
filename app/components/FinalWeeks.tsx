@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { GameLean } from '@/lib/types';
-import Week from './Week';
+import WeekAccordion from './WeekAccordion';
 
 type Week = [number, GameLean[]];
 
@@ -28,7 +28,7 @@ const FinalWeeks = ({ weeks }: FinalWeeksProps) => {
       <div className="collapse-content">
         <div className="space-y-4 pt-2">
           {weeks.map((week) => (
-            <Week key={week[0]} weekNumber={week[0]} games={week[1]} />
+            <WeekAccordion key={week[0]} weekNumber={week[0]} games={week[1]} />
           ))}
         </div>
       </div>
@@ -37,4 +37,3 @@ const FinalWeeks = ({ weeks }: FinalWeeksProps) => {
 };
 
 export default FinalWeeks;
-
