@@ -2,6 +2,8 @@
 
 import { useMemo } from 'react';
 import GamesList from './components/GamesList';
+import ViewToggle from './components/ViewToggle';
+import HideCompletedToggle from './components/HideCompletedToggle';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 
@@ -10,10 +12,10 @@ const Home = () => {
   const { mode } = useUIState();
 
   return (
-    <div className="container mx-auto flex min-h-full flex-col px-4 py-8">
-      <div className="mb-8">
+    <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
+      <div className="flex flex-col gap-2">
         <h1
-          className={`mb-2 text-4xl font-bold transition-colors ${
+          className={`text-4xl font-bold transition-colors ${
             mode === 'dark' ? 'text-secondary' : 'text-primary'
           }`}
         >
@@ -22,6 +24,11 @@ const Home = () => {
         <p className="text-base-content/70 text-lg">
           Predict game outcomes and see how they affect SEC conference standings
         </p>
+      </div>
+
+      <div className="flex w-fit flex-col gap-4">
+        <ViewToggle />
+        <HideCompletedToggle />
       </div>
 
       <GamesList season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />

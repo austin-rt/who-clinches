@@ -17,7 +17,7 @@ const RemainingWeeks = ({ weekDays }: RemainingWeeksProps) => {
   const totalGames = weekDays.reduce((sum, weekDay) => sum + weekDay.games.length, 0);
 
   return (
-    <div className="collapse collapse-open mb-4 bg-base-200">
+    <div className="collapse collapse-open bg-base-200">
       <div className="collapse-title cursor-default text-lg font-semibold">
         Remaining ({totalGames} {totalGames === 1 ? 'game' : 'games'})
       </div>

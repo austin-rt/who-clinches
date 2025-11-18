@@ -7,17 +7,13 @@ const ThemeSync = () => {
   const { theme, mode } = useAppSelector((state) => state.ui);
 
   useEffect(() => {
-    // Sync theme to DOM
+    // Sync theme to DOM (localStorage is handled by useLocalStorage hook)
     document.documentElement.setAttribute('data-theme', theme);
-    // Sync theme to localStorage
-    localStorage.setItem('sec-tiebreaker-theme', theme);
   }, [theme]);
 
   useEffect(() => {
-    // Sync mode to DOM
+    // Sync mode to DOM (localStorage is handled by useLocalStorage hook)
     document.documentElement.setAttribute('data-mode', mode);
-    // Sync mode to localStorage
-    localStorage.setItem('sec-tiebreaker-mode', mode);
   }, [mode]);
 
   return null;

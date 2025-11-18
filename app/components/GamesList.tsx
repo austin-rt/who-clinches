@@ -4,8 +4,10 @@ import { useMemo } from 'react';
 import { useGetGamesQuery } from '@/app/store/apiSlice';
 import { GameLean } from '@/lib/types';
 import { TeamMetadata } from '@/lib/api-types';
+import { useUIState } from '@/app/store/useUI';
 import FinalWeeks from './FinalWeeks';
 import RemainingWeeks from './RemainingWeeks';
+import CompactWeekGrid from './CompactWeekGrid';
 import LoadingSpinner from './LoadingSpinner';
 
 type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
@@ -16,6 +18,7 @@ interface GamesListProps {
 }
 
 const GamesList = ({ season, conferenceId }: GamesListProps) => {
+  const { view } = useUIState();
   const { data, isLoading, isError, isUninitialized } = useGetGamesQuery({
     season: season.toString(),
     conferenceId: conferenceId.toString(),
@@ -219,8 +222,15 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
     );
   }
 
+  // Render compact view (picks mode) or expanded view (scores mode)
+  if (view === 'picks') {
+    return (
+      <CompactWeekGrid finalWeekDays={weekDays.final} remainingWeekDays={weekDays.remaining} />
+    );
+  }
+
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <FinalWeeks weekDays={weekDays.final} />
       <RemainingWeeks weekDays={weekDays.remaining} />
     </div>

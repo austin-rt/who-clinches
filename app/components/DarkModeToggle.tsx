@@ -12,49 +12,13 @@ const DarkModeToggle = () => {
   };
 
   return (
-    <label className="relative inline-flex cursor-pointer items-center">
-      <input
-        type="checkbox"
-        className="peer sr-only"
-        checked={mode === 'dark'}
-        onChange={handleToggle}
-      />
-      {/* Toggle track with both icons visible */}
-      <div
-        className={`relative h-8 w-16 rounded-full bg-base-300 transition-colors ${
-          mode === 'dark' ? 'bg-secondary' : ''
-        }`}
-      >
-        {/* Sun icon - left side */}
-        <HiSun
-          className={`absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors ${
-            mode === 'dark' ? 'text-base-100' : 'text-base-content'
-          }`}
-        />
-        {/* Moon icon - right side */}
-        <HiMoon
-          className={`absolute right-1 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors ${
-            mode === 'dark' ? 'text-secondary' : 'text-primary'
-          }`}
-        />
-        {/* Toggle circle with active icon inside */}
-        <div
-          className={`absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full shadow transition-all ${
-            mode === 'dark'
-              ? 'left-[calc(100%-0.25rem-0.625rem-0.875rem)] bg-base-100'
-              : 'left-0 bg-base-100'
-          }`}
-        >
-          {/* Active icon inside circle */}
-          <div className="flex h-full w-full items-center justify-center">
-            {mode === 'dark' ? (
-              <HiMoon className="h-4 w-4 text-secondary" />
-            ) : (
-              <HiSun className="h-4 w-4 text-primary" />
-            )}
-          </div>
-        </div>
-      </div>
+    <label className="swap swap-rotate">
+      {/* Hidden checkbox controls the state */}
+      <input type="checkbox" checked={mode === 'dark'} onChange={handleToggle} />
+      {/* Sun icon - shown in dark mode (swap-on) - uses SEC Gold (secondary) */}
+      <HiSun className="swap-on h-8 w-8 fill-current text-secondary" />
+      {/* Moon icon - shown in light mode (swap-off) - uses SEC Blue (primary) */}
+      <HiMoon className="swap-off h-8 w-8 fill-current text-primary" />
     </label>
   );
 };

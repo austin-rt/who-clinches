@@ -8,7 +8,7 @@ const Header = () => {
   const { mode } = useUIState();
 
   return (
-    <div className="navbar relative bg-base-100 shadow-lg">
+    <div className="navbar relative bg-base-200 shadow-lg">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex-1">
           <a
