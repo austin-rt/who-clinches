@@ -6,6 +6,7 @@
 import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import { ReshapedGame, ReshapeResult } from './types';
 import cityTimezones from 'city-timezones';
+import { calculatePredictedScoreFromOdds } from './prefill-helpers';
 
 /**
  * Reshape ESPN scoreboard response for our needs
@@ -100,6 +101,15 @@ export const reshapeScoreboardData = (
         }
       }
 
+      // Calculate predicted score from odds if available
+      const predictedScore = calculatePredictedScoreFromOdds(
+        overUnder,
+        spread,
+        favoriteTeamEspnId,
+        homeTeam.team.id,
+        awayTeam.team.id
+      );
+
       // Our reshaped format
       // Use startDate if available (local time), otherwise fall back to date (UTC)
       return {
@@ -144,7 +154,7 @@ export const reshapeScoreboardData = (
           spread,
           overUnder,
         },
-        lastUpdated: new Date(),
+        predictedScore,
       };
     })
     .filter((game) => game !== null);

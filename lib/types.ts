@@ -55,7 +55,6 @@ export interface ReshapedGame {
     home: number;
     away: number;
   };
-  lastUpdated: Date;
 }
 
 export interface ReshapedTeamRecord {
@@ -167,7 +166,6 @@ export interface GameLean {
     home: number;
     away: number;
   };
-  lastUpdated: Date;
 }
 
 export interface TeamLean {

@@ -46,7 +46,6 @@ export interface IGame extends Document {
     home: number;
     away: number;
   };
-  lastUpdated: Date;
 }
 
 const GameSchema = new Schema<IGame>(
@@ -203,10 +202,6 @@ const GameSchema = new Schema<IGame>(
       away: {
         type: Number,
       },
-    },
-    lastUpdated: {
-      type: Date,
-      default: Date.now,
     },
   },
   {
