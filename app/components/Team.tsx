@@ -2,14 +2,12 @@
 
 import Image from 'next/image';
 import { GameLean } from '@/lib/types';
-import HomeAwayBadge from './HomeAwayBadge';
 
 interface TeamProps {
   team: GameLean['home'] | GameLean['away'];
-  type: 'home' | 'away';
 }
 
-const Team = ({ team, type }: TeamProps) => {
+const Team = ({ team }: TeamProps) => {
   const getRankDisplay = (rank: number | null) => {
     return rank !== null && rank < 99 ? `#${rank}` : null;
   };
@@ -17,15 +15,14 @@ const Team = ({ team, type }: TeamProps) => {
   const rank = getRankDisplay(team.rank);
 
   return (
-    <div className="flex flex-1 flex-col items-center gap-3">
-      <HomeAwayBadge type={type} />
+    <div className="flex w-1/3 flex-col items-center gap-3">
       {team.logo && (
         <Image
           src={team.logo}
           alt={team.abbrev}
           width={64}
           height={64}
-          className="h-16 w-16"
+          className="h-16 w-auto object-contain"
           unoptimized
         />
       )}
