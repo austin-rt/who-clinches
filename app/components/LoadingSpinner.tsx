@@ -10,7 +10,7 @@ interface LoadingSpinnerProps {
 const LoadingSpinner = ({ className, size }: LoadingSpinnerProps) => {
   return (
     <div className={cn('flex justify-center py-8', className)}>
-      <span className={cn('loading loading-bars', size)}></span>
+      <span className={cn('loading loading-bars text-primary', size)}></span>
     </div>
   );
 };
