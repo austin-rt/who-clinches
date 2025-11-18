@@ -19,7 +19,7 @@ const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
         Week {weekNumber} ({games.length} {games.length === 1 ? 'game' : 'games'})
       </div>
       <div className="collapse-content">
-        <div className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 pt-2 md:grid-cols-2 lg:grid-cols-3">
           {games.length === 0 ? (
             <p className="text-base-content/60 text-sm">No games this week</p>
           ) : (
