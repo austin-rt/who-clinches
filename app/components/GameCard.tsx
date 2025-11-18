@@ -1,8 +1,8 @@
 'use client';
 
 import { GameLean } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import Team from './Team';
+import Score from './Score';
 import SpreadBadge from './SpreadBadge';
 import LiveBadge from './LiveBadge';
 import VenueInfo from './VenueInfo';
@@ -13,51 +13,19 @@ interface GameCardProps {
 }
 
 const GameCard = ({ game }: GameCardProps) => {
-  const getScoreDisplay = (score: number | null) => {
-    return score !== null ? score.toString() : '—';
-  };
-
-  // Determine which score is higher for styling
-  const awayScore = game.away.score ?? -1;
-  const homeScore = game.home.score ?? -1;
-  const awayIsHigher = awayScore > homeScore;
-  const homeIsHigher = homeScore > awayScore;
-  const isTie = awayScore === homeScore && awayScore !== -1 && awayScore !== 0;
-
   return (
-    <div className="card card-sm relative bg-gray-50 shadow-md dark:bg-gray-800">
+    <div className="card card-sm relative bg-gray-50 shadow-md dark:bg-base-100">
       <div className="card-body flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <TimeDisplay date={game.date} timezone={game.venue.timezone} />
           {game.state === 'in' && <LiveBadge />}
         </div>
 
-        {/* Scoreboard Layout: Home on left, Away on right */}
-        <div className="flex items-center justify-between">
-          <Team team={game.home} type="home" />
-
-          {/* Scores - Centered and Prominent */}
-          <div className="flex items-center gap-2">
-            <div
-              className={cn('text-4xl', {
-                'font-bold': homeIsHigher || isTie,
-                'font-normal': !(homeIsHigher || isTie),
-              })}
-            >
-              {getScoreDisplay(game.home.score)}
-            </div>
-            <div className="text-base-content/40 text-xl">-</div>
-            <div
-              className={cn('text-4xl', {
-                'font-bold': awayIsHigher || isTie,
-                'font-normal': !(awayIsHigher || isTie),
-              })}
-            >
-              {getScoreDisplay(game.away.score)}
-            </div>
-          </div>
-
-          <Team team={game.away} type="away" />
+        {/* Scoreboard Layout: Away on left, Home on right */}
+        <div className="flex items-center justify-around">
+          <Team team={game.away} />
+          <Score game={game} />
+          <Team team={game.home} />
         </div>
 
         <SpreadBadge game={game} />
