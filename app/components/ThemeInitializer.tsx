@@ -1,31 +1,30 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useAppDispatch } from '../store/hooks';
-import { setTheme, setMode } from '../store/uiSlice';
-import { ThemeMode } from '@/types/frontend';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { setTheme, setMode, setView, setHideCompletedGames } from '../store/uiSlice';
+import { setPicks, GamePick } from '../store/gamePicksSlice';
+import { ViewMode } from '@/types/frontend';
 
 const ThemeInitializer = () => {
-  const dispatch = useAppDispatch();
+  // Use useLocalStorage hook for theme - handles hydration and persistence
+  useLocalStorage('sec-tiebreaker-theme', 'sec', setTheme, (state) => state.ui.theme);
 
-  useEffect(() => {
-    // Load saved theme or default to SEC theme
-    const savedTheme = localStorage.getItem('sec-tiebreaker-theme') || 'sec';
-    // Load saved mode or default to light
-    const savedMode = (localStorage.getItem('sec-tiebreaker-mode') || 'light') as ThemeMode;
+  // Use useLocalStorage hook for mode - handles hydration and persistence
+  useLocalStorage('sec-tiebreaker-mode', 'light', setMode, (state) => state.ui.mode);
 
-    // Initialize Redux state from localStorage
-    dispatch(setTheme(savedTheme));
-    dispatch(setMode(savedMode));
+  // Use useLocalStorage hook for view - handles hydration and persistence
+  useLocalStorage<ViewMode>('sec-tiebreaker-view', 'picks', setView, (state) => state.ui.view);
 
-    // Initialize localStorage if not set
-    if (!localStorage.getItem('sec-tiebreaker-theme')) {
-      localStorage.setItem('sec-tiebreaker-theme', 'sec');
-    }
-    if (!localStorage.getItem('sec-tiebreaker-mode')) {
-      localStorage.setItem('sec-tiebreaker-mode', 'light');
-    }
-  }, [dispatch]);
+  // Use useLocalStorage hook for hideCompletedGames - handles hydration and persistence
+  useLocalStorage('sec-tiebreaker-hide-completed', false, setHideCompletedGames, (state) => state.ui.hideCompletedGames);
+
+  // Use useLocalStorage hook for game picks - handles hydration and persistence
+  useLocalStorage<{ [gameId: string]: GamePick }>(
+    'sec-tiebreaker-game-picks',
+    {},
+    setPicks,
+    (state) => state.gamePicks.picks
+  );
 
   return null;
 };
