@@ -8,7 +8,7 @@ import FinalWeeks from './FinalWeeks';
 import RemainingWeeks from './RemainingWeeks';
 import LoadingSpinner from './LoadingSpinner';
 
-type Week = [number, GameLean[]];
+type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
 
 interface GamesListProps {
   season: number;
@@ -67,10 +67,26 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
     return { finalGames: final, remainingGames: remaining };
   }, [enrichedGames]);
 
-  // Group and sort games by week for both final and remaining
-  const weeks = useMemo(() => {
-    // Group final games by week
+  // Helper function to get day label from day of week
+  const getDayLabel = (dayOfWeek: number): string => {
+    const dayLabels = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+    ];
+    return dayLabels[dayOfWeek] || '';
+  };
+
+  // Group and sort games by week and day of week for both final and remaining
+  const weekDays = useMemo(() => {
+    // Group final games by week and day
+    const finalWeekDays: WeekDay[] = [];
     const finalGamesByWeek = new Map<number, GameLean[]>();
+
     finalGames.forEach((game) => {
       const week = game.week ?? 0;
       if (!finalGamesByWeek.has(week)) {
@@ -79,16 +95,53 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
       finalGamesByWeek.get(week)!.push(game);
     });
 
-    // Sort games within each final week by date
-    finalGamesByWeek.forEach((games) => {
-      games.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // For each week, group by day of week
+    finalGamesByWeek.forEach((games, weekNumber) => {
+      const gamesByDay = new Map<number, GameLean[]>();
+
+      games.forEach((game) => {
+        const gameDate = new Date(game.date);
+        const dayOfWeek = gameDate.getDay(); // 0 = Sunday, 4 = Thursday, 5 = Friday, 6 = Saturday
+
+        // Only include Thursday (4), Friday (5), Saturday (6), Sunday (0)
+        if ([0, 4, 5, 6].includes(dayOfWeek)) {
+          if (!gamesByDay.has(dayOfWeek)) {
+            gamesByDay.set(dayOfWeek, []);
+          }
+          gamesByDay.get(dayOfWeek)!.push(game);
+        }
+      });
+
+      // Sort days: Thursday (4), Friday (5), Saturday (6), Sunday (0)
+      const dayOrder = [4, 5, 6, 0];
+      dayOrder.forEach((dayOfWeek) => {
+        const dayGames = gamesByDay.get(dayOfWeek);
+        if (dayGames && dayGames.length > 0) {
+          // Sort games within day by date
+          dayGames.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          finalWeekDays.push({
+            weekNumber,
+            dayOfWeek,
+            dayLabel: getDayLabel(dayOfWeek),
+            games: dayGames,
+          });
+        }
+      });
     });
 
-    // Sort final weeks and convert to Week[] tuples
-    const finalWeeks: Week[] = Array.from(finalGamesByWeek.entries()).sort((a, b) => a[0] - b[0]);
+    // Sort by week number, then by day order
+    finalWeekDays.sort((a, b) => {
+      if (a.weekNumber !== b.weekNumber) {
+        return a.weekNumber - b.weekNumber;
+      }
+      const dayOrder = [4, 5, 6, 0];
+      return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
+    });
 
-    // Group remaining games by week
+    // Group remaining games by week and day
+    const remainingWeekDays: WeekDay[] = [];
     const remainingGamesByWeek = new Map<number, GameLean[]>();
+
     remainingGames.forEach((game) => {
       const week = game.week ?? 0;
       if (!remainingGamesByWeek.has(week)) {
@@ -97,17 +150,50 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
       remainingGamesByWeek.get(week)!.push(game);
     });
 
-    // Sort games within each remaining week by date
-    remainingGamesByWeek.forEach((games) => {
-      games.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    // For each week, group by day of week
+    remainingGamesByWeek.forEach((games, weekNumber) => {
+      const gamesByDay = new Map<number, GameLean[]>();
+
+      games.forEach((game) => {
+        const gameDate = new Date(game.date);
+        const dayOfWeek = gameDate.getDay();
+
+        // Only include Thursday (4), Friday (5), Saturday (6), Sunday (0)
+        if ([0, 4, 5, 6].includes(dayOfWeek)) {
+          if (!gamesByDay.has(dayOfWeek)) {
+            gamesByDay.set(dayOfWeek, []);
+          }
+          gamesByDay.get(dayOfWeek)!.push(game);
+        }
+      });
+
+      // Sort days: Thursday (4), Friday (5), Saturday (6), Sunday (0)
+      const dayOrder = [4, 5, 6, 0];
+      dayOrder.forEach((dayOfWeek) => {
+        const dayGames = gamesByDay.get(dayOfWeek);
+        if (dayGames && dayGames.length > 0) {
+          // Sort games within day by date
+          dayGames.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+          remainingWeekDays.push({
+            weekNumber,
+            dayOfWeek,
+            dayLabel: getDayLabel(dayOfWeek),
+            games: dayGames,
+          });
+        }
+      });
     });
 
-    // Sort remaining weeks and convert to Week[] tuples
-    const remainingWeeks: Week[] = Array.from(remainingGamesByWeek.entries()).sort(
-      (a, b) => a[0] - b[0]
-    );
+    // Sort by week number, then by day order
+    remainingWeekDays.sort((a, b) => {
+      if (a.weekNumber !== b.weekNumber) {
+        return a.weekNumber - b.weekNumber;
+      }
+      const dayOrder = [4, 5, 6, 0];
+      return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
+    });
 
-    return { final: finalWeeks, remaining: remainingWeeks };
+    return { final: finalWeekDays, remaining: remainingWeekDays };
   }, [finalGames, remainingGames]);
 
   // Handle loading state
@@ -135,8 +221,8 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
 
   return (
     <div>
-      <FinalWeeks weeks={weeks.final} />
-      <RemainingWeeks weeks={weeks.remaining} />
+      <FinalWeeks weekDays={weekDays.final} />
+      <RemainingWeeks weekDays={weekDays.remaining} />
     </div>
   );
 };
