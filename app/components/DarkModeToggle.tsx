@@ -21,7 +21,7 @@ const DarkModeToggle = () => {
       />
       {/* Toggle track with both icons visible */}
       <div
-        className={`relative h-8 w-[4.5rem] rounded-full bg-base-300 transition-colors ${
+        className={`relative h-8 w-16 rounded-full bg-base-300 transition-colors ${
           mode === 'dark' ? 'bg-secondary' : ''
         }`}
       >
