@@ -38,6 +38,13 @@ export const GET = async (request: NextRequest) => {
     Authorization: `Bearer ${process.env.CRON_SECRET}`,
   };
 
+  // Get bypass token from environment or request for protected Vercel deployments
+  const bypassToken =
+    process.env.VERCEL_AUTOMATION_BYPASS_SECRET ||
+    request.nextUrl.searchParams.get('x-vercel-protection-bypass') ||
+    '';
+  const bypassParam = bypassToken ? `x-vercel-protection-bypass=${bypassToken}` : '';
+
   const results: Array<{
     job: string;
     success: boolean;
@@ -49,7 +56,10 @@ export const GET = async (request: NextRequest) => {
   // 1. Pull teams (POST endpoint, requires body)
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/pull-teams`, {
+    const pullTeamsUrl = bypassParam
+      ? `${baseUrl}/api/pull-teams?${bypassParam}`
+      : `${baseUrl}/api/pull-teams`;
+    const response = await fetch(pullTeamsUrl, {
       method: 'POST',
       headers: {
         ...authHeaders,
@@ -81,7 +91,10 @@ export const GET = async (request: NextRequest) => {
   // 2. Pull/update games for entire season
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/cron/update-games?mode=season`, {
+    const updateGamesUrl = bypassParam
+      ? `${baseUrl}/api/cron/update-games?mode=season&${bypassParam}`
+      : `${baseUrl}/api/cron/update-games?mode=season`;
+    const response = await fetch(updateGamesUrl, {
       method: 'GET',
       headers: authHeaders,
     });
@@ -105,7 +118,10 @@ export const GET = async (request: NextRequest) => {
   // 3. Update rankings
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/cron/update-rankings`, {
+    const updateRankingsUrl = bypassParam
+      ? `${baseUrl}/api/cron/update-rankings?${bypassParam}`
+      : `${baseUrl}/api/cron/update-rankings`;
+    const response = await fetch(updateRankingsUrl, {
       method: 'GET',
       headers: authHeaders,
     });
@@ -129,7 +145,10 @@ export const GET = async (request: NextRequest) => {
   // 4. Update spreads
   try {
     const start = Date.now();
-    const response = await fetch(`${baseUrl}/api/cron/update-spreads`, {
+    const updateSpreadsUrl = bypassParam
+      ? `${baseUrl}/api/cron/update-spreads?${bypassParam}`
+      : `${baseUrl}/api/cron/update-spreads`;
+    const response = await fetch(updateSpreadsUrl, {
       method: 'GET',
       headers: authHeaders,
     });

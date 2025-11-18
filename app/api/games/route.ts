@@ -77,37 +77,37 @@ export const GET = async (request: NextRequest) => {
         conferenceGame: Boolean(game.conferenceGame),
         neutralSite: Boolean(game.neutralSite),
         venue: {
-          fullName: String(game.venue.fullName || ''),
-          city: String(game.venue.city || ''),
-          state: String(game.venue.state || ''),
-          timezone: String(game.venue.timezone || 'America/New_York'),
+          fullName: String(game.venue?.fullName || ''),
+          city: String(game.venue?.city || ''),
+          state: String(game.venue?.state || ''),
+          timezone: String(game.venue?.timezone || 'America/New_York'),
         },
         home: {
-          teamEspnId: String(game.home.teamEspnId),
-          abbrev: String(game.home.abbrev),
-          score: typeof game.home.score === 'number' ? game.home.score : null,
-          rank: typeof game.home.rank === 'number' ? game.home.rank : null,
+          teamEspnId: String(game.home?.teamEspnId || ''),
+          abbrev: String(game.home?.abbrev || ''),
+          score: typeof game.home?.score === 'number' ? game.home.score : null,
+          rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
         },
         away: {
-          teamEspnId: String(game.away.teamEspnId),
-          abbrev: String(game.away.abbrev),
-          score: typeof game.away.score === 'number' ? game.away.score : null,
-          rank: typeof game.away.rank === 'number' ? game.away.rank : null,
+          teamEspnId: String(game.away?.teamEspnId || ''),
+          abbrev: String(game.away?.abbrev || ''),
+          score: typeof game.away?.score === 'number' ? game.away.score : null,
+          rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
         },
         odds: {
-          favoriteTeamEspnId: game.odds.favoriteTeamEspnId
+          favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
             ? String(game.odds.favoriteTeamEspnId)
             : null,
-          spread: typeof game.odds.spread === 'number' ? game.odds.spread : null,
-          overUnder: typeof game.odds.overUnder === 'number' ? game.odds.overUnder : null,
+          spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
+          overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
         },
         predictedScore: game.predictedScore
           ? {
-              home: Number(game.predictedScore.home),
-              away: Number(game.predictedScore.away),
+              home: Number(game.predictedScore?.home || 0),
+              away: Number(game.predictedScore?.away || 0),
             }
           : undefined,
-        lastUpdated: new Date(game.lastUpdated),
+        lastUpdated: game.lastUpdated ? new Date(game.lastUpdated) : new Date(),
       })
     );
 
