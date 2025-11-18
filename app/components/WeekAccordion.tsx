@@ -2,18 +2,20 @@
 
 import { useState } from 'react';
 import { GameLean } from '@/lib/types';
+import { cn } from '@/lib/utils';
 import GameCard from './GameCard';
 
 interface WeekAccordionProps {
   weekNumber: number;
   games: GameLean[];
+  className?: string;
 }
 
-const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
-  const [isOpen, setIsOpen] = useState(true); // Default to open
+const WeekAccordion = ({ weekNumber, games, className }: WeekAccordionProps) => {
+  const [isOpen, setIsOpen] = useState(true);
 
   return (
-    <div className="collapse collapse-arrow bg-base-200">
+    <div className={cn('collapse collapse-arrow bg-base-100', className)}>
       <input type="checkbox" checked={isOpen} onChange={(e) => setIsOpen(e.target.checked)} />
       <div className="collapse-title text-lg font-semibold">
         Week {weekNumber} ({games.length} {games.length === 1 ? 'game' : 'games'})
