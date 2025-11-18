@@ -20,7 +20,7 @@ const DarkModeToggle = () => {
         onChange={handleToggle}
       />
       {/* Toggle track with both icons visible */}
-      <div className="relative h-8 w-[3.75rem] rounded-full bg-base-300 transition-colors peer-checked:bg-primary">
+      <div className="relative h-8 w-[4.5rem] rounded-full bg-base-300 transition-colors peer-checked:bg-primary">
         {/* Sun icon - left side */}
         <HiSun className="absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 text-base-content" />
         {/* Moon icon - right side */}
