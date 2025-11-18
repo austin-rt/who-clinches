@@ -20,18 +20,18 @@ const Score = ({ game }: ScoreProps) => {
   const isTie = awayScore === homeScore && awayScore !== -1 && awayScore !== 0;
 
   return (
-    <div className="flex w-full items-center justify-evenly">
+    <div className="flex items-center gap-2">
       <div
-        className={cn('text-5xl', {
+        className={cn('text-3xl md:text-5xl', {
           'font-extrabold': awayIsHigher && !isTie,
           'font-normal': !awayIsHigher || isTie,
         })}
       >
         {getScoreDisplay(game.away.score)}
       </div>
-      <div className="text-base-content/40 text-xl">@</div>
+      <div className="text-base-content/40 text-xl md:text-2xl">-</div>
       <div
-        className={cn('text-5xl', {
+        className={cn('text-3xl md:text-5xl', {
           'font-extrabold': homeIsHigher && !isTie,
           'font-normal': !homeIsHigher || isTie,
         })}
