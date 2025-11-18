@@ -1,13 +1,22 @@
 'use client';
 
 import DarkModeToggle from './DarkModeToggle';
+import { useUIState } from '@/app/store/useUI';
 
 const Header = () => {
+  const { mode } = useUIState();
+
   return (
     <div className="navbar relative bg-base-100 shadow-lg">
       <div className="container mx-auto">
         <div className="flex-1">
-          <a className="btn btn-ghost text-xl font-bold text-primary">SEC Tiebreaker Calculator</a>
+          <a
+            className={`btn btn-ghost text-xl font-bold transition-colors ${
+              mode === 'dark' ? 'text-secondary' : 'text-primary'
+            }`}
+          >
+            SEC Tiebreaker Calculator
+          </a>
         </div>
       </div>
       <div className="absolute right-2 top-2 md:right-4 md:top-4">
