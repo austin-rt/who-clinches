@@ -107,7 +107,6 @@ export const GET = async (request: NextRequest) => {
               away: Number(game.predictedScore?.away || 0),
             }
           : undefined,
-        lastUpdated: game.lastUpdated ? new Date(game.lastUpdated) : new Date(),
       })
     );
 
@@ -156,6 +155,10 @@ export const GET = async (request: NextRequest) => {
       };
     }
 
+    // Get lastUpdated timestamp - use current time as fallback
+    // This represents when the scoreboard was last pulled from ESPN
+    const lastUpdated = new Date().toISOString();
+
     // Determine cache headers based on game states
     const hasLiveGames = games.some((game) => game.state === 'in');
     const cacheMaxAge = hasLiveGames ? 10 : 60; // 10s for live games, 60s otherwise
@@ -164,7 +167,7 @@ export const GET = async (request: NextRequest) => {
       {
         events: games,
         teams: Object.values(teamMap),
-        lastUpdated: new Date().toISOString(),
+        lastUpdated,
       },
       {
         headers: {

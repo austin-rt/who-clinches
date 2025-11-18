@@ -170,7 +170,6 @@ async function handleSeasonMode(
           const updateData: Record<string, unknown> = {
             ...gameData,
             predictedScore,
-            lastUpdated: new Date(),
           };
 
           // Venue is always required
@@ -552,7 +551,6 @@ async function handleActiveMode(
             away: Number(g.predictedScore.away),
           }
         : undefined,
-      lastUpdated: new Date(g.lastUpdated),
     }));
 
     // Fetch scoreboard from ESPN
