@@ -69,7 +69,6 @@ const createMockGame = (
     overUnder: null,
     favoriteTeamEspnId: null,
   },
-  lastUpdated: new Date('2025-09-06T12:00Z'),
 });
 
 describe('getTeamRecord', () => {

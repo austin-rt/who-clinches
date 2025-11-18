@@ -473,6 +473,84 @@ describe('reshapeScoreboardData', () => {
 
       expect(game.odds.spread).toBe(0);
     });
+
+    it('calculates predictedScore from odds when all odds are available', () => {
+      if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
+      }
+
+      const firstEvent = scoreboardResponse.events[0];
+      const homeTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'home')
+        ?.team.id;
+      const awayTeamId = firstEvent.competitions[0].competitors.find((c) => c.homeAway === 'away')
+        ?.team.id;
+
+      if (!homeTeamId || !awayTeamId) {
+        throw new Error('Could not find team IDs in test data');
+      }
+
+      const oddsEvent = createTestEvent(firstEvent, {
+        odds: [
+          createTestOdd({
+            details: 'Spread',
+            spread: -7, // Home favorite by 7
+            overUnder: 54.5,
+            awayTeamOdds: {
+              favorite: false,
+              underdog: true,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: false,
+            },
+            homeTeamOdds: {
+              favorite: true,
+              underdog: false,
+              team: { id: '', uid: '', abbreviation: '', name: '', displayName: '', logo: '' },
+              favoriteAtOpen: true,
+            },
+          }),
+        ],
+      });
+
+      const response: EspnScoreboardGenerated = {
+        ...scoreboardResponse,
+        events: [oddsEvent],
+      };
+
+      const result = reshapeScoreboardData(response);
+      const game = result.games![0];
+
+      // With overUnder = 54.5, spread = -7 (home favorite):
+      // Favored (home) = round(54.5 / 2 + 7) = round(27.25 + 7) = round(34.25) = 34
+      // Underdog (away) = round(54.5 / 2 - 7) = round(27.25 - 7) = round(20.25) = 20
+      expect(game.predictedScore).toBeDefined();
+      expect(game.predictedScore?.home).toBe(34);
+      expect(game.predictedScore?.away).toBe(20);
+    });
+
+    it('sets predictedScore to undefined when odds are not available', () => {
+      if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
+        throw new Error(
+          'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
+        );
+      }
+
+      const firstEvent = scoreboardResponse.events[0];
+      const noOddsEvent = createTestEvent(firstEvent, {
+        odds: undefined,
+      });
+
+      const response: EspnScoreboardGenerated = {
+        ...scoreboardResponse,
+        events: [noOddsEvent],
+      };
+
+      const result = reshapeScoreboardData(response);
+      const game = result.games![0];
+
+      expect(game.predictedScore).toBeUndefined();
+    });
   });
 
   describe('Error Handling', () => {

@@ -68,7 +68,6 @@ const createMockGame = (
     overUnder: null,
     favoriteTeamEspnId,
   },
-  lastUpdated: new Date(),
 });
 
 const createMockTeam = (
@@ -117,9 +116,9 @@ describe('calculatePredictedScore', () => {
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
       // At 0-0, falls through to calculation (not prediction)
-      // Home = round(28 + 3) = 31, Away = round(28) = 28
-      expect(result.home).toBe(31);
-      expect(result.away).toBe(28);
+      // Home = round(28) = 28, Away = round(28 - 3) = 25
+      expect(result.home).toBe(28);
+      expect(result.away).toBe(25);
     });
   });
 
@@ -171,10 +170,10 @@ describe('calculatePredictedScore', () => {
 
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
-      // Home = round(28 + 3) = 31
-      // Away = round(24) = 24
-      expect(result.home).toBe(31);
-      expect(result.away).toBe(24);
+      // Home = round(28) = 28
+      // Away = round(28 - 3) = 25
+      expect(result.home).toBe(28);
+      expect(result.away).toBe(25);
     });
   });
 

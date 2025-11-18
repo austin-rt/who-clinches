@@ -155,7 +155,6 @@ describe('POST /api/pull-games', () => {
           'odds.favoriteTeamEspnId',
           'odds.spread',
           'odds.overUnder',
-          'lastUpdated',
           // Optional fields in GameLean (not required):
           // - home.displayName, home.logo, home.color
           // - away.displayName, away.logo, away.color
