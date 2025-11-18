@@ -15,7 +15,7 @@ const Team = ({ team }: TeamProps) => {
   const rank = getRankDisplay(team.rank);
 
   return (
-    <div className="flex w-1/3 flex-col items-center gap-3">
+    <div className="flex flex-col items-center gap-1">
       {team.logo && (
         <Image
           src={team.logo}

@@ -14,7 +14,7 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   return (
-    <div className="card card-sm relative bg-gray-50 shadow-md dark:bg-base-100">
+    <div className="card card-sm relative bg-base-200 shadow-md">
       <div className="card-body flex flex-col gap-4">
         <div className="flex items-center justify-between">
           <TimeDisplay date={game.date} timezone={game.venue.timezone} />
@@ -22,7 +22,7 @@ const GameCard = ({ game }: GameCardProps) => {
         </div>
 
         {/* Scoreboard Layout: Away on left, Home on right */}
-        <div className="flex items-center justify-around">
+        <div className="flex items-center justify-around px-4">
           <Team team={game.away} />
           <Score game={game} />
           <Team team={game.home} />
