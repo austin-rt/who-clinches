@@ -453,7 +453,7 @@ Expected Result (based on 2025 data as of testing):
 **Valid Request (All Games):**
 
 ```bash
-curl -X GET "{BASE_URL}/api/cron/update-games?allGames=true" \
+curl -X GET "{BASE_URL}/api/cron/update-games?mode=season" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 

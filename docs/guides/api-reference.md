@@ -438,12 +438,15 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 
 **Query Parameters:**
 
-- `allGames` (boolean, optional): If `true`, updates all games in current week (completed, in-progress, pre-game). If `false` or missing, only updates incomplete games.
+- `mode` (string, optional): Update mode. Options:
+  - `active` (default): Only updates incomplete games for current season
+  - `week`: Pulls/updates current week only (no past, no future)
+  - `season`: Pulls/updates entire season (all weeks, creates new games)
 
 **Schedule:**
 
-- **Hobby Plan**: Called via `/api/cron/update-all` daily at 10:00 PM ET (`0 2 * * *` UTC) with `allGames=true`
-- **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET (without `allGames`, only incomplete games)
+- **Hobby Plan**: Called via `/api/cron/update-all` daily at 10:00 PM ET (`0 2 * * *` UTC) with `mode=season`
+- **Pro Plan**: Every 5 minutes Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET (default `active` mode, only incomplete games)
 
 **Response:**
 
@@ -491,9 +494,9 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 
 **Logic:**
 
-- If `allGames=true`: Queries all conference games in current week
-- If `allGames=false` or missing: Queries only incomplete conference games for current season
-- Fetches current week's scoreboard from ESPN
+- If `mode=season`: Pulls entire season (all weeks) from ESPN and upserts all games
+- If `mode=week`: Pulls current week only from ESPN and upserts games
+- If `mode=active` or missing: Queries only incomplete conference games for current season, fetches current week's scoreboard from ESPN
 - Compares ESPN data with database
 - Updates only if changes detected
 - Recalculates `predictedScore` for all games (uses real scores if game started scoring)
@@ -569,15 +572,21 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 ```json
 {
   "success": true,
-  "jobsRun": 3,
-  "jobsSucceeded": 3,
+  "jobsRun": 4,
+  "jobsSucceeded": 4,
   "totalDuration": 15000,
   "results": [
     {
-      "job": "update-games",
+      "job": "pull-teams",
       "success": true,
       "status": 200,
       "duration": 200
+    },
+    {
+      "job": "update-games-season",
+      "success": true,
+      "status": 200,
+      "duration": 5000
     },
     {
       "job": "update-rankings",
@@ -586,14 +595,13 @@ Updates scores, states, and odds for games. Can update all games or just incompl
       "duration": 12000
     },
     {
-      "job": "update-test-data",
+      "job": "update-spreads",
       "success": true,
       "status": 200,
       "duration": 2800
     }
   ],
-  "lastUpdated": "2025-11-13T04:00:00.000Z",
-  "note": "update-test-data automatically triggers reshape tests in background"
+  "lastUpdated": "2025-11-13T04:00:00.000Z"
 }
 ```
 
@@ -606,13 +614,13 @@ Updates scores, states, and odds for games. Can update all games or just incompl
 | `totalDuration` | number | Total execution time in milliseconds |
 | `results` | array | Array of job results with `job`, `success`, `status`, `duration` |
 | `lastUpdated` | string | ISO timestamp of batch execution |
-| `note` | string | Optional informational message |
 
 **Jobs Executed:**
 
-1. **update-games** (with `allGames=true`): Updates all games for current week
-2. **update-rankings**: Updates team rankings and standings
-3. **update-test-data**: Updates test data snapshots and triggers reshape tests
+1. **pull-teams**: Pulls all SEC teams from ESPN API
+2. **update-games** (with `mode=season`): Pulls/updates entire season (all weeks)
+3. **update-rankings**: Updates team rankings and standings
+4. **update-spreads**: Updates game spreads and betting odds
 
 **Error Handling:**
 

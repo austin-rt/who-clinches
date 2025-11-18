@@ -19,15 +19,15 @@ Tests all cron job endpoints for data updates, authentication, error handling, a
 
 Updates scores for games. Can update all games or just incomplete ones.
 
-### Local Test (All Games - for daily batch)
+### Local Test (Season Mode - for daily batch)
 
 ```bash
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
+curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
-### Local Test (Incomplete Games Only - for frequent updates)
+### Local Test (Active Mode - for frequent updates, incomplete games only)
 
 ```bash
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
@@ -285,7 +285,7 @@ curl "http://localhost:3000/api/games?season=2025&week=11&state=in" | jq '.event
 
 # Run cron
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
+curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
   -H "Authorization: Bearer ${CRON_SECRET}"
 
 # After cron
@@ -347,7 +347,7 @@ Tests that Vercel cron schedules are properly configured.
 - [ ] `update-all`: Daily at 2:00 AM UTC (10:00 PM ET previous day)
 - [ ] Only 1 cron (Hobby plan allows 2, but we batch everything into one)
 - [ ] Cron shows as "Active" in Vercel dashboard
-- [ ] Batch endpoint calls: `update-games?allGames=true`, `update-rankings`, `update-test-data`
+- [ ] Batch endpoint calls: `pull-teams`, `update-games?mode=season`, `update-rankings`, `update-spreads`
 
 ---
 
@@ -489,7 +489,7 @@ CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 # Run cron 3 times in a row
 for i in {1..3}; do
   echo "Run $i:"
-  curl -X GET "http://localhost:3000/api/cron/update-games?allGames=true" \
+  curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
     -H "Authorization: Bearer ${CRON_SECRET}" | jq .
   sleep 2
 done
@@ -613,7 +613,7 @@ curl -X GET "http://localhost:3000/api/cron/update-all" \
 
 ### Local Testing
 
-- [ ] Test 1: Update games cron (allGames=true and default)
+- [ ] Test 1: Update games cron (mode=season and mode=active/default)
 - [ ] Test 2: Update rankings cron
 - [ ] Test 3: Auth - missing token
 - [ ] Test 4: Auth - invalid token
