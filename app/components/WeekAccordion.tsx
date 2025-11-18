@@ -14,11 +14,7 @@ const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
 
   return (
     <div className="collapse collapse-arrow bg-base-200">
-      <input
-        type="checkbox"
-        checked={isOpen}
-        onChange={(e) => setIsOpen(e.target.checked)}
-      />
+      <input type="checkbox" checked={isOpen} onChange={(e) => setIsOpen(e.target.checked)} />
       <div className="collapse-title text-lg font-semibold">
         Week {weekNumber} ({games.length} {games.length === 1 ? 'game' : 'games'})
       </div>
@@ -36,4 +32,3 @@ const WeekAccordion = ({ weekNumber, games }: WeekAccordionProps) => {
 };
 
 export default WeekAccordion;
-
