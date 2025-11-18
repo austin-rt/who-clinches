@@ -8,6 +8,11 @@ import { TeamMetadata, StandingEntry, GamesResponse } from '@/lib/api-types';
 export type ThemeMode = 'light' | 'dark';
 
 /**
+ * View mode type for picks/scores view switching
+ */
+export type ViewMode = 'picks' | 'scores';
+
+/**
  * Game from API response
  */
 export interface GameFromResponse {
