@@ -36,7 +36,7 @@ export default function RootLayout({
           <ThemeInitializer />
           <ThemeSync />
           <Header />
-          <main className="h-full flex-1">{children}</main>
+          <main className="flex-1">{children}</main>
           <Footer />
         </StoreProvider>
       </body>
