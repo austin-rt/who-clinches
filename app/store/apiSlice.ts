@@ -5,6 +5,7 @@ import {
   SimulateRequest,
   SimulateResponse,
 } from '@/lib/api-types';
+import { setLastUpdated } from './uiSlice';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -25,6 +26,16 @@ export const apiSlice = createApi({
 
         const queryString = searchParams.toString();
         return `games${queryString ? `?${queryString}` : ''}`;
+      },
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.lastUpdated) {
+            dispatch(setLastUpdated(data.lastUpdated));
+          }
+        } catch {
+          // Ignore errors - don't update lastUpdated if query fails
+        }
       },
       providesTags: ['Games'],
     }),
