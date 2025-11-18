@@ -2,22 +2,22 @@
 
 import { useState } from 'react';
 import { GameLean } from '@/lib/types';
-import WeekAccordion from './WeekAccordion';
+import DaySection from './DaySection';
 
-type Week = [number, GameLean[]];
+type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
 
 interface FinalWeeksProps {
-  weeks: Week[];
+  weekDays: WeekDay[];
 }
 
-const FinalWeeks = ({ weeks }: FinalWeeksProps) => {
+const FinalWeeks = ({ weekDays }: FinalWeeksProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  if (weeks.length === 0) {
+  if (weekDays.length === 0) {
     return null;
   }
 
-  const totalGames = weeks.reduce((sum, week) => sum + week[1].length, 0);
+  const totalGames = weekDays.reduce((sum, weekDay) => sum + weekDay.games.length, 0);
 
   return (
     <div className="collapse collapse-arrow mb-4 bg-base-200">
@@ -26,10 +26,17 @@ const FinalWeeks = ({ weeks }: FinalWeeksProps) => {
         Final ({totalGames} {totalGames === 1 ? 'game' : 'games'})
       </div>
       <div className="collapse-content">
-        <div className="space-y-4 pt-2">
-          {weeks.map((week) => (
-            <WeekAccordion key={week[0]} weekNumber={week[0]} games={week[1]} />
-          ))}
+        <div className="space-y-6 pt-2">
+          {weekDays
+            .filter((weekDay) => weekDay.games.length > 0)
+            .map((weekDay, index) => (
+              <DaySection
+                key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}-${index}`}
+                weekNumber={weekDay.weekNumber}
+                games={weekDay.games}
+                dayLabel={weekDay.dayLabel}
+              />
+            ))}
         </div>
       </div>
     </div>

@@ -1,20 +1,20 @@
 'use client';
 
 import { GameLean } from '@/lib/types';
-import WeekAccordion from './WeekAccordion';
+import DaySection from './DaySection';
 
-type Week = [number, GameLean[]];
+type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
 
 interface RemainingWeeksProps {
-  weeks: Week[];
+  weekDays: WeekDay[];
 }
 
-const RemainingWeeks = ({ weeks }: RemainingWeeksProps) => {
-  if (weeks.length === 0) {
+const RemainingWeeks = ({ weekDays }: RemainingWeeksProps) => {
+  if (weekDays.length === 0) {
     return null;
   }
 
-  const totalGames = weeks.reduce((sum, week) => sum + week[1].length, 0);
+  const totalGames = weekDays.reduce((sum, weekDay) => sum + weekDay.games.length, 0);
 
   return (
     <div className="collapse collapse-open mb-4 bg-base-200">
@@ -22,10 +22,17 @@ const RemainingWeeks = ({ weeks }: RemainingWeeksProps) => {
         Remaining ({totalGames} {totalGames === 1 ? 'game' : 'games'})
       </div>
       <div className="collapse-content">
-        <div className="space-y-4 pt-2">
-          {weeks.map((week) => (
-            <WeekAccordion key={week[0]} weekNumber={week[0]} games={week[1]} />
-          ))}
+        <div className="space-y-6 pt-2">
+          {weekDays
+            .filter((weekDay) => weekDay.games.length > 0)
+            .map((weekDay, index) => (
+              <DaySection
+                key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}-${index}`}
+                weekNumber={weekDay.weekNumber}
+                games={weekDay.games}
+                dayLabel={weekDay.dayLabel}
+              />
+            ))}
         </div>
       </div>
     </div>
