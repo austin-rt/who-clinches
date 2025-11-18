@@ -80,7 +80,7 @@ const GamesList = ({ season, conferenceId }: GamesListProps) => {
   }, [filteredGames]);
 
   // Handle loading state
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center py-8">
         <LoadingSpinner size="h-12 w-12" />
