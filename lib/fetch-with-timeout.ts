@@ -12,11 +12,11 @@
 
 const DEFAULT_TIMEOUT_MS = 60000; // 60 seconds
 
-export async function fetchWithTimeout(
+export const fetchWithTimeout = async (
   url: string | URL,
   options: RequestInit = {},
   timeoutMs: number = DEFAULT_TIMEOUT_MS
-): Promise<Response> {
+): Promise<Response> => {
   // Create an AbortController for timeout
   const controller = new AbortController();
   const timeoutId = setTimeout(() => {
@@ -55,25 +55,23 @@ export async function fetchWithTimeout(
 
     // Check if the error was due to timeout
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(
-        `Request timeout: ${url} did not complete within ${timeoutMs}ms`
-      );
+      throw new Error(`Request timeout: ${url} did not complete within ${timeoutMs}ms`);
     }
 
     // Re-throw other errors
     throw error;
   }
-}
+};
 
 /**
  * Fetch with timeout that also handles JSON parsing
  * Convenience wrapper for common use case
  */
-export async function fetchJSONWithTimeout<T = unknown>(
+export const fetchJSONWithTimeout = async <T = unknown>(
   url: string | URL,
   options: RequestInit = {},
   timeoutMs: number = DEFAULT_TIMEOUT_MS
-): Promise<T> {
+): Promise<T> => {
   const response = await fetchWithTimeout(url, options, timeoutMs);
 
   if (!response.ok) {
@@ -82,5 +80,4 @@ export async function fetchJSONWithTimeout<T = unknown>(
   }
 
   return response.json() as Promise<T>;
-}
-
+};
