@@ -32,6 +32,7 @@ const eslintConfig = defineConfig([
       'no-unreachable': 'error',
       'require-await': 'error',
       'react/no-unescaped-entities': 'off',
+      'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     },
   },
   {
@@ -46,6 +47,13 @@ const eslintConfig = defineConfig([
     files: ['**/*.js', 'scripts/**/*.js', 'jest.config.js'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
+      'func-style': 'off', // Allow function declarations in scripts
+    },
+  },
+  {
+    files: ['scripts/**/*.ts'],
+    rules: {
+      'func-style': 'off', // Allow function declarations in TypeScript scripts
     },
   },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
