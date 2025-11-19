@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import StoreProvider from './components/StoreProvider';
-import ThemeInitializer from './components/ThemeInitializer';
 import ThemeSync from './components/ThemeSync';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -33,7 +32,6 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex h-full min-h-screen flex-col antialiased`}
       >
         <StoreProvider>
-          <ThemeInitializer />
           <ThemeSync />
           <Header />
           <main className="flex-1">{children}</main>
