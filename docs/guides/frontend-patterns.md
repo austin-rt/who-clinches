@@ -35,18 +35,18 @@ app/
 │   ├── RemainingWeeks.tsx         # Upcoming games section
 │   ├── Score.tsx                  # Editable score component
 │   ├── Team.tsx                   # Team logo/name display
-│   ├── ThemeInitializer.tsx       # Redux-localStorage sync
+│   ├── SimulateButton.tsx         # Simulation trigger button
 │   ├── ThemeSync.tsx              # Theme DOM sync
 │   └── ViewToggle.tsx             # View mode switcher
-├── hooks/
-│   └── useLocalStorage.ts         # Generic localStorage sync hook
 ├── store/                         # Redux state management
 │   ├── apiSlice.ts                # RTK Query API slice
 │   ├── gamePicksSlice.ts          # Game picks state
 │   ├── hooks.ts                   # Typed Redux hooks
-│   ├── store.ts                   # Redux store config
+│   ├── store.ts                   # Redux store config with redux-persist
 │   ├── uiSlice.ts                 # UI state (theme, mode, view)
 │   └── useUI.ts                   # UI state selector hook
+├── components/
+│   └── StoreProvider.tsx          # Redux Provider with PersistGate
 ├── page.tsx                       # Home page
 └── layout.tsx                     # Root layout with providers
 ```
@@ -54,6 +54,14 @@ app/
 ---
 
 ## State Management
+
+### Store Provider
+
+**StoreProvider** (`app/components/StoreProvider.tsx`):
+- Wraps app with Redux `Provider`
+- Includes `PersistGate` from redux-persist for SSR-safe hydration
+- Automatically restores persisted state from localStorage on app load
+- `loading={null}` prevents flash of unstyled content during hydration
 
 ### Redux Store Structure
 
@@ -114,25 +122,60 @@ import { setGamePick } from '@/app/store/gamePicksSlice';
 dispatch(setGamePick({ gameId: game.espnId, pick: { homeScore: 24, awayScore: 21 } }));
 ```
 
-### localStorage Synchronization
+### State Persistence with redux-persist
 
-**Pattern**: `useLocalStorage` hook syncs Redux state with localStorage
+**Pattern**: redux-persist automatically syncs Redux state with localStorage
 
-**Implementation** (`app/hooks/useLocalStorage.ts`):
-- Reads from localStorage on mount
-- Writes to localStorage on change
-- SSR-safe (handles hydration mismatches)
+**Implementation** (`app/store/store.ts`):
+- Uses `persistReducer` to wrap ui and gamePicks slices
+- Automatically reads from localStorage on app load
+- Automatically writes to localStorage on state changes
+- SSR-safe via `PersistGate` component
 - Single source of truth (Redux)
 
-**Usage:**
+**Configuration:**
 ```typescript
-const [view, setViewValue] = useLocalStorage<ViewMode>(
-  'sec-tiebreaker-view',
-  'picks',
-  setView,
-  (state) => state.ui.view
-);
+// UI slice persisted, excluding lastUpdated (server data)
+const uiPersistConfig = {
+  key: 'ui',
+  storage,
+  blacklist: ['lastUpdated'],
+};
+
+// Game picks slice fully persisted
+const gamePicksPersistConfig = {
+  key: 'gamePicks',
+  storage,
+};
 ```
+
+**localStorage Keys:**
+- `persist:ui` - UI preferences (theme, mode, view, hideCompletedGames)
+- `persist:gamePicks` - User game picks/overrides
+- Keys are prefixed with `persist:` by redux-persist
+
+**Middleware Configuration:**
+The store configures `serializableCheck` to ignore redux-persist actions:
+```typescript
+serializableCheck: {
+  ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
+}
+```
+
+**Usage:**
+Components dispatch Redux actions normally - persistence is automatic:
+```typescript
+import { useAppDispatch } from '@/app/store/hooks';
+import { setView } from '@/app/store/uiSlice';
+
+dispatch(setView('scores')); // Automatically persisted to localStorage
+```
+
+**Important Notes:**
+- API slice (RTK Query) is NOT persisted - cache is ephemeral
+- `lastUpdated` field in UI state is blacklisted (server data, not user preference)
+- Persistence happens automatically on every state change - no manual localStorage calls needed
+- State is restored on app load via `PersistGate` before rendering children
 
 ---
 
@@ -187,7 +230,7 @@ return <span>{score}</span>;
 ### Hide Completed Games Toggle
 - Button with dynamic text
 - Only affects picks mode
-- Preference persisted to localStorage
+- Preference persisted via redux-persist
 
 ### Compact Game Cards
 - Fixed size: `w-[230px] h-[110px]`
@@ -222,14 +265,14 @@ return <span>{score}</span>;
 2. `CompactGameButton` calculates scores
 3. Dispatches `setGamePick` to Redux
 4. Redux state updates
-5. `useLocalStorage` persists to localStorage
+5. redux-persist automatically persists to localStorage
 6. Component re-renders with new selection
 
 ### Score Editing Flow
 1. User edits score input in scores mode
 2. `Score` component validates on blur
 3. If valid: Dispatches `setGamePick` to Redux
-4. Redux state updates → `useLocalStorage` persists
+4. Redux state updates → redux-persist automatically persists
 5. Component re-renders with new score
 
 ---
