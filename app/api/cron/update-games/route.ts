@@ -74,12 +74,12 @@ export const GET = async (request: NextRequest) => {
 /**
  * Handle season mode: Pull entire season (all weeks, upsert)
  */
-async function handleSeasonMode(
+const handleSeasonMode = async (
   season: number,
   sport: string,
   league: string,
   conferenceId: number
-): Promise<NextResponse<CronGamesResponse>> {
+): Promise<NextResponse<CronGamesResponse>> => {
   const client = createESPNClient(sport, league);
 
   // Get all weeks from ESPN calendar
@@ -234,12 +234,12 @@ async function handleSeasonMode(
 /**
  * Handle week mode: Pull current week only (determine from ESPN calendar)
  */
-async function handleWeekMode(
+const handleWeekMode = async (
   season: number,
   sport: string,
   league: string,
   conferenceId: number
-): Promise<NextResponse<CronGamesResponse>> {
+): Promise<NextResponse<CronGamesResponse>> => {
   const client = createESPNClient(sport, league);
 
   // Get current week from ESPN calendar
@@ -449,12 +449,12 @@ async function handleWeekMode(
 /**
  * Handle active mode: Only update incomplete games (existing behavior)
  */
-async function handleActiveMode(
+const handleActiveMode = async (
   season: number,
   sport: string,
   league: string,
   conferenceId: number
-): Promise<NextResponse<CronGamesResponse>> {
+): Promise<NextResponse<CronGamesResponse>> => {
   // Query only incomplete games
   const gamesRaw = await Game.find({
     season: season,
