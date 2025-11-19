@@ -55,7 +55,7 @@ This is a specialized college football application built for simulating SEC conf
 - Models: `lib/models/Game.ts`, `lib/models/Team.ts`, `lib/types.ts`
 - ESPN: `lib/espn-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams.ts`, `lib/constants.ts`
 - Tiebreaker: `lib/tiebreaker-helpers.ts` - SEC rules A-E
-- Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice), `app/hooks/useLocalStorage.ts`
+- Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
 - Cron: Auth `Bearer ${CRON_SECRET}`, schedules in `vercel.json`/`vercel.pro.json`
 
 **Constraints:**
@@ -75,7 +75,7 @@ This is a specialized college football application built for simulating SEC conf
 - **Type Casting**: `.lean<GameLean[]>()` for MongoDB queries
 - **Redux**: `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
 - **UI State**: `useUIState()` hook from `app/store/useUI.ts`
-- **localStorage**: `useLocalStorage<T>(key, defaultValue, action, selector)`
+- **State Persistence**: redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
 - **RTK Query**: `useGetGamesQuery()`, `useSimulateMutation()` from `app/store/apiSlice.ts`
 
 ### **Frontend Component Pattern**
