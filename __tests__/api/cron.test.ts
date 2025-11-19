@@ -20,10 +20,10 @@ if (!CRON_SECRET) {
 const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
 
 // Helper to make unauthenticated cron requests (for testing auth failures)
-function fetchUnauthenticatedCronAPI(
+const fetchUnauthenticatedCronAPI = (
   endpoint: string,
   options: RequestInit & { method?: string } = {}
-): Promise<Response> {
+): Promise<Response> => {
   const url = `http://localhost:3000${endpoint}`;
   return fetchWithTimeout(
     url,
@@ -36,7 +36,7 @@ function fetchUnauthenticatedCronAPI(
     },
     REQUEST_TIMEOUT_MS
   );
-}
+};
 
 describe('Cron Job Endpoints', () => {
   describe('Authorization', () => {

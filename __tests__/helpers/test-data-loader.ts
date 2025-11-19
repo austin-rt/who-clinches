@@ -20,7 +20,7 @@ const SEASON = 2025;
 /**
  * Load scoreboard test data from test database
  */
-export async function loadScoreboardTestData(): Promise<EspnScoreboardGenerated> {
+export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated> => {
   await dbConnectTest();
   const Model = await getESPNScoreboardTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -32,12 +32,12 @@ export async function loadScoreboardTestData(): Promise<EspnScoreboardGenerated>
   }
 
   return data.response;
-}
+};
 
 /**
  * Load team test data from test database
  */
-export async function loadTeamTestData(): Promise<EspnTeamGenerated> {
+export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
   await dbConnectTest();
   const Model = await getESPNTeamTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -49,12 +49,12 @@ export async function loadTeamTestData(): Promise<EspnTeamGenerated> {
   }
 
   return data.response;
-}
+};
 
 /**
  * Load game summary test data from test database
  */
-export async function loadGameSummaryTestData(): Promise<EspnGameSummaryGenerated> {
+export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerated> => {
   await dbConnectTest();
   const Model = await getESPNGameSummaryTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -66,12 +66,12 @@ export async function loadGameSummaryTestData(): Promise<EspnGameSummaryGenerate
   }
 
   return data.response;
-}
+};
 
 /**
  * Load team records test data from test database
  */
-export async function loadTeamRecordsTestData(): Promise<EspnTeamRecordsGenerated> {
+export const loadTeamRecordsTestData = async (): Promise<EspnTeamRecordsGenerated> => {
   await dbConnectTest();
   const Model = await getESPNTeamRecordsTestData();
   const data = await Model.findOne({ season: SEASON });
@@ -88,10 +88,10 @@ export async function loadTeamRecordsTestData(): Promise<EspnTeamRecordsGenerate
 /**
  * Check if test data exists for all required types
  */
-export async function checkTestDataAvailable(): Promise<{
+export const checkTestDataAvailable = async (): Promise<{
   available: boolean;
   missing: string[];
-}> {
+}> => {
   await dbConnectTest();
   const missing: string[] = [];
 
@@ -115,4 +115,4 @@ export async function checkTestDataAvailable(): Promise<{
     available: missing.length === 0,
     missing,
   };
-}
+};

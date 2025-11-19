@@ -17,10 +17,10 @@ const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
  * Automatically adds bypass token for preview/production deployments
  * Includes 60-second timeout to prevent hanging requests
  */
-export async function fetchAPI<T = unknown>(
+export const fetchAPI = async <T = unknown>(
   endpoint: string,
   options: RequestInit & { method?: string } = {}
-): Promise<T> {
+): Promise<T> => {
   let url = `${BASE_URL}${endpoint}`;
 
   // Add bypass token for preview/production deployments
@@ -53,48 +53,48 @@ export async function fetchAPI<T = unknown>(
   }
 
   return response.json() as Promise<T>;
-}
+};
 
 /**
  * Create test override scores for simulation
  */
-export function createOverride(
+export const createOverride = (
   gameEspnId: string,
   homeScore: number,
   awayScore: number
-): [string, { homeScore: number; awayScore: number }] {
+): [string, { homeScore: number; awayScore: number }] => {
   return [gameEspnId, { homeScore, awayScore }];
-}
+};
 
 /**
  * Sleep helper for timing issues
  */
-export function sleep(ms: number): Promise<void> {
+export const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
+};
 
 /**
  * Validate required fields in an object
  */
-export function validateFields<T extends Record<string, unknown>>(
+export const validateFields = <T extends Record<string, unknown>>(
   obj: T,
   requiredFields: (keyof T)[]
-): { valid: boolean; missingFields: (keyof T)[] } {
+): { valid: boolean; missingFields: (keyof T)[] } => {
   const missingFields = requiredFields.filter((field) => !(field in obj));
   return {
     valid: missingFields.length === 0,
     missingFields,
   };
-}
+};
 
 /**
  * Validate nested required fields using dot-notation paths
  * Example: ['espnId', 'venue.fullName', 'home.teamEspnId']
  */
-export function validateNestedFields(
+export const validateNestedFields = (
   obj: Record<string, unknown>,
   requiredPaths: string[]
-): { valid: boolean; missingPaths: string[]; errors: string[] } {
+): { valid: boolean; missingPaths: string[]; errors: string[] } => {
   const missingPaths: string[] = [];
   const errors: string[] = [];
 
@@ -111,13 +111,13 @@ export function validateNestedFields(
     missingPaths,
     errors,
   };
-}
+};
 
 /**
  * Get nested value from object using dot-notation path
  * Example: getNestedValue(obj, 'venue.fullName') => obj.venue.fullName
  */
-function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
   const parts = path.split('.');
   let current: unknown = obj;
 
@@ -132,7 +132,7 @@ function getNestedValue(obj: Record<string, unknown>, path: string): unknown {
   }
 
   return current;
-}
+};
 
 // Global test configuration
 beforeAll(() => {

@@ -15,7 +15,7 @@ let isConnected = false;
  * Start in-memory MongoDB server
  * Call in beforeAll() hook
  */
-export async function startMongoMemoryServer() {
+export const startMongoMemoryServer = async () => {
   if (mongoServer) {
     return mongoServer.getUri();
   }
@@ -29,13 +29,13 @@ export async function startMongoMemoryServer() {
   }
 
   return mongoUri;
-}
+};
 
 /**
  * Stop in-memory MongoDB server
  * Call in afterAll() hook
  */
-export async function stopMongoMemoryServer() {
+export const stopMongoMemoryServer = async () => {
   if (isConnected && mongoose.connection.readyState === 1) {
     await mongoose.disconnect();
     isConnected = false;
@@ -45,13 +45,13 @@ export async function stopMongoMemoryServer() {
     await mongoServer.stop();
     mongoServer = null;
   }
-}
+};
 
 /**
  * Clear all collections
  * Call in beforeEach() to ensure clean state
  */
-export async function clearMongoMemoryServerData() {
+export const clearMongoMemoryServerData = async () => {
   if (mongoose.connection.readyState === 1) {
     const collections = mongoose.connection.collections;
     for (const key in collections) {
@@ -59,25 +59,25 @@ export async function clearMongoMemoryServerData() {
       await collection.deleteMany({});
     }
   }
-}
+};
 
 /**
  * Get current MongoDB connection URI
  */
-export function getMongoMemoryServerUri(): string {
+export const getMongoMemoryServerUri = (): string => {
   if (!mongoServer) {
     throw new Error('MongoDB Memory Server not started. Call startMongoMemoryServer() first.');
   }
   return mongoServer.getUri();
-}
+};
 
 /**
  * Insert test data into MongoDB
  */
-export async function insertTestData<T extends Record<string, unknown>>(
+export const insertTestData = async <T extends Record<string, unknown>>(
   collectionName: string,
   data: T | T[]
-): Promise<mongoose.mongo.InsertManyResult | mongoose.mongo.InsertOneResult> {
+): Promise<mongoose.mongo.InsertManyResult | mongoose.mongo.InsertOneResult> => {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error('MongoDB not connected');
@@ -89,15 +89,15 @@ export async function insertTestData<T extends Record<string, unknown>>(
     : await collection.insertOne(data as mongoose.mongo.BSON.Document);
 
   return result;
-}
+};
 
 /**
  * Query test data from MongoDB
  */
-export async function queryTestData<T = Record<string, unknown>>(
+export const queryTestData = async <T = Record<string, unknown>>(
   collectionName: string,
   filter: Record<string, unknown> = {}
-): Promise<T[]> {
+): Promise<T[]> => {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error('MongoDB not connected');
@@ -105,15 +105,15 @@ export async function queryTestData<T = Record<string, unknown>>(
 
   const collection = db.collection(collectionName);
   return (await collection.find(filter).toArray()) as T[];
-}
+};
 
 /**
  * Count documents in collection
  */
-export async function countTestData(
+export const countTestData = async (
   collectionName: string,
   filter: Record<string, unknown> = {}
-): Promise<number> {
+): Promise<number> => {
   const db = mongoose.connection.db;
   if (!db) {
     throw new Error('MongoDB not connected');
@@ -121,22 +121,22 @@ export async function countTestData(
 
   const collection = db.collection(collectionName);
   return await collection.countDocuments(filter);
-}
+};
 
 /**
  * Setup helper for test suites
  * Usage in beforeEach():
  *   await setupMongoTestEnv();
  */
-export async function setupMongoTestEnv() {
+export const setupMongoTestEnv = async () => {
   await clearMongoMemoryServerData();
-}
+};
 
 /**
  * Teardown helper for test suites
  * Usage in afterEach():
  *   await teardownMongoTestEnv();
  */
-export async function teardownMongoTestEnv() {
+export const teardownMongoTestEnv = async () => {
   await clearMongoMemoryServerData();
-}
+};
