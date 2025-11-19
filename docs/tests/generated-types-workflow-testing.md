@@ -3,10 +3,10 @@
 Tests the automated GitHub Actions workflow that generates ESPN types, compares snapshots, and creates PRs when ESPN API types change.
 
 **Related Documentation:**
-- [ESPN API Integration](../ai-guide.md#espn-api-integration) - Overview of type generation system
+- [AI Guide](../ai-guide.md) - Development guidelines including ESPN integration
+- [AI Loading Manifest](../ai-loading-manifest.md) - Documentation loading strategy for AI agents
 - [ESPN API Testing](./espn-api-testing.md) - Field verification patterns
 - [ESPN Data Pipeline](./espn-data-pipeline.md) - Data transformation testing
-- [Navigation Hub](../navigation-hub.md) - Complete documentation index
 
 **Workflow File:** `.github/workflows/update-espn-types.yml`
 
