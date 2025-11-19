@@ -2,23 +2,18 @@
 
 import { BsTrophy } from 'react-icons/bs';
 import { MdOutlineScoreboard } from 'react-icons/md';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAppDispatch } from '../store/hooks';
 import { setView } from '../store/uiSlice';
-import { ViewMode } from '@/types/frontend';
 import { useUIState } from '@/app/store/useUI';
 
 const ViewToggle = () => {
-  const { mode } = useUIState();
-  const [view, setViewValue] = useLocalStorage<ViewMode>(
-    'sec-tiebreaker-view',
-    'picks',
-    setView,
-    (state) => state.ui.view
-  );
+  const dispatch = useAppDispatch();
+  const { mode, view } = useUIState();
 
   const handleClick = () => {
     const newView = view === 'picks' ? 'scores' : 'picks';
-    setViewValue(newView);
+    dispatch(setView(newView));
+    // localStorage persistence handled by localStorageMiddleware
   };
 
   // Determine icon colors based on mode (same pattern as DarkModeToggle)

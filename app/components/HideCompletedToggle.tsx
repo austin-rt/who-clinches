@@ -1,20 +1,16 @@
 'use client';
 
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useAppDispatch } from '../store/hooks';
 import { setHideCompletedGames } from '../store/uiSlice';
 import { useUIState } from '@/app/store/useUI';
 
 const HideCompletedToggle = () => {
-  const { view } = useUIState();
-  const [hideCompletedGames, setHideCompletedGamesValue] = useLocalStorage<boolean>(
-    'sec-tiebreaker-hide-completed',
-    false,
-    setHideCompletedGames,
-    (state) => state.ui.hideCompletedGames
-  );
+  const dispatch = useAppDispatch();
+  const { view, hideCompletedGames } = useUIState();
 
   const handleClick = () => {
-    setHideCompletedGamesValue(!hideCompletedGames);
+    dispatch(setHideCompletedGames(!hideCompletedGames));
+    // localStorage persistence handled by localStorageMiddleware
   };
 
   // Only show in picks mode

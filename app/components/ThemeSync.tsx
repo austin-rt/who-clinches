@@ -7,12 +7,12 @@ const ThemeSync = () => {
   const { theme, mode } = useAppSelector((state) => state.ui);
 
   useEffect(() => {
-    // Sync theme to DOM (localStorage is handled by useLocalStorage hook)
+    // Sync theme to DOM (localStorage persistence handled by localStorageMiddleware)
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
   useEffect(() => {
-    // Sync mode to DOM (localStorage is handled by useLocalStorage hook)
+    // Sync mode to DOM (localStorage persistence handled by localStorageMiddleware)
     document.documentElement.setAttribute('data-mode', mode);
   }, [mode]);
 
