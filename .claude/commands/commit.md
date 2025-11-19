@@ -9,12 +9,14 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 ## Critical Requirements
 
 1. **Run validation upfront** - Execute `npm run lint`, `npx tsc --noEmit`, and `npm run test:all` BEFORE any commits
-2. **Use --no-verify flag** - Always use `--no-verify` on all git commits to skip husky pre-commit hooks (validation already done)
-3. **Execute commits** - Use `run_terminal_cmd` tool to run git commands, DO NOT generate code blocks
-4. **Sequential execution** - Run one commit at a time, verify success before proceeding
-5. **Stop on failure** - If any commit fails, halt execution and report the error
-6. **Minimal commits** - Each commit must be the smallest logical unit that doesn't break the build
-7. **File deletions are last** - NEVER delete files until the very end, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted.
+2. **Tests cannot be skipped** - NEVER skip tests on the first validation run, even if you think they are not needed or are failing due to environment issues. All tests must be executed and pass before proceeding.
+3. **Server management** - If tests require a running server and it's not running, start the development server before running tests. After all commits are complete, kill the server process.
+4. **Use --no-verify flag** - Always use `--no-verify` on all git commits to skip husky pre-commit hooks (validation already done)
+5. **Execute commits** - Use `run_terminal_cmd` tool to run git commands, DO NOT generate code blocks
+6. **Sequential execution** - Run one commit at a time, verify success before proceeding
+7. **Stop on failure** - If any commit fails, halt execution and report the error
+8. **Minimal commits** - Each commit must be the smallest logical unit that doesn't break the build
+9. **File deletions are last** - NEVER delete files until the very end, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted.
 
 ## Commit Grouping Rules
 
@@ -58,7 +60,17 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 
 ### Step 1: Pre-Commit Validation (Run Once Upfront)
 
-Run all validation checks before attempting any commits:
+**Check if server is needed:** If tests require a running server (e.g., API integration tests), check if the server is running. If not, start it in the background:
+
+```
+run_terminal_cmd(
+  command: "npm run dev",
+  required_permissions: ["all"],
+  is_background: true
+)
+```
+
+Wait a few seconds for the server to start, then run all validation checks:
 
 ```
 run_terminal_cmd(
@@ -120,7 +132,18 @@ Check exit code. If failure:
 - Report error
 - Do not proceed to next commit
 
-### Step 6: Report
+### Step 6: Cleanup
+
+If a development server was started in Step 1, kill it now:
+
+```
+run_terminal_cmd(
+  command: "pkill -f 'next dev' || pkill -f 'npm run dev' || true",
+  required_permissions: ["all"]
+)
+```
+
+### Step 7: Report
 
 Summarize executed commits:
 
