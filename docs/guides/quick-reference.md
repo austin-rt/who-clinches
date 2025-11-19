@@ -14,7 +14,7 @@ Domain-specific content locations for common tasks.
 ## API Development
 
 - **Endpoint reference**: `docs/guides/api-reference.md`
-- **API architecture**: `docs/plans/api-foundation.md`
+- **API architecture**: `docs/plans/api-foundation.md` (historical reference)
 - **Request/response types**: `lib/api-types.ts`
 
 ## ESPN Integration
@@ -53,7 +53,7 @@ Domain-specific content locations for common tasks.
 ## Project Setup
 
 - **AI guide**: `docs/ai-guide.md`
-- **Navigation**: `docs/navigation-hub.md`
+- **AI loading manifest**: `docs/ai-loading-manifest.md`
 - **Tech spec**: `docs/plans/tech-spec.md` (historical)
 
 ## Common Commands
