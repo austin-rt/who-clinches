@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import GamesList from './components/GamesList';
 import ViewToggle from './components/ViewToggle';
 import HideCompletedToggle from './components/HideCompletedToggle';
+import SimulateButton from './components/SimulateButton';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 
@@ -29,6 +30,7 @@ const Home = () => {
       <div className="flex w-fit flex-col gap-4">
         <ViewToggle />
         <HideCompletedToggle />
+        <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
       </div>
 
       <GamesList season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
