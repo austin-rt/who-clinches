@@ -47,7 +47,7 @@ sec-tiebreaker/
 │       ├── Game.ts              # Game schema
 │       ├── Team.ts              # Team schema
 │       └── Error.ts             # Error logging schema
-└── docs/                        # Documentation (see docs/navigation-hub.md)
+└── docs/                        # Documentation (see docs/ai-loading-manifest.md)
 ```
 
 ## Getting Started
@@ -302,7 +302,10 @@ Fetch team data from ESPN and store in database.
     spread: number | null,
     overUnder: number | null
   },
-  lastUpdated: Date
+  predictedScore?: {
+    home: number,
+    away: number
+  }
 }
 ```
 
@@ -352,7 +355,8 @@ npm run lint
 
 ## Documentation
 
-- **Getting Started**: See [docs/navigation-hub.md](docs/navigation-hub.md) for complete documentation index
+- **Getting Started**: See [docs/ai-guide.md](docs/ai-guide.md) for AI development guidelines
+- **Documentation Loading**: See [docs/ai-loading-manifest.md](docs/ai-loading-manifest.md) for documentation structure
 - **API Reference**: [docs/guides/api-reference.md](docs/guides/api-reference.md) - Complete endpoint documentation
 - **Technical Spec**: [docs/plans/tech-spec.md](docs/plans/tech-spec.md) - Comprehensive technical specification
 - **AI Development Guide**: [docs/ai-guide.md](docs/ai-guide.md) - AI assistant development guidelines
