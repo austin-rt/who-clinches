@@ -1,0 +1,382 @@
+Rule C: Record against highest (best) placed common Conference opponent, proceeding
+through the Conference standings among the tied teams
+
+================================================================================
+1. Two-Team Tie for Second Place
+================================================================================
+
+C. Record against highest (best) placed common Conference opponent, proceeding
+through the Conference standings among the tied teams
+1. If the highest place in the standings with common Conference opponents among
+the tied teams includes 2 or more opponents that are also tied:
+• The tie lower in the standings will only be broken if the tiebreaker procedure for Headto-head competition can break the tie
+i. If 2 teams are tied, they will enter the beginning of the two-team
+tiebreaker procedures for second place
+ii. If 3 or more teams are tied, they will enter the beginning of the
+three-team (or more) tiebreaker procedures for second place
+• If the Head-to-head tiebreaker procedure fails to break the tie between the teams lower
+in the standings, the records of the tied teams against these common opponents will
+be combined
+• If there are 3 or more opponents tied, but not all of them are common opponents, only
+the record against common opponents will be considered
+
+
+================================================================================
+2. Three-Team Tie (or More) for First Place
+================================================================================
+
+C. Record against highest (best) placed common Conference opponent, proceeding
+through the Conference standings among the tied teams
+1. If the highest place in the standings with common Conference opponents among
+the tied teams includes 2 or more opponents that are also tied:
+a. The tie lower in the standings will only be broken if the tiebreaker
+procedure for Head-to-head competition can break the tie
+i. If 2 teams are tied, they will enter the beginning of the two-team
+tiebreaker procedures for second place
+ii. If 3 or more teams are tied, they will enter the beginning of the
+three-team (or more) tiebreaker procedures for second place
+b. If the Head-to-head tiebreaker procedure fails to break the tie between
+the teams lower in the standings, the records of the tied teams against
+these common opponents will be combined
+c. If there are 3 or more opponents tied, but not all of them are common
+opponents, only the record against common opponents will be
+considered
+2. If one of the tied teams (Team A) is in sole possession of the best record against
+the common Conference opponent(s) with the best Conference record:
+a. Team A is selected for the championship game
+b. The remaining teams return to the start of the applicable tiebreaker
+procedures
+3. If two of the tied teams (Team A and Team B) are tied for the best record against
+the common Conference opponent(s) with the best Conference record, Team A
+and Team B are selected for the championship game
+4. If three or more tied teams are tied for the best record against the common
+Conference opponent(s) with the best Conference record:
+a. The teams that are tied for the best record revert to the beginning of the
+three-team (or more) tiebreaker procedures for first place
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game.
+5. If all tied teams have the same record against the common opponent(s) with the
+best Conference record, proceed to the next common Conference opponent(s)
+based on their order of finish within the Conference and continue the procedures
+above until all common Conference opponents are exhausted
+
+
+================================================================================
+3. Three-Team Tie (or More) for Second Place
+================================================================================
+
+C. Record against highest (best) placed common Conference opponent, proceeding through the
+standings among the tied teams
+1. If the highest place in the standings with common Conference opponents among the
+tied teams includes 2 or more opponents that are also tied:
+a. The tie lower in the standings will only be broken if the tiebreaker procedure for
+Head-to-head competition can break the tie
+iii. If 2 teams are tied, they will enter the beginning of the two-team
+tiebreaker procedures for second place
+iv. If 3 or more teams are tied, they will enter the beginning of the
+three-team (or more) tiebreaker procedures for second place
+b. If the Head-to-head tiebreaker procedure fails to break the tie between the
+teams lower in the standings, the records of the tied teams against these
+common opponents will be combined
+c. If there are 3 or more opponents tied, but not all of them are common
+opponents, only the record against common opponents will be considered
+2. If one of the tied teams (Team A) is in sole possession of the best record against the
+common Conference opponent(s) with the best Conference record:
+a. Team A is selected for the championship game
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+3. If two of the tied teams (Team A and Team B) are tied for the best record against the
+common Conference opponent(s) with the best Conference record
+a. Team A and Team B revert to the beginning of the two-team tiebreaker
+procedure for second place
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+4. If three or more tied teams are tied for the best record against the common Conference
+opponent(s) with the best Conference record
+a. The teams that are tied for the best record revert to the beginning of the threeteam tiebreaker procedures for second place
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+5. If all tied teams have the same record against the common opponent(s) with the best
+Conference record, proceed to the next common Conference opponent(s) based on
+their order of finish within the Conference and continue the procedures above until all
+common Conference opponents are exhausted
+
+
+================================================================================
+EXAMPLES
+================================================================================
+
+Two-Team Tie for Second Place Examples:
+Record against highest (best) placed common Conference opponent, proceeding through the
+Conference standings among the tied teams
+Example #1
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 5-3
+• In the regular season, Team B played Team A, but Team C did not play Team A, so we proceed to
+the next opponent in the standings
+• In the regular season, Team B played Team D and Team E, and Team C played Team D and Team E
+• Team D played Team E in the regular season and won
+o Team D won the tiebreaker and is ranked higher than Team E
+o Since Team B and Team C both played Team D, their record against Team D will be
+considered to break the tie for the Championship Game
+• Record against Team D
+o Team B: 1-0
+o Team C: 0-1
+• Team B advances to the championship game
+
+Example #2
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 4-4
+• In the regular season, Team B played Team A, but Team C did not play Team A, so we proceed to
+the next opponent in the standings
+• In the regular season, both Team B and Team C played Team D, so we consider the results of those
+games
+• Record against Team D
+o Team B: 1-0
+o Team C: 0-1
+• Team B advances to the championship game
+Example #3
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+• Top 6 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 5-3
+o Team F: 4-4
+• In the regular season, Team B played Team A, but Team C did not play Team A, so we proceed to
+the next opponent in the standings
+• In the regular season, Team B played Team D and Team E, and Team C played Team D and Team E
+• The tie among Team D and Team E could not be broken, so we combine the records against both
+teams
+o Combined record against Team D and Team E
+• Team B: 2-0
+• Team C: 0-2
+• Team B advances to the championship game
+Example #4
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+• Top 6 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 5-3
+o Team F: 4-4
+• In the regular season, Team B played Team A, but Team C did not play Team A, so we proceed to
+the next opponent in the standings
+• In the regular season, Team B played Team D and Team E, and Team C played Team D but not
+Team E; despite Team D and Team E being tied, Team D is the only common opponent, so we
+consider the results of the games against Team D
+• Record against Team D
+o Team B: 1-0
+o Team C: 0-1
+• Team B advances to the championship game
+
+
+Three-Team Tie (or More) for First Place Examples:
+Record against highest (best) placed common Conference opponent, proceeding through the
+Conference standings among the tied teams
+Example #1
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 5-3
+• In the regular season, Team B played Team A, but Team C did not play Team A, so we proceed to
+the next opponent in the standings
+• In the regular season, Team B played Team D and Team E, and Team C played Team D and Team E
+• Team D played Team E in the regular season and won
+o Team D won the tiebreaker and is ranked higher than Team E
+o Since Team B and Team C both played Team D, their record against Team D will be
+considered to break the tie for the Championship Game
+• Record against Team D
+o Team B: 1-0
+o Team C: 0-1
+• Team B advances to the championship game
+
+Example #2
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• Top 5 records in Conference standings
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 4-4
+• In the regular season, Team A played Team D, but Team B and Team C did not play Team D, so
+we proceed to the next opponent in the standings
+• In the regular season, Team A, Team B, and Team C played Team D, so we consider the results
+of those games
+• Record against Team D
+o Team A: 1-0
+o Team B: 1-0
+o Team C: 0-1
+• Team A and Team B advance to the championship game
+o They will revert to the beginning of the two-team tiebreaker procedures for second place
+to determine the home team for the Championship Game
+Example #3
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• Top 5 records in Conference standings
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 4-4
+• In the regular season, Team A played Team D, but Team B and Team C did not play Team D, so we
+proceed to the next opponent in the standings
+• In the regular season, Team A, Team B, and Team C played Team D, so we consider the results of
+those games
+• Record against Team D
+o Team A: 1-0
+o Team B: 0-1
+o Team C: 0-1
+• Team A advances to the championship game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second place
+
+Example #4
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• Top 6 records in Conference standings
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 5-3
+o Team E: 5-3
+o Team F: 4-4
+• In the regular season, Team A, Team B, and Team C all played both Team D and Team E
+o The tie among Team D and Team E could not be broken, so we combine the records against
+both teams
+• Combined record against Team D and Team E
+o Team A: 2-0
+o Team B: 1-1
+o Team C: 0-2
+• Team A advances to the championship game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second
+place
+
+
+Three-Team Tie (or More) for Second Place Examples:
+Record against highest (best) placed common Conference opponent, proceeding through the
+standings among the tied teams
+Example #1
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+o Team E: 5-3
+o Team F: 5-3
+• In the regular season, Team B played Team A, but Team C and Team D did not play Team A, so we
+proceed to the next opponent in the standings
+• In the regular season, Team B, Team C, and Team D all played both Team E and Team F
+• Team E played Team F in the regular season and won
+o Team E won the tiebreaker and is ranked higher than Team F
+o Since Team B, Team C, and Team D all played Team E, their record against Team E will be
+considered to break the tie for the Championship Game
+• Record against Team E
+o Team B: 1-0
+o Team C: 0-1
+o Team D: 0-1
+• Team B advances to the championship game
+
+Example #2
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+o Team E: 5-3
+o Team F: 4-4
+• In the regular season, Team D played Team A, but Team B and Team C did not play Team A,
+so we proceed to the next opponent in the standings
+• In the regular season, Team B, Team C, and Team D played Team E, so we consider the results
+of those games
+• Record against Team E
+o Team B: 1-0
+o Team C: 0-1
+o Team D: 0-1
+• Team B advances to the championship game
+Example #3
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+o Team E: 5-3
+o Team F: 4-4
+• In the regular season, Team D played Team A, but Team B and Team C did not play Team A, so we
+proceed to the next opponent in the standings
+• In the regular season, Team B, Team C, and Team D played Team E, so we consider the results of
+those games
+• Record against Team E
+o Team B: 1-0
+o Team C: 1-0
+o Team D: 0-1
+• Team D is eliminated from contention in the Conference Championship Game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second place
+
+Example #4
+• Conference records of tied teams
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+• Top 5 records in Conference standings
+o Team A: 7-1
+o Team B: 6-2
+o Team C: 6-2
+o Team D: 6-2
+o Team E: 5-3
+o Team F: 5-3
+• In the regular season, Team D played Team A, but Team B and Team C did not play Team
+A, so we proceed to the next opponent in the standings
+• In the regular season, Team B, Team C, and Team D all played both Team E and Team F, so
+we consider the results of those games
+o The tie among Team E and Team F could not be broken, so we combine the records
+against both teams
+• Record against Team E and Team F
+o Team B: 2-0
+o Team C: 1-1
+o Team D: 0-2
+• Team B advances to the championship game
+

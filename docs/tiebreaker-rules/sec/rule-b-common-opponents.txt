@@ -1,0 +1,175 @@
+Rule B: Record versus all common Conference opponents among the tied teams
+
+================================================================================
+1. Two-Team Tie for Second Place
+================================================================================
+
+B. Record versus all common Conference opponents among the two tied teams
+
+
+================================================================================
+2. Three-Team Tie (or More) for First Place
+================================================================================
+
+B. Record versus all common Conference opponents among the tied teams
+
+1. If one team has sole possession of the best record versus common Conference
+opponents among the tied teams
+a. The team with sole possession of the best record versus common
+Conference opponents is selected for the championship game
+b. The remaining teams return to the start of the tiebreaker procedures
+i. If there are two teams tied for second place within the "Record
+versus all common Conference opponents" standings, they start
+at the beginning of the Two-team tiebreaker procedures for
+second place
+ii. If there are three or more teams tied for second place within the
+"Record versus all common Conference opponents" standings,
+they start at the beginning of the three-team (or more) tiebreaker
+procedures for second place
+2. If two teams are tied for the best record within the "Record versus all common
+Conference opponents", they are selected for the championship game
+3. If three or more teams are tied for the best record within the "Record versus all
+common Conference opponents":
+a. Those teams revert to the beginning of the three-team (or more)
+tiebreaker procedures for first place; and
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game.
+
+
+================================================================================
+3. Three-Team Tie (or More) for Second Place
+================================================================================
+
+B. Record versus all common Conference opponents among the tied teams
+1. If one team has sole possession of the best record among the tied teams, it is selected
+for the championship game
+2. If two teams are tied for the best record within the "Record versus all common
+Conference opponents" standings:
+a. Those teams revert to the beginning of the two-team tiebreaker procedures for
+second place
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+3. If three or more teams are tied for the best record within the "Record versus all
+common Conference opponents" standings:
+a. Those teams revert to the beginning of the three-team tiebreaker procedures
+for second place
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+
+
+================================================================================
+EXAMPLES
+================================================================================
+
+Two-Team Tie for Second Place Examples:
+Record versus all common Conference opponents among the two tied teams
+Example
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+• There are 2 common Conference opponents that appear on the schedules of both Team A and
+Team B
+• Records versus common Conference Opponents
+o Team A: 2-0
+o Team B: 1-1
+• Team A advances to the championship game
+
+
+Three-Team Tie (or More) for First Place Examples:
+Example A
+o Four-way tie for 1st place
+o Head-to-head does not solve the tie, so teams advance to record against common
+Conference opponents; the teams have 1 common opponent
+o Records vs common opponent
+• Team A: 1-0
+• Team B: 1-0
+• Team C: 1-0
+• Team D: 0-1
+o In this case, Team D is eliminated from contention and Teams A, B, and C revert to the
+beginning of the three-team tiebreaker procedures for first place
+
+Example B
+o Four-way tie for 1st place
+o Head-to-head does not solve the tie, so teams advance to record against common
+Conference opponents; the teams have 2 common opponents
+o Records vs common opponent
+• Team A: 2-0
+• Team B: 1-1
+• Team C: 1-1
+• Team D: 0-2
+o In this case, Team A advances to the championship game and Teams B, C, and D revert
+to the beginning of the three-team tiebreaker procedures for second place
+
+Record versus all common Conference opponents among the tied teams
+Example #1
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• There are 2 common Conference opponents that appear on the schedules of Team A, Team B,
+and Team C
+• Records versus common Conference opponents
+o Team A: 2-0
+o Team B: 1-1
+o Team C: 0-2
+• Team A advances to the championship game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second
+place
+Example #2
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• There are 2 common Conference opponents that appear on the schedules of Team A, Team B,
+and Team C
+• Records versus common Conference opponents
+o Team A: 2-0
+o Team B: 2-0
+o Team C: 1-1
+• Team C is eliminated from contention in the Conference Championship Game
+• Team A and Team B advance to the Conference Championship Game
+o They will revert to the beginning of the two-team tiebreaker procedures for second place
+to determine the home team for the Championship Game
+
+
+Three-Team Tie (or More) for Second Place Examples:
+Example
+o Three-way tie for 2nd place
+o Head-to-head does not solve the tie, so teams advance to record against common
+Conference opponents; the teams have 2 common opponents
+o Records vs common opponent
+• Team A: 2-0
+• Team B: 2-0
+• Team C: 1-1
+o In this case, Team C is eliminated from contention and Teams A and B revert to the
+beginning of the two-team tiebreaker procedures
+
+Record versus all common Conference opponents among the tied teams
+Example #1
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• There are 2 common Conference opponents that appear on the schedules of Team A, Team B,
+and Team C
+• Records versus common Conference opponents
+o Team A: 2-0
+o Team B: 1-1
+o Team C: 0-2
+• Team A advances to the championship game
+• Team B and Team C are eliminated from contention in the Conference Championship Game
+Example #2
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• There are 2 common Conference opponents that appear on the schedules of Team A, Team B,
+and Team C
+• Records versus common Conference opponents
+o Team A: 2-0
+o Team B: 2-0
+o Team C: 1-1
+• Team C is eliminated from contention in the Conference Championship Game
+• Team A and Team B revert to the beginning of the two-team tiebreaker procedures for second
+place
+
