@@ -50,6 +50,23 @@ Follow structure defined in `docs/navigation-hub.md`:
 - **Commands and scripts** - Verify against `package.json` scripts and actual script files
 - **Configuration** - Verify against actual config files
 
+### Tiebreaker Rules Directory Restrictions
+
+**CRITICAL:** Files in `/docs/tiebreaker-rules/` are READ-ONLY for AI agents. These files contain the official tiebreaker rules extracted from authoritative sources and are the SINGULAR SOURCE OF TRUTH for all tiebreaker procedures.
+
+**NOT allowed:**
+
+- Editing, modifying, or deleting any files in `/docs/tiebreaker-rules/`
+- Changing content of tiebreaker rules files
+- Updating rules files to match code implementation
+- Correcting or "fixing" content in rules files
+
+**Allowed operations:**
+
+- Reading rules files for reference when implementing or debugging tiebreaker logic
+
+**Rationale:** Tiebreaker rules files are extracted from official SEC PDFs and represent the authoritative source for tiebreaker procedures. Code in `lib/tiebreaker-helpers.ts` must enforce these rules exactly as specified. AI agents must never modify these files - they are read-only reference material.
+
 ### Plans Directory Restrictions
 
 **CRITICAL:** Files in `/docs/plans/` and `/docs/plans/archive/` are historical planning documents and completed work records. These documents preserve the state of planning and implementation at specific points in time.
@@ -140,12 +157,10 @@ Fix any discrepancies found:
 - Update environment variable lists
 - Correct command syntax and options
 
-**IMPORTANT - Plans Directory Exception:**
+**IMPORTANT - Directory Exceptions:**
 
-- For files in `/docs/plans/` and `/docs/plans/archive/`, ONLY fix broken links and update completion statuses
-- Do NOT update content to match current code implementation
-- Do NOT correct outdated information in planning documents
-- Planning documents are historical records and should preserve their original state
+- **Tiebreaker Rules Directory (`/docs/tiebreaker-rules/`)**: READ-ONLY - NEVER edit these files. They are the singular source of truth for tiebreaker procedures.
+- **Plans Directory (`/docs/plans/` and `/docs/plans/archive/`)**: ONLY fix broken links and update completion statuses. Do NOT update content to match current code implementation. Planning documents are historical records and should preserve their original state.
 
 ### Step 5: Check Naming Conventions
 

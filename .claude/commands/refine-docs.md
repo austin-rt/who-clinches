@@ -29,6 +29,12 @@ Ensure all AI documentation files in the `docs/` directory are well-organized an
    - Verify patterns exist in code before documenting them
 5. **Only proceed to Step 1 after all technical claims are verified accurate**
 
+## Read-Only Directories
+
+**CRITICAL:** The following directories are READ-ONLY for AI agents and must NEVER be modified during refinement:
+
+- **`/docs/tiebreaker-rules/`** - Contains official conference tiebreaker rules extracted from authoritative sources. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents must NEVER edit, modify, delete, or refine files in this directory. Only a script should update these files by fetching the latest official PDF from the conference website.
+
 ### Step 1: Audit Information for Added Value
 For each file in the `docs/` directory:
 1. Review each section, instruction, or piece of information

@@ -11,6 +11,12 @@ Run a thorough audit of the documentation structure to catch drift, broken links
 5. **Report total Tier 1 doc load** (line count and estimated tokens)
 6. **Ensure all filenames are lowercase and kebab-case**, except README and CHANGELOG.
 
+## Read-Only Directories
+
+**CRITICAL:** The following directories are READ-ONLY for AI agents and must NEVER be modified:
+
+- **`/docs/tiebreaker-rules/`** - Contains official SEC tiebreaker rules extracted from authoritative sources. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents must NEVER edit, modify, or delete files in this directory. Only `scripts/extract-sec-rules.py` should update these files by fetching the latest official PDF from the SEC website.
+
 ## Execution
 
 - Use Grep to search for broken markdown links `\[.*\]\(\.\/.*\)`
