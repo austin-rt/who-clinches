@@ -42,9 +42,40 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
 
     try {
       const response = await simulate(payload).unwrap();
-      xLog('Simulate Response:', response);
+
+      // Format response for readable testing
+      xLog('=== SIMULATE RESPONSE ===');
+      xLog('Championship Matchup:', response.championship);
+      xLog('');
+      xLog('Standings:');
+      response.standings.forEach((standing) => {
+        xLog(
+          `  ${standing.rank}. ${standing.abbrev} - ${standing.confRecord.wins}-${standing.confRecord.losses} (${standing.explainPosition})`
+        );
+      });
+      xLog('');
+      if (response.tieLogs && response.tieLogs.length > 0) {
+        xLog('Tie Logs:');
+        response.tieLogs.forEach((tieLog, index) => {
+          xLog(`  Tie ${index + 1} - Teams: ${tieLog.teams.join(', ')}`);
+          tieLog.steps.forEach((step) => {
+            xLog(`    Rule ${step.rule}: ${step.detail}`);
+            xLog(`    Survivors: ${step.survivors.join(', ')}`);
+          });
+        });
+      } else {
+        xLog('Tie Logs: None');
+      }
+      xLog('');
+      xLog('Full Response JSON:', JSON.stringify(response, null, 2));
+      xLog('=== END SIMULATE RESPONSE ===');
     } catch (err) {
-      xLog('Simulate Error:', err);
+      xLog('=== SIMULATE ERROR ===');
+      xLog('Error:', err);
+      if (err && typeof err === 'object' && 'data' in err) {
+        xLog('Error Data:', err.data);
+      }
+      xLog('=== END SIMULATE ERROR ===');
     }
   };
 
