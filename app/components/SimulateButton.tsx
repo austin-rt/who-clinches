@@ -5,6 +5,7 @@ import { SimulateRequest } from '@/lib/api-types';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { xLog } from '@/lib/xLog';
 import { GamePick } from '../store/gamePicksSlice';
+import { Button } from './Button';
 
 interface SimulateButtonProps {
   season: number;
@@ -18,7 +19,7 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
     // Format picks as overrides for simulate request
     // The API expects gameId (espnId) as the key
     const overrides: SimulateRequest['overrides'] = {};
-    
+
     Object.entries(gamePicks).forEach(([gameId, pick]) => {
       const gamePick = pick as GamePick;
       overrides[gameId] = {
@@ -39,16 +40,10 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
   const hasPicks = Object.keys(gamePicks).length > 0;
 
   return (
-    <button
-      type="button"
-      onClick={handleSimulate}
-      className="btn btn-primary"
-      disabled={!hasPicks}
-    >
+    <Button.Stroked color="accent" onClick={handleSimulate} disabled={!hasPicks}>
       Simulate Standings
-    </button>
+    </Button.Stroked>
   );
 };
 
 export default SimulateButton;
-

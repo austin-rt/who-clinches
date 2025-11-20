@@ -132,7 +132,7 @@ const Score = ({ game }: ScoreProps) => {
   return (
     <div className="flex items-center gap-2">
       <div
-        className={cn('text-3xl md:text-5xl', {
+        className={cn('text-3xl md:text-4xl', {
           'font-extrabold': displayAwayIsHigher && !displayIsTie,
           'font-normal': !displayAwayIsHigher || displayIsTie,
         })}
@@ -141,7 +141,7 @@ const Score = ({ game }: ScoreProps) => {
       </div>
       <div className="text-base-content/40 text-xl md:text-2xl">-</div>
       <div
-        className={cn('text-3xl md:text-5xl', {
+        className={cn('text-3xl md:text-4xl', {
           'font-extrabold': displayHomeIsHigher && !displayIsTie,
           'font-normal': !displayHomeIsHigher || displayIsTie,
         })}

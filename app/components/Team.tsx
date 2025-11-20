@@ -18,14 +18,14 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
 
   if (showLogoOnly) {
     return (
-      <div className="pointer-events-none flex items-center">
+      <div className="flex items-center">
         {team.logo && (
           <Image
             src={team.logo}
             alt={team.abbrev}
             width={64}
             height={64}
-            className="h-20 w-auto object-contain md:h-14"
+            className="h-20 w-auto object-contain md:h-14 pointer-events-none"
             unoptimized
           />
         )}

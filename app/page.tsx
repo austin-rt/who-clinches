@@ -14,26 +14,29 @@ const Home = () => {
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
-      <div className="flex flex-col gap-2">
-        <h1
-          className={`text-4xl font-bold transition-colors ${
-            mode === 'dark' ? 'text-secondary' : 'text-primary'
-          }`}
-        >
-          SEC Tiebreaker Calculator
-        </h1>
-        <p className="text-base-content/70 text-lg">
-          Predict game outcomes and see how they affect SEC conference standings
-        </p>
+      <div className="flex w-full items-center justify-between">
+        <div className="flex flex-col gap-2">
+          <h1
+            className={`text-4xl font-bold transition-colors ${
+              mode === 'dark' ? 'text-accent' : 'text-primary'
+            }`}
+          >
+            SEC Tiebreaker Calculator
+          </h1>
+          <p className="text-base-content/70 text-lg">
+            Predict game outcomes and see how they affect SEC conference standings
+          </p>
+        </div>
+        <ViewToggle />
       </div>
 
-      <div className="flex w-fit flex-col gap-4">
-        <ViewToggle />
+      <div className="flex w-full items-center justify-between">
         <HideCompletedToggle />
         <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
       </div>
 
       <GamesList season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
+      <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
     </div>
   );
 };

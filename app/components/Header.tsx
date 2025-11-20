@@ -2,23 +2,12 @@
 
 import DarkModeToggle from './DarkModeToggle';
 import LastUpdated from './LastUpdated';
-import { useUIState } from '@/app/store/useUI';
 
 const Header = () => {
-  const { mode } = useUIState();
-
   return (
     <div className="navbar relative bg-base-200 shadow-lg">
       <div className="container mx-auto flex items-center justify-between">
-        <div className="flex-1">
-          <a
-            className={`btn btn-ghost text-xl font-bold transition-colors ${
-              mode === 'dark' ? 'text-secondary' : 'text-primary'
-            }`}
-          >
-            SEC Tiebreaker Calculator
-          </a>
-        </div>
+        <div className="flex-1 text-xl font-bold">SEC Tiebreaker Calculator</div>
         <div className="flex items-center gap-4">
           <LastUpdated />
           <DarkModeToggle />
