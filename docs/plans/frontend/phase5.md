@@ -28,7 +28,7 @@
 // Props: none
 // Fetches teams from /api/teams
 // Dynamically injects CSS for each team theme
-// Renders: dropdown with all teams from database + "SEC Default"
+// Renders: dropdown with all teams from database + "[Conference] Default"
 // On selection: sets data-theme attribute and saves to localStorage
 
 // app/hooks/useTeams.ts
@@ -62,7 +62,7 @@
 
 1. Run `npm run dev`
 2. Look for theme selector in Header
-3. Click selector - should show dropdown with all teams from database + "SEC Default"
+3. Click selector - should show dropdown with all teams from database + "[Conference] Default"
 4. Select a team - page colors change to team theme
 5. Select different team - colors change immediately
 6. Check localStorage - key should show selected team
