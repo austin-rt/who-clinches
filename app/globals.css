@@ -1,3 +1,5 @@
+@import './styles/buttons.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -18,16 +20,18 @@ html:not([data-mode]) {
 [data-theme='sec'] {
   --color-primary: #002d74; /* SEC Blue - Pantone PMS288 C */
   --color-primary-content: #002d7433; /* SEC Blue with 33 opacity (for badge-soft backgrounds) */
-  --color-secondary: #ffd040; /* SEC Gold - Pantone PMS 122 */
-  --color-secondary-content: #ffd04033; /* SEC Gold with 33 opacity (for badge-soft backgrounds) */
-  --color-accent: #ffffff;
-  --color-accent-content: #ffffff33; /* White with 33 opacity (for badge-soft backgrounds) */
+  --color-secondary: #004a9e; /* Lighter SEC Blue */
+  --color-secondary-content: #004a9e33; /* Lighter SEC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-accent: #ffd040; /* SEC Gold - Pantone PMS 122 */
+  --color-accent-content: #ffd04033; /* SEC Gold with 33 opacity (for badge-soft backgrounds) */
 
   /* Map to DaisyUI theme variables for component compatibility */
   --p: 217 100% 23%; /* SEC Blue in HSL - for DaisyUI components */
   --pc: 0 0% 100%; /* White text on primary */
-  --s: 45 100% 50%; /* SEC Gold in HSL - for DaisyUI components */
-  --sc: 0 0% 0%; /* Black text on secondary */
+  --s: 217 100% 31%; /* Lighter SEC Blue in HSL - for DaisyUI components */
+  --sc: 0 0% 100%; /* White text on secondary */
+  --a: 45 100% 50%; /* SEC Gold in HSL - for DaisyUI components */
+  --ac: 0 0% 0%; /* Black text on accent */
 }
 
 /* SEC Light Mode - Blue-tinted backgrounds */
@@ -46,9 +50,7 @@ html:not([data-mode]) {
   --color-base-200: #182438; /* Secondary background (halfway between base-100 and base-300) */
   --color-base-300: #1a2d4a; /* Tertiary background */
   --color-base-content: #f5f5f5; /* Main text color (light) */
-  --toggle-border-color: var(
-    --color-secondary
-  ); /* SEC Gold for toggle border/circle in dark mode */
+  --toggle-border-color: var(--color-accent); /* SEC Gold for toggle border/circle in dark mode */
 }
 
 /* Team themes will be dynamically injected in Phase 5 from database */
@@ -56,9 +58,9 @@ html:not([data-mode]) {
 /* Base colors inherited from light/dark mode */
 
 @layer components {
+  /* Override DaisyUI's .btn class - must come after @tailwind components */
   .btn {
-    padding-left: var(--btn-p, 1rem);
-    padding-right: var(--btn-p, 1rem);
+    @apply flex items-center gap-2 rounded-lg p-4 font-semibold uppercase transition-all;
   }
 
   /* Accordion borders - all collapse elements with bg-base-300 */
@@ -68,7 +70,6 @@ html:not([data-mode]) {
     @apply border border-base-300;
   }
 
-  /* Toggle circle (thumb) color - uses theme variable, same for checked/unchecked */
   .toggle.bg-transparent::before {
     background-color: var(--toggle-border-color);
   }
