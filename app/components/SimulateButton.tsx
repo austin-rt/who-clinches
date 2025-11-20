@@ -7,6 +7,7 @@ import { xLog } from '@/lib/xLog';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { useUIState } from '../store/useUI';
+import { useSimulateMutation } from '../store/apiSlice';
 
 interface SimulateButtonProps {
   season: number;
@@ -18,7 +19,9 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
 
   const { mode } = useUIState();
 
-  const handleSimulate = () => {
+  const [simulate, { isLoading }] = useSimulateMutation();
+
+  const handleSimulate = async () => {
     const overrides: SimulateRequest['overrides'] = {};
 
     Object.entries(gamePicks).forEach(([gameId, pick]) => {
@@ -36,6 +39,13 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
     };
 
     xLog('Simulate Request Payload:', payload);
+
+    try {
+      const response = await simulate(payload).unwrap();
+      xLog('Simulate Response:', response);
+    } catch (err) {
+      xLog('Simulate Error:', err);
+    }
   };
 
   const hasPicks = Object.keys(gamePicks).length > 0;
@@ -44,7 +54,8 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
     <Button.Stroked
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleSimulate}
-      disabled={!hasPicks}
+      disabled={!hasPicks || isLoading}
+      loading={isLoading}
     >
       Simulate Standings
     </Button.Stroked>

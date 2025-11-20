@@ -54,7 +54,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
     }
   };
 
-  // Determine default selection: winner if completed, or favorite if available
+  // Determine default selection: winner if completed, or predicted score winner
   const defaultSelectedTeam = useMemo(() => {
     // If game is completed, use the actual winner
     if (game.completed) {
@@ -66,11 +66,19 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
         return game.away.teamEspnId;
       }
     }
-    // If not completed, default to favorite if available
+    // If not completed, use predicted score winner
+    if (game.predictedScore) {
+      if (game.predictedScore.home > game.predictedScore.away) {
+        return game.home.teamEspnId;
+      } else if (game.predictedScore.away > game.predictedScore.home) {
+        return game.away.teamEspnId;
+      }
+    }
+    // Fallback to favorite if available
     if (game.odds.favoriteTeamEspnId) {
       return game.odds.favoriteTeamEspnId;
     }
-    // Fallback to home team (home field advantage)
+    // Final fallback to home team (home field advantage)
     return game.home.teamEspnId;
   }, [
     game.completed,
@@ -78,6 +86,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
     game.away.score,
     game.home.teamEspnId,
     game.away.teamEspnId,
+    game.predictedScore,
     game.odds.favoriteTeamEspnId,
   ]);
 
