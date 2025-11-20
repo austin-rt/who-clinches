@@ -60,6 +60,14 @@ export const applyOverrides = (
 };
 
 /**
+ * Get team abbreviation from teamId
+ */
+const getTeamAbbrev = (teamId: string, games: GameLean[]): string => {
+  const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
+  return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+};
+
+/**
  * Calculate team record from games
  */
 export const getTeamRecord = (
@@ -94,8 +102,7 @@ export const getTeamRecord = (
  */
 export const applyRuleA = (
   tiedTeams: string[],
-  games: GameLean[],
-  explanations: Map<string, string[]>
+  games: GameLean[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -133,17 +140,8 @@ export const applyRuleA = (
     .map((abbrev, i) => `${abbrev}: ${records[i].wins}-${records[i].losses}`)
     .join(', ');
 
-  // Add to explanations for teams eliminated
-  records.forEach((r) => {
-    if (!winners.includes(r.teamId)) {
-      explanations.set(
-        r.teamId,
-        (explanations.get(r.teamId) || []).concat(
-          `Lost head-to-head tiebreaker (${r.wins}-${r.losses})`
-        )
-      );
-    }
-  });
+  // Add to explanations for teams eliminated (only if they're actually eliminated, not continuing)
+  // Note: This will be handled by the caller when teams are actually eliminated from the tiebreaker
 
   return { winners, detail };
 };
@@ -153,8 +151,7 @@ export const applyRuleA = (
  */
 export const applyRuleB = (
   tiedTeams: string[],
-  games: GameLean[],
-  explanations: Map<string, string[]>
+  games: GameLean[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -198,17 +195,7 @@ export const applyRuleB = (
 
   const detail = `${commonOpponents.length} common opponents`;
 
-  records.forEach((r) => {
-    if (!winners.includes(r.teamId)) {
-      explanations.set(
-        r.teamId,
-        (explanations.get(r.teamId) || []).concat(
-          `Worse record vs common opponents (${r.wins}-${r.losses})`
-        )
-      );
-    }
-  });
-
+  // Explanations will be added by breakTie when teams are actually eliminated
   return { winners, detail };
 };
 
@@ -218,8 +205,7 @@ export const applyRuleB = (
 export const applyRuleC = (
   tiedTeams: string[],
   games: GameLean[],
-  allTeams: string[],
-  explanations: Map<string, string[]>
+  allTeams: string[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -288,17 +274,7 @@ export const applyRuleC = (
 
       const detail = `Record vs ${oppAbbrev}`;
 
-      records.forEach((r) => {
-        if (!winners.includes(r.teamId)) {
-          explanations.set(
-            r.teamId,
-            (explanations.get(r.teamId) || []).concat(
-              `Lost to highest-placed common opponent (${oppAbbrev})`
-            )
-          );
-        }
-      });
-
+      // Explanations will be added by breakTie when teams are actually eliminated
       return { winners, detail };
     }
   }
@@ -311,8 +287,7 @@ export const applyRuleC = (
  */
 export const applyRuleD = (
   tiedTeams: string[],
-  games: GameLean[],
-  explanations: Map<string, string[]>
+  games: GameLean[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -350,17 +325,7 @@ export const applyRuleD = (
 
   const detail = `Opponent win%: ${(maxOppWinPct * 100).toFixed(1)}%`;
 
-  records.forEach((r) => {
-    if (!winners.includes(r.teamId)) {
-      explanations.set(
-        r.teamId,
-        (explanations.get(r.teamId) || []).concat(
-          `Lower opponent win% (${(r.oppWinPct * 100).toFixed(1)}%)`
-        )
-      );
-    }
-  });
-
+  // Explanations will be added by breakTie when teams are actually eliminated
   return { winners, detail };
 };
 
@@ -409,8 +374,7 @@ export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): numb
  */
 export const applyRuleE = (
   tiedTeams: string[],
-  games: GameLean[],
-  explanations: Map<string, string[]>
+  games: GameLean[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -459,17 +423,7 @@ export const applyRuleE = (
 
   const detail = `Best relative scoring margin: ${maxMargin.toFixed(2)}`;
 
-  margins.forEach((m) => {
-    if (!winners.includes(m.teamId)) {
-      explanations.set(
-        m.teamId,
-        (explanations.get(m.teamId) || []).concat(
-          `Lower scoring margin (${m.avgMargin.toFixed(2)})`
-        )
-      );
-    }
-  });
-
+  // Explanations will be added by breakTie when teams are actually eliminated
   return { winners, detail };
 };
 
@@ -480,7 +434,8 @@ export const breakTie = (
   tiedTeams: string[],
   games: GameLean[],
   allTeams: string[],
-  explanations: Map<string, string[]>
+  explanations: Map<string, string[]>,
+  isRecursive = false
 ): { ranked: string[]; steps: TieStep[] } => {
   if (tiedTeams.length <= 1) {
     return { ranked: tiedTeams, steps: [] };
@@ -499,7 +454,7 @@ export const breakTie = (
     }
 
     // Rule A: Head-to-Head
-    const ruleA = applyRuleA(remaining, games, explanations);
+    const ruleA = applyRuleA(remaining, games);
     steps.push({
       rule: 'A: Head-to-Head',
       detail: ruleA.detail,
@@ -510,9 +465,33 @@ export const breakTie = (
       // Rule A separated teams: eliminated teams get worse ranks, survivors continue for better ranks
       const eliminated = remaining.filter((t) => !ruleA.winners.includes(t));
 
+      // Add explanations for eliminated teams (only if not already explained and not in recursive call)
+      if (!isRecursive) {
+        const h2hGames = games.filter(
+          (g) => remaining.includes(g.home.teamEspnId) && remaining.includes(g.away.teamEspnId)
+        );
+        eliminated.forEach((teamId) => {
+          // Only add explanation if team doesn't already have one
+          if (!explanations.has(teamId)) {
+            const record = getTeamRecord(teamId, h2hGames);
+            // Find which team(s) they lost to
+            const lostTo: string[] = [];
+            h2hGames.forEach((game) => {
+              if (game.home.teamEspnId === teamId && game.home.score !== null && game.away.score !== null && game.home.score < game.away.score) {
+                lostTo.push(getTeamAbbrev(game.away.teamEspnId, games));
+              } else if (game.away.teamEspnId === teamId && game.home.score !== null && game.away.score !== null && game.away.score < game.home.score) {
+                lostTo.push(getTeamAbbrev(game.home.teamEspnId, games));
+              }
+            });
+            const opponentText = lostTo.length > 0 ? ` to ${lostTo.join(', ')}` : '';
+            explanations.set(teamId, [`Lost head-to-head tiebreaker${opponentText} (${record.wins}-${record.losses})`]);
+          }
+        });
+      }
+
       // Recursively rank eliminated teams if there's more than one
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -524,7 +503,7 @@ export const breakTie = (
     }
 
     // Rule B: Common Opponents
-    const ruleB = applyRuleB(remaining, games, explanations);
+    const ruleB = applyRuleB(remaining, games);
     steps.push({
       rule: 'B: Common Opponents',
       detail: ruleB.detail,
@@ -534,8 +513,34 @@ export const breakTie = (
     if (ruleB.winners.length < remaining.length) {
       const eliminated = remaining.filter((t) => !ruleB.winners.includes(t));
 
+      // Add explanations for eliminated teams (only if not already explained and not in recursive call)
+      if (!isRecursive) {
+        eliminated.forEach((teamId) => {
+          if (!explanations.has(teamId)) {
+            // Get common opponents for this tie
+            const opponentSets = remaining.map((t) => {
+              const teamGames = games.filter((g) => g.home.teamEspnId === t || g.away.teamEspnId === t);
+              return new Set(
+                teamGames.map((g) => (g.home.teamEspnId === t ? g.away.teamEspnId : g.home.teamEspnId))
+              );
+            });
+            const commonOpponents = [...opponentSets[0]].filter((opp) =>
+              opponentSets.every((set) => set.has(opp))
+            );
+            // Get record vs common opponents
+            const vsCommonGames = games.filter(
+              (g) =>
+                (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
+                (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
+            );
+            const record = getTeamRecord(teamId, vsCommonGames);
+            explanations.set(teamId, [`Worse record vs common opponents (${record.wins}-${record.losses})`]);
+          }
+        });
+      }
+
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -547,7 +552,7 @@ export const breakTie = (
     }
 
     // Rule C: Highest Placed Common Opponent
-    const ruleC = applyRuleC(remaining, games, allTeams, explanations);
+    const ruleC = applyRuleC(remaining, games, allTeams);
     steps.push({
       rule: 'C: Highest Placed Common Opponent',
       detail: ruleC.detail,
@@ -557,8 +562,19 @@ export const breakTie = (
     if (ruleC.winners.length < remaining.length) {
       const eliminated = remaining.filter((t) => !ruleC.winners.includes(t));
 
+      // Add explanations for eliminated teams (only if not already explained and not in recursive call)
+      if (!isRecursive) {
+        eliminated.forEach((teamId) => {
+          if (!explanations.has(teamId)) {
+            const oppMatch = ruleC.detail.match(/Record vs (\w+)/);
+            const oppAbbrev = oppMatch ? oppMatch[1] : 'common opponent';
+            explanations.set(teamId, [`Lost to highest-placed common opponent (${oppAbbrev})`]);
+          }
+        });
+      }
+
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -570,7 +586,7 @@ export const breakTie = (
     }
 
     // Rule D: Opponent Win %
-    const ruleD = applyRuleD(remaining, games, explanations);
+    const ruleD = applyRuleD(remaining, games);
     steps.push({
       rule: 'D: Opponent Win %',
       detail: ruleD.detail,
@@ -580,8 +596,28 @@ export const breakTie = (
     if (ruleD.winners.length < remaining.length) {
       const eliminated = remaining.filter((t) => !ruleD.winners.includes(t));
 
+      // Add explanations for eliminated teams (only if not already explained and not in recursive call)
+      if (!isRecursive) {
+        eliminated.forEach((teamId) => {
+          if (!explanations.has(teamId)) {
+            // Calculate this team's opponent win%
+            const teamGames = games.filter((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
+            const opponents = teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId));
+            let totalWins = 0;
+            let totalGames = 0;
+            for (const oppId of opponents) {
+              const oppRecord = getTeamRecord(oppId, games);
+              totalWins += oppRecord.wins;
+              totalGames += oppRecord.wins + oppRecord.losses;
+            }
+            const teamOppWinPct = totalGames === 0 ? 0 : (totalWins / totalGames) * 100;
+            explanations.set(teamId, [`Lower opponent win% (${teamOppWinPct.toFixed(1)}%)`]);
+          }
+        });
+      }
+
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -593,7 +629,7 @@ export const breakTie = (
     }
 
     // Rule E: Scoring Margin
-    const ruleE = applyRuleE(remaining, games, explanations);
+    const ruleE = applyRuleE(remaining, games);
     steps.push({
       rule: 'E: Scoring Margin',
       detail: ruleE.detail,
@@ -603,8 +639,30 @@ export const breakTie = (
     if (ruleE.winners.length < remaining.length) {
       const eliminated = remaining.filter((t) => !ruleE.winners.includes(t));
 
+      // Add explanations for eliminated teams (only if not already explained and not in recursive call)
+      if (!isRecursive) {
+        eliminated.forEach((teamId) => {
+          if (!explanations.has(teamId)) {
+            // Calculate scoring margin for this team
+            const teamGames = games.filter((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
+            let totalMargin = 0;
+            for (const game of teamGames) {
+              if (game.home.score === null || game.away.score === null) continue;
+              const isHome = game.home.teamEspnId === teamId;
+              const teamScore = isHome ? game.home.score : game.away.score;
+              const oppScore = isHome ? game.away.score : game.home.score;
+              const margin = teamScore - oppScore;
+              const cappedMargin = Math.min(Math.max(margin, -DEFENSIVE_CAP), OFFENSIVE_CAP);
+              totalMargin += cappedMargin;
+            }
+            const avgMargin = teamGames.length > 0 ? totalMargin / teamGames.length : 0;
+            explanations.set(teamId, [`Lower scoring margin (${avgMargin.toFixed(1)})`]);
+          }
+        });
+      }
+
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations);
+        const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else {
@@ -659,7 +717,7 @@ export const calculateStandings = (
 
   const orderedTeams: string[] = [];
 
-  for (const [_winPct, tiedTeams] of sortedGroups) {
+  for (const [, tiedTeams] of sortedGroups) {
     if (tiedTeams.length === 1) {
       orderedTeams.push(tiedTeams[0]);
     } else {

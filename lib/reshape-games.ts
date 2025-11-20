@@ -106,8 +106,7 @@ export const reshapeScoreboardData = (
         overUnder,
         spread,
         favoriteTeamEspnId,
-        homeTeam.team.id,
-        awayTeam.team.id
+        homeTeam.team.id
       );
 
       // Our reshaped format

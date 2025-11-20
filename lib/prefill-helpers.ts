@@ -23,8 +23,7 @@ export const calculatePredictedScoreFromOdds = (
   overUnder: number | null,
   spread: number | null,
   favoriteTeamEspnId: string | null,
-  homeTeamEspnId: string,
-  _awayTeamEspnId: string
+  homeTeamEspnId: string
 ): { home: number; away: number } | undefined => {
   if (overUnder === null || spread === null || favoriteTeamEspnId === null) {
     return undefined;
@@ -175,8 +174,7 @@ export const calculatePredictedScoreFromRanking = (
  * Calculate predicted score from home field advantage - Priority 4
  */
 export const calculatePredictedScoreFromHomeFieldAdvantage = (
-  homeTeam: TeamForPrediction,
-  _awayTeam: TeamForPrediction
+  homeTeam: TeamForPrediction
 ): { home: number; away: number } => {
   // Get ESPN season averages
   const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
@@ -225,8 +223,7 @@ export const calculatePredictedScore = (
     game.odds.overUnder,
     game.odds.spread,
     game.odds.favoriteTeamEspnId,
-    game.home.teamEspnId,
-    game.away.teamEspnId
+    game.home.teamEspnId
   );
   if (oddsScore) {
     return oddsScore;
@@ -245,5 +242,5 @@ export const calculatePredictedScore = (
   }
 
   // Priority 4: Use home field advantage
-  return calculatePredictedScoreFromHomeFieldAdvantage(homeTeam, awayTeam);
+  return calculatePredictedScoreFromHomeFieldAdvantage(homeTeam);
 };
