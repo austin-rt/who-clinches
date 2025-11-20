@@ -11,7 +11,8 @@ const OFFENSIVE_CAP = 42;
 const DEFENSIVE_CAP = 48;
 
 /**
- * Apply user score overrides to games and fill in predictedScore for incomplete games
+ * Apply user score overrides to games and fill in predictedScore for incomplete games.
+ * Ensures all games have scores - throws error if a game has no scores and no predictedScore.
  */
 export const applyOverrides = (
   games: GameLean[],
@@ -54,8 +55,11 @@ export const applyOverrides = (
       };
     }
 
-    // Return game as-is if no scores available (will be skipped by getTeamRecord)
-    return game;
+    // Game has no scores and no predictedScore - this should not happen
+    // Frontend should ensure all games have predictedScore, but backend enforces it
+    throw new Error(
+      `Game ${game.espnId} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
+    );
   });
 };
 
@@ -100,7 +104,7 @@ export const getTeamRecord = (
 /**
  * Rule A: Head-to-Head
  */
-export const applyRuleA = (
+export const applyRuleAHeadToHead = (
   tiedTeams: string[],
   games: GameLean[]
 ): { winners: string[]; detail: string } => {
@@ -149,7 +153,7 @@ export const applyRuleA = (
 /**
  * Rule B: Common Opponents
  */
-export const applyRuleB = (
+export const applyRuleBCommonOpponents = (
   tiedTeams: string[],
   games: GameLean[]
 ): { winners: string[]; detail: string } => {
@@ -202,7 +206,7 @@ export const applyRuleB = (
 /**
  * Rule C: Highest Placed Common Opponent
  */
-export const applyRuleC = (
+export const applyRuleCHighestPlacedOpponent = (
   tiedTeams: string[],
   games: GameLean[],
   allTeams: string[]
@@ -285,7 +289,7 @@ export const applyRuleC = (
 /**
  * Rule D: Opponent Win Percentage
  */
-export const applyRuleD = (
+export const applyRuleDOpponentWinPercentage = (
   tiedTeams: string[],
   games: GameLean[]
 ): { winners: string[]; detail: string } => {
@@ -372,7 +376,7 @@ export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): numb
 /**
  * Rule E: Scoring Margin
  */
-export const applyRuleE = (
+export const applyRuleEScoringMargin = (
   tiedTeams: string[],
   games: GameLean[]
 ): { winners: string[]; detail: string } => {
@@ -454,7 +458,7 @@ export const breakTie = (
     }
 
     // Rule A: Head-to-Head
-    const ruleA = applyRuleA(remaining, games);
+    const ruleA = applyRuleAHeadToHead(remaining, games);
     steps.push({
       rule: 'A: Head-to-Head',
       detail: ruleA.detail,
@@ -515,7 +519,7 @@ export const breakTie = (
     }
 
     // Rule B: Common Opponents
-    const ruleB = applyRuleB(remaining, games);
+    const ruleB = applyRuleBCommonOpponents(remaining, games);
     steps.push({
       rule: 'B: Common Opponents',
       detail: ruleB.detail,
@@ -570,7 +574,7 @@ export const breakTie = (
     }
 
     // Rule C: Highest Placed Common Opponent
-    const ruleC = applyRuleC(remaining, games, allTeams);
+    const ruleC = applyRuleCHighestPlacedOpponent(remaining, games, allTeams);
     steps.push({
       rule: 'C: Highest Placed Common Opponent',
       detail: ruleC.detail,
@@ -604,7 +608,7 @@ export const breakTie = (
     }
 
     // Rule D: Opponent Win %
-    const ruleD = applyRuleD(remaining, games);
+    const ruleD = applyRuleDOpponentWinPercentage(remaining, games);
     steps.push({
       rule: 'D: Opponent Win %',
       detail: ruleD.detail,
@@ -651,7 +655,7 @@ export const breakTie = (
     }
 
     // Rule E: Scoring Margin
-    const ruleE = applyRuleE(remaining, games);
+    const ruleE = applyRuleEScoringMargin(remaining, games);
     steps.push({
       rule: 'E: Scoring Margin',
       detail: ruleE.detail,
