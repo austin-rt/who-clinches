@@ -1,6 +1,6 @@
 # Frontend Development Plan
 
-**Project:** SEC Tiebreaker UI  
+**Project:** Conference Tiebreaker UI  
 **Tech Stack:** Next.js 16 (App Router), React 19, TypeScript, Tailwind CSS, DaisyUI  
 **Status:** Active Development
 
@@ -10,7 +10,7 @@
 
 High-level frontend development summary. For detailed implementation, see [`docs/plans/frontend/`](./frontend/).
 
-**Related:** [Frontend Patterns](../guides/frontend-patterns.md) | [API Reference](../guides/api-reference.md)
+**Related:** [Frontend Documentation](../guides/frontend/index.md) | [API Reference](../guides/api-reference.md)
 
 ---
 

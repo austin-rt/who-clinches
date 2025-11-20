@@ -48,7 +48,8 @@ Load additional docs based on your specific task:
 ### Scenario 4: Frontend Work
 **Additional Load (~5-8K tokens):**
 - `docs/plans/frontend.md` - Frontend summary and phase status
-- `docs/guides/frontend-patterns.md` - Frontend architecture patterns
+- `docs/guides/frontend/index.md` - Frontend documentation overview
+- `docs/guides/frontend/[domain].md` - Specific frontend domain (state-management, components, etc.) as needed
 - `docs/plans/frontend/phase3.md` (or current phase) - Current phase details
 
 **Total:** ~25-28K tokens
@@ -96,7 +97,7 @@ Load additional docs based on your specific task:
 | API Endpoint | ✅ | api-foundation.md, api-testing-quick-ref.md | ~20-23K |
 | Testing | ✅ | api-testing-quick-ref.md, testing-strategy-summary.md | ~20-23K |
 | ESPN Work | ✅ | espn-testing-quick-ref.md | ~20-23K |
-| Frontend | ✅ | frontend.md, frontend-patterns.md | ~20-23K |
+| Frontend | ✅ | frontend.md, frontend/index.md | ~20-23K |
 
 ---
 

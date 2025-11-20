@@ -1,8 +1,8 @@
-# AI Assistant Guide for SEC Tiebreaker
+# AI Assistant Guide for Conference Tiebreaker
 
-**The definitive entry point for AI assistants working with this Next.js-based SEC conference tiebreaker application.**
+**The definitive entry point for AI assistants working with this Next.js-based conference tiebreaker application.**
 
-This is a specialized college football application built for simulating SEC conference standings using official tiebreaker rules. The application enables users to predict game outcomes and see how those predictions affect the final conference standings and SEC Championship matchup.
+This is a specialized college football application built for simulating conference standings using official tiebreaker rules. The application enables users to predict game outcomes and see how those predictions affect the final conference standings and conference championship matchup.
 
 ## AI Agent Behavior Guidelines
 
@@ -17,12 +17,13 @@ This is a specialized college football application built for simulating SEC conf
 - **Pre-Commit Hooks**: When using commit command, validation runs upfront. Use `--no-verify` flag after validation passes to skip redundant hook checks. If validation fails, fix errors before committing.
 - **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
 - **No Code Comments**: Do not add comments to code files, including JSDoc comments. Write self-documenting code instead. Existing comments should remain, but do not add new ones.
+- **NEVER Edit Tiebreaker Rules Files**: The official conference tiebreaker rules are stored in `docs/tiebreaker-rules/*.txt`. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents MUST NEVER edit, modify, or delete these files. The code in `lib/tiebreaker-helpers.ts` must enforce these rules exactly as specified in the rules files. If tiebreaker logic needs to be updated, the rules files are updated by running extraction scripts (e.g., `scripts/extract-sec-rules.py`) to fetch the latest official PDFs from conference sources.
 
 ## Application Overview
 
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
-- **Tiebreaker Resolution**: Implements official SEC tiebreaker rules (A-E) to resolve ties
-- **Standings Calculation**: Generates complete SEC conference standings with explanations
+- **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by `lib/tiebreaker-helpers.ts`
+- **Standings Calculation**: Generates complete conference standings with explanations
 - **Real-Time Data**: Automatically updates from ESPN API via scheduled cron jobs
 
 **Key Endpoints:**
@@ -42,6 +43,42 @@ This is a specialized college football application built for simulating SEC conf
 - `lib/` - Core utilities (espn-client, reshape-*, tiebreaker-helpers, prefill-helpers)
 - `scripts/` - Database and type generation scripts
 
+**File Structure:**
+```
+app/
+├── api/                    # API routes
+│   ├── cron/               # Cron job endpoints
+│   ├── games/              # Games query endpoint
+│   ├── pull-games/         # Pull games from ESPN
+│   ├── pull-teams/         # Pull teams from ESPN
+│   └── simulate/           # Simulation endpoint
+├── components/             # React components
+│   ├── Button/             # Button component system
+│   │   ├── Button.tsx      # Solid variant
+│   │   ├── StrokedButton/  # Outlined variant
+│   │   ├── FlatButton/     # Flat variant
+│   │   └── index.ts        # Exports
+│   ├── StoreProvider.tsx   # Redux Provider wrapper
+│   ├── GamesList.tsx       # Main games container
+│   ├── GameCard.tsx        # Game card component
+│   └── [other components]  # Various UI components
+├── store/                  # Redux state management
+│   ├── store.ts            # Store configuration
+│   ├── uiSlice.ts          # UI state (theme, mode, view)
+│   ├── gamePicksSlice.ts  # User game picks
+│   ├── apiSlice.ts        # RTK Query API slice
+│   ├── hooks.ts            # Typed Redux hooks
+│   └── useUI.ts            # UI state selector hook
+├── config/                 # Configuration
+│   └── theme-config.ts     # Conference theme config
+├── styles/                 # CSS styles
+│   └── buttons.css         # Button component styles
+├── layout.tsx              # Root layout
+└── page.tsx                # Home page
+```
+
+For detailed frontend documentation, see [Frontend Documentation](./guides/frontend/index.md).
+
 ## Quick Start
 
 - **Documentation**: See [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading
@@ -52,9 +89,16 @@ This is a specialized college football application built for simulating SEC conf
 **Key Files:**
 - Models: `lib/models/Game.ts`, `lib/models/Team.ts`, `lib/types.ts`
 - ESPN: `lib/espn-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams.ts`, `lib/constants.ts`
-- Tiebreaker: `lib/tiebreaker-helpers.ts` - SEC rules A-E
+- Tiebreaker: `lib/tiebreaker-helpers.ts` - Conference tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
 - Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
 - Cron: Auth `Bearer ${CRON_SECRET}`, schedules in `vercel.json`/`vercel.pro.json`
+
+**Tiebreaker Rules (SINGULAR SOURCE OF TRUTH):**
+- **Location**: `docs/tiebreaker-rules/*.txt`
+- **Source**: Extracted from official conference PDFs via extraction scripts (e.g., `scripts/extract-sec-rules.py`)
+- **Critical Rule**: These files are NEVER to be edited by AI agents. They contain the official conference tiebreaker procedures and are the authoritative source for all tiebreaker logic.
+- **Code Enforcement**: The code in `lib/tiebreaker-helpers.ts` must implement these rules exactly as specified. Code should reference these rules files when implementing or debugging tiebreaker logic.
+- **Updates**: When conferences update their rules, run the appropriate extraction script (e.g., `python scripts/extract-sec-rules.py`) to fetch the latest PDF and extract updated text. Scripts automatically save to `docs/tiebreaker-rules/`.
 
 **Constraints:**
 - Vercel timeouts: 60s Pro, 10s Hobby
@@ -77,7 +121,7 @@ This is a specialized college football application built for simulating SEC conf
 - **RTK Query**: `useGetGamesQuery()`, `useSimulateMutation()` from `app/store/apiSlice.ts`
 
 **Component Patterns:**
-- All React components use arrow function syntax with default export (see `docs/guides/frontend-patterns.md`)
+- All React components use arrow function syntax with default export (see `docs/guides/frontend/`)
 - Never use inline literal union types - define types in `types/frontend.ts` or `lib/types.ts`
 
 ## Critical Accuracy Notes
@@ -105,4 +149,4 @@ This is a specialized college football application built for simulating SEC conf
 
 ---
 
-**This guide provides the essential foundation for AI assistants to work effectively with the SEC Tiebreaker application while respecting technical constraints and ensuring accurate implementation of SEC conference tiebreaker rules.**
+**This guide provides the essential foundation for AI assistants to work effectively with the Conference Tiebreaker application while respecting technical constraints and ensuring accurate implementation of conference tiebreaker rules.**

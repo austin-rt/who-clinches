@@ -29,7 +29,9 @@ Domain-specific content locations for common tasks.
 
 ## Tiebreaker Logic
 
-- **Implementation**: `lib/tiebreaker-helpers.ts`
+- **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
+- **Implementation**: `lib/tiebreaker-helpers.ts` - Must enforce rules exactly as specified in the rules files
+- **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
 - **Planning doc**: `docs/plans/tiebreaker-logic.md` (historical)
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Simulate endpoint**: `app/api/simulate/route.ts`
@@ -48,6 +50,7 @@ Domain-specific content locations for common tasks.
 
 ## Frontend Development
 
+- **Frontend documentation**: `docs/guides/frontend/` - Complete frontend patterns and architecture
 - **Phase plans**: `docs/plans/frontend/`
 - **Components**: `app/components/`
 - **Store**: `app/store/`
@@ -85,6 +88,7 @@ npm run test:db:check         # Check/seed test DB
 | Data models | `lib/models/` |
 | ESPN client | `lib/espn-client.ts` |
 | Tiebreaker logic | `lib/tiebreaker-helpers.ts` |
+| Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt` |
 | Constants | `lib/constants.ts` |
 | Types | `lib/types.ts`, `lib/api-types.ts` |
 | Tests | `__tests__/` |
