@@ -56,7 +56,7 @@ const eslintConfig = defineConfig([
       'func-style': 'off', // Allow function declarations in TypeScript scripts
     },
   },
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts']),
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**']),
 ]);
 
 export default eslintConfig;
