@@ -9,7 +9,7 @@ import { Button } from './Button';
 
 const ViewToggle = () => {
   const dispatch = useAppDispatch();
-  const { view } = useUIState();
+  const { view, mode } = useUIState();
 
   const handleClick = () => {
     const newView = view === 'picks' ? 'scores' : 'picks';
@@ -18,7 +18,7 @@ const ViewToggle = () => {
 
   return (
     <Button.Stroked
-      color="accent"
+      color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleClick}
       className="group swap swap-rotate relative"
     >

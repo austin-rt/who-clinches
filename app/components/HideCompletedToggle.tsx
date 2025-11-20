@@ -7,14 +7,19 @@ import { Button } from './Button';
 
 const HideCompletedToggle = () => {
   const dispatch = useAppDispatch();
-  const { hideCompletedGames } = useUIState();
+  const { hideCompletedGames, mode } = useUIState();
 
   const handleClick = () => {
     dispatch(setHideCompletedGames(!hideCompletedGames));
   };
 
   return (
-    <Button.Stroked size="sm" color="accent" onClick={handleClick} className="w-fit">
+    <Button.Stroked
+      size="sm"
+      color={mode === 'dark' ? 'accent' : 'primary'}
+      onClick={handleClick}
+      className="w-fit"
+    >
       {hideCompletedGames ? 'Show Completed Games' : 'Hide Completed Games'}
     </Button.Stroked>
   );

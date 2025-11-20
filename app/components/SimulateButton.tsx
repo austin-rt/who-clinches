@@ -6,6 +6,7 @@ import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { xLog } from '@/lib/xLog';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
+import { useUIState } from '../store/useUI';
 
 interface SimulateButtonProps {
   season: number;
@@ -15,9 +16,9 @@ interface SimulateButtonProps {
 const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateButtonProps) => {
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
 
+  const { mode } = useUIState();
+
   const handleSimulate = () => {
-    // Format picks as overrides for simulate request
-    // The API expects gameId (espnId) as the key
     const overrides: SimulateRequest['overrides'] = {};
 
     Object.entries(gamePicks).forEach(([gameId, pick]) => {
@@ -40,7 +41,11 @@ const SimulateButton = ({ season, conferenceId = SEC_CONFERENCE_ID }: SimulateBu
   const hasPicks = Object.keys(gamePicks).length > 0;
 
   return (
-    <Button.Stroked color="accent" onClick={handleSimulate} disabled={!hasPicks}>
+    <Button.Stroked
+      color={mode === 'dark' ? 'accent' : 'primary'}
+      onClick={handleSimulate}
+      disabled={!hasPicks}
+    >
       Simulate Standings
     </Button.Stroked>
   );
