@@ -7,18 +7,48 @@ const DarkModeToggle = () => {
   const { mode, setMode } = useUIState();
 
   const handleToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newMode = e.target.checked ? 'dark' : 'light';
-    setMode(newMode);
+    setMode(e.target.checked ? 'dark' : 'light');
   };
 
   return (
-    <label className="swap swap-rotate">
-      {/* Hidden checkbox controls the state */}
-      <input type="checkbox" checked={mode === 'dark'} onChange={handleToggle} />
-      {/* Sun icon - shown in dark mode (swap-on) - uses SEC Gold (secondary) */}
-      <HiSun className="swap-on h-8 w-8 fill-current text-secondary" />
-      {/* Moon icon - shown in light mode (swap-off) - uses SEC Blue (primary) */}
-      <HiMoon className="swap-off h-8 w-8 fill-current text-primary" />
+    <label className="relative inline-flex cursor-pointer items-center">
+      <input
+        type="checkbox"
+        className="peer sr-only"
+        checked={mode === 'dark'}
+        onChange={handleToggle}
+      />
+      <div
+        className={`relative h-8 w-16 rounded-full bg-base-300 transition-colors ${
+          mode === 'dark' ? 'bg-accent' : ''
+        }`}
+      >
+        <HiSun
+          className={`absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors ${
+            mode === 'dark' ? 'text-base-100' : 'text-base-content'
+          }`}
+        />
+        <HiMoon
+          className={`absolute right-1 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors ${
+            mode === 'dark' ? 'text-accent' : 'text-primary'
+          }`}
+        />
+        <div
+          className={`absolute top-1/2 h-7 w-7 -translate-y-1/2 rounded-full shadow transition-all ${
+            mode === 'dark'
+              ? 'left-[calc(100%-0.25rem-0.625rem-0.875rem)] bg-base-100'
+              : 'left-0 bg-base-100'
+          }`}
+        >
+          <div className="flex h-full w-full items-center justify-center">
+            {mode === 'dark' ? (
+              <HiMoon className="h-4 w-4 text-accent" />
+            ) : (
+              <HiSun className="h-4 w-4 text-primary" />
+            )}
+          </div>
+        </div>
+      </div>
     </label>
   );
 };
