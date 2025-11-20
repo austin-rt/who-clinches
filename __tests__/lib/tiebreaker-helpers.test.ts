@@ -1,23 +1,18 @@
 /**
- * Unit Tests: Tiebreaker Helper Functions
+ * Unit Tests: Tiebreaker Helper Utility Functions
  *
- * Tests for SEC tiebreaker rules A-E and standings calculation.
- * These tests validate the cascading tiebreaker logic that ranks
- * teams with identical win-loss records.
+ * Tests for utility functions and validation logic that support the tiebreaker rules.
+ * Note: Comprehensive tiebreaker rule tests (A-E) are in __tests__/lib/tiebreaker-rules/
  */
 
 import {
   getTeamRecord,
-  applyRuleA,
-  applyRuleB,
   getTeamAvgPointsFor,
   getTeamAvgPointsAgainst,
   applyOverrides,
-  calculateStandings,
 } from '@/lib/tiebreaker-helpers';
 import { GameLean } from '@/lib/types';
 
-// Helper to create mock game data for testing
 const createMockGame = (
   espnId: string,
   homeTeamId: string,
@@ -127,38 +122,6 @@ describe('getTeamAvgPointsAgainst', () => {
   });
 });
 
-describe('applyRuleA: Head-to-Head', () => {
-  it('breaks tie using head-to-head record', () => {
-    const games = [
-      createMockGame('1', 'A', 'B', 28, 24, 'ALA', 'UA'),
-      createMockGame('2', 'C', 'A', 21, 24, 'LSU', 'ALA'),
-      createMockGame('3', 'B', 'C', 17, 20, 'UA', 'LSU'),
-    ];
-
-    const result = applyRuleA(['A', 'B', 'C'], games);
-
-    expect(result.winners).toContain('A'); // A beat B head-to-head
-    expect(result.detail).toContain('ALA');
-  });
-});
-
-describe('applyRuleB: Common Opponents', () => {
-  it('breaks tie by record against common opponents', () => {
-    const games = [
-      createMockGame('1', 'A', 'C', 28, 24),
-      createMockGame('2', 'B', 'C', 21, 24),
-      createMockGame('3', 'A', 'D', 30, 20),
-      createMockGame('4', 'B', 'D', 17, 20),
-    ];
-
-    const result = applyRuleB(['A', 'B'], games);
-
-    // Both teams played C and D, but A beat both while B lost to both
-    expect(result.winners).toContain('A');
-    expect(result.detail).toContain('common opponents');
-  });
-});
-
 describe('applyOverrides', () => {
   it('applies score overrides to games', () => {
     const games = [
@@ -207,22 +170,5 @@ describe('applyOverrides', () => {
     };
 
     expect(() => applyOverrides(games, overrides)).toThrow('whole numbers');
-  });
-});
-
-describe('calculateStandings', () => {
-  it('calculates full standings with multiple teams', () => {
-    const games = [
-      createMockGame('1', 'A', 'B', 28, 24, 'ALA', 'UA'),
-      createMockGame('2', 'C', 'A', 21, 24, 'LSU', 'ALA'),
-      createMockGame('3', 'B', 'C', 17, 20, 'UA', 'LSU'),
-    ];
-
-    const result = calculateStandings(games, ['A', 'B', 'C']);
-
-    expect(result.standings.length).toBe(3);
-    expect(result.standings[0].rank).toBe(1);
-    expect(result.standings[1].rank).toBe(2);
-    expect(result.standings[2].rank).toBe(3);
   });
 });
