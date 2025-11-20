@@ -1,0 +1,74 @@
+'use client';
+
+import { forwardRef, type ForwardRefExoticComponent } from 'react';
+import { cn } from '@/lib/utils';
+import { type BaseButtonProps } from './BaseButtonProps';
+import LoadingSpinner from '../LoadingSpinner';
+
+const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
+  HTMLButtonElement,
+  BaseButtonProps
+>(
+  (
+    {
+      size = 'md',
+      color = 'primary',
+      loading = false,
+      disabled = false,
+      onClick,
+      children,
+      className,
+      ...props
+    },
+    ref
+  ) => {
+    const buttonClasses = cn(
+      'btn',
+      {
+        'btn-primary': color === 'primary',
+        'btn-secondary': color === 'secondary',
+        'btn-accent': color === 'accent',
+        'btn-neutral': color === 'neutral',
+        'btn-info': color === 'info',
+        'btn-success': color === 'success',
+        'btn-warning': color === 'warning',
+        'btn-error': color === 'error',
+        'btn-xs': size === 'xs',
+        'btn-sm': size === 'sm',
+        'btn-md': size === 'md',
+        'btn-lg': size === 'lg',
+        'btn-xl': size === 'xl',
+      },
+      className
+    );
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      if (!loading && !disabled && onClick) {
+        onClick(e);
+      }
+    };
+
+    return (
+      <button
+        ref={ref}
+        disabled={disabled || loading}
+        onClick={handleClick}
+        className={buttonClasses}
+        {...props}
+      >
+        {loading && !disabled && <LoadingSpinner className="inline-flex py-0" size="loading-sm" />}
+        <span
+          className={cn({
+            'opacity-0': loading && !disabled,
+          })}
+        >
+          {children}
+        </span>
+      </button>
+    );
+  }
+);
+
+Button.displayName = 'Button';
+
+export default Button;
