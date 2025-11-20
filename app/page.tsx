@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import GamesList from './components/GamesList';
 import ViewModeButton from './components/ViewModeButton';
 import HideCompletedButton from './components/HideCompletedButton';
+import ResetButton from './components/ResetButton';
 import SimulateButton from './components/SimulateButton';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
@@ -31,12 +32,14 @@ const Home = () => {
       </div>
 
       <div className="flex w-full items-center justify-between">
-        <HideCompletedButton />
+        <div className="flex items-center gap-4">
+          <HideCompletedButton />
+          <ResetButton />
+        </div>
         <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
       </div>
 
       <GamesList season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
-      <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
     </div>
   );
 };
