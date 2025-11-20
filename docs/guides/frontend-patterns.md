@@ -22,6 +22,12 @@ Complete documentation of frontend architecture, component patterns, state manag
 ```
 app/
 ├── components/           # React components
+│   ├── Button/                    # Button component system
+│   │   ├── Button.tsx             # Solid button variant
+│   │   ├── StrokedButton/          # Outlined button variant
+│   │   ├── FlatButton/            # Flat button variant (no border/bg)
+│   │   ├── BaseButtonProps.ts     # Shared button props interface
+│   │   └── index.ts               # Button component exports
 │   ├── CompactGameButton.tsx    # Compact mode game selection
 │   ├── CompactWeekGrid.tsx       # Compact mode grid layout
 │   ├── DarkModeToggle.tsx        # Theme mode switcher
@@ -45,6 +51,8 @@ app/
 │   ├── store.ts                   # Redux store config with redux-persist
 │   ├── uiSlice.ts                 # UI state (theme, mode, view)
 │   └── useUI.ts                   # UI state selector hook
+├── styles/                        # CSS styles
+│   └── buttons.css                # Button component styles
 ├── components/
 │   └── StoreProvider.tsx          # Redux Provider with PersistGate
 ├── page.tsx                       # Home page
@@ -198,10 +206,39 @@ dispatch(setView('scores')); // Automatically persisted to localStorage
 
 ## Component Patterns
 
+### Button Component System
+
+**Button Variants:**
+- `Button` - Solid button with background color
+- `Button.Stroked` - Outlined button with border, transparent background
+- `Button.Flat` - Flat button with no border or background
+
+**Usage:**
+```typescript
+import { Button } from '@/app/components/Button';
+
+<Button color="primary" onClick={handleClick}>Click me</Button>
+<Button.Stroked color="accent" onClick={handleClick}>Outlined</Button.Stroked>
+<Button.Flat color="primary" onClick={handleClick}>Flat</Button.Flat>
+```
+
+**Color Options:**
+- `primary` - SEC Blue (#002d74)
+- `secondary` - Lighter SEC Blue (#004a9e)
+- `accent` - SEC Gold (#ffd040)
+- `neutral` - Neutral gray
+
+**Button Styles:**
+- Styles defined in `app/styles/buttons.css` using CSS nesting
+- Uses DaisyUI color variables for theme consistency
+- Dark mode variants automatically adjust text and border colors
+- Hover states use opacity-based backgrounds for smooth transitions
+
 ### Theme-Aware Components
 - Use DaisyUI semantic colors (`text-primary`, `bg-base-200`)
 - Theme applied via `data-theme` attribute
 - CSS variables for theme colors
+- Color scheme: Primary = SEC Blue, Secondary = Lighter SEC Blue, Accent = SEC Gold
 
 ### Conditional Rendering Based on View Mode
 ```typescript
@@ -245,9 +282,11 @@ return <span>{score}</span>;
 - Valid scores save automatically on blur
 
 ### Dark Mode
-- System-wide theme toggle
-- Light mode: SEC blue (`text-primary`)
-- Dark mode: SEC yellow (`text-secondary`)
+- Custom toggle with sliding circle and dual icons
+- Light mode: SEC blue (`text-primary`) for moon icon, track uses `bg-base-300`
+- Dark mode: SEC Gold (`text-accent`) for moon icon and track background
+- Toggle track shows both sun (left) and moon (right) icons
+- Sliding circle contains active icon (sun in light mode, moon in dark mode)
 - Backgrounds: DaisyUI `base-200`, `base-300`
 
 ---
@@ -281,10 +320,17 @@ return <span>{score}</span>;
 
 ### DaisyUI Components
 - `navbar`: Header
-- `btn`: Buttons
+- `btn`: Base button class (overridden in `globals.css` with uppercase, semibold, etc.)
 - `card`, `card-body`: Game cards
 - `swap`: View toggle animation
 - `collapse`: Week accordions
+
+### Custom Button System
+- Built on DaisyUI base classes
+- Custom variants: `.btn-stroke` (outlined), `.btn-flat` (no border/bg)
+- Color variants: `btn-primary`, `btn-secondary`, `btn-accent`, `btn-neutral`
+- Dark mode support with automatic color adjustments
+- Styles in `app/styles/buttons.css` using PostCSS nesting
 
 ### Tailwind Utilities
 - Layout: `container mx-auto`, `flex`, `grid`, `gap-*`

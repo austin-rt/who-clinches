@@ -10,6 +10,8 @@ Domain-specific content locations for common tasks.
 - **ESPN API testing**: `docs/tests/espn-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
+- **Test data management**: `docs/plans/test-data-snapshots.md`, `docs/plans/test-data-auto-retesting.md`
+- **Unit tests plan**: `docs/plans/unit-tests.md`
 
 ## API Development
 
@@ -54,6 +56,8 @@ Domain-specific content locations for common tasks.
 
 - **AI guide**: `docs/ai-guide.md`
 - **AI loading manifest**: `docs/ai-loading-manifest.md`
+- **Changelog guide**: `docs/guides/changelog-guide.md`
+- **Pre-commit testing**: `docs/guides/pre-commit-testing.md`
 - **Tech spec**: `docs/plans/tech-spec.md` (historical)
 
 ## Common Commands
