@@ -42,7 +42,7 @@
 - **`lib/reshape-games.ts`** - Game data transformation
 - **`lib/reshape-teams.ts`** - Team data transformation
 
-**Conference ID:** `8` (SEC) for scoreboard API
+**Conference ID:** `8` (example: SEC) for scoreboard API
 
 ---
 

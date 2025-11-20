@@ -22,16 +22,18 @@ Updates scores for games. Can update all games or just incomplete ones.
 ### Local Test (Season Mode - for daily batch)
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
+curl -X GET "${BASE_URL}/api/cron/update-games?mode=season" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
 ### Local Test (Active Mode - for frequent updates, incomplete games only)
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games" \
+curl -X GET "${BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -67,8 +69,9 @@ Updates team rankings, standings, and records weekly.
 ### Local Test
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-rankings" \
+curl -X GET "${BASE_URL}/api/cron/update-rankings" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -87,7 +90,7 @@ curl -X GET "http://localhost:3000/api/cron/update-rankings" \
 ### Checks
 
 - [ ] Status 200
-- [ ] `updated` = 16 (all SEC teams)
+- [ ] `updated` = Number of teams in conference (e.g., 16 for SEC)
 - [ ] `teamsChecked` = 16
 - [ ] `espnCalls` >= 16 (one per team minimum)
 - [ ] `lastUpdated` is valid ISO timestamp
@@ -102,7 +105,8 @@ Tests that cron endpoints require authentication.
 ### Command
 
 ```bash
-curl -X GET "http://localhost:3000/api/cron/update-games"
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X GET "${BASE_URL}/api/cron/update-games"
 ```
 
 ### Expected Results
@@ -124,7 +128,8 @@ Tests that invalid tokens are rejected.
 ### Command
 
 ```bash
-curl -X GET "http://localhost:3000/api/cron/update-games" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X GET "${BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer invalid-token-12345"
 ```
 
@@ -148,8 +153,12 @@ Verify that new fields are properly populated after cron runs.
 
 ```bash
 # Check that displayName and predictedScore are populated
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "
     print('Checking game fields...');
     var game = db.games.findOne({conferenceGame: true});
@@ -164,8 +173,13 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?
 ### Check Team Fields
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
 # Check that team averages are populated
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "
     print('Checking team fields...');
     var team = db.teams.findOne({abbreviation: 'UGA'});
@@ -199,8 +213,9 @@ Run during offseason or midweek when no games are active.
 ### Command
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games" \
+curl -X GET "${BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -225,13 +240,14 @@ Tests behavior when games are in progress.
 
 ### Setup
 
-Run on Saturday during SEC game time (typically 12-8 PM ET).
+Run on Saturday during conference game time (typically 12-8 PM ET).
 
 ### Command
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games" \
+curl -X GET "${BASE_URL}/api/cron/update-games" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
@@ -280,16 +296,17 @@ Verifies that cron jobs actually update the database.
 ### Update Live Games Verification
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 # Before cron
-curl "http://localhost:3000/api/games?season=2025&week=11&state=in" | jq '.events[] | {espnId, home: .home.score, away: .away.score}'
+curl "${BASE_URL}/api/games?season=2025&week=11&state=in" | jq '.events[] | {espnId, home: .home.score, away: .away.score}'
 
 # Run cron
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
+curl -X GET "${BASE_URL}/api/cron/update-games?mode=season" \
   -H "Authorization: Bearer ${CRON_SECRET}"
 
 # After cron
-curl "http://localhost:3000/api/games?season=2025&week=11&state=in" | jq '.events[] | {espnId, home: .home.score, away: .away.score}'
+curl "${BASE_URL}/api/games?season=2025&week=11&state=in" | jq '.events[] | {espnId, home: .home.score, away: .away.score}'
 ```
 
 ### Checks
@@ -301,12 +318,13 @@ curl "http://localhost:3000/api/games?season=2025&week=11&state=in" | jq '.event
 ### Update Rankings Verification
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 # Before cron
-curl "http://localhost:3000/api/games?season=2025&conferenceId=8" | jq '.teams[] | {abbrev, displayName}'
+curl "${BASE_URL}/api/games?season=2025&conferenceId=8" | jq '.teams[] | {abbrev, displayName}'
 
 # Run cron
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-rankings" \
+curl -X GET "${BASE_URL}/api/cron/update-rankings" \
   -H "Authorization: Bearer ${CRON_SECRET}"
 
 # After cron (check Team collection via separate endpoint or DB query)
@@ -484,12 +502,13 @@ Tests that running cron multiple times doesn't cause issues.
 ### Command
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 
 # Run cron 3 times in a row
 for i in {1..3}; do
   echo "Run $i:"
-  curl -X GET "http://localhost:3000/api/cron/update-games?mode=season" \
+  curl -X GET "${BASE_URL}/api/cron/update-games?mode=season" \
     -H "Authorization: Bearer ${CRON_SECRET}" | jq .
   sleep 2
 done
@@ -561,8 +580,9 @@ Tests the single batch endpoint that calls all cron jobs.
 ### Local Test
 
 ```bash
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "http://localhost:3000/api/cron/update-all" \
+curl -X GET "${BASE_URL}/api/cron/update-all" \
   -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 

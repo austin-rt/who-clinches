@@ -68,7 +68,7 @@ Updates scores, states, and odds for games.
 
 **Updates:** `odds.*`, `predictedScore`
 
-**Logic:** Queries upcoming SEC games, fetches odds from ESPN, updates if changed. Recalculates `predictedScore` using priority: ESPN odds → team averages + spread → ranking-based → home field advantage.
+**Logic:** Queries upcoming conference games, fetches odds from ESPN, updates if changed. Recalculates `predictedScore` using priority: ESPN odds → team averages + spread → ranking-based → home field advantage.
 
 **Notes:** Pro-only. More frequent than `update-games` to catch line movements. Only updates odds, not scores/states.
 
@@ -96,7 +96,7 @@ Updates team rankings, standings, and season statistics.
 
 **Updates:** `nationalRanking`, `conferenceStanding`, `record.*`, `record.stats.*` (including `avgPointsFor`/`avgPointsAgainst` for `predictedScore`)
 
-**Logic:** Loops through 16 SEC teams, calls Site API (metadata/rankings) and Core API (stats/averages). Falls back to Site API if Core API null. 500ms rate limit, retries once.
+**Logic:** Loops through all conference teams, calls Site API (metadata/rankings) and Core API (stats/averages). Falls back to Site API if Core API null. 500ms rate limit, retries once.
 
 **Notes:** Critical for `predictedScore`. Run weekly after rankings release.
 

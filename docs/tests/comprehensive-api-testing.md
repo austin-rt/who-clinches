@@ -1,6 +1,6 @@
 # Comprehensive API Testing Guide
 
-Complete testing procedures for all SEC Tiebreaker API endpoints with valid and invalid payloads.
+Complete testing procedures for all Conference Tiebreaker API endpoints with valid and invalid payloads.
 
 **Environment-agnostic**: Use placeholders `{BASE_URL}`, `{DATABASE}`, and credential variables for any environment.
 
@@ -72,8 +72,12 @@ The `db:check` script loads the appropriate `.env.{envName}` file based on the `
 **Always check if teams already exist before seeding:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "const count = db.teams.countDocuments(); console.log('Teams in database:', count); if (count > 0) { console.log('Sample teams:'); db.teams.find({}, {_id:1, abbreviation:1, displayName:1}).limit(3).forEach(printjson); }" \
   --quiet
 ```
@@ -93,7 +97,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 # Get bypass token (for manual curl commands only)
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
-# Test 1: Pull all SEC teams (REQUIRED - run this first)
+# Test 1: Pull all conference teams (REQUIRED - run this first)
 curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"sport": "football", "league": "college-football", "conferenceId": 8}'
@@ -142,7 +146,12 @@ curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=${BYPASS_TOKE
 **Database Verification:**
 
 ```bash
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.find({}, {_id:1, displayName:1, abbreviation:1, 'record.overall':1, 'record.conference':1}).limit(5).pretty()" \
   --quiet
 ```
@@ -151,15 +160,19 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 
 #### POST /api/pull-games
 
-**Prerequisites:** All SEC teams must be seeded first (`POST /api/pull-teams` with `conferenceId: 8`) for accurate `predictedScore` calculations.
+**Prerequisites:** All conference teams must be seeded first (`POST /api/pull-teams` with appropriate `conferenceId`) for accurate `predictedScore` calculations.
 
 **Pre-Seeding Check:**
 
 **Always check if games already exist before seeding:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "const count = db.games.countDocuments({season: 2025}); console.log('Games in database (2025 season):', count); if (count > 0) { console.log('Games by week:'); const byWeek = db.games.aggregate([{ \$match: {season: 2025} }, { \$group: { _id: '\$week', count: { \$sum: 1 } } }, { \$sort: { _id: 1 } }]).toArray(); byWeek.forEach(w => console.log('  Week', w._id + ':', w.count, 'games')); }" \
   --quiet
 ```
@@ -217,18 +230,23 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=${BYPASS_TOKE
 **Database Verification:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
 # Verify games stored
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.games.find({season: 2025, week: 11}, {espnId:1, displayName:1, 'home.score':1, 'away.score':1, state:1, conferenceGame:1}).limit(5).pretty()" \
   --quiet
 
 # Verify games count by week
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "console.log('Total games:', db.games.countDocuments()); const byWeek = db.games.aggregate([{ \$group: { _id: '\$week', count: { \$sum: 1 } } }, { \$sort: { _id: 1 } }]).toArray(); byWeek.forEach(w => console.log('Week', w._id + ':', w.count, 'games'));" \
   --quiet
 
 # Verify displayName field present
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.games.countDocuments({displayName: {\$exists: false}})" \
   --quiet
 ```
@@ -334,7 +352,7 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
   -d '{"season": 2025, "conferenceId": "8", "overrides": {"401752759": {"homeScore": 28, "awayScore": 21}, "401752760": {"homeScore": 14, "awayScore": 35}}}'
 ```
 
-**Expected:** Status 200, response includes `standings` array (all 16 SEC teams with rankings, records, and tiebreaker explanations)
+**Expected:** Status 200, response includes `standings` array (all conference teams with rankings, records, and tiebreaker explanations)
 
 **Response Type Verification (SimulateResponse):**
 
@@ -360,7 +378,7 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 Expected output:
 
 - `standings_is_array`: "array"
-- `standings_count`: 16 (all SEC teams)
+- `standings_count`: Number of teams in conference (e.g., 16 for SEC)
 - `championship_is_array`: "array"
 - `championship_length`: 2 (top 2 teams)
 - `tieLogs_is_array`: "array"
@@ -405,7 +423,7 @@ curl -X POST "{BASE_URL}/api/simulate?x-vercel-protection-bypass=${BYPASS_TOKEN}
 
 **Checks:**
 
-- Standings array contains all 16 SEC teams
+- Standings array contains all conference teams
 - Each team has all required fields from `StandingEntry` interface: rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition
   - `color` field must be present and match database team color (from `/api/games`)
 - Rankings are 1-16 with no gaps
@@ -521,7 +539,7 @@ curl -X GET "{BASE_URL}/api/cron/update-rankings" \
 
 **Expected:** Status 200, response includes:
 
-- `updated`: number of teams updated (should be 16 for SEC)
+- `updated`: number of teams updated (should match number of teams in conference)
 - `teamsChecked`: number of teams examined
 - `espnCalls`: number of ESPN API calls made
 - `lastUpdated`: timestamp
@@ -543,13 +561,18 @@ curl -X GET "{BASE_URL}/api/cron/update-rankings" \
 **Database Verification:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
 # Verify rankings updated
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.find({}, {abbreviation:1, nationalRanking:1, conferenceStanding:1, 'record.conference':1}).pretty()" \
   --quiet
 
 # Verify no null conference records
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.countDocuments({'record.conference': null})" \
   --quiet
 ```
@@ -607,8 +630,13 @@ curl -X GET "{BASE_URL}/api/cron/update-team-averages"
 **Database Verification:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
 # Verify team averages updated
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.find({}, {abbreviation:1, 'record.stats.avgPointsFor':1, 'record.stats.avgPointsAgainst':1}).pretty()" \
   --quiet
 ```
@@ -630,18 +658,23 @@ Should show `dev` (local), `preview` (staging), or `production` based on environ
 ### Check Data Integrity
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
+READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
 # Count teams
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.countDocuments()" \
   --quiet
 
 # Count games
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.games.countDocuments({season: 2025})" \
   --quiet
 
 # Verify predictedScore field (should exist for conference games)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "console.log('Conference games with predictedScore:', db.games.countDocuments({conferenceGame: true, predictedScore: {\$exists: true}})); console.log('Total conference games:', db.games.countDocuments({conferenceGame: true}));" \
   --quiet
 ```

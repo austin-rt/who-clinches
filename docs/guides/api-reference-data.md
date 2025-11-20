@@ -87,7 +87,7 @@ Seeds or updates team data from ESPN API.
 |-------|------|----------|-------------|
 | `sport` | string | Yes | Sport type (e.g., "football") |
 | `league` | string | Yes | League identifier (e.g., "college-football") |
-| `conferenceId` | number | Conditional | Conference ID (8 for SEC). Required if `teams` not provided |
+| `conferenceId` | number | Conditional | Conference ID (e.g., 8 for SEC). Required if `teams` not provided |
 | `teams` | string[] | Conditional | Array of team abbreviations. Required if `conferenceId` not provided |
 
 **Response:**
@@ -137,7 +137,7 @@ Pulls game data from ESPN for a specific season/conference.
 | `sport` | string | Yes | Sport type |
 | `league` | string | Yes | League identifier |
 | `season` | number | Yes | Season year (e.g., 2025) |
-| `conferenceId` | number | Yes | Conference ID (8 for SEC) |
+| `conferenceId` | number | Yes | Conference ID (e.g., 8 for SEC) |
 | `week` | number | No | Specific week number. If omitted, pulls entire regular season |
 
 **Response:**
@@ -169,7 +169,7 @@ Pulls game data from ESPN for a specific season/conference.
 
 **Notes:**
 - Dynamically determines season weeks using ESPN calendar API
-- Excludes SEC Championship game
+- Excludes conference championship game
 - Can run independently - does not require teams to be seeded first
 - Optimal order: `/api/pull-teams` → `/api/cron/update-rankings` → `/api/pull-games` for most accurate `predictedScore`
 
@@ -177,7 +177,7 @@ Pulls game data from ESPN for a specific season/conference.
 
 ## POST /api/simulate
 
-Simulates SEC tiebreaker standings with optional user-provided game outcomes.
+Simulates conference tiebreaker standings with optional user-provided game outcomes.
 
 **Authentication:** None required
 
@@ -201,7 +201,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `season` | number | Yes | Season year |
-| `conferenceId` | string | Yes | Conference ID as string ("8" for SEC) |
+| `conferenceId` | string | Yes | Conference ID as string (e.g., "8" for SEC) |
 | `overrides` | object | No | Game ID → score overrides. Defaults to `{}` if omitted |
 
 **Override Format:**
@@ -226,7 +226,7 @@ Simulates SEC tiebreaker standings with optional user-provided game outcomes.
 | Field | Type | Description |
 |-------|------|-------------|
 | `standings` | StandingEntry[] | Full conference standings (sorted by rank) |
-| `championship` | [string, string] | Top 2 team IDs (SEC Championship matchup) |
+| `championship` | [string, string] | Top 2 team IDs (conference championship matchup) |
 | `tieLogs` | TieLog[] | Detailed tiebreaker explanations |
 
 **StandingEntry Fields:**

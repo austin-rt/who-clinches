@@ -1,6 +1,6 @@
 # Changelog Management Guide
 
-How to maintain `CHANGELOG.md` for the SEC Tiebreaker project.
+How to maintain `CHANGELOG.md` for the Conference Tiebreaker project.
 
 ---
 
@@ -157,7 +157,7 @@ Before 1.0.0 (initial production release):
 ### Added
 
 - **Initial API**: Teams, games, simulate endpoints
-- **Tiebreaker Logic**: SEC Rules A-E implementation
+- **Tiebreaker Logic**: Conference tiebreaker rules A-E implementation
 - **Cron Jobs**: Automated data updates (live games, rankings, spreads, averages)
 - **Predicted Scores**: Server-side prefill logic for incomplete games
 

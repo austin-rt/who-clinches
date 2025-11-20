@@ -45,7 +45,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
 
 **Query Parameters:**
 
-- ✅ `groups=8` (SEC conference)
+- ✅ `groups=8` (example: SEC conference)
 - ✅ `week=12` (week number)
 - ✅ `year=2025` (NOT `season`)
 
@@ -138,7 +138,7 @@ curl -s --compressed "http://site.api.espn.com/apis/site/v2/sports/football/coll
       }
     },
     "rank": 5,
-    "standingSummary": "3rd in SEC",
+    "standingSummary": "3rd in [Conference]",
     "record": {
       "items": [
         {

@@ -1,6 +1,6 @@
 # API Reference
 
-Complete reference for all SEC Tiebreaker API endpoints.
+Complete reference for all Conference Tiebreaker API endpoints.
 
 **Related Documentation:**
 - [Comprehensive API Testing](../tests/comprehensive-api-testing.md) - Detailed testing procedures
@@ -75,7 +75,7 @@ db.errors.find({ endpoint: '/api/cron/update-rankings' }).sort({ timestamp: -1 }
 
 - All timestamps in ISO 8601 format (UTC)
 - Season is hardcoded to 2025 in some cron jobs
-- Conference ID 8 = SEC
+- Conference IDs vary by conference (e.g., 8 for SEC)
 - Team IDs are ESPN team IDs (e.g., "333" = Alabama)
 
 ---

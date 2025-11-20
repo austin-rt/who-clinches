@@ -94,7 +94,7 @@ All tests use real ESPN API data stored in the test database (`/test`). The test
 
 - ✓ Returns SimulateResponse with correct structure
 - ✓ Includes all 9 StandingEntry fields (rank, teamId, abbrev, displayName, logo, color, record, confRecord, explainPosition)
-- ✓ Returns 16 teams (all SEC)
+- ✓ Returns all conference teams (e.g., 16 for SEC)
 - ✓ No overrides - uses real + predicted scores
 - ✓ Single game override
 - ✓ Multiple game overrides
@@ -115,7 +115,7 @@ All tests use real ESPN API data stored in the test database (`/test`). The test
 
 **Tests:**
 
-- ✓ Pulls all SEC teams when conferenceId: 8
+- ✓ Pulls all conference teams when conferenceId provided (e.g., 8 for SEC)
 - ✓ Returns upserted count
 - ✓ Teams include color and alternateColor fields
 - ✓ Pull specific teams by abbreviation
@@ -465,7 +465,7 @@ npm run test:coverage    # Check coverage before committing
    - Impact: CI/CD pipelines may fail intermittently
 
 6. **⚠️ Test Flakiness - Data Dependency**
-   - Tests assume 16 SEC teams always seeded
+   - Tests assume all conference teams are seeded
    - Tests assume games exist for season 2025
    - If ESPN data structure changes, tests break
    - Better: Test against stable test database snapshots

@@ -1,4 +1,4 @@
-# SEC Football Standings Calculator - Technical Specification
+# Conference Football Standings Calculator - Technical Specification
 
 > **⚠️ HISTORICAL SPECIFICATION - MAY NOT MATCH CURRENT IMPLEMENTATION**
 > 
@@ -7,16 +7,16 @@
 
 ## Historical Overview
 
-This document specified the original technical design for the SEC Football Standings Calculator application.
+This document specified the original technical design for the Conference Football Standings Calculator application.
 
 **Original Objectives:**
-- Automate schedule and standings ingestion for SEC football using ESPN public JSON API
+- Automate schedule and standings ingestion for conference football using ESPN public JSON API
 - Persist normalized data in MongoDB via Mongoose (lean mode)
 - Serve data through Next.js App Router Route Handlers
 - Allow user "what-if" overrides and deterministic tiebreaker calculations
 
 **Original Phases:**
-- Phase 1: SEC Football Regular Season (conference games, tiebreaker rules A-D)
+- Phase 1: Conference Football Regular Season (conference games, tiebreaker rules A-D)
 - Phase 2: Enhanced Tiebreakers (Tiebreaker E, richer explanations)
 - Phase 3: Multi-Conference (abstract tiebreaker rules per conference)
 - Phase 4: Live Score Streaming (client-side polling)

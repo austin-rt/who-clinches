@@ -1,4 +1,4 @@
-# SEC Tiebreaker Logic Implementation
+# Conference Tiebreaker Logic Implementation
 
 > **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
 > 
@@ -13,11 +13,11 @@
 
 ## Overview
 
-SEC tiebreaker engine (rules A-E). `/api/simulate` accepts score overrides and returns resolved standings.
+Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score overrides and returns resolved standings.
 
 ---
 
-## SEC Tiebreaker Rules
+## Conference Tiebreaker Rules
 
 | Rule | Requirement | Action | Next if Tie |
 |------|-------------|--------|-------------|
@@ -57,7 +57,7 @@ SEC tiebreaker engine (rules A-E). `/api/simulate` accepts score overrides and r
 - **Recursive Resolution**: Rules applied recursively (Rule A → Rule B → ...)
 - **Minimum Requirements**: Rules A/B skip if requirements not met
 - **Scoring Caps**: Rule E caps at +42/-48 to prevent skew
-- **Championship**: Top 2 teams = SEC Championship matchup
+- **Championship**: Top 2 teams = Conference Championship matchup
 - **Full Standings**: Always returns all 16 teams
 
 **Testing:** See [Tiebreaker Testing](../tests/tiebreaker-and-simulate.md)

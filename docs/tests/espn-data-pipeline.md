@@ -61,8 +61,12 @@ Fetches team data from ESPN (site + core APIs) and stores in MongoDB.
 **Always check if teams already exist before seeding:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "const count = db.teams.countDocuments(); console.log('Teams in database:', count); if (count > 0) { console.log('Sample teams:'); db.teams.find({}, {_id:1, abbreviation:1, displayName:1}).limit(3).forEach(printjson); }" \
   --quiet
 ```
@@ -85,7 +89,7 @@ Replace `{BASE_URL}` and `{DATABASE}` based on environment:
 **Note:** For preview/production deployments, bypass token is automatically handled by `scripts/db-check-and-seed.js`. For manual curl commands, use:
 
 ```bash
-# Seed all SEC teams (required for accurate predictedScore calculations)
+# Seed all conference teams (required for accurate predictedScore calculations)
 # Bypass token automatically handled by db:check script, or manually for curl:
 curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
   -H "Content-Type: application/json" \
@@ -98,18 +102,22 @@ See `app/api/pull-teams/route.ts` for `PullTeamsResponse` interface.
 
 Response should include:
 
-- `upserted`: 16 (all SEC teams)
+- `upserted`: Number of teams in conference (e.g., 16 for SEC)
 - `lastUpdated`: timestamp
 
-**Before proceeding to other tests, verify all 16 teams were seeded successfully.**
+**Before proceeding to other tests, verify all conference teams were seeded successfully.**
 
 #### Database Verification
 
 See `lib/models/Team.ts` for `ITeam` interface and schema.
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.find({}, {_id:1, displayName:1, abbreviation:1, 'record.overall':1, 'record.conference':1, nationalRanking:1, conferenceStanding:1}).pretty()" \
   --quiet
 ```
@@ -119,7 +127,7 @@ Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
 #### Checks
 
 - Status code: 200
-- `upserted` count = 16 (all SEC teams)
+- `upserted` count = Number of teams in conference (e.g., 16 for SEC)
 - Conference records populated (not null)
 - Home/away records populated
 - National rankings populated for ranked teams
@@ -134,17 +142,21 @@ Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB.
 
-**Prerequisites:** All SEC teams must be seeded first (`POST /api/pull-teams` with `conferenceId: 8`) for accurate `predictedScore` calculations.
+**Prerequisites:** All conference teams must be seeded first (`POST /api/pull-teams` with appropriate `conferenceId`) for accurate `predictedScore` calculations.
 
-**Full Season Pull:** If `week` is not specified, the endpoint dynamically fetches the ESPN calendar to determine the "Regular Season" weeks and pulls all of them. For 2025, this is weeks 1-14 (SEC Championship excluded). This ensures the database has complete regular season data without hardcoding week ranges.
+**Full Season Pull:** If `week` is not specified, the endpoint dynamically fetches the ESPN calendar to determine the "Regular Season" weeks and pulls all of them. For 2025, this is weeks 1-14 (conference championship excluded). This ensures the database has complete regular season data without hardcoding week ranges.
 
 #### Pre-Seeding Check
 
 **Always check if games already exist before seeding:**
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "const count = db.games.countDocuments({season: 2025}); console.log('Games in database (2025 season):', count); if (count > 0) { console.log('Games by week:'); const byWeek = db.games.aggregate([{ \$match: {season: 2025} }, { \$group: { _id: '\$week', count: { \$sum: 1 } } }, { \$sort: { _id: 1 } }]).toArray(); byWeek.forEach(w => console.log('  Week', w._id + ':', w.count, 'games')); }" \
   --quiet
 ```
@@ -173,7 +185,7 @@ curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL
 This will:
 
 - Query ESPN calendar API to determine regular season weeks dynamically
-- Pull all regular season weeks (e.g., 1-14 for 2025, excluding SEC Championship)
+- Pull all regular season weeks (e.g., 1-14 for 2025, excluding conference championship)
 - Upsert games (existing games updated, new games inserted)
 - Return the total number of games upserted and the list of weeks pulled
 
@@ -209,8 +221,12 @@ Response should include:
 See `lib/models/Game.ts` for `IGame` interface and schema.
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.games.find({season: 2025, week: 11}, {espnId:1, displayName:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, 'odds.spread':1, predictedScore:1, state:1, conferenceGame:1}).limit(5).pretty()" \
   --quiet
 ```
@@ -272,8 +288,12 @@ Response should include:
 ### Check Teams Count
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.countDocuments()" \
   --quiet
 ```
@@ -281,8 +301,12 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 ### Check Games Count by Week
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "
 console.log('Total games:', db.games.countDocuments());
 console.log('');
@@ -305,8 +329,12 @@ Expected output for complete dataset (weeks 1-14 for 2025 season):
 ### Verify Conference Records
 
 ```bash
+READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DATABASE}?appName=SEC-Tiebreaker" \
+MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
+MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
+MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
   --eval "db.teams.find({'record.conference': null}).count()" \
   --quiet
 ```

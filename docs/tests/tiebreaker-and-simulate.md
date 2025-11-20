@@ -1,6 +1,6 @@
 # Tiebreaker Logic and Simulate Endpoint Testing
 
-Tests the complete tiebreaker implementation: Game model updates, simulate endpoint, SEC tiebreaker rules A-E, and standings generation.
+Tests the complete tiebreaker implementation: Game model updates, simulate endpoint, conference tiebreaker rules A-E, and standings generation.
 
 **Related Documentation:**
 - [API Reference](../guides/api-reference.md) - `/api/simulate` endpoint documentation
@@ -13,12 +13,12 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 ### Database Setup
 
 1. Fresh database with updated Game model (includes `displayName`, team fields: `logo`, `color`, `displayName`, `predictedScore`)
-2. All SEC teams pulled via `/api/pull-teams`
+2. All conference teams pulled via `/api/pull-teams`
 3. Full 2025 regular season games (weeks 1-14) pulled via `/api/pull-games`
 
 ### Data Requirements
 
-- 16 SEC teams in database
+- All conference teams in database
 - ~128 conference games (2025 season, weeks 1-14)
 - Games must include:
   - Game `displayName` field (format: "{away abbrev} @ {home abbrev}")
@@ -35,7 +35,8 @@ Tests standings calculation based on actual game results with no user prediction
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -56,7 +57,7 @@ curl -X POST "http://localhost:3000/api/simulate" \
   }
   ```
 - **Standings Array**:
-  - Length: 16 (all SEC teams)
+  - Length: Number of teams in conference (e.g., 16 for SEC)
   - Ordered by rank (1-16)
   - Each entry has: `rank`, `teamId`, `abbrev`, `displayName`, `logo`, `color`, `record`, `confRecord`, `explainPosition`
 - **Championship**: Array with top 2 team IDs
@@ -82,7 +83,8 @@ Tests user score predictions for incomplete/future games.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -121,7 +123,8 @@ Tests validation of user input (ties not allowed).
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -154,7 +157,8 @@ Tests validation of negative scores.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -187,7 +191,8 @@ Tests validation of decimal/float scores.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -220,7 +225,8 @@ Tests API validation for missing season/conferenceId.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "overrides": {}
@@ -250,7 +256,8 @@ Identify 2-3 teams with identical conference records that have played each other
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -280,7 +287,8 @@ Tests that rules B-E can be applied when needed.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -311,7 +319,8 @@ Tests that top 2 teams are correctly identified.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -344,7 +353,8 @@ Tests that team display data is properly populated.
 ### Command
 
 ```bash
-curl -X POST "http://localhost:3000/api/simulate" \
+BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
+curl -X POST "${BASE_URL}/api/simulate" \
   -H "Content-Type: application/json" \
   -d '{
     "season": 2025,
@@ -423,7 +433,7 @@ These will be tested after cron implementation:
 **Fix**:
 
 1. Ensure conferenceGame flag is true for pulled games
-2. Verify SEC teams are in constants: check `lib/constants.ts`
+2. Verify conference teams are in constants: check `lib/constants.ts`
 3. Re-pull games ensuring `conferenceId: 8` in request
 
 ### Incorrect tiebreaker results
@@ -459,7 +469,7 @@ These will be tested after cron implementation:
 ### Data Quality
 
 - [ ] Test 10: Team display data populated
-- [ ] All 16 SEC teams in standings
+- [ ] All conference teams in standings
 - [ ] Records are accurate
 - [ ] Explanations are readable
 

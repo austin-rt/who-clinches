@@ -31,7 +31,7 @@
 
 | Field | Location | Notes |
 |-------|----------|-------|
-| `conferenceId` | Scoreboard: `competitor.team.conferenceId` | Use `"8"` for SEC |
+| `conferenceId` | Scoreboard: `competitor.team.conferenceId` | Conference ID (e.g., `"8"` for SEC) |
 | `displayName` | Scoreboard: `name` | Format: "{away} @ {home}" |
 | `teamId` | Scoreboard: `competitor.team.id` | ESPN team ID (string) |
 | `record` | Team API: `record.items[]` | Use `type: "vsconf"` for conference |
