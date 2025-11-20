@@ -10,7 +10,7 @@ Execute `git add` and `git commit` commands for all unstaged changes. Analyze ch
 
 1. **Run validation upfront** - Execute `npm run lint`, `npx tsc --noEmit`, and `npm run test:all` BEFORE any commits
 2. **Tests cannot be skipped** - NEVER skip tests on the first validation run, even if you think they are not needed or are failing due to environment issues. All tests must be executed and pass before proceeding.
-3. **Server management** - If tests require a running server and it's not running, start the development server before running tests. **After all commits are complete, ALWAYS kill the server process using `npm run kill:next`** (see Step 6: Cleanup).
+3. **Server management** - If tests require a running server and it's not running, start the development server before running tests. **After all commits are complete, ALWAYS kill the server process using `npm run kill`** (see Step 6: Cleanup).
 4. **Use --no-verify flag** - Always use `--no-verify` on all git commits to skip husky pre-commit hooks (validation already done)
 5. **Execute commits** - Use `run_terminal_cmd` tool to run git commands, DO NOT generate code blocks
 6. **Sequential execution** - Run one commit at a time, verify success before proceeding
@@ -140,7 +140,7 @@ If a development server was started in Step 1 (or was already running), kill it 
 
 ```
 run_terminal_cmd(
-  command: "npm run kill:next",
+  command: "npm run kill",
   required_permissions: ["all"]
 )
 ```
