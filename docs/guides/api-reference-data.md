@@ -160,7 +160,12 @@ Pulls game data from ESPN for a specific season/conference.
 - State: `state` (pre/in/post), `completed`, `conferenceGame`, `neutralSite`
 - Teams: `home`/`away` with `teamEspnId`, `abbrev`, `score`, `rank`
 - Odds: `spread`, `favoriteTeamEspnId`, `overUnder`
-- `predictedScore`: Always calculated (uses real scores for completed games, spread + averages for incomplete)
+- `predictedScore`: Always calculated using priority order:
+  1. Real scores (if game completed or in progress with scores)
+  2. ESPN odds (overUnder + spread + favorite) if available
+  3. Team averages + spread (if spread available)
+  4. Ranking-based (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
+  5. Home field advantage (fallback: home team average, away team average - 3)
 
 **Notes:**
 - Dynamically determines season weeks using ESPN calendar API

@@ -182,7 +182,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/dev?
 - [ ] `predictedScore` present for conference games
 - [ ] `predictedScore.home` and `predictedScore.away` are positive integers
 - [ ] Completed games: `predictedScore` matches real scores
-- [ ] Incomplete games: `predictedScore` differs from 0-0 (uses spread + averages)
+- [ ] Incomplete games: `predictedScore` differs from 0-0 (uses priority order: ESPN odds → team averages + spread → ranking-based → home field advantage)
 - [ ] Team `avgPointsFor` > 0 after rankings cron
 - [ ] Team `avgPointsAgainst` > 0 after rankings cron
 

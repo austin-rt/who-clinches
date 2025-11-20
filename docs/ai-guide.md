@@ -125,9 +125,15 @@ const [mode, setMode] = useState<ThemeMode>('light');
 - `*/5 21-23,0-6 * * 4-5`: Every 5 minutes, multiple hour ranges, specific days
 
 **Data Integrity:**
-- `predictedScore`: Recalculated by cron jobs on every update
+- `predictedScore`: Recalculated by cron jobs on every update using priority order:
+  1. Real scores (if game completed or in progress with scores)
+  2. ESPN odds (overUnder + spread + favorite) if available
+  3. Team averages + spread (if spread available)
+  4. Ranking-based (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
+  5. Home field advantage (fallback: home team average, away team average - 3)
 - `displayName`: Format must be "{away} @ {home}" with team abbreviations
 - Team IDs: ESPN team IDs used as MongoDB `_id` (no separate mapping table)
+- `favoriteTeamEspnId`: Determined from ESPN's `odds.awayTeamOdds.favorite` or `odds.homeTeamOdds.favorite` boolean fields
 
 ---
 

@@ -223,7 +223,7 @@ mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/{DAT
 - **`displayName` field present** (format: "{away abbrev} @ {home abbrev}")
 - **`predictedScore` field present** for conference games
   - Completed games: `predictedScore` matches real scores
-  - Incomplete games: `predictedScore` calculated from spread + team averages
+  - Incomplete games: `predictedScore` calculated using priority order (ESPN odds → team averages + spread → ranking-based → home field advantage)
 - Odds data populated when available
 - Team ESPN IDs correct
 - Conference game flag set correctly

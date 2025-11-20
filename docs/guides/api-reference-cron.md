@@ -103,7 +103,11 @@ Updates scores, states, and odds for games.
 - Queries upcoming SEC games (not yet started)
 - Fetches current odds from ESPN
 - Updates if odds changed
-- Recalculates `predictedScore` using new spread
+- Recalculates `predictedScore` using priority order:
+  1. ESPN odds (overUnder + spread + favorite) if available
+  2. Team averages + spread (if spread available)
+  3. Ranking-based (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
+  4. Home field advantage (fallback)
 
 **Notes:**
 - More frequent than `update-games` to catch line movements
