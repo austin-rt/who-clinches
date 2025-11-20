@@ -8,14 +8,13 @@ This is a specialized college football application built for simulating SEC conf
 
 ### **Core Principles**
 
-- **Question vs Command Distinction**: When the user asks a question (Why? How? What?), provide information only. When the user gives a command (Add, Update, Change, Fix), then take action. Do not make code changes when answering questions about existing code or asking for clarification. If ever you are unsure if a prompt is a question or command, ask for clarification rather than making assumptions.
-- **Always Run Build After Code Changes**: After making code changes (especially CSS, TypeScript, or component changes), always run `npm run build` to catch build errors that may not appear in dev mode. This catches CSS parsing errors, TypeScript errors, and other build-time issues.
-- **No Automated npm Commands**: Do not run npm commands (build, start, install, etc.) without explicit request, EXCEPT for `npm run build` after code changes as specified above. If other npm commands are needed for validation or troubleshooting, recommend the user run it and inform the user why it is needed.
-- **Communicate context window**: When your context window reaches 95% capacity, inform me that you are at 95% of your limit and suggest I request a handoff prompt and start a new chat.
+- **Question vs Command**: Questions (Why? How? What?) = information only. Commands (Add, Update, Change, Fix) = take action. Ask for clarification if unsure.
+- **Build After Code Changes**: Always run `npm run build` after code changes to catch build errors
+- **No Automated npm Commands**: Don't run npm commands without explicit request, except `npm run build` after code changes
 - **NEVER Disable ESLint Rules**: ESLint rules are intentionally configured and must be followed. NEVER use `eslint-disable` comments. If code violates lint rules, fix the code to comply with the rules instead. This includes `no-console` - use proper logging or remove console statements entirely.
 - **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
 - **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
-- **NEVER Bypass Pre-Commit Hooks**: NEVER use `--no-verify` or `--no-gpg-sign` flags with git commit. Pre-commit hooks are mandatory and must run on all commits. If code doesn't pass hooks, fix the code rather than bypassing the checks.
+- **Pre-Commit Hooks**: When using commit command, validation runs upfront. Use `--no-verify` flag after validation passes to skip redundant hook checks. If validation fails, fix errors before committing.
 - **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
 - **No Code Comments**: Do not add comments to code files, including JSDoc comments. Write self-documenting code instead. Existing comments should remain, but do not add new ones.
 
@@ -42,15 +41,11 @@ This is a specialized college football application built for simulating SEC conf
 - `lib/espn/` - Generated ESPN API types
 - `lib/` - Core utilities (espn-client, reshape-*, tiebreaker-helpers, prefill-helpers)
 - `scripts/` - Database and type generation scripts
-- `docs/` - Documentation
-- **Documentation Loading:** See [AI Loading Manifest](./ai-loading-manifest.md) - tells you which docs to load for token efficiency
 
 ## Quick Start
 
-- **Documentation Loading**: See [AI Loading Manifest](./ai-loading-manifest.md) - Essential docs and task-specific loading strategies
-- **Before Writing Code**: Verify patterns with codebase examples, check MongoDB schemas, consider Vercel timeouts (60s Pro, 10s Hobby)
-- **After Code Changes**: Always run `npm run build` to catch build errors (CSS parsing, TypeScript, etc.) that may not appear in dev mode
-- **Before Running Tests**: Check dev server: `curl -s http://localhost:3000 > /dev/null 2>&1 && echo "Server running" || npm run dev`
+- **Documentation**: See [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading
+- **After Code**: Run `npm run build` to catch build errors
 
 ## Implementation Details
 
@@ -81,36 +76,9 @@ This is a specialized college football application built for simulating SEC conf
 - **State Persistence**: redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
 - **RTK Query**: `useGetGamesQuery()`, `useSimulateMutation()` from `app/store/apiSlice.ts`
 
-### **Frontend Component Pattern**
-
-**All React components MUST use arrow function syntax with default export:**
-
-```typescript
-const ComponentName = () => {
-  // Component logic
-  return (
-    // JSX
-  );
-};
-
-export default ComponentName;
-```
-
-### **Type Definition Pattern**
-
-**NEVER use inline literal union types. Always define types/interfaces:**
-
-```typescript
-// ❌ BAD
-const [mode, setMode] = useState<'light' | 'dark'>('light');
-
-// ✅ GOOD
-export type ThemeMode = 'light' | 'dark';
-const [mode, setMode] = useState<ThemeMode>('light');
-```
-
-- Frontend types: `types/frontend.ts`
-- Backend/shared types: `lib/types.ts` or `lib/api-types.ts`
+**Component Patterns:**
+- All React components use arrow function syntax with default export (see `docs/guides/frontend-patterns.md`)
+- Never use inline literal union types - define types in `types/frontend.ts` or `lib/types.ts`
 
 ## Critical Accuracy Notes
 
