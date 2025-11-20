@@ -5,7 +5,7 @@ import { setHideCompletedGames } from '../store/uiSlice';
 import { useUIState } from '@/app/store/useUI';
 import { Button } from './Button';
 
-const HideCompletedToggle = () => {
+const HideCompletedButton = () => {
   const dispatch = useAppDispatch();
   const { hideCompletedGames, mode } = useUIState();
 
@@ -25,4 +25,4 @@ const HideCompletedToggle = () => {
   );
 };
 
-export default HideCompletedToggle;
+export default HideCompletedButton;

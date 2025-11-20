@@ -36,14 +36,14 @@ app/
 │   ├── GameCard.tsx               # Expanded mode game card
 │   ├── GamesList.tsx              # Main games container
 │   ├── Header.tsx                 # App header with controls
-│   ├── HideCompletedToggle.tsx    # Toggle completed games visibility
+│   ├── HideCompletedButton.tsx    # Button to toggle completed games visibility
 │   ├── LastUpdated.tsx            # Scoreboard update timestamp
 │   ├── RemainingWeeks.tsx         # Upcoming games section
 │   ├── Score.tsx                  # Editable score component
 │   ├── Team.tsx                   # Team logo/name display
 │   ├── SimulateButton.tsx         # Simulation trigger button
 │   ├── ThemeSync.tsx              # Theme DOM sync
-│   └── ViewToggle.tsx             # View mode switcher
+│   └── ViewModeButton.tsx        # View mode switcher button
 ├── store/                         # Redux state management
 │   ├── apiSlice.ts                # RTK Query API slice
 │   ├── gamePicksSlice.ts          # Game picks state
@@ -194,7 +194,7 @@ dispatch(setView('scores')); // Automatically persisted to localStorage
 - Team logo buttons for selection
 - "WIN"/"LOSS" labels
 - Score calculated automatically on pick
-- Hide completed games toggle available
+- Hide completed games button available
 
 ### Scores Mode (Expanded View)
 - Full game cards with editable scores
@@ -258,13 +258,13 @@ return <span>{score}</span>;
 
 ## UX Design Decisions
 
-### View Mode Toggle
+### View Mode Button
 - Single button with conditional rendering
 - Icon + text (both states)
 - Absolute positioning (no layout shift)
 - Theme-aware colors
 
-### Hide Completed Games Toggle
+### Hide Completed Games Button
 - Button with dynamic text
 - Only affects picks mode
 - Preference persisted via redux-persist
@@ -322,7 +322,7 @@ return <span>{score}</span>;
 - `navbar`: Header
 - `btn`: Base button class (overridden in `globals.css` with uppercase, semibold, etc.)
 - `card`, `card-body`: Game cards
-- `swap`: View toggle animation
+- `swap`: View mode button animation
 - `collapse`: Week accordions
 
 ### Custom Button System

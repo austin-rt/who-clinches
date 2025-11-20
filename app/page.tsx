@@ -2,8 +2,8 @@
 
 import { useMemo } from 'react';
 import GamesList from './components/GamesList';
-import ViewToggle from './components/ViewToggle';
-import HideCompletedToggle from './components/HideCompletedToggle';
+import ViewModeButton from './components/ViewModeButton';
+import HideCompletedButton from './components/HideCompletedButton';
 import SimulateButton from './components/SimulateButton';
 import { SEC_CONFERENCE_ID } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
@@ -27,11 +27,11 @@ const Home = () => {
             Predict game outcomes and see how they affect SEC conference standings
           </p>
         </div>
-        <ViewToggle />
+        <ViewModeButton />
       </div>
 
       <div className="flex w-full items-center justify-between">
-        <HideCompletedToggle />
+        <HideCompletedButton />
         <SimulateButton season={currentSeason} conferenceId={SEC_CONFERENCE_ID} />
       </div>
 

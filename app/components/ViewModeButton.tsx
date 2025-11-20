@@ -7,7 +7,7 @@ import { setView } from '../store/uiSlice';
 import { useUIState } from '@/app/store/useUI';
 import { Button } from './Button';
 
-const ViewToggle = () => {
+const ViewModeButton = () => {
   const dispatch = useAppDispatch();
   const { view, mode } = useUIState();
 
@@ -38,4 +38,4 @@ const ViewToggle = () => {
   );
 };
 
-export default ViewToggle;
+export default ViewModeButton;
