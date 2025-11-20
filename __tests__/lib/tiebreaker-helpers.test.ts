@@ -135,8 +135,7 @@ describe('applyRuleA: Head-to-Head', () => {
       createMockGame('3', 'B', 'C', 17, 20, 'UA', 'LSU'),
     ];
 
-    const explanations = new Map<string, string[]>();
-    const result = applyRuleA(['A', 'B', 'C'], games, explanations);
+    const result = applyRuleA(['A', 'B', 'C'], games);
 
     expect(result.winners).toContain('A'); // A beat B head-to-head
     expect(result.detail).toContain('ALA');
@@ -152,8 +151,7 @@ describe('applyRuleB: Common Opponents', () => {
       createMockGame('4', 'B', 'D', 17, 20),
     ];
 
-    const explanations = new Map<string, string[]>();
-    const result = applyRuleB(['A', 'B'], games, explanations);
+    const result = applyRuleB(['A', 'B'], games);
 
     // Both teams played C and D, but A beat both while B lost to both
     expect(result.winners).toContain('A');
