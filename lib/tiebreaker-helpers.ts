@@ -477,14 +477,26 @@ export const breakTie = (
             // Find which team(s) they lost to
             const lostTo: string[] = [];
             h2hGames.forEach((game) => {
-              if (game.home.teamEspnId === teamId && game.home.score !== null && game.away.score !== null && game.home.score < game.away.score) {
+              if (
+                game.home.teamEspnId === teamId &&
+                game.home.score !== null &&
+                game.away.score !== null &&
+                game.home.score < game.away.score
+              ) {
                 lostTo.push(getTeamAbbrev(game.away.teamEspnId, games));
-              } else if (game.away.teamEspnId === teamId && game.home.score !== null && game.away.score !== null && game.away.score < game.home.score) {
+              } else if (
+                game.away.teamEspnId === teamId &&
+                game.home.score !== null &&
+                game.away.score !== null &&
+                game.away.score < game.home.score
+              ) {
                 lostTo.push(getTeamAbbrev(game.home.teamEspnId, games));
               }
             });
             const opponentText = lostTo.length > 0 ? ` to ${lostTo.join(', ')}` : '';
-            explanations.set(teamId, [`Lost head-to-head tiebreaker${opponentText} (${record.wins}-${record.losses})`]);
+            explanations.set(teamId, [
+              `Lost head-to-head tiebreaker${opponentText} (${record.wins}-${record.losses})`,
+            ]);
           }
         });
       }
@@ -519,9 +531,13 @@ export const breakTie = (
           if (!explanations.has(teamId)) {
             // Get common opponents for this tie
             const opponentSets = remaining.map((t) => {
-              const teamGames = games.filter((g) => g.home.teamEspnId === t || g.away.teamEspnId === t);
+              const teamGames = games.filter(
+                (g) => g.home.teamEspnId === t || g.away.teamEspnId === t
+              );
               return new Set(
-                teamGames.map((g) => (g.home.teamEspnId === t ? g.away.teamEspnId : g.home.teamEspnId))
+                teamGames.map((g) =>
+                  g.home.teamEspnId === t ? g.away.teamEspnId : g.home.teamEspnId
+                )
               );
             });
             const commonOpponents = [...opponentSets[0]].filter((opp) =>
@@ -534,7 +550,9 @@ export const breakTie = (
                 (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
             );
             const record = getTeamRecord(teamId, vsCommonGames);
-            explanations.set(teamId, [`Worse record vs common opponents (${record.wins}-${record.losses})`]);
+            explanations.set(teamId, [
+              `Worse record vs common opponents (${record.wins}-${record.losses})`,
+            ]);
           }
         });
       }
@@ -601,8 +619,12 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             // Calculate this team's opponent win%
-            const teamGames = games.filter((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
-            const opponents = teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId));
+            const teamGames = games.filter(
+              (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+            );
+            const opponents = teamGames.map((g) =>
+              g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+            );
             let totalWins = 0;
             let totalGames = 0;
             for (const oppId of opponents) {
@@ -644,7 +666,9 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             // Calculate scoring margin for this team
-            const teamGames = games.filter((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
+            const teamGames = games.filter(
+              (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+            );
             let totalMargin = 0;
             for (const game of teamGames) {
               if (game.home.score === null || game.away.score === null) continue;
