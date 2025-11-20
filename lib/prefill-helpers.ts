@@ -90,7 +90,89 @@ export const calculatePredictedScoreFromTeamAverages = (
 };
 
 /**
- * Calculate predicted score from home field advantage - Priority 3
+ * Calculate predicted score from team rankings - Priority 3
+ * Used when no odds/favorite/spread available
+ */
+export const calculatePredictedScoreFromRanking = (
+  game: ReshapedGame,
+  homeTeam: TeamForPrediction,
+  awayTeam: TeamForPrediction
+): { home: number; away: number } | undefined => {
+  // Only use this if no favorite/spread/overUnder
+  if (
+    game.odds.favoriteTeamEspnId !== null ||
+    game.odds.spread !== null ||
+    game.odds.overUnder !== null
+  ) {
+    return undefined;
+  }
+
+  const homeRank = game.home.rank;
+  const awayRank = game.away.rank;
+
+  // Need at least one ranked team
+  if (homeRank === null && awayRank === null) {
+    return undefined;
+  }
+
+  // Determine higher ranked team (lower number = better rank)
+  const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
+  const awayAvg = awayTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
+
+  // If one team is ranked and the other isn't
+  if (homeRank === null && awayRank !== null) {
+    // Away team is ranked, home is unranked
+    const awayScore = Math.round(awayAvg);
+    const homeScore = Math.round(awayScore - 17);
+    // Ensure no ties
+    if (homeScore === awayScore) {
+      return { home: homeScore, away: awayScore + 1 };
+    }
+    return { home: homeScore, away: awayScore };
+  }
+
+  if (awayRank === null && homeRank !== null) {
+    // Home team is ranked, away is unranked
+    const homeScore = Math.round(homeAvg);
+    const awayScore = Math.round(homeScore - 17);
+    // Ensure no ties
+    if (homeScore === awayScore) {
+      return { home: homeScore + 1, away: awayScore };
+    }
+    return { home: homeScore, away: awayScore };
+  }
+
+  // Both teams are ranked - compare ranks
+  if (homeRank !== null && awayRank !== null) {
+    // Lower rank number = better (rank 1 is best)
+    if (homeRank < awayRank) {
+      // Home team is higher ranked (better)
+      const homeScore = Math.round(homeAvg);
+      const rankDiff = awayRank - homeRank;
+      const awayScore = Math.round(homeScore - rankDiff);
+      // Ensure no ties
+      if (homeScore === awayScore) {
+        return { home: homeScore + 1, away: awayScore };
+      }
+      return { home: homeScore, away: awayScore };
+    } else {
+      // Away team is higher ranked (better)
+      const awayScore = Math.round(awayAvg);
+      const rankDiff = homeRank - awayRank;
+      const homeScore = Math.round(awayScore - rankDiff);
+      // Ensure no ties
+      if (homeScore === awayScore) {
+        return { home: homeScore, away: awayScore + 1 };
+      }
+      return { home: homeScore, away: awayScore };
+    }
+  }
+
+  return undefined;
+};
+
+/**
+ * Calculate predicted score from home field advantage - Priority 4
  */
 export const calculatePredictedScoreFromHomeFieldAdvantage = (
   homeTeam: TeamForPrediction,
@@ -156,6 +238,12 @@ export const calculatePredictedScore = (
     return averagesScore;
   }
 
-  // Priority 3: Use home field advantage
+  // Priority 3: Try ranking-based calculation (when no odds available)
+  const rankingScore = calculatePredictedScoreFromRanking(game, homeTeam, awayTeam);
+  if (rankingScore) {
+    return rankingScore;
+  }
+
+  // Priority 4: Use home field advantage
   return calculatePredictedScoreFromHomeFieldAdvantage(homeTeam, awayTeam);
 };
