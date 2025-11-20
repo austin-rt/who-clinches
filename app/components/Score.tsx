@@ -94,15 +94,15 @@ const Score = ({ game }: ScoreProps) => {
           onChange={(e) => handleScoreChange('away', e.target.value)}
           onBlur={handleScoreBlur}
           className={cn(
-            'w-16 text-center text-3xl md:w-20 md:text-5xl',
-            'border-b-2 border-transparent bg-transparent focus:border-primary focus:outline-none',
+            'w-10 text-center text-2xl',
+            'bg-transparent focus:border-primary focus:outline-none',
             {
               'font-extrabold': awayIsHigher && !isTie,
               'font-normal': !awayIsHigher || isTie,
             }
           )}
         />
-        <div className="text-base-content/40 text-xl md:text-2xl">-</div>
+        <div className="text-base-content/40 text-xl">-</div>
         <input
           type="text"
           inputMode="numeric"
@@ -110,8 +110,8 @@ const Score = ({ game }: ScoreProps) => {
           onChange={(e) => handleScoreChange('home', e.target.value)}
           onBlur={handleScoreBlur}
           className={cn(
-            'w-16 text-center text-3xl md:w-20 md:text-5xl',
-            'border-b-2 border-transparent bg-transparent focus:border-primary focus:outline-none',
+            'w-10 text-center text-2xl',
+            'bg-transparent focus:border-primary focus:outline-none',
             {
               'font-extrabold': homeIsHigher && !isTie,
               'font-normal': !homeIsHigher || isTie,

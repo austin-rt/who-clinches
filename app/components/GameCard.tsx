@@ -22,7 +22,7 @@ const GameCard = ({ game }: GameCardProps) => {
         </div>
 
         {/* Scoreboard Layout: Logos with scores, team names below */}
-        <div className="flex flex-col gap-2 px-4">
+        <div className="flex flex-col gap-2">
           {/* Top row: Logos and scores */}
           <div className="flex items-center justify-around">
             <Team team={game.away} showLogoOnly />
@@ -32,7 +32,7 @@ const GameCard = ({ game }: GameCardProps) => {
           {/* Bottom row: Team names */}
           <div className="flex items-center justify-around">
             <Team team={game.away} showNameOnly />
-            <div className="text-base-content/40 text-xl">@</div>
+            <div className="text-base-content/40 text-base">@</div>
             <Team team={game.home} showNameOnly />
           </div>
         </div>

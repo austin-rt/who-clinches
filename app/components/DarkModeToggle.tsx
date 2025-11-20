@@ -25,7 +25,7 @@ const DarkModeToggle = () => {
       >
         <HiSun
           className={`absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 transition-colors ${
-            mode === 'dark' ? 'text-base-100' : 'text-base-content'
+            mode === 'dark' ? 'text-accent' : 'text-base-content'
           }`}
         />
         <HiMoon

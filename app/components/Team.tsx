@@ -19,13 +19,14 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
   if (showLogoOnly) {
     return (
       <div className="flex items-center">
+        {rank && <sup className="text-xxs mt-4 self-start font-semibold">{rank}</sup>}
         {team.logo && (
           <Image
             src={team.logo}
             alt={team.abbrev}
             width={64}
             height={64}
-            className="h-20 w-auto object-contain md:h-14 pointer-events-none"
+            className="pointer-events-none h-20 w-auto object-contain md:h-14"
             unoptimized
           />
         )}
@@ -51,7 +52,7 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
           alt={team.abbrev}
           width={64}
           height={64}
-          className="h-20 w-auto object-contain md:h-16"
+          className="h-20 w-auto object-contain"
           unoptimized
         />
       )}
