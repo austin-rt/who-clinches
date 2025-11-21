@@ -133,7 +133,10 @@ describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => 
       expect(result.winners).not.toContain('C');
     });
 
-    it('Example #4: Combined records when D and E are tied, Team A 2-0, Team B 1-1, Team C 0-2; Team A advances', () => {
+    it('Example #4: Combined records when D and E are tied (head-to-head cannot break tie), Team A 2-0, Team B 1-1, Team C 0-2; Team A advances', () => {
+      // According to official rules: "The tie among Team D and Team E could not be broken"
+      // This means D and E don't play each other, or head-to-head fails to break the tie
+      // So we combine records against both D and E
       const games = [
         createMockGame('1', 'A', 'D', 28, 24, 'ALA', 'UGA'),
         createMockGame('2', 'A', 'E', 28, 24, 'ALA', 'TENN'),
@@ -141,7 +144,7 @@ describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => 
         createMockGame('4', 'B', 'E', 17, 20, 'UA', 'TENN'),
         createMockGame('5', 'C', 'D', 17, 20, 'LSU', 'UGA'),
         createMockGame('6', 'C', 'E', 17, 20, 'LSU', 'TENN'),
-        createMockGame('7', 'D', 'E', 28, 24, 'UGA', 'TENN'),
+        // D and E don't play each other, so head-to-head cannot break the tie
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -212,7 +215,10 @@ describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => 
       expect(result.winners).not.toContain('D');
     });
 
-    it('Example #4: Combined records when E and F are tied, Team B 2-0, Team C 1-1, Team D 0-2; Team B advances', () => {
+    it('Example #4: Combined records when E and F are tied (head-to-head cannot break tie), Team B 2-0, Team C 1-1, Team D 0-2; Team B advances', () => {
+      // According to official rules: "The tie among Team E and Team F could not be broken"
+      // This means E and F don't play each other, or head-to-head fails to break the tie
+      // So we combine records against both E and F
       const games = [
         createMockGame('1', 'A', 'B', 28, 24, 'ALA', 'UA'),
         createMockGame('2', 'A', 'C', null, null, 'ALA', 'LSU'),
@@ -223,7 +229,7 @@ describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => 
         createMockGame('7', 'C', 'F', 17, 20, 'LSU', 'FLA'),
         createMockGame('8', 'D', 'E', 17, 20, 'UGA', 'TENN'),
         createMockGame('9', 'D', 'F', 17, 20, 'UGA', 'FLA'),
-        createMockGame('10', 'E', 'F', 28, 24, 'TENN', 'FLA'),
+        // E and F don't play each other, so head-to-head cannot break the tie
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
@@ -235,4 +241,3 @@ describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => 
     });
   });
 });
-
