@@ -11,7 +11,7 @@
 **Status:** Phase 0 plan has been updated to match actual API specification. Two critical backend fixes are REQUIRED before starting Phase 0 implementation.
 
 **Related Documentation:**
-- [API Reference](../../guides/api-reference.md) - Current API endpoint documentation
+- [API Reference](../../../guides/api-reference.md) - Current API endpoint documentation
 
 ### Fix #1: Update `TeamMetadata` Type (lib/api-types.ts)
 

@@ -140,7 +140,7 @@ Before 1.0.0 (initial production release):
 ### Changed
 
 - **API Response Format**: `simulate` endpoint now returns `standingsV2` format
-  - Migration guide: See `docs/migrations/standings-v2.md`
+  - Migration guide: (Not yet implemented - placeholder for future migration documentation)
 - **Cron Schedule**: Live games now update every 3 minutes (was 5 minutes)
 
 ### Fixed

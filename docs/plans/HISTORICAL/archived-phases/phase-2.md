@@ -5,7 +5,7 @@
 **Dependencies:** Phase 1 (layout shell exists)
 
 **Related Documentation:**
-- [API Reference](../../guides/api-reference.md) - `/api/games` endpoint documentation
+- [API Reference](../../../guides/api-reference.md) - `/api/games` endpoint documentation
 
 **Files to Create/Modify:**
 

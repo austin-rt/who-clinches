@@ -25,7 +25,7 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 | **B: Common Opponents** | ≥4 common opponents | Best record vs common opponents | → Rule C |
 | **C: Highest Placed Opponent** | Common opponents exist | Best record vs highest-placed common opponent | → Rule D |
 | **D: Opponent Win %** | All opponents | Highest cumulative opponent win % | → Rule E |
-| **E: Scoring Margin** | All games | Highest margin (caps: +42 offense, -48 defense) | Final |
+| **E: Scoring Margin** | All games | Highest relative margin (offensive cap: 200%, defensive min: 0%) | Final |
 
 ---
 
@@ -56,7 +56,7 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 
 - **Recursive Resolution**: Rules applied recursively (Rule A → Rule B → ...)
 - **Minimum Requirements**: Rules A/B skip if requirements not met
-- **Scoring Caps**: Rule E caps at +42/-48 to prevent skew
+- **Scoring Caps**: Rule E uses relative percentage-based calculation (offensive cap: 200%, defensive minimum: 0%)
 - **Championship**: Top 2 teams = Conference Championship matchup
 - **Full Standings**: Always returns all 16 teams
 

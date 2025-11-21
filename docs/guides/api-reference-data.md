@@ -266,9 +266,9 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 **Tiebreaker Rules Applied:**
 - **Rule A**: Head-to-head record (minimum 2 games)
 - **Rule B**: Record vs common conference opponents (minimum 4)
-- **Rule C**: Record within division
+- **Rule C**: Record vs highest-placed common opponent
 - **Rule D**: Conference win percentage
-- **Rule E**: Scoring margin (offensive cap: 42 points, defensive cap: 48 points)
+- **Rule E**: Scoring margin (relative percentage-based: offensive cap 200%, defensive minimum 0%)
 
 **Notes:**
 - Uses `predictedScore` for games without user overrides

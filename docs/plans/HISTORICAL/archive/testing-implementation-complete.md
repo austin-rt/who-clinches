@@ -266,7 +266,7 @@ When ready to create true unit tests:
 
 ## Documentation Locations
 
-- **Implementation Plan:** [unit-tests.md](../unit-tests.md)
+- **Implementation Plan:** [unit-tests.md](../../plans/unit-tests.md)
 - **Fixes Applied:** [fixes-applied-2025-11-12.md](./fixes-applied-2025-11-12.md)
 - **Delivery Summary:** [test-delivery-summary.md](./test-delivery-summary.md)
 
