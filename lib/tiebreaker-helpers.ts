@@ -7,8 +7,8 @@ import { GameLean } from './types';
 import { StandingEntry, TieLog, TieStep } from './api-types';
 
 const EPSILON = 0.0001;
-const OFFENSIVE_CAP = 42;
-const DEFENSIVE_CAP = 48;
+const OFFENSIVE_PCT_CAP = 200;
+const DEFENSIVE_PCT_MIN = 0;
 
 /**
  * Apply user score overrides to games and fill in predictedScore for incomplete games.
@@ -244,42 +244,146 @@ export const applyRuleCHighestPlacedOpponent = (
     return { winners: tiedTeams, detail: 'No common opponents' };
   }
 
-  // Order common opponents by preliminary standing
-  const rankedCommonOpponents = preliminaryStandings
-    .filter((team) => commonOpponents.includes(team.teamId))
-    .map((team) => team.teamId);
+  // Group opponents by their position in standings (same winPct and wins = tied)
+  const opponentGroups: string[][] = [];
+  let currentGroup: string[] = [];
+  let currentWinPct: number | null = null;
+  let currentWins: number | null = null;
 
-  // Check records against highest-placed opponent first
-  for (const oppId of rankedCommonOpponents) {
-    const records = tiedTeams.map((teamId) => {
-      const vsOppGames = games.filter(
-        (g) =>
-          (g.home.teamEspnId === teamId && g.away.teamEspnId === oppId) ||
-          (g.away.teamEspnId === teamId && g.home.teamEspnId === oppId)
-      );
-      return {
-        teamId,
-        ...getTeamRecord(teamId, vsOppGames),
-      };
-    });
+  for (const team of preliminaryStandings) {
+    if (commonOpponents.includes(team.teamId)) {
+      if (
+        currentWinPct === null ||
+        Math.abs(team.winPct - currentWinPct) > EPSILON ||
+        team.wins !== currentWins
+      ) {
+        if (currentGroup.length > 0) {
+          opponentGroups.push(currentGroup);
+        }
+        currentGroup = [team.teamId];
+        currentWinPct = team.winPct;
+        currentWins = team.wins;
+      } else {
+        currentGroup.push(team.teamId);
+      }
+    }
+  }
+  if (currentGroup.length > 0) {
+    opponentGroups.push(currentGroup);
+  }
 
-    const maxWinPct = Math.max(...records.map((r) => r.winPct));
-    const minWinPct = Math.min(...records.map((r) => r.winPct));
+  // Check each position group, starting with highest
+  for (const opponentGroup of opponentGroups) {
+    // Filter to only common opponents in this group
+    const commonInGroup = opponentGroup.filter((opp) => commonOpponents.includes(opp));
 
-    // If there's differentiation, we have winners
-    if (Math.abs(maxWinPct - minWinPct) > EPSILON) {
-      const winners = records
-        .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
-        .map((r) => r.teamId);
+    if (commonInGroup.length === 0) continue;
 
-      const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
-      const oppAbbrev =
-        oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+    // If only one opponent in this group, check records against it
+    if (commonInGroup.length === 1) {
+      const oppId = commonInGroup[0];
+      const records = tiedTeams.map((teamId) => {
+        const vsOppGames = games.filter(
+          (g) =>
+            (g.home.teamEspnId === teamId && g.away.teamEspnId === oppId) ||
+            (g.away.teamEspnId === teamId && g.home.teamEspnId === oppId)
+        );
+        return {
+          teamId,
+          ...getTeamRecord(teamId, vsOppGames),
+        };
+      });
 
-      const detail = `Record vs ${oppAbbrev}`;
+      const maxWinPct = Math.max(...records.map((r) => r.winPct));
+      const minWinPct = Math.min(...records.map((r) => r.winPct));
 
-      // Explanations will be added by breakTie when teams are actually eliminated
-      return { winners, detail };
+      if (Math.abs(maxWinPct - minWinPct) > EPSILON) {
+        const winners = records
+          .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
+          .map((r) => r.teamId);
+
+        const oppGame = games.find(
+          (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
+        );
+        const oppAbbrev =
+          oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+
+        const detail = `Record vs ${oppAbbrev}`;
+
+        return { winners, detail };
+      }
+    } else {
+      // Multiple opponents tied at this position
+      // According to SEC rules: first try to break the tie between opponents using head-to-head
+      // Only if head-to-head fails, then combine records against all tied common opponents
+      const tiedOpponents = commonInGroup;
+
+      // Attempt to break tie between tied opponents using head-to-head
+      let resolvedOpponents: string[] = [];
+      if (tiedOpponents.length === 2) {
+        // Two teams tied - try head-to-head
+        const h2hGame = games.find(
+          (g) =>
+            (g.home.teamEspnId === tiedOpponents[0] && g.away.teamEspnId === tiedOpponents[1]) ||
+            (g.home.teamEspnId === tiedOpponents[1] && g.away.teamEspnId === tiedOpponents[0])
+        );
+        if (h2hGame && h2hGame.home.score !== null && h2hGame.away.score !== null) {
+          // Head-to-head breaks the tie - use the winner
+          if (h2hGame.home.score > h2hGame.away.score) {
+            resolvedOpponents = [h2hGame.home.teamEspnId];
+          } else {
+            resolvedOpponents = [h2hGame.away.teamEspnId];
+          }
+        }
+      } else if (tiedOpponents.length > 2) {
+        // Three or more teams tied - try head-to-head round robin
+        const h2hResult = applyRuleAHeadToHead(tiedOpponents, games);
+        if (h2hResult.winners.length < tiedOpponents.length) {
+          // Head-to-head broke the tie - use the winners
+          resolvedOpponents = h2hResult.winners;
+        }
+      }
+
+      // If head-to-head broke the tie, use only the highest-ranked opponent(s)
+      // Otherwise, combine records against all tied common opponents
+      const opponentsToUse = resolvedOpponents.length > 0 ? resolvedOpponents : tiedOpponents;
+
+      const records = tiedTeams.map((teamId) => {
+        const vsTiedOppGames = games.filter(
+          (g) =>
+            (opponentsToUse.includes(g.home.teamEspnId) && g.away.teamEspnId === teamId) ||
+            (opponentsToUse.includes(g.away.teamEspnId) && g.home.teamEspnId === teamId)
+        );
+        return {
+          teamId,
+          ...getTeamRecord(teamId, vsTiedOppGames),
+        };
+      });
+
+      const maxWinPct = Math.max(...records.map((r) => r.winPct));
+      const minWinPct = Math.min(...records.map((r) => r.winPct));
+
+      if (Math.abs(maxWinPct - minWinPct) > EPSILON) {
+        const winners = records
+          .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
+          .map((r) => r.teamId);
+
+        const oppAbbrevs = opponentsToUse.map((oppId) => {
+          const oppGame = games.find(
+            (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
+          );
+          return oppGame?.home.teamEspnId === oppId
+            ? oppGame.home.abbrev
+            : oppGame?.away.abbrev || oppId;
+        });
+
+        const detail =
+          resolvedOpponents.length > 0
+            ? `Record vs ${oppAbbrevs.join(', ')}`
+            : `Combined record vs ${oppAbbrevs.join(', ')}`;
+
+        return { winners, detail };
+      }
     }
   }
 
@@ -397,20 +501,27 @@ export const applyRuleEScoringMargin = (
       const isHome = game.home.teamEspnId === teamId;
       const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
 
-      // Cap team's score
-      const teamScore = Math.min(isHome ? game.home.score : game.away.score, OFFENSIVE_CAP);
-
-      // Cap opponent's score
-      const oppScore = Math.min(isHome ? game.away.score : game.home.score, DEFENSIVE_CAP);
+      const teamScore = isHome ? game.home.score : game.away.score;
+      const oppScore = isHome ? game.away.score : game.home.score;
 
       // Get opponent's season averages (from all games, including simulated)
       const oppAvgFor = getTeamAvgPointsFor(oppId, games);
       const oppAvgAgainst = getTeamAvgPointsAgainst(oppId, games);
 
-      // Relative margin = (team scored - opp avg allowed) + (opp avg scored - opp scored)
-      const offensiveMargin = teamScore - oppAvgAgainst;
-      const defensiveMargin = oppAvgFor - oppScore;
-      const gameMargin = offensiveMargin + defensiveMargin;
+      // Calculate relative scoring offense percentage (capped at 200%)
+      // Formula: (team scored / opponent avg allowed) * 100
+      const offensivePct =
+        oppAvgAgainst > 0
+          ? Math.min((teamScore / oppAvgAgainst) * 100, OFFENSIVE_PCT_CAP)
+          : OFFENSIVE_PCT_CAP;
+
+      // Calculate relative scoring defense percentage (minimum 0%)
+      // Formula: (opponent scored / opponent avg scored) * 100
+      const defensivePct =
+        oppAvgFor > 0 ? Math.max((oppScore / oppAvgFor) * 100, DEFENSIVE_PCT_MIN) : 0;
+
+      // Margin = offense % - defense %
+      const gameMargin = offensivePct - defensivePct;
 
       totalMargin += gameMargin;
     }
@@ -679,9 +790,17 @@ export const breakTie = (
               const isHome = game.home.teamEspnId === teamId;
               const teamScore = isHome ? game.home.score : game.away.score;
               const oppScore = isHome ? game.away.score : game.home.score;
-              const margin = teamScore - oppScore;
-              const cappedMargin = Math.min(Math.max(margin, -DEFENSIVE_CAP), OFFENSIVE_CAP);
-              totalMargin += cappedMargin;
+              const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
+              const oppAvgFor = getTeamAvgPointsFor(oppId, games);
+              const oppAvgAgainst = getTeamAvgPointsAgainst(oppId, games);
+              const offensivePct =
+                oppAvgAgainst > 0
+                  ? Math.min((teamScore / oppAvgAgainst) * 100, OFFENSIVE_PCT_CAP)
+                  : OFFENSIVE_PCT_CAP;
+              const defensivePct =
+                oppAvgFor > 0 ? Math.max((oppScore / oppAvgFor) * 100, DEFENSIVE_PCT_MIN) : 0;
+              const gameMargin = offensivePct - defensivePct;
+              totalMargin += gameMargin;
             }
             const avgMargin = teamGames.length > 0 ? totalMargin / teamGames.length : 0;
             explanations.set(teamId, [`Lower scoring margin (${avgMargin.toFixed(1)})`]);
