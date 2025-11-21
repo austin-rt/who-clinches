@@ -9,7 +9,7 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 - Fetching live game data from ESPN's public API
 - Storing historical and upcoming game information
 - Allowing users to override game outcomes
-- Calculating standings using official SEC tiebreaker rules (A-D)
+- Calculating standings using official SEC tiebreaker rules (A-E)
 - Visualizing potential playoff and bowl game scenarios
 
 ## Tech Stack
