@@ -6,20 +6,7 @@ Reference for batch orchestration and testing cron endpoints.
 
 ---
 
-## Authentication
-
-All cron jobs require Bearer token authentication:
-
-```
-Authorization: Bearer {CRON_SECRET}
-```
-
-**401 Response:**
-```json
-{
-  "error": "Unauthorized"
-}
-```
+**Authentication:** All cron jobs require `Authorization: Bearer {CRON_SECRET}`. See [Cron Jobs API Reference](./api-reference-cron.md) for details.
 
 ---
 
@@ -51,7 +38,7 @@ Authorization: Bearer {CRON_SECRET}
 
 **Response Fields:** `success`, `jobsRun`, `jobsSucceeded`, `totalDuration`, `results[]`, `lastUpdated`
 
-**Jobs Executed:** pull-teams, update-games (mode=season), update-rankings, update-spreads
+**Jobs Executed:** For each supported sport/conf combination: pull-teams, pull-games (season), update-rankings, update-spreads, update-team-averages, update-test-data
 
 **Error Handling:** Failed jobs in `results` with `success: false`. Returns 200 if all succeed, 207 if some fail.
 

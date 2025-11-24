@@ -6,275 +6,93 @@ Complete reference for data query and ingestion endpoints.
 
 ---
 
-## GET /api/games
+## GET /api/games/cfb/[conf]
 
-Queries game data from the database with optional filtering.
+Queries game data from the database for a specific sport and conference.
 
 **Authentication:** None required
 
-**Query Parameters:**
+**Path Parameters**: `conf` (string) - Conference slug (e.g., "sec")
 
-| Parameter      | Type   | Description                                   |
-| -------------- | ------ | --------------------------------------------- |
-| `conferenceId` | string | If provided, filters to conference games only |
-| `season`       | string | Filter by season year (e.g., "2025")          |
-| `week`         | string | Filter by week number (e.g., "1")             |
-| `state`        | string | Filter by game state: "pre", "in", or "post"  |
-| `from`         | string | Filter games from this date (ISO format)      |
-| `to`           | string | Filter games to this date (ISO format)        |
-| `sport`        | string | Filter by sport (e.g., "football")            |
-| `league`       | string | Filter by league (e.g., "college-football")   |
+**Query Parameters**: `season` (string) - Season year, `week` (string) - Week number, `state` (string) - "pre", "in", or "post", `from`/`to` (string) - Date range (ISO format)
 
-**Response:**
+**Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
 
-```json
-{
-  "events": [/* GameLean[] */],
-  "teams": [/* TeamMetadata[] */],
-  "lastUpdated": "2025-11-12T01:40:07.408Z"
-}
-```
+**Caching**: Live games (`state: "in"`): 10s, others: 60s
 
-**Response Fields:**
-
-| Field         | Type           | Description                                 |
-| ------------- | -------------- | ------------------------------------------- |
-| `events`      | GameLean[]     | Array of game objects matching query        |
-| `teams`       | TeamMetadata[] | Array of team metadata for teams in results |
-| `lastUpdated` | string         | ISO timestamp of when scoreboard was last pulled from ESPN API |
-
-**Caching:**
-- Games with live state (`state: "in"`): 10 seconds cache
-- All other games: 60 seconds cache
-
-**Notes:**
-- Results sorted by date, then week
-- If `conferenceId` is provided, only returns conference games
-- Team metadata included for all teams referenced in game results
-- Uses lean queries for performance
+**Notes**: Results sorted by date/week, only conference games, team metadata included, uses lean queries
 
 ---
 
-## POST /api/pull-teams
+## POST /api/pull-teams/cfb/[conf]
 
-Seeds or updates team data from ESPN API.
+Seeds or updates team data from ESPN API for a specific conference.
 
 **Authentication:** None required
 
-**Request Body:**
+**Path Parameters**: `conf` (string) - Conference slug
 
-```json
-{
-  "sport": "football",
-  "league": "college-football",
-  "conferenceId": 8
-}
-```
+**Request Body**: `{}` (empty, conference determined from path)
 
-**Alternative Request (Specific Teams):**
+**Response**: `{ "upserted": 16, "lastUpdated": "ISO timestamp" }`
 
-```json
-{
-  "sport": "football",
-  "league": "college-football",
-  "teams": ["UGA", "ALA", "TEX"]
-}
-```
+**Error Responses**: `400` - Missing required fields, `500` - ESPN API or database error
 
-**Parameters:**
+**Notes**: Uses ESPN Site API, upserts teams (create/update), stores name/logo/colors/conference affiliation, conference ID from path, does NOT fetch team stats (use update-rankings cron), not required before pulling games
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `sport` | string | Yes | Sport type (e.g., "football") |
-| `league` | string | Yes | League identifier (e.g., "college-football") |
-| `conferenceId` | number | Conditional | Conference ID (e.g., 8 for SEC). Required if `teams` not provided |
-| `teams` | string[] | Conditional | Array of team abbreviations. Required if `conferenceId` not provided |
+---
 
-**Response:**
+## POST /api/pull-games/cfb/[conf]
 
-```json
-{
-  "upserted": 16,
-  "lastUpdated": "2025-11-12T01:39:26.469Z"
-}
-```
+Pulls game data from ESPN for a specific season and conference.
+
+**Authentication:** None required
+
+**Path Parameters**: `conf` (string) - Conference slug
+
+**Request Body**: `{ "season": 2025, "week": 1 }` (week optional - if omitted, pulls entire regular season)
+
+**Response**: `{ "upserted": 128, "weeksPulled": [1-14], "lastUpdated": "ISO timestamp", "errors": [] }`
 
 **Error Responses:**
 - `400`: Missing required fields
 - `500`: ESPN API error or database error
 
-**Notes:**
-- Uses ESPN Site API to fetch team metadata
-- Upserts teams (creates new or updates existing)
-- Stores: name, logo, colors, conference affiliation
-- Does NOT fetch team stats (use `/api/cron/update-rankings` for that)
-- Not required before pulling games - games can be seeded independently
+**Game Data Stored**: Basic info (`espnId`, `displayName`, `date`, `week`, `season`), state (`state`, `completed`, `conferenceGame`, `neutralSite`), teams (`home`/`away` with `teamEspnId`, `abbrev`, `score`, `rank`), odds (`spread`, `favoriteTeamEspnId`, `overUnder`), `predictedScore` (calculated: real scores → ESPN odds → team averages + spread → ranking-based → home field advantage)
+
+**Notes**: Dynamically determines season weeks via ESPN calendar API, excludes conference championship, can run independently, optimal order: pull-teams → update-rankings → pull-games for most accurate `predictedScore`
 
 ---
 
-## POST /api/pull-games
-
-Pulls game data from ESPN for a specific season/conference.
-
-**Authentication:** None required
-
-**Request Body:**
-
-```json
-{
-  "sport": "football",
-  "league": "college-football",
-  "season": 2025,
-  "conferenceId": 8,
-  "week": 1  // Optional: specific week number
-}
-```
-
-**Parameters:**
-
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `sport` | string | Yes | Sport type |
-| `league` | string | Yes | League identifier |
-| `season` | number | Yes | Season year (e.g., 2025) |
-| `conferenceId` | number | Yes | Conference ID (e.g., 8 for SEC) |
-| `week` | number | No | Specific week number. If omitted, pulls entire regular season |
-
-**Response:**
-
-```json
-{
-  "upserted": 128,
-  "weeksPulled": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-  "lastUpdated": "2025-11-12T01:40:07.408Z",
-  "errors": []  // Optional: array of error messages
-}
-```
-
-**Error Responses:**
-- `400`: Missing required fields
-- `500`: ESPN API error or database error
-
-**Game Data Stored:**
-- Basic info: `espnId`, `displayName`, `date`, `week`, `season`
-- State: `state` (pre/in/post), `completed`, `conferenceGame`, `neutralSite`
-- Teams: `home`/`away` with `teamEspnId`, `abbrev`, `score`, `rank`
-- Odds: `spread`, `favoriteTeamEspnId`, `overUnder`
-- `predictedScore`: Always calculated using priority order:
-  1. Real scores (if game completed or in progress with scores)
-  2. ESPN odds (overUnder + spread + favorite) if available
-  3. Team averages + spread (if spread available)
-  4. Ranking-based (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
-  5. Home field advantage (fallback: home team average, away team average - 3)
-
-**Notes:**
-- Dynamically determines season weeks using ESPN calendar API
-- Excludes conference championship game
-- Can run independently - does not require teams to be seeded first
-- Optimal order: `/api/pull-teams` → `/api/cron/update-rankings` → `/api/pull-games` for most accurate `predictedScore`
-
----
-
-## POST /api/simulate
+## POST /api/simulate/cfb/sec
 
 Simulates conference tiebreaker standings with optional user-provided game outcomes.
 
 **Authentication:** None required
 
-**Request Body:**
+**Path Parameters**: Fixed to "sec" (only SEC supported currently)
 
-```json
-{
-  "season": 2025,
-  "conferenceId": "8",
-  "overrides": {
-    "401752772": {
-      "homeScore": 45,
-      "awayScore": 10
-    }
-  }
-}
-```
+**Request Body**: `{ "season": 2025, "overrides": { "gameEspnId": { "homeScore": 45, "awayScore": 10 } } }`
 
-**Parameters:**
+**Parameters**: `season` (number, required) - Season year, `overrides` (object, optional) - Game ID → score overrides, defaults to `{}`
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `season` | number | Yes | Season year |
-| `conferenceId` | string | Yes | Conference ID as string (e.g., "8" for SEC) |
-| `overrides` | object | No | Game ID → score overrides. Defaults to `{}` if omitted |
+**Override Format**: `homeScore` (number, non-negative integer), `awayScore` (number, non-negative integer)
 
-**Override Format:**
+**Response**: `{ "standings": [StandingEntry[]], "championship": [string, string], "tieLogs": [TieLog[]] }`
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `homeScore` | number | Yes | Home team score (must be non-negative integer) |
-| `awayScore` | number | Yes | Away team score (must be non-negative integer) |
+**Response Fields**: `standings` (StandingEntry[] - sorted by rank), `championship` ([string, string] - top 2 team IDs), `tieLogs` (TieLog[] - tiebreaker explanations)
 
-**Response:**
+**StandingEntry**: `rank` (1-16), `teamId`, `abbrev`, `displayName`, `logo`, `color` (hex without #), `record` ({wins, losses}), `confRecord` ({wins, losses}), `explainPosition` (string)
 
-```json
-{
-  "standings": [/* StandingEntry[] */],
-  "championship": ["333", "145"],
-  "tieLogs": [/* TieLog[] */]
-}
-```
+**TieLog**: `teams` (string[]), `steps` (TieStep[])
 
-**Response Fields:**
+**TieStep**: `rule` (A-E), `detail` (string), `survivors` (string[])
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `standings` | StandingEntry[] | Full conference standings (sorted by rank) |
-| `championship` | [string, string] | Top 2 team IDs (conference championship matchup) |
-| `tieLogs` | TieLog[] | Detailed tiebreaker explanations |
+**Error Responses**: `400` - Missing required fields or invalid score (negative/non-integer), `500` - Database or tiebreaker calculation error
 
-**StandingEntry Fields:**
+**Tiebreaker Rules**: A (head-to-head, min 2 games), B (common opponents, min 4), C (highest-placed common opponent), D (conference win %), E (scoring margin - relative %-based, offensive cap 200%, defensive min 0%)
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `rank` | number | Standing position (1-16) |
-| `teamId` | string | ESPN team ID |
-| `abbrev` | string | Team abbreviation (e.g., "ALA") |
-| `displayName` | string | Full team name |
-| `logo` | string | Team logo URL |
-| `color` | string | Team primary color (hex without #) |
-| `record` | {wins, losses} | Overall season record |
-| `confRecord` | {wins, losses} | Conference record |
-| `explainPosition` | string | Human-readable explanation of standing |
-
-**TieLog Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `teams` | string[] | Team IDs involved in tie |
-| `steps` | TieStep[] | Tiebreaker rules applied |
-
-**TieStep Fields:**
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `rule` | string | Rule identifier (A-E) |
-| `detail` | string | Rule description |
-| `survivors` | string[] | Teams remaining after rule application |
-
-**Error Responses:**
-- `400`: Missing required fields (`season`, `conferenceId`)
-- `400`: Invalid score (negative or non-integer)
-- `500`: Database error or tiebreaker calculation error
-
-**Tiebreaker Rules Applied:**
-- **Rule A**: Head-to-head record (minimum 2 games)
-- **Rule B**: Record vs common conference opponents (minimum 4)
-- **Rule C**: Record vs highest-placed common opponent
-- **Rule D**: Conference win percentage
-- **Rule E**: Scoring margin (relative percentage-based: offensive cap 200%, defensive minimum 0%)
-
-**Notes:**
-- Uses `predictedScore` for games without user overrides
-- Validates scores (non-negative integers)
-- Handles ties recursively (cascading tiebreakers)
-- Returns all 16 teams in standings array
+**Notes**: Uses `predictedScore` for games without overrides, validates scores, handles ties recursively, returns all 16 teams
 
 ---
 

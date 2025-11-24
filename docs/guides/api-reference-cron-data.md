@@ -6,36 +6,19 @@ Reference for data update cron endpoints.
 
 ---
 
-## Authentication
-
-All cron jobs require Bearer token authentication:
-
-```
-Authorization: Bearer {CRON_SECRET}
-```
-
-**401 Response:**
-```json
-{
-  "error": "Unauthorized"
-}
-```
+**Authentication:** All cron jobs require `Authorization: Bearer {CRON_SECRET}`. See [Cron Jobs API Reference](./api-reference-cron.md) for details.
 
 ---
 
-## GET /api/cron/update-games
+## GET /api/cron/cfb/[conf]/update-games
 
 Updates scores, states, and odds for games.
 
-**Query Parameters:**
+**Path Parameters**: `conf` (string) - Conference slug
 
-| Parameter | Type   | Description                                   |
-| --------- | ------ | --------------------------------------------- |
-| `mode`    | string | `active` (default), `week`, or `season`       |
+**Query Parameters**: `mode` (string) - `active` (default, incomplete games only), `week` (current week), `season` (entire season)
 
-**Modes:** `active` (default, incomplete games only), `week` (current week), `season` (entire season)
-
-**Schedule:** Hobby: via `update-all` daily 10PM ET (`0 2 * * *` UTC) with `mode=season`. Pro: Every 5 min Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET.
+**Schedule**: Hobby: via `update-all` daily 10PM ET (`0 2 * * *` UTC) with `mode=season`. Pro: Every 5 min Thu-Fri 9PM-2AM ET, Sat 4PM-2AM ET.
 
 **Response:**
 
@@ -50,71 +33,65 @@ Updates scores, states, and odds for games.
 }
 ```
 
-**Response Fields:** `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors[]`
+**Response Fields**: `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors[]`
 
-**Updates:** `state`, `completed`, `home.score`, `away.score`, `home.rank`, `away.rank`, `odds.*`, `predictedScore`
+**Updates**: `state`, `completed`, `home.score`, `away.score`, `home.rank`, `away.rank`, `odds.*`, `predictedScore`
 
-**Logic:** `mode=season` pulls entire season, `mode=week` pulls current week, `mode=active` (default) updates incomplete games only. Recalculates `predictedScore` for all games.
+**Logic**: `mode=season` pulls entire season, `mode=week` pulls current week, `mode=active` (default) updates incomplete games only. Recalculates `predictedScore` for all games.
 
 ---
 
-## GET /api/cron/update-spreads
+## GET /api/cron/cfb/[conf]/update-spreads
 
 **Pro Mode Only**: Updates betting odds and recalculates predicted scores for upcoming games.
 
-**Schedule:** Pro: Every hour 1PM-5AM ET (`0 13-5 * * *` UTC). Hobby: Not used (via batch endpoint).
+**Path Parameters**: `conf` (string) - Conference slug
 
-**Response:** Same format as `update-games`
+**Schedule**: Pro: Every hour 1PM-5AM ET (`0 13-5 * * *` UTC). Hobby: Not used (via batch endpoint)
 
-**Updates:** `odds.*`, `predictedScore`
+**Response**: Same format as `update-games`
 
-**Logic:** Queries upcoming conference games, fetches odds from ESPN, updates if changed. Recalculates `predictedScore` using priority: ESPN odds → team averages + spread → ranking-based → home field advantage.
+**Updates**: `odds.*`, `predictedScore`
 
-**Notes:** Pro-only. More frequent than `update-games` to catch line movements. Only updates odds, not scores/states.
+**Logic**: Queries upcoming conference games, fetches odds from ESPN, updates if changed. Recalculates `predictedScore` using priority: ESPN odds → team averages + spread → ranking-based → home field advantage
+
+**Notes**: Pro-only, more frequent than `update-games` to catch line movements, only updates odds (not scores/states)
 
 ---
 
-## GET /api/cron/update-rankings
+## GET /api/cron/cfb/[conf]/update-rankings
 
 Updates team rankings, standings, and season statistics.
 
-**Schedule:** Hobby: via `update-all` daily 10PM ET (`0 2 * * *` UTC). Pro: Sunday 3AM ET + Wednesday 3AM ET (`0 3 * * 0` + `0 3 * * 3`).
+**Path Parameters**: `conf` (string) - Conference slug
 
-**Response:**
+**Schedule**: Hobby: via `update-all` daily 10PM ET (`0 2 * * *` UTC). Pro: Sunday 3AM ET + Wednesday 3AM ET (`0 3 * * 0` + `0 3 * * 3`)
 
-```json
-{
-  "updated": 16,
-  "teamsChecked": 16,
-  "espnCalls": 32,
-  "lastUpdated": "2025-11-12T01:39:46.147Z",
-  "errors": []
-}
-```
+**Response Fields**: `updated`, `teamsChecked` (16), `espnCalls`, `lastUpdated`, `errors[]`
 
-**Response Fields:** `updated`, `teamsChecked` (16), `espnCalls`, `lastUpdated`, `errors[]`
+**Updates**: `nationalRanking`, `conferenceStanding`, `record.*`, `record.stats.*` (including `avgPointsFor`/`avgPointsAgainst` for `predictedScore`)
 
-**Updates:** `nationalRanking`, `conferenceStanding`, `record.*`, `record.stats.*` (including `avgPointsFor`/`avgPointsAgainst` for `predictedScore`)
+**Logic**: Loops through all conference teams, calls Site API (metadata/rankings) and Core API (stats/averages), falls back to Site API if Core API null, 500ms rate limit, retries once
 
-**Logic:** Loops through all conference teams, calls Site API (metadata/rankings) and Core API (stats/averages). Falls back to Site API if Core API null. 500ms rate limit, retries once.
-
-**Notes:** Critical for `predictedScore`. Run weekly after rankings release.
+**Notes**: Critical for `predictedScore`, run weekly after rankings release
 
 ---
 
-## GET /api/cron/update-team-averages
+## GET /api/cron/cfb/[conf]/update-team-averages
 
 **Pro Mode Only**: Updates team season statistics more frequently than rankings cron.
 
-**Schedule:** Pro: Sunday 1AM ET (`0 6 * * 0` UTC). Hobby: Not used (via `update-rankings`).
+**Path Parameters**: `conf` (string) - Conference slug
 
-**Response:** Same format as `update-rankings`
+**Schedule**: Pro: Sunday 1AM ET (`0 6 * * 0` UTC). Hobby: Not used (via `update-rankings`)
 
-**Updates:** Same as `update-rankings` (focused on stats)
+**Response**: Same format as `update-rankings`
 
-**Logic:** Same as `update-rankings` but separate for Pro mode. Allows frequent stat updates without full rankings sync.
+**Updates**: Same as `update-rankings` (focused on stats)
 
-**Notes:** Pro-only. Runs Sunday after games complete.
+**Logic**: Same as `update-rankings` but separate for Pro mode, allows frequent stat updates without full rankings sync
+
+**Notes**: Pro-only, runs Sunday after games complete
 
 ---
 

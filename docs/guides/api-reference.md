@@ -2,15 +2,11 @@
 
 Complete reference for all Conference Tiebreaker API endpoints.
 
-**Related Documentation:**
-- [Comprehensive API Testing](../tests/comprehensive-api-testing.md) - Detailed testing procedures
-- [ESPN API Testing](../tests/espn-api-testing.md) - ESPN API field verification patterns
-
 ---
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games, POST /api/pull-teams, POST /api/pull-games, POST /api/simulate
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/cfb/[conf], POST /api/pull-teams/cfb/[conf], POST /api/pull-games/cfb/[conf], POST /api/simulate/cfb/sec
 - **[Cron Jobs](./api-reference-cron.md)** - All scheduled update endpoints
 
 ---
@@ -41,10 +37,16 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Environment Variables
 
-| Variable      | Required | Description                          |
-| ------------- | -------- | ------------------------------------ |
-| `CRON_SECRET` | Yes      | Bearer token for cron authentication |
-| `MONGODB_URI` | Yes      | MongoDB connection string            |
+| Variable              | Required | Description                          |
+| --------------------- | -------- | ------------------------------------ |
+| `CRON_SECRET`         | Yes      | Bearer token for cron authentication |
+| `MONGODB_USER`        | Yes      | MongoDB username                     |
+| `MONGODB_PASSWORD`    | Yes      | MongoDB password                     |
+| `MONGODB_HOST`        | Yes      | MongoDB cluster host                 |
+| `MONGODB_APP_NAME`    | Yes      | MongoDB application name             |
+| `MONGODB_DB`          | Yes*     | Database name (required locally)     |
+| `VERCEL_ENV`          | No       | Vercel environment (auto-set)        |
+| `MONGODB_MEMORY_SERVER_URI` | No  | In-memory test database URI (test mode) |
 
 ---
 
@@ -80,6 +82,4 @@ db.errors.find({ endpoint: '/api/cron/update-rankings' }).sort({ timestamp: -1 }
 
 ---
 
-**For detailed endpoint documentation, see:**
-- [Data Endpoints](./api-reference-data.md)
-- [Cron Jobs](./api-reference-cron.md)
+**See also:** [Data Endpoints](./api-reference-data.md) | [Cron Jobs](./api-reference-cron.md)
