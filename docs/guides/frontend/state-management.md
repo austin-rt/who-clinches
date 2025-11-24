@@ -10,11 +10,7 @@ Redux store structure, slices, and persistence patterns.
 
 ## Store Provider
 
-**StoreProvider** (`app/components/StoreProvider.tsx`):
-- Wraps app with Redux `Provider`
-- Includes `PersistGate` from redux-persist for SSR-safe hydration
-- Automatically restores persisted state from localStorage on app load
-- `loading={null}` prevents flash of unstyled content during hydration
+**StoreProvider** (`app/components/StoreProvider.tsx`): Wraps app with Redux `Provider` and `PersistGate` for SSR-safe hydration. Automatically restores persisted state from localStorage on app load.
 
 ---
 
@@ -51,11 +47,7 @@ interface UIState {
 - `setHideCompletedGames(hide: boolean)`
 - `setLastUpdated(timestamp: string)`
 
-**Usage:**
-```typescript
-import { useUIState } from '@/app/store/useUI';
-const { theme, mode, view, hideCompletedGames, setView } = useUIState();
-```
+**Usage:** `useUIState()` hook provides state and actions.
 
 ---
 
@@ -73,13 +65,7 @@ interface GamePicksState {
 - `clearGamePick(gameId)`
 - `clearAllPicks()`
 
-**Usage:**
-```typescript
-import { useAppDispatch } from '@/app/store/hooks';
-import { setGamePick } from '@/app/store/gamePicksSlice';
-
-dispatch(setGamePick({ gameId: game.espnId, pick: { homeScore: 24, awayScore: 21 } }));
-```
+**Usage:** Dispatch actions via `useAppDispatch()` hook.
 
 ---
 
@@ -96,24 +82,30 @@ dispatch(setGamePick({ gameId: game.espnId, pick: { homeScore: 24, awayScore: 21
 
 **Configuration:**
 
-**TODO**: Document persistence configuration once finalized. Include persist config objects, localStorage keys, and middleware configuration.
-
-**Usage:**
-Components dispatch Redux actions normally - persistence is automatic:
+**Persistence Config** (`app/store/store.ts`):
 ```typescript
-import { useAppDispatch } from '@/app/store/hooks';
-import { setView } from '@/app/store/uiSlice';
+const uiPersistConfig = {
+  key: 'ui',
+  storage,
+  blacklist: ['lastUpdated'], // Server data, not user preference
+};
 
-dispatch(setView('scores')); // Automatically persisted to localStorage
+const gamePicksPersistConfig = {
+  key: 'gamePicks',
+  storage,
+};
 ```
+
+**localStorage Keys:**
+- `persist:ui` - UI preferences (theme, mode, view, hideCompletedGames)
+- `persist:gamePicks` - User game picks
+
+**Middleware:** Redux Toolkit includes thunk by default. redux-persist actions (`persist/PERSIST`, `persist/REHYDRATE`, `persist/PURGE`) are ignored in serializableCheck.
+
+**Usage:** Components dispatch Redux actions normally - persistence is automatic. No manual localStorage calls needed.
 
 **Important Notes:**
 - API slice (RTK Query) is NOT persisted - cache is ephemeral
 - `lastUpdated` field in UI state is blacklisted (server data, not user preference)
-- Persistence happens automatically on every state change - no manual localStorage calls needed
 - State is restored on app load via `PersistGate` before rendering children
-
----
-
-**Last Updated**: November 2025
 
