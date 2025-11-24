@@ -41,8 +41,9 @@ export interface ErrorLogFields extends BaseError {
 export interface PullTeamsRequest {
   sport: string;
   league: string;
-  conferenceId?: number;
+  conf?: string;
   teams?: string[];
+  force?: boolean; // Manual override to bypass season check for testing
 }
 
 export interface PullTeamsResponse {
@@ -59,8 +60,9 @@ export interface PullGamesRequest {
   sport: string;
   league: string;
   season: number;
-  conferenceId: number;
+  conf: string;
   week?: number;
+  force?: boolean; // Manual override to bypass season check for testing
 }
 
 export interface PullGamesResponse {
@@ -75,7 +77,7 @@ export interface PullGamesResponse {
 // ============================================================================
 
 export interface GamesQueryParams {
-  conferenceId?: string;
+  conf?: string;
   season?: string;
   week?: string;
   state?: GameState;
@@ -143,7 +145,6 @@ export interface CronHealthCheckResponse {
 
 export interface SimulateRequest {
   season: number;
-  conferenceId: string;
   overrides: {
     [gameId: string]: {
       homeScore: number;
