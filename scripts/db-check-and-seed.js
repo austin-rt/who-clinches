@@ -101,10 +101,11 @@ console.log('');
 /**
  * Fetch helper with timeout - simple wrapper around fetch API
  * Automatically adds bypass token for preview/production deployments
- * Includes 60-second timeout to prevent hanging requests
+ * Includes 120-second timeout to prevent hanging requests
+ * Note: pull-teams endpoint can take 60-90 seconds for 16 teams with ESPN API rate limiting
  */
 async function fetchAPI(url, options = {}) {
-  const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+  const REQUEST_TIMEOUT_MS = 120000; // 120 seconds (16 teams × 2 API calls + 500ms delays + network latency)
 
   try {
     // Add bypass token for preview/production deployments
@@ -129,11 +130,11 @@ async function fetchAPI(url, options = {}) {
 
       clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`HTTP ${response.status}: ${text}`);
-    }
-    return await response.json();
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP ${response.status}: ${text}`);
+      }
+      return await response.json();
     } catch (fetchError) {
       clearTimeout(timeoutId);
 
@@ -159,7 +160,7 @@ async function main() {
     // Step 1: Check if teams are seeded
     console.log('Step 1: Checking if teams are seeded...');
     try {
-      const gamesResponse = await fetchAPI(`${BASE_URL}/api/games?limit=1`);
+      const gamesResponse = await fetchAPI(`${BASE_URL}/api/games/cfb/sec?limit=1`);
       if (gamesResponse.teams && gamesResponse.teams.length > 0) {
         console.log(`[OK] Found ${gamesResponse.teams.length} team(s) in response`);
       } else {
@@ -178,7 +179,7 @@ async function main() {
     console.log('Step 2: Checking if games are seeded...');
     try {
       // Check total games in database (should be 128: all SEC games)
-      const allGamesResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025`);
+      const allGamesResponse = await fetchAPI(`${BASE_URL}/api/games/cfb/sec?season=2025`);
       if (allGamesResponse.events && allGamesResponse.events.length >= 128) {
         console.log(
           `[OK] Found ${allGamesResponse.events.length} total game(s) in database (expected 128 for full season)`
@@ -190,7 +191,7 @@ async function main() {
         await seedGames();
         await sleep(2000);
         // Verify after seeding
-        const verifyResponse = await fetchAPI(`${BASE_URL}/api/games?season=2025`);
+        const verifyResponse = await fetchAPI(`${BASE_URL}/api/games/cfb/sec?season=2025`);
         if (verifyResponse.events && verifyResponse.events.length >= 128) {
           console.log(
             `[OK] Seeded ${verifyResponse.events.length} total games (expected 128 for full season)`
@@ -232,14 +233,10 @@ async function main() {
 async function seedTeams() {
   console.log('  Seeding teams...');
   try {
-    await fetchAPI(`${BASE_URL}/api/pull-teams`, {
+    await fetchAPI(`${BASE_URL}/api/pull-teams/cfb/sec`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sport: 'football',
-        league: 'college-football',
-        conferenceId: 8,
-      }),
+      body: JSON.stringify({}),
     });
     console.log('[OK] Teams seeded');
   } catch (error) {
@@ -253,14 +250,11 @@ async function seedTeams() {
 async function seedGames() {
   console.log('  Seeding games...');
   try {
-    await fetchAPI(`${BASE_URL}/api/pull-games`, {
+    await fetchAPI(`${BASE_URL}/api/pull-games/cfb/sec`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        sport: 'football',
-        league: 'college-football',
         season: 2025,
-        conferenceId: 8,
       }),
     });
     console.log('[OK] Games seeded');
@@ -274,7 +268,7 @@ async function seedGames() {
  */
 async function verifyGamesResponse() {
   try {
-    const response = await fetchAPI(`${BASE_URL}/api/games?season=2025&conferenceId=8`);
+    const response = await fetchAPI(`${BASE_URL}/api/games/cfb/sec?season=2025`);
 
     if (!response.events || !Array.isArray(response.events)) {
       throw new Error('Missing or invalid events array');
@@ -308,12 +302,11 @@ async function verifyGamesResponse() {
  */
 async function verifySimulateResponse() {
   try {
-    const response = await fetchAPI(`${BASE_URL}/api/simulate`, {
+    const response = await fetchAPI(`${BASE_URL}/api/simulate/cfb/sec`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         season: 2025,
-        conferenceId: 8,
         overrides: {},
       }),
     });
