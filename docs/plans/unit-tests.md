@@ -8,19 +8,9 @@
 
 **Framework:** Jest (Next.js standard)
 
-**Test Structure:**
-```
-__tests__/
-├── api/                    # API route tests
-├── lib/                    # Helper function tests
-└── setup.ts                # Jest configuration & helpers
-```
+**Test Structure**: `__tests__/api/` (API route tests), `__tests__/lib/` (helper function tests), `__tests__/setup.ts` (Jest configuration)
 
-**Test Data Strategy:**
-- Real ESPN API data stored in `/test` database
-- Populated via `/api/cron/update-test-data` endpoint
-- Auto-seeded before tests run via `npm run test:db:check`
-- Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+**Test Data Strategy**: Real ESPN API data in `/test` database, populated via `/api/cron/update-test-data`, auto-seeded via `npm run test:db:check`, models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
 
 ---
 
@@ -28,137 +18,62 @@ __tests__/
 
 ### API Routes (100% coverage)
 
-**`/api/games` (GET):**
-- Response structure validation
-- Filter by season, week, conferenceId, state, date range
-- Cache headers (10s for live, 60s otherwise)
-- Invalid parameter handling
+**`/api/games` (GET)**: Response structure, filters (season/week/conferenceId/state/date range), cache headers (10s live, 60s otherwise), invalid parameter handling
 
-**`/api/simulate` (POST):**
-- Response structure validation
-- No overrides, single/multiple overrides
-- Rankings 1-16 with no gaps
-- Tiebreaker rules (A-E)
-- Invalid score validation (tie, negative, non-integer)
+**`/api/simulate` (POST)**: Response structure, no/single/multiple overrides, rankings 1-16, tiebreaker rules A-E, invalid score validation (tie/negative/non-integer)
 
-**`/api/pull-teams` (POST):**
-- Pull all conference teams or specific teams
-- Response structure validation
-- Missing field validation
+**`/api/pull-teams` (POST)**: Pull all/specific teams, response structure, missing field validation
 
-**`/api/pull-games` (POST):**
-- Pull full season or specific week
-- Response structure validation
-- Missing field validation
+**`/api/pull-games` (POST)**: Pull full season/specific week, response structure, missing field validation
 
-**Cron Job Endpoints:**
-- Authentication required
-- Response structure validation
+**Cron Job Endpoints**: Authentication required, response structure validation
 
 ### Helper Functions (Phase 3)
 
-**Reshape Functions:**
-- `reshapeScoreboardData()` - ESPN → Database format
-- `reshapeTeamData()` - ESPN → Database format
+**Reshape**: `reshapeScoreboardData()`, `reshapeTeamData()` (ESPN → Database format)
 
-**Tiebreaker Functions:**
-- Rules A-E implementation
-- Tiebreaker explanation generation
-- Championship selection (top 2)
+**Tiebreaker**: Rules A-E, explanation generation, championship selection (top 2)
 
-**Calculation Functions:**
-- Conference record calculation
-- Win percentage calculation
-- Opponent win percentage
-- Common opponent identification
+**Calculation**: Conference record, win percentage, opponent win percentage, common opponent identification
 
 ---
 
 ## Test Execution
 
-**Scripts:**
-```bash
-npm run db:check          # Check if DB seeded, seed if needed
-npm run test:api          # Auto-check DB + run API integration tests
-npm run test              # Run all tests
-npm run test:watch        # Watch mode during development
-npm run test:coverage     # Generate coverage report
-```
+**Scripts**: `npm run db:check` (check/seed DB), `npm run test:api` (auto-check DB + API tests), `npm run test` (all tests), `npm run test:watch` (watch mode), `npm run test:coverage` (coverage report)
 
-**How It Works:**
-1. `npm run db:check` - Checks/seeds database via API calls
-2. `npm run test:api` - Chains `db:check` + Jest tests
-3. Extended timeouts for ESPN API calls (30s) and cron jobs (15-30s)
+**How It Works**: `db:check` checks/seeds via API calls, `test:api` chains `db:check` + Jest tests, extended timeouts (30s ESPN API, 15-30s cron jobs)
 
-**Environments:**
-- **Local:** `npm run test:api` (primary workflow)
-- **Preview:** GitHub Actions on PR (tests against preview DB)
-- **Production:** GitHub Actions on merge (read-only queries)
+**Environments**: Local (`npm run test:api`), Preview (GitHub Actions on PR), Production (GitHub Actions on merge, read-only)
 
 ---
 
 ## Implementation Status
 
-### Phase 1: Jest Setup & Test Database ✅ COMPLETED
-- Jest configuration
-- Test database with real ESPN API data
-- Database check & seed script
-- Consolidated npm test scripts
+**Phase 1: Jest Setup & Test Database** ✅ COMPLETED - Jest config, test database with real ESPN API data, database check & seed script, consolidated npm scripts
 
-### Phase 2: API Route Tests ✅ COMPLETED
-- `/api/games` tests (13 tests)
-- `/api/simulate` tests (16 tests)
-- `/api/pull-teams` tests (10 tests)
-- `/api/pull-games` tests (10 tests)
-- `/api/cron/*` tests (3 tests)
+**Phase 2: API Route Tests** ✅ COMPLETED - `/api/games` (13), `/api/simulate` (16), `/api/pull-teams` (10), `/api/pull-games` (10), `/api/cron/*` (3)
 
-### Phase 3: Helper Function Tests (Next)
-- Reshape function tests
-- Tiebreaker function tests
-- Calculation function tests
+**Phase 3: Helper Function Tests** (Next) - Reshape, tiebreaker, calculation function tests
 
-### Phase 4: GitHub Actions CI/CD
-- Local test workflow
-- Preview test workflow
-- Production test workflow
+**Phase 4: GitHub Actions CI/CD** - Local, preview, production test workflows
 
 ---
 
 ## Success Criteria
 
-- ✅ 100% code coverage for all API routes (49 tests implemented)
-- ⏳ 100% code coverage for all helper/reshape functions (Phase 3)
-- ✅ All tests pass locally
-- ✅ Single unified npm script interface
-- ⏳ GitHub Actions workflows configured
-- ⏳ Coverage reports generated and tracked
-
----
+✅ 100% code coverage for API routes (49 tests), ⏳ 100% coverage for helper/reshape functions (Phase 3), ✅ All tests pass locally, ✅ Single unified npm script interface, ⏳ GitHub Actions workflows, ⏳ Coverage reports
 
 ## Known Issues & Recommendations
 
-**HIGH Priority:**
-1. Mock ESPN API calls - Tests should not depend on live APIs
-2. Add coverage thresholds - Jest should fail if coverage drops
+**HIGH**: Mock ESPN API calls (tests shouldn't depend on live APIs), add coverage thresholds (Jest should fail if coverage drops)
 
-**MEDIUM Priority:**
-3. Optimize test database seeding - Ensure test data is always up to date
-4. Add error message verification - Check exact error codes
+**MEDIUM**: Optimize test database seeding, add error message verification
 
-**LOW Priority:**
-5. Add missing test cases - Cache headers, edge cases
-6. Optimize timeouts - Use retries or reduce test scope
-
----
+**LOW**: Add missing test cases (cache headers, edge cases), optimize timeouts
 
 ## Notes
 
-**Test Data:**
-- Tests use real ESPN API data stored in `/test` database
-- Test database automatically seeded with ESPN API responses via cron jobs
-- No reliance on external ESPN API during test runs (data is pre-seeded)
+**Test Data**: Real ESPN API data in `/test` database, auto-seeded via cron jobs, no reliance on external API during test runs
 
-**Database Testing:**
-- Local: Uses live dev database (should use MongoDB Memory Server)
-- Preview: Real preview database (integration testing)
-- Production: Read-only queries only (verification testing)
+**Database Testing**: Local (live dev database, should use MongoDB Memory Server), Preview (real preview DB), Production (read-only queries)

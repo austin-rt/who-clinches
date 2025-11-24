@@ -60,12 +60,7 @@ const GamesList = ({ season, conferenceId }: { season: number; conferenceId: num
 };
 ```
 
-**RTK Query Benefits:**
-
-- Automatic caching - games data cached and reused
-- Loading/error states - `isLoading`, `isError`, `error` provided automatically
-- Refetching - can easily poll for live game updates
-- TypeScript support - full type safety from API types
+**RTK Query Benefits:** Automatic caching, loading/error states, refetching, TypeScript support.
 
 **Component Definitions:**
 
@@ -117,10 +112,4 @@ const GamesList = ({ season, conferenceId }: { season: number; conferenceId: num
 7. Verify games display correctly with team logos/names
 8. Test on mobile - responsive layout works
 
-**Known Gotchas:**
-
-- API returns `events` not `games` - use `data.events`
-- Team metadata must be merged from `teams` array
-- Use `teamEspnId` not `teamId` in game data
-- Handle optional fields gracefully
-- DaisyUI collapse uses checkbox for state management
+**Known Gotchas:** API returns `events` not `games`. Team metadata must be merged from `teams` array. Use `teamEspnId` not `teamId`. DaisyUI collapse uses checkbox for state management.
