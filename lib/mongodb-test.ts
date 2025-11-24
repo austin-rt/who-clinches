@@ -44,6 +44,8 @@ const dbConnectTest = async (): Promise<mongoose.Connection> => {
     cached.promise = mongoose
       .createConnection(TEST_MONGODB_URI, {
         bufferCommands: false,
+        serverSelectionTimeoutMS: 10000, // 10 second timeout for server selection
+        socketTimeoutMS: 45000, // 45 second timeout for socket operations
       })
       .asPromise();
   }
