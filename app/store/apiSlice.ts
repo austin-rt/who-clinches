@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import {
   GamesResponse,
-  GamesQueryParams,
   SimulateRequest,
   SimulateResponse,
 } from '@/lib/api-types';
@@ -12,20 +11,20 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   tagTypes: ['Games', 'Standings'],
   endpoints: (builder) => ({
-    getGames: builder.query<GamesResponse, GamesQueryParams>({
-      query: (params) => {
+    getGames: builder.query<
+      GamesResponse,
+      { sport: string; conf: string; season?: string; week?: string; state?: string; from?: string; to?: string }
+    >({
+      query: ({ sport, conf, season, week, state, from, to }) => {
         const searchParams = new URLSearchParams();
-        if (params.conferenceId) searchParams.set('conferenceId', params.conferenceId);
-        if (params.season) searchParams.set('season', params.season);
-        if (params.week) searchParams.set('week', params.week);
-        if (params.state) searchParams.set('state', params.state);
-        if (params.from) searchParams.set('from', params.from);
-        if (params.to) searchParams.set('to', params.to);
-        if (params.sport) searchParams.set('sport', params.sport);
-        if (params.league) searchParams.set('league', params.league);
+        if (season) searchParams.set('season', season);
+        if (week) searchParams.set('week', week);
+        if (state) searchParams.set('state', state);
+        if (from) searchParams.set('from', from);
+        if (to) searchParams.set('to', to);
 
         const queryString = searchParams.toString();
-        return `games${queryString ? `?${queryString}` : ''}`;
+        return `games/${sport}/${conf}${queryString ? `?${queryString}` : ''}`;
       },
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
@@ -40,12 +39,14 @@ export const apiSlice = createApi({
       providesTags: ['Games'],
     }),
     simulate: builder.mutation<SimulateResponse, SimulateRequest>({
-      query: (body) => ({
-        url: 'simulate',
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body,
-      }),
+      query: (request) => {
+        return {
+          url: 'simulate/cfb/sec',
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: request,
+        };
+      },
       invalidatesTags: ['Standings'],
     }),
   }),

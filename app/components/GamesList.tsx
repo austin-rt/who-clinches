@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
+import { useParams } from 'next/navigation';
 import { useGetGamesQuery } from '@/app/store/apiSlice';
 import { GameLean } from '@/lib/types';
 import { TeamMetadata } from '@/lib/api-types';
@@ -14,14 +15,17 @@ type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games:
 
 interface GamesListProps {
   season: number;
-  conferenceId: number;
 }
 
-const GamesList = ({ season, conferenceId }: GamesListProps) => {
+const GamesList = ({ season }: GamesListProps) => {
+  const params = useParams();
+  const sport = params.sport as string;
+  const conf = params.conf as string;
   const { view } = useUIState();
   const { data, isLoading, isError, isUninitialized } = useGetGamesQuery({
+    sport,
+    conf,
     season: season.toString(),
-    conferenceId: conferenceId.toString(),
   });
 
   // Enrich games with team metadata from teams array
