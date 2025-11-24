@@ -46,3 +46,6 @@ next-env.d.ts
 /temp/*
 !/temp/README.md
 temp-*
+
+# jest server pid file
+.jest-server.pid

@@ -14,6 +14,18 @@ global.console = {
   error: jest.fn(),
 };
 
+// Set NODE_ENV to test for Jest process
+process.env.NODE_ENV = 'test';
+
 // Mock environment variables for tests
 process.env.BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 process.env.MONGODB_DB = process.env.MONGODB_DB || 'test';
+
+// Mock ESPN client to use test data snapshots instead of real API calls
+jest.mock('@/lib/cfb/espn-client', () => {
+  const { createMockESPNClient } = require('./__tests__/mocks/espn-client.mock');
+  return {
+    createESPNClient: createMockESPNClient,
+    espnClient: createMockESPNClient('football', 'college-football'),
+  };
+});
