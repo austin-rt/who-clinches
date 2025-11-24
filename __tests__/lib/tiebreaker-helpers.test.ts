@@ -10,7 +10,7 @@ import {
   getTeamAvgPointsFor,
   getTeamAvgPointsAgainst,
   applyOverrides,
-} from '@/lib/tiebreaker-helpers';
+} from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { GameLean } from '@/lib/types';
 
 const createMockGame = (
