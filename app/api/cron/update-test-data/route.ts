@@ -4,8 +4,8 @@ import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestD
 import { getESPNGameSummaryTestData } from '@/lib/models/test/ESPNGameSummaryTestData';
 import { getESPNTeamTestData } from '@/lib/models/test/ESPNTeamTestData';
 import { getESPNTeamRecordsTestData } from '@/lib/models/test/ESPNTeamRecordsTestData';
-import { espnClient } from '@/lib/espn-client';
-import { SEC_TEAMS } from '@/lib/constants';
+import { espnClient } from '@/lib/cfb/espn-client';
+import { SEC_TEAMS } from '@/lib/cfb/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -36,9 +36,9 @@ export const GET = async (request: NextRequest) => {
       // Get all available weeks from ESPN calendar
       let weeksToPull: number[] = [];
       try {
+        // Fetch calendar without season parameter - ESPN only returns calendar without season
         const calendarResponse = await espnClient.getScoreboard({
           groups: 8, // SEC
-          season,
         });
 
         const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
@@ -51,13 +51,22 @@ export const GET = async (request: NextRequest) => {
             .filter((val: number) => !isNaN(val));
         }
 
-        // Fallback to weeks 1-15 if calendar not available
+        // If no weeks found from calendar, calculate maxWeek from entries if available
         if (weeksToPull.length === 0) {
-          const maxWeek = 15;
+          let maxWeek = 15; // Default fallback
+          if (regularSeason?.entries && regularSeason.entries.length > 0) {
+            // Calculate maxWeek from the highest week number in entries
+            const weekNumbers = regularSeason.entries
+              .map((entry) => parseInt(entry.value, 10))
+              .filter((val: number) => !isNaN(val));
+            if (weekNumbers.length > 0) {
+              maxWeek = Math.max(...weekNumbers);
+            }
+          }
           weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
         }
       } catch {
-        // If calendar fetch fails, fall back to weeks 1-15
+        // Fallback: try to use a reasonable default, but ESPN data should always be available
         const maxWeek = 15;
         weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
       }

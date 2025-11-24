@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { SUPPORTED_SPORTS_CONFS } from '@/lib/cfb/supported-config';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -53,120 +54,152 @@ export const GET = async (request: NextRequest) => {
     duration: number;
   }> = [];
 
-  // 1. Pull teams (POST endpoint, requires body)
-  try {
-    const start = Date.now();
-    const pullTeamsUrl = bypassParam
-      ? `${baseUrl}/api/pull-teams?${bypassParam}`
-      : `${baseUrl}/api/pull-teams`;
-    const response = await fetch(pullTeamsUrl, {
-      method: 'POST',
-      headers: {
-        ...authHeaders,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        sport: 'football',
-        league: 'college-football',
-        conferenceId: 8, // SEC
-      }),
-    });
-    const duration = Date.now() - start;
+  // Loop through all supported sport/conf combinations
+  for (const { sport, conf } of SUPPORTED_SPORTS_CONFS) {
+    // 1. Pull teams
+    try {
+      const start = Date.now();
+      const pullTeamsUrl = bypassParam
+        ? `${baseUrl}/api/pull-teams/${sport}/${conf}?${bypassParam}`
+        : `${baseUrl}/api/pull-teams/${sport}/${conf}`;
+      const response = await fetch(pullTeamsUrl, {
+        method: 'POST',
+        headers: {
+          ...authHeaders,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({}),
+      });
+      const duration = Date.now() - start;
 
-    results.push({
-      job: 'pull-teams',
-      success: response.ok,
-      status: response.status,
-      duration,
-    });
-  } catch (error) {
-    results.push({
-      job: 'pull-teams',
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration: 0,
-    });
-  }
+      results.push({
+        job: `pull-teams-${sport}-${conf}`,
+        success: response.ok,
+        status: response.status,
+        duration,
+      });
+    } catch (error) {
+      results.push({
+        job: `pull-teams-${sport}-${conf}`,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration: 0,
+      });
+    }
 
-  // 2. Pull/update games for entire season
-  try {
-    const start = Date.now();
-    const updateGamesUrl = bypassParam
-      ? `${baseUrl}/api/cron/update-games?mode=season&${bypassParam}`
-      : `${baseUrl}/api/cron/update-games?mode=season`;
-    const response = await fetch(updateGamesUrl, {
-      method: 'GET',
-      headers: authHeaders,
-    });
-    const duration = Date.now() - start;
+    // 2. Pull/update games for entire season
+    try {
+      const start = Date.now();
+      const pullGamesUrl = bypassParam
+        ? `${baseUrl}/api/pull-games/${sport}/${conf}?${bypassParam}`
+        : `${baseUrl}/api/pull-games/${sport}/${conf}`;
+      const response = await fetch(pullGamesUrl, {
+        method: 'POST',
+        headers: {
+          ...authHeaders,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          season: new Date().getFullYear(),
+        }),
+      });
+      const duration = Date.now() - start;
 
-    results.push({
-      job: 'update-games-season',
-      success: response.ok,
-      status: response.status,
-      duration,
-    });
-  } catch (error) {
-    results.push({
-      job: 'update-games-season',
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration: 0,
-    });
-  }
+      results.push({
+        job: `pull-games-${sport}-${conf}`,
+        success: response.ok,
+        status: response.status,
+        duration,
+      });
+    } catch (error) {
+      results.push({
+        job: `pull-games-${sport}-${conf}`,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration: 0,
+      });
+    }
 
-  // 3. Update rankings
-  try {
-    const start = Date.now();
-    const updateRankingsUrl = bypassParam
-      ? `${baseUrl}/api/cron/update-rankings?${bypassParam}`
-      : `${baseUrl}/api/cron/update-rankings`;
-    const response = await fetch(updateRankingsUrl, {
-      method: 'GET',
-      headers: authHeaders,
-    });
-    const duration = Date.now() - start;
+    // 3. Update rankings
+    try {
+      const start = Date.now();
+      const updateRankingsUrl = bypassParam
+        ? `${baseUrl}/api/cron/${sport}/${conf}/update-rankings?${bypassParam}`
+        : `${baseUrl}/api/cron/${sport}/${conf}/update-rankings`;
+      const response = await fetch(updateRankingsUrl, {
+        method: 'GET',
+        headers: authHeaders,
+      });
+      const duration = Date.now() - start;
 
-    results.push({
-      job: 'update-rankings',
-      success: response.ok,
-      status: response.status,
-      duration,
-    });
-  } catch (error) {
-    results.push({
-      job: 'update-rankings',
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration: 0,
-    });
-  }
+      results.push({
+        job: `update-rankings-${sport}-${conf}`,
+        success: response.ok,
+        status: response.status,
+        duration,
+      });
+    } catch (error) {
+      results.push({
+        job: `update-rankings-${sport}-${conf}`,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration: 0,
+      });
+    }
 
-  // 4. Update spreads
-  try {
-    const start = Date.now();
-    const updateSpreadsUrl = bypassParam
-      ? `${baseUrl}/api/cron/update-spreads?${bypassParam}`
-      : `${baseUrl}/api/cron/update-spreads`;
-    const response = await fetch(updateSpreadsUrl, {
-      method: 'GET',
-      headers: authHeaders,
-    });
-    const duration = Date.now() - start;
+    // 4. Update spreads
+    try {
+      const start = Date.now();
+      const updateSpreadsUrl = bypassParam
+        ? `${baseUrl}/api/cron/${sport}/${conf}/update-spreads?${bypassParam}`
+        : `${baseUrl}/api/cron/${sport}/${conf}/update-spreads`;
+      const response = await fetch(updateSpreadsUrl, {
+        method: 'GET',
+        headers: authHeaders,
+      });
+      const duration = Date.now() - start;
 
-    results.push({
-      job: 'update-spreads',
-      success: response.ok,
-      status: response.status,
-      duration,
-    });
-  } catch (error) {
-    results.push({
-      job: 'update-spreads',
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-      duration: 0,
-    });
+      results.push({
+        job: `update-spreads-${sport}-${conf}`,
+        success: response.ok,
+        status: response.status,
+        duration,
+      });
+    } catch (error) {
+      results.push({
+        job: `update-spreads-${sport}-${conf}`,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration: 0,
+      });
+    }
+
+    // 5. Update team averages
+    try {
+      const start = Date.now();
+      const updateTeamAveragesUrl = bypassParam
+        ? `${baseUrl}/api/cron/${sport}/${conf}/update-team-averages?${bypassParam}`
+        : `${baseUrl}/api/cron/${sport}/${conf}/update-team-averages`;
+      const response = await fetch(updateTeamAveragesUrl, {
+        method: 'GET',
+        headers: authHeaders,
+      });
+      const duration = Date.now() - start;
+
+      results.push({
+        job: `update-team-averages-${sport}-${conf}`,
+        success: response.ok,
+        status: response.status,
+        duration,
+      });
+    } catch (error) {
+      results.push({
+        job: `update-team-averages-${sport}-${conf}`,
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        duration: 0,
+      });
+    }
   }
 
   // 5. Summary
