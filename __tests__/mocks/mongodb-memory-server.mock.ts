@@ -50,14 +50,19 @@ export const stopMongoMemoryServer = async () => {
 /**
  * Clear all collections
  * Call in beforeEach() to ensure clean state
+ * Note: Connection should be established before calling this function
  */
 export const clearMongoMemoryServerData = async () => {
-  if (mongoose.connection.readyState === 1) {
-    const collections = mongoose.connection.collections;
-    for (const key in collections) {
-      const collection = collections[key];
-      await collection.deleteMany({});
-    }
+  // Connection should be ready (established via dbConnect() before calling this)
+  if (mongoose.connection.readyState !== 1) {
+    throw new Error(
+      `Cannot clear MongoDB Memory Server data: connection not ready. ReadyState: ${mongoose.connection.readyState}`
+    );
+  }
+  const collections = mongoose.connection.collections;
+  for (const key in collections) {
+    const collection = collections[key];
+    await collection.deleteMany({});
   }
 };
 
