@@ -1,12 +1,8 @@
 # Generated Types GitHub Workflow Testing
 
-Tests the automated GitHub Actions workflow that generates ESPN types, compares snapshots, and creates PRs when ESPN API types change.
+Complete testing guide for the automated GitHub Actions workflow that generates ESPN types and creates PRs.
 
-**Related Documentation:**
-- [AI Guide](../ai-guide.md) - Development guidelines including ESPN integration
-- [AI Loading Manifest](../ai-loading-manifest.md) - Documentation loading strategy for AI agents
-- [ESPN API Testing](./espn-api-testing.md) - Field verification patterns
-- [ESPN Data Pipeline](./espn-data-pipeline.md) - Data transformation testing
+**Related:** [Quick Reference](./generated-types-workflow-quick-ref.md) | [ESPN API Testing](./espn-api-testing.md)
 
 **Workflow File:** `.github/workflows/update-espn-types.yml`
 
@@ -21,391 +17,60 @@ Tests the automated GitHub Actions workflow that generates ESPN types, compares 
 
 ---
 
-## Test Overview
+## Testing Procedure
 
-This test simulates an ESPN API type change by manually modifying the type snapshot, then verifying that the workflow:
-
-1. Detects the change
-2. Generates new types
-3. Creates a PR with the changes
-4. Handles PR denial gracefully
-
----
-
-## Test 1: Simulate ESPN Type Change
-
-Manually change a type in the snapshot to simulate ESPN changing their API.
-
-### Step 1: Make Manual Snapshot Change
-
-Choose a field that exists in the snapshot and change its type. Edit the file directly:
-
-**Example: Change `Competitor.score` from `"string"` to `"number"`**
-
-Edit `lib/espn/used-types-snapshot.json` and change:
-
-```json
-"Competitor.score": "string",
-```
-
-to:
-
-```json
-"Competitor.score": "number",
-```
-
-This simulates ESPN changing the score field type from string to number.
-
-### Step 2: Commit and Push Change
-
+1. **Simulate type change**: Edit `lib/espn/used-types-snapshot.json` (e.g., change `"Competitor.score": "string"` → `"number"`)
+2. **Commit and push**:
 ```bash
-# Add and commit the manual change
 git add lib/espn/used-types-snapshot.json
-git commit --no-verify -m "test: simulate ESPN type change (Competitor.score: string -> number)"
+git commit --no-verify -m "test: simulate ESPN type change"
 COMMIT_HASH=$(git rev-parse HEAD)
-echo "Commit hash: $COMMIT_HASH"
-
-# Push to remote
 git push origin develop
 ```
-
-### Step 3: Trigger Workflow Manually
-
+3. **Trigger workflow**:
 ```bash
-# Trigger the workflow on develop branch (important for testing)
 gh workflow run update-espn-types.yml --ref develop
-
-# Get the workflow run ID
 RUN_ID=$(gh run list --workflow=update-espn-types.yml --limit 1 --json databaseId --jq '.[0].databaseId')
-echo "Workflow run ID: $RUN_ID"
-```
-
-### Step 4: Monitor Workflow Execution
-
-```bash
-# Watch the workflow run in real-time (recommended)
 gh run watch $RUN_ID
-
-# Or view logs after completion
-gh run view $RUN_ID --log
 ```
-
-### Expected Workflow Behavior
-
-1. **Generate Types Step**: Should complete successfully
-2. **Check Changes Step**: Should detect the type change
-3. **Create PR Step**: Should create a pull request
-
-### Checks
-
-- [ ] Workflow starts successfully
-- [ ] Type generation completes without errors
-- [ ] Snapshot comparison detects the change
-- [ ] Workflow output shows `changed=true`
-- [ ] PR creation step executes
-
----
-
-## Test 2: Verify PR Creation
-
-Confirm that the workflow created a PR with the expected changes.
-
-### Step 5: Check PR Details
-
+4. **Verify PR creation**:
 ```bash
-# List recent PRs created by the workflow
-gh pr list --author "github-actions[bot]" --limit 5
-
-# Get the PR number (most recent)
 PR_NUMBER=$(gh pr list --author "github-actions[bot]" --limit 1 --json number --jq '.[0].number')
-echo "PR number: $PR_NUMBER"
-
-# View PR details
 gh pr view $PR_NUMBER
-
-# View PR diff
 gh pr diff $PR_NUMBER
 ```
+**Expected**: PR title `🤖 Auto: Update ESPN API Types (ESPN Type Changes Detected)`, includes generated type files and snapshot, diff shows type change. Snapshot reverts manual change to correct type.
 
-### Expected PR Contents
-
-- **Title**: Should match pattern: `🤖 Auto: Update ESPN API Types (ESPN Type Changes Detected)`
-- **Body**: Should include the type change diff
-- **Files Changed**: Should include:
-  - `lib/espn/espn-scoreboard-generated.ts` (or relevant generated file)
-  - `lib/espn/used-types-snapshot.json`
-- **Diff**: Should show the type change (e.g., `Competitor.score: string → number`)
-
-### Checks
-
-- [ ] PR was created successfully
-- [ ] PR title matches expected format
-- [ ] PR body contains type change information
-- [ ] Generated type files are included in PR
-- [ ] Snapshot file is updated in PR
-- [ ] PR diff shows the expected type change
-
----
-
-## Test 3: Verify PR Contents
-
-Examine the PR to ensure it contains the correct changes.
-
-### Step 6: Review PR Changes
-
-```bash
-# View full PR diff
-gh pr diff $PR_NUMBER
-
-# Check specific file changes
-gh pr diff $PR_NUMBER -- lib/espn/used-types-snapshot.json
-gh pr diff $PR_NUMBER -- lib/espn/espn-scoreboard-generated.ts
-```
-
-### Expected Changes
-
-**In `used-types-snapshot.json`:**
-
-- Should revert the manual change back to the correct type
-- Example: `"Competitor.score": "string"` (reverted from our manual `"number"`)
-
-**In generated type files:**
-
-- Should reflect the actual types from the database
-- Should not have linting errors
-- Should include `GameState` import only where needed
-- Should include `Odd` interface if missing
-
-### Checks
-
-- [ ] Snapshot shows correct types (not our manual change)
-- [ ] Generated types match database structure
-- [ ] No linting errors in generated files
-- [ ] `GameState` import present only in files with `StatusType`
-- [ ] `Odd` interface present in scoreboard types
-
----
-
-## Test 4: Close/Deny PR
-
-Test that the workflow handles PR denial gracefully.
-
-### Step 7: Close the PR
-
-```bash
-# Close the PR without merging
-gh pr close $PR_NUMBER --comment "Test PR - closing without merge"
-
-# Verify PR is closed
-gh pr view $PR_NUMBER
-```
-
-### Expected Behavior
-
-- PR should close successfully
-- No errors in workflow
-- Branch remains available for future runs
-
-### Checks
-
-- [ ] PR closes successfully
-- [ ] PR status shows "closed"
-- [ ] No workflow errors after closing
-
----
-
-## Test 5: Revert Manual Change
-
-Clean up by reverting the manual snapshot change.
-
-### Step 8: Revert and Push
-
-```bash
-# Revert the manual change
-git revert --no-verify $COMMIT_HASH --no-edit
-
-# Or manually restore the correct snapshot
-# (if revert doesn't work cleanly)
-git checkout HEAD~1 -- lib/espn/used-types-snapshot.json
-git add lib/espn/used-types-snapshot.json
-git commit --no-verify -m "revert: remove manual type change test"
-
-# Push the revert
-git push origin develop
-```
-
-### Verify Revert
-
-```bash
-# Check that snapshot is back to correct state
-cat lib/espn/used-types-snapshot.json | jq '.scoreboard["Competitor.score"]'
-# Should show: "string"
-```
-
-### Checks
-
-- [ ] Snapshot reverted to correct state
-- [ ] Commit pushed successfully
-- [ ] Snapshot matches expected types
-
----
-
-## Test 6: Verify Workflow on Clean State
-
-Run the workflow again to ensure it works correctly after revert.
-
-### Step 9: Trigger Workflow Again
-
-```bash
-# Trigger workflow again
-gh workflow run update-espn-types.yml
-
-# Get new run ID
-NEW_RUN_ID=$(gh run list --workflow=update-espn-types.yml --limit 1 --json databaseId --jq '.[0].databaseId')
-echo "New workflow run ID: $NEW_RUN_ID"
-
-# Watch the workflow
-gh run watch $NEW_RUN_ID
-```
-
-### Expected Behavior
-
-- Workflow should complete successfully
-- No PR should be created (no type changes detected)
-- Snapshot may update if usage changed, but no PR
-
-### Checks
-
-- [ ] Workflow completes successfully
-- [ ] No PR created (no ESPN type changes)
-- [ ] Workflow output shows `changed=false`
-- [ ] Snapshot may be updated silently if usage changed
+5. **Close PR**: `gh pr close $PR_NUMBER --comment "Test PR - closing without merge"`
+6. **Revert change**: `git revert --no-verify $COMMIT_HASH --no-edit && git push origin develop`
+7. **Verify clean state**: Run workflow again - should complete without creating PR (output shows `changed=false`)
 
 ---
 
 ## Troubleshooting
 
-### Workflow Fails to Start
+**Workflow fails to start**: Use `--ref develop` flag, verify `gh auth status`, check workflow file syntax
 
-**Cause**: Missing permissions or invalid workflow file
+**Type generation fails**: Verify MongoDB secrets in repository, test locally with `npx tsx scripts/extract-espn-types.ts`
 
-**Fix**:
+**PR not created**: Check workflow logs for `changed` output, verify repository permissions (Settings → Actions → General → "Read and write permissions"), test comparison script locally
 
-1. Check workflow file syntax: `.github/workflows/update-espn-types.yml`
-2. Verify GitHub Actions are enabled in repository settings
-3. Check that `gh` CLI is authenticated: `gh auth status`
-4. **Important**: When manually triggering, use `--ref develop` flag: `gh workflow run update-espn-types.yml --ref develop`
+**PR creation fails (pre-commit hooks)**: Workflow includes step to disable git hooks. Verify step exists in workflow file.
 
-### Type Generation Fails
+**PR has linting errors**: Test type generation locally, check workflow logs, run `npm run lint -- lib/espn/`
 
-**Cause**: MongoDB connection issues or missing test data
-
-**Fix**:
-
-1. Verify MongoDB secrets are set in repository secrets
-2. Check that test database has data: `npx tsx scripts/extract-espn-types.ts`
-3. Verify environment variables in workflow file
-
-### PR Not Created
-
-**Cause**: Type change not detected, comparison logic issue, or repository permissions
-
-**Fix**:
-
-1. Check workflow logs for `changed` output value
-2. Verify snapshot comparison script: `npx tsx scripts/extract-used-types.ts compare`
-3. Check that both old and new snapshots exist
-4. Verify the field exists in both snapshots (only compares fields in both)
-5. **Repository Permissions**: Ensure GitHub Actions has "Read and write permissions" enabled in repository settings:
-   - Go to Settings → Actions → General → Workflow permissions
-   - Select "Read and write permissions"
-   - This allows the workflow to create pull requests
-
-### PR Creation Fails Due to Pre-Commit Hooks
-
-**Cause**: Pre-commit hooks (tests, linting) run during PR creation and fail in CI environment
-
-**Fix**:
-
-1. The workflow now includes a step to disable git hooks before PR creation
-2. Verify the "Disable git hooks for PR creation" step exists in the workflow
-3. This step runs `git config --local core.hooksPath /dev/null` to bypass hooks
-
-### PR Has Linting Errors
-
-**Cause**: Generated types have issues (unused imports, etc.)
-
-**Fix**:
-
-1. Check workflow logs for linting errors
-2. Verify `extract-espn-types.ts` script fixes (GameState import, Odd interface)
-3. Manually test type generation: `npx tsx scripts/extract-espn-types.ts`
-4. Run lint on generated files: `npm run lint -- lib/espn/`
-
-### Workflow Creates PR for Usage Changes
-
-**Cause**: Comparison logic incorrectly identifying usage changes as type changes
-
-**Fix**:
-
-1. Review `compareSnapshots` function in `extract-used-types.ts`
-2. Verify it only compares fields that exist in BOTH old and new snapshots
-3. Check that it distinguishes between type changes and usage changes
+**Workflow creates PR for usage changes**: Review `compareSnapshots` function - should only compare fields in both snapshots and distinguish type vs usage changes
 
 ---
 
 ## Testing Checklist
 
-### Manual Testing
-
-- [ ] Test 1: Manual snapshot change committed and pushed
-- [ ] Test 2: Workflow triggered and monitored
-- [ ] Test 3: PR created with expected changes
-- [ ] Test 4: PR contents verified (correct types, no errors)
-- [ ] Test 5: PR closed successfully
-- [ ] Test 6: Manual change reverted
-- [ ] Test 7: Workflow run again on clean state
-
-### Verification
-
-- [ ] Workflow detects type changes correctly
-- [ ] PR includes correct generated types
-- [ ] PR includes updated snapshot
-- [ ] No linting errors in PR
-- [ ] Workflow handles PR denial gracefully
-- [ ] Workflow doesn't create PR for usage-only changes
-
-### Edge Cases
-
-- [ ] Workflow handles first run (no previous snapshot)
-- [ ] Workflow handles missing snapshot file
-- [ ] Workflow handles multiple type changes
-- [ ] Workflow handles type changes in multiple files
-
----
-
-## Expected Workflow Output
-
-### Successful Type Change Detection
-
-```
-=== ESPN Type Changes (triggers PR) ===
-~ scoreboard.Competitor.score: string → number
-```
-
-### No Type Changes
-
-```
-No ESPN type changes in fields we currently use.
-```
-
-### Usage Changes Only
-
-```
-No ESPN type changes. 2 usage change(s) (tracking updated silently)
-+ scoreboard.Competition.newField: string (newly tracked, no PR)
-- scoreboard.Competition.oldField: string (no longer tracked, no PR)
-```
+- [ ] Manual snapshot change committed and pushed
+- [ ] Workflow triggered and PR created
+- [ ] PR contents verified (correct types, no errors)
+- [ ] PR closed successfully
+- [ ] Manual change reverted
+- [ ] Workflow run again on clean state (no PR created)
 
 ---
 
@@ -413,24 +78,8 @@ No ESPN type changes. 2 usage change(s) (tracking updated silently)
 
 **Status**: ✅ All tests completed successfully (November 16, 2025)
 
-**Verified**:
-- ✅ Workflow detects type changes correctly
-- ✅ PR creation works with proper repository permissions
-- ✅ Git hooks are bypassed during automated PR creation
-- ✅ PR includes correct generated types and snapshot updates
-- ✅ Workflow handles PR denial gracefully
-- ✅ Branch reuse pattern works correctly (`auto/update-espn-types`)
-
 **Key Learnings**:
 - Must use `--ref develop` when manually triggering workflow
 - Repository must have "Read and write permissions" enabled for GitHub Actions
 - Pre-commit hooks must be disabled for automated PR creation
 - Branch `auto/update-espn-types` is deleted and recreated for each PR (safe pattern)
-
-## Next Steps
-
-1. ✅ Manual workflow testing completed
-2. Monitor workflow for 1 week in production
-3. Verify PRs are created when ESPN actually changes types
-4. Test PR merge process
-5. Document any workflow improvements needed

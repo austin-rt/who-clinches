@@ -1,415 +1,118 @@
 # ESPN Data Pipeline Testing
 
-Tests the complete ESPN data pipeline: data ingestion from ESPN API, transformation, persistence to MongoDB, and retrieval for deployed environments.
+Complete testing guide for ESPN data ingestion, transformation, and persistence.
+
+**Related:** [Quick Reference](./espn-data-pipeline-quick-ref.md) | [ESPN API Testing](./espn-api-testing.md) | [API Reference](../guides/api-reference.md)
 
 **Note:** All credentials must be read from `.env.local` - do not hardcode secrets.
-
-**Related Documentation:**
-- [ESPN API Testing](./espn-api-testing.md) - Field verification patterns and API inconsistencies
-- [API Reference](../guides/api-reference.md) - Complete endpoint documentation
-
----
-
-## Environments
-
-### Local (develop branch)
-
-- **URL**: http://localhost:3000
-- **Database**: `dev`
-- **Branch**: `develop`
-- **Purpose**: Active development and testing
-
-### Preview/Staging (develop branch on Vercel)
-
-- **URL**: https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/
-- **Database**: `preview`
-- **Vercel Env**: `VERCEL_ENV=preview`
-- **Branch**: `develop` (auto-deploys to Vercel preview on push)
-- **Purpose**: Staging environment for testing before production
-
-### Production (main branch)
-
-- **URL**: https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/
-- **Database**: `production`
-- **Vercel Env**: `VERCEL_ENV=production`
-- **Branch**: `main` (auto-deploys on push)
-- **⚠️ CAUTION**: Tests modify production data
 
 ---
 
 ## Prerequisites
 
-All credentials stored in `.env.local`:
-
-- `VERCEL_AUTOMATION_BYPASS_SECRET` - Required bypass token for protected deployments (preview/production)
-  - Automatically handled by `scripts/db-check-and-seed.js` when using `--env preview` or `--env production`
-  - Automatically handled by Jest tests (via `__tests__/setup.ts`) when `BASE_URL` contains `vercel.app`
-  - Must be manually added to curl commands when testing preview/production deployments directly
-- `MONGODB_PASSWORD_READONLY` - Read-only password for database verification
-- Read-only user: `readonly`
+Credentials in `.env.local`:
+- `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token (auto-handled by scripts/tests, manual for curl)
+- `MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY` - Database verification
 
 ---
 
 ## API Endpoints
 
-### POST /api/pull-teams
+### POST /api/pull-teams/cfb/[conf]
 
-Fetches team data from ESPN (site + core APIs) and stores in MongoDB.
+Fetches team data from ESPN (site + core APIs) and stores in MongoDB for a specific conference.
 
-#### Pre-Seeding Check
+**Pre-check**: Verify teams exist before seeding (skip if 16 teams present).
 
-**Always check if teams already exist before seeding:**
-
+**Command**:
 ```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "const count = db.teams.countDocuments(); console.log('Teams in database:', count); if (count > 0) { console.log('Sample teams:'); db.teams.find({}, {_id:1, abbreviation:1, displayName:1}).limit(3).forEach(printjson); }" \
-  --quiet
+BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+curl -X POST "{BASE_URL}/api/pull-teams/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+  -H "Content-Type: application/json" -d '{}'
 ```
 
-**Decision:**
+**⚠️ IMPORTANT**: Seed all teams before seeding games (required for accurate `predictedScore` calculations).
 
-- If teams exist and data looks current: **SKIP seeding**, report as "Seeding not needed - {count} teams already present"
-- If teams missing or data looks stale: **PROCEED with seeding**, report as "Seeding needed - database empty/stale"
+**Expected Response**: Status 200, `upserted: 16`, `lastUpdated` timestamp
 
-#### Command Template
-
-Replace `{BASE_URL}` and `{DATABASE}` based on environment:
-
-- Local: `BASE_URL=http://localhost:3000`, `DATABASE=dev`
-- Preview/Staging: `BASE_URL=https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/`, `DATABASE=preview`
-- Production: `BASE_URL=https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/`, `DATABASE=production`
-
-**⚠️ IMPORTANT: Always seed ALL teams (conferenceId: 8) before proceeding with remaining tests**
-
-**Note:** For preview/production deployments, bypass token is automatically handled by `scripts/db-check-and-seed.js`. For manual curl commands, use:
-
-```bash
-# Seed all conference teams (required for accurate predictedScore calculations)
-# Bypass token automatically handled by db:check script, or manually for curl:
-curl -X POST "{BASE_URL}/api/pull-teams?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
-  -H "Content-Type: application/json" \
-  -d '{"sport": "football", "league": "college-football", "conferenceId": 8}'
-```
-
-#### Expected Response
-
-See `app/api/pull-teams/route.ts` for `PullTeamsResponse` interface.
-
-Response should include:
-
-- `upserted`: Number of teams in conference (e.g., 16 for SEC)
-- `lastUpdated`: timestamp
-
-**Before proceeding to other tests, verify all conference teams were seeded successfully.**
-
-#### Database Verification
-
-See `lib/models/Team.ts` for `ITeam` interface and schema.
-
-```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "db.teams.find({}, {_id:1, displayName:1, abbreviation:1, 'record.overall':1, 'record.conference':1, nationalRanking:1, conferenceStanding:1}).pretty()" \
-  --quiet
-```
-
-Replace `{DATABASE}` with `dev` (local), `preview` (staging), or `production`.
-
-#### Checks
-
-- Status code: 200
-- `upserted` count = Number of teams in conference (e.g., 16 for SEC)
-- Conference records populated (not null)
-- Home/away records populated
-- National rankings populated for ranked teams
-- Conference standings populated
-- Data exists in correct database
-
-**Do not proceed to games seeding until all 16 teams are confirmed in database.**
+**Checks**: Status 200, `upserted = 16`, conference records populated, data in correct database
 
 ---
 
-### POST /api/pull-games
+### POST /api/pull-games/cfb/[conf]
 
-Fetches game data from ESPN scoreboard API and stores in MongoDB.
+Fetches game data from ESPN scoreboard API and stores in MongoDB for a specific conference.
 
-**Prerequisites:** All conference teams must be seeded first (`POST /api/pull-teams` with appropriate `conferenceId`) for accurate `predictedScore` calculations.
+**Prerequisites**: Teams must be seeded first for accurate `predictedScore` calculations.
 
-**Full Season Pull:** If `week` is not specified, the endpoint dynamically fetches the ESPN calendar to determine the "Regular Season" weeks and pulls all of them. For 2025, this is weeks 1-14 (conference championship excluded). This ensures the database has complete regular season data without hardcoding week ranges.
+**Pre-check**: Verify games exist for target season/week (skip if data exists).
 
-#### Pre-Seeding Check
+**Full Season Pull** (recommended): If `week` not specified, endpoint dynamically fetches ESPN calendar to determine regular season weeks (e.g., 1-14 for 2025).
 
-**Always check if games already exist before seeding:**
-
+**Command**:
 ```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "const count = db.games.countDocuments({season: 2025}); console.log('Games in database (2025 season):', count); if (count > 0) { console.log('Games by week:'); const byWeek = db.games.aggregate([{ \$match: {season: 2025} }, { \$group: { _id: '\$week', count: { \$sum: 1 } } }, { \$sort: { _id: 1 } }]).toArray(); byWeek.forEach(w => console.log('  Week', w._id + ':', w.count, 'games')); }" \
-  --quiet
+curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+  -H "Content-Type: application/json" -d '{"season": 2025}'
 ```
 
-**Decision:**
-
-- If games exist for target season/week: **SKIP seeding**, report as "Seeding not needed - {count} games already present for season/week"
-- If games missing or incomplete: **PROCEED with seeding**, report as "Seeding needed - games missing for season/week"
-- If testing specific week and it exists: **SKIP**, report as "Week {X} already seeded with {count} games"
-
-#### Command Template (Full Season - Recommended)
-
-**Note:** Bypass token is automatically handled by `scripts/db-check-and-seed.js`. For manual curl commands:
-
+**Single Week** (optional):
 ```bash
-curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "sport": "football",
-    "league": "college-football",
-    "season": 2025,
-    "conferenceId": 8
-  }'
+curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+  -H "Content-Type: application/json" -d '{"season": 2025, "week": 11}'
 ```
 
-This will:
+**Expected Response**: Status 200, `upserted` count, `weeksPulled` array, `lastUpdated` timestamp, `errors` array (optional)
 
-- Query ESPN calendar API to determine regular season weeks dynamically
-- Pull all regular season weeks (e.g., 1-14 for 2025, excluding conference championship)
-- Upsert games (existing games updated, new games inserted)
-- Return the total number of games upserted and the list of weeks pulled
-
-#### Command Template (Single Week - Optional)
-
-Use this to update only a specific week. **Note:** Bypass token automatically handled by `scripts/db-check-and-seed.js`:
-
-```bash
-curl -X POST "{BASE_URL}/api/pull-games?x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "sport": "football",
-    "league": "college-football",
-    "season": 2025,
-    "conferenceId": 8,
-    "week": 11
-  }'
-```
-
-#### Expected Response
-
-See `app/api/pull-games/route.ts` for response interface.
-
-Response should include:
-
-- `upserted`: number of games inserted/updated
-- `weeksPulled`: array of week numbers that were pulled
-- `lastUpdated`: timestamp
-- `errors`: array of error messages (if any, optional field)
-
-#### Database Verification
-
-See `lib/models/Game.ts` for `IGame` interface and schema.
-
-```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "db.games.find({season: 2025, week: 11}, {espnId:1, displayName:1, 'home.teamEspnId':1, 'away.teamEspnId':1, 'home.score':1, 'away.score':1, 'odds.spread':1, predictedScore:1, state:1, conferenceGame:1}).limit(5).pretty()" \
-  --quiet
-```
-
-#### Checks
-
-- Status code: 200
-- `upserted` count matches games for that week
-- Games have correct season/week
-- **`displayName` field present** (format: "{away abbrev} @ {home abbrev}")
-- **`predictedScore` field present** for conference games
-  - Completed games: `predictedScore` matches real scores
-  - Incomplete games: `predictedScore` calculated using priority order (ESPN odds → team averages + spread → ranking-based → home field advantage)
-- Odds data populated when available
-- Team ESPN IDs correct
-- Conference game flag set correctly
-- Data stored in correct database
+**Checks**: Status 200, `upserted` matches games for week, `displayName` present (format: "{away abbrev} @ {home abbrev}"), `predictedScore` present for conference games, data in correct database
 
 ---
 
-### GET /api/games
+### GET /api/games/cfb/[conf]
 
-Queries stored game data from MongoDB.
-
-#### Command Template
-
-**Note:** Bypass token automatically handled by Jest tests. For manual curl commands:
-
+**Command**:
 ```bash
-# Get all games for season/week
-curl "{BASE_URL}/api/games?season=2025&week=11&x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)"
-
-# Get games by conference
-curl "{BASE_URL}/api/games?season=2025&conferenceId=8&x-vercel-protection-bypass=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)"
+curl "{BASE_URL}/api/games/cfb/sec?season=2025&week=11&x-vercel-protection-bypass=${BYPASS_TOKEN}"
 ```
 
-#### Expected Response
+**Expected Response**: Status 200, `events` array (GameLean[]), `teams` array (TeamMetadata[]), `lastUpdated` timestamp
 
-See `app/api/games/route.ts` for response interface.
-
-Response should include:
-
-- `events`: array of `GameLean` objects (see `lib/types.ts`)
-- `teams`: array of team metadata objects
-- `lastUpdated`: timestamp
-
-#### Checks
-
-- Status code: 200
-- `events` array contains games matching query
-- `teams` array contains all teams from games
-- Filters work correctly (season, week, conferenceId)
-- Data comes from correct database
+**Checks**: Status 200, `events` matches query, `teams` contains all teams from games, filters work correctly
 
 ---
 
-## Additional Database Verification
+## Database Verification
 
-### Check Teams Count
+**Setup variables** (see [Quick Reference](./espn-data-pipeline-quick-ref.md) for full commands): Extract MongoDB credentials from `.env.local`, construct `MONGODB_URI`
 
-```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "db.teams.countDocuments()" \
-  --quiet
-```
-
-### Check Games Count by Week
-
-```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "
-console.log('Total games:', db.games.countDocuments());
-console.log('');
-console.log('Games by week:');
-const byWeek = db.games.aggregate([
-  { \$group: { _id: '\$week', count: { \$sum: 1 } } },
-  { \$sort: { _id: 1 } }
-]).toArray();
-byWeek.forEach(w => console.log('Week', w._id + ':', w.count, 'games'));
-" \
-  --quiet
-```
-
-Expected output for complete dataset (weeks 1-14 for 2025 season):
-
-- Total games: ~128
-- Week 1: 16 games
-- Week 2-14: varying counts (typically 8-10 games per week)
-
-### Verify Conference Records
-
-```bash
-READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
-MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
-MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
-MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "db.teams.find({'record.conference': null}).count()" \
-  --quiet
-```
-
-Should return `0` (no teams with null conference records).
-
-### Verify Database Connection Logs
-
-Check Vercel deployment logs for:
-
-```
-[MongoDB] Connecting to database: {DATABASE}
-```
-
-Should show `preview` or `production` based on environment.
+**Expected Results**:
+- Teams: 16 teams in database
+- Games: ~128 games for 2025 season (weeks 1-14)
+- Conference records: Not null (verify with `db.teams.find({'record.conference': null}).count()` - should return 0)
+- Database connection: Vercel logs show `[MongoDB] Connecting to database: {DATABASE}` (preview/production)
 
 ---
 
 ## Testing Checklist
 
-### Preview (develop branch)
-
-- [ ] Deployment accessible with bypass token
-- [ ] **Pre-check**: Teams count in `preview` database
-  - [ ] If teams exist: Seeding skipped (report count)
-  - [ ] If teams missing: POST /api/pull-teams returns 200 (16 teams)
-- [ ] **Pre-check**: Games count in `preview` database for target season
-  - [ ] If games exist: Seeding skipped (report count by week)
-  - [ ] If games missing: POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
-  - [ ] Response includes `weeksPulled` array with all pulled weeks
-- [ ] GET /api/games returns 200
-- [ ] Teams data verified in `preview` database (16 teams expected)
-- [ ] Games data verified in `preview` database (~128 games for 2025, weeks 1-14 expected)
+**For each environment (Preview/Production)**:
+- [ ] Pre-check: Teams count (skip if 16 teams exist)
+- [ ] Pre-check: Games count for target season (skip if data exists)
+- [ ] POST /api/pull-teams/cfb/sec returns 200 (16 teams) if needed
+- [ ] POST /api/pull-games/cfb/sec returns 200 (includes `weeksPulled` array) if needed
+- [ ] GET /api/games/cfb/sec returns 200
+- [ ] Database verification: 16 teams, ~128 games (2025, weeks 1-14)
 - [ ] Games include team display fields (displayName, logo, color)
 - [ ] Conference records populated (not null)
-- [ ] Logs show: `[MongoDB] Connecting to database: preview`
-
-### Production (main branch)
-
-- [ ] Preview tests completed successfully first
-- [ ] Deployment accessible with bypass token
-- [ ] **Pre-check**: Teams count in `production` database
-  - [ ] If teams exist: Seeding skipped (report count)
-  - [ ] If teams missing: POST /api/pull-teams returns 200 (16 teams)
-- [ ] **Pre-check**: Games count in `production` database for target season
-  - [ ] If games exist: Seeding skipped (report count by week)
-  - [ ] If games missing: POST /api/pull-games returns 200 for all regular season weeks (dynamically determined, e.g., 1-14 for 2025)
-  - [ ] Response includes `weeksPulled` array with all pulled weeks
-- [ ] GET /api/games returns 200
-- [ ] Teams data verified in `production` database (16 teams expected)
-- [ ] Games data verified in `production` database (~128 games for 2025, weeks 1-14 expected)
-- [ ] Games include team display fields (displayName, logo, color)
-- [ ] Conference records populated (not null)
-- [ ] Logs show: `[MongoDB] Connecting to database: production`
-- [ ] Monitor for errors for 5-10 minutes
+- [ ] Logs show correct database connection
 
 ---
 
 ## Troubleshooting
 
-### Wrong Database Connected
+**Wrong database**: Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`, verify `VERCEL_ENV`
 
-Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`.
-Verify `VERCEL_ENV` is set correctly in Vercel.
+**Bypass token**: Verify `VERCEL_AUTOMATION_BYPASS_SECRET` matches Vercel setting (auto-handled by scripts/tests)
 
-### Bypass Token Not Working
+**Rate limiting**: Wait 1-2 minutes between requests (500ms delay between calls)
 
-- Verify `VERCEL_AUTOMATION_BYPASS_SECRET` in `.env.local` matches Vercel deployment setting
-- Token is automatically handled by `scripts/db-check-and-seed.js` and Jest tests
-- For manual curl commands, ensure token is correctly extracted from `.env.local`
-
-### ESPN API Rate Limiting
-
-Wait 1-2 minutes between requests. Current delay: 500ms between calls.
-
-### Null Conference Records
-
-Check ESPN Core API accessibility and logs for errors.
+**Null conference records**: Check ESPN Core API accessibility and logs

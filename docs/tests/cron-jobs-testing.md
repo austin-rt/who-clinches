@@ -16,209 +16,78 @@ Tests all cron job endpoints for data updates, authentication, error handling, a
 
 ## Testing Procedures
 
-### Update Games Cron
-
-**Modes:**
-- `mode=season` - Update all games (daily batch)
-- `mode=week` - Update current week only
-- Default - Update incomplete games only (frequent updates)
-
-**Test:**
+**Setup**:
 ```bash
 BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "${BASE_URL}/api/cron/update-games?mode=season" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
 ```
 
-**Expected:** Status 200, `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors`
+**Update Games**: `GET /api/cron/cfb/sec/update-games?mode=season` (modes: `season`, `week`, default=incomplete only). Expected: Status 200, `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors`
 
-**Checks:**
-- Status 200
-- `updated >= 0` (games with score changes)
-- `activeGames >= 0` (games in progress)
-- `lastUpdated` is valid ISO timestamp
-- `errors` is array
+**Update Rankings**: `GET /api/cron/cfb/sec/update-rankings`. Expected: Status 200, `updated: 16`, `teamsChecked: 16`, `espnCalls >= 16`
 
-### Update Rankings Cron
+**Update Spreads**: `GET /api/cron/cfb/sec/update-spreads`. Expected: Status 200, update counts
 
-**Test:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-rankings" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
-```
+**Update Team Averages**: `GET /api/cron/cfb/sec/update-team-averages`. Expected: Status 200, update counts
 
-**Expected:** Status 200, `updated: 16`, `teamsChecked: 16`, `espnCalls >= 16`, `lastUpdated`, `errors`
-
-**Checks:**
-- `updated` equals number of teams in conference (16 for SEC)
-- `espnCalls >= 16` (one per team minimum)
-
-### Update Spreads Cron
-
-**Test:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-spreads" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
-```
-
-**Expected:** Status 200, update counts and timestamp
-
-### Update Team Averages Cron
-
-**Test:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-team-averages" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
-```
-
-**Expected:** Status 200, update counts and timestamp
-
-### Batch Update Endpoint (Hobby Tier)
-
-**Test:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-all" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
-```
-
-**Expected:** Status 200, `success`, `jobsRun: 3`, `jobsSucceeded`, `totalDuration`, `results` array, `lastUpdated`
-
-**Checks:**
-- `jobsRun = 3` (update-games, update-rankings, update-test-data)
-- Each job in `results` has `success`, `status`, `duration`
+**Batch Update (Hobby)**: `GET /api/cron/update-all`. Expected: Status 200, `success`, `jobsRun: 3`, `jobsSucceeded`, `totalDuration`, `results` array
 
 ---
 
 ## Authentication Tests
 
-**Missing Token:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-games"
-```
-**Expected:** Status 401, `{"error": "Unauthorized"}`
+**Missing Token**: `curl -X GET "${BASE_URL}/api/cron/cfb/sec/update-games"` → Status 401
 
-**Invalid Token:**
-```bash
-curl -X GET "${BASE_URL}/api/cron/update-games" \
-  -H "Authorization: Bearer invalid-token"
-```
-**Expected:** Status 401, `{"error": "Unauthorized"}`
+**Invalid Token**: `curl -X GET "${BASE_URL}/api/cron/cfb/sec/update-games" -H "Authorization: Bearer invalid-token"` → Status 401
 
 ---
 
 ## Database Verification
 
-**Common Setup:**
+**Setup** (see [ESPN Data Pipeline Quick Ref](./espn-data-pipeline-quick-ref.md) for full commands):
 ```bash
 READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 MONGODB_HOST=$(grep MONGODB_HOST .env.local | cut -d '=' -f2)
 MONGODB_DB=$(grep MONGODB_DB .env.local | cut -d '=' -f2)
 MONGODB_APP_NAME=$(grep MONGODB_APP_NAME .env.local | cut -d '=' -f2)
+MONGODB_URI="mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}"
 ```
 
-**Verify Game Fields:**
-```bash
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "var g = db.games.findOne({conferenceGame: true}); print('displayName:', g.displayName, '| predictedScore:', JSON.stringify(g.predictedScore));" --quiet
-```
-
-**Verify Team Fields:**
-```bash
-mongosh "mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MONGODB_DB}?appName=${MONGODB_APP_NAME}" \
-  --eval "var t = db.teams.findOne(); print('avgPointsFor:', t.record?.stats?.avgPointsFor);" --quiet
-```
-
-**Checks:**
-- `displayName` format: "{away abbrev} @ {home abbrev}"
-- `predictedScore` present for conference games
-- Team averages > 0 after rankings cron
+**Checks**: `displayName` format "{away abbrev} @ {home abbrev}", `predictedScore` present for conference games, team averages > 0 after rankings cron
 
 ---
 
 ## Vercel Configuration
 
-### Hobby Plan (Current)
+**Hobby Plan**: `vercel.json` - Daily at 2:00 AM UTC, batch endpoint `/api/cron/update-all`, shows as "Active" in dashboard
 
-**Schedule:** `vercel.json`
-```json
-{
-  "crons": [{
-    "path": "/api/cron/update-all",
-    "schedule": "0 2 * * *"
-  }]
-}
-```
-
-**Checks:**
-- Daily at 2:00 AM UTC
-- Shows as "Active" in Vercel dashboard
-- Batch endpoint calls: `pull-teams`, `update-games?mode=season`, `update-rankings`, `update-spreads`
-
-### Pro Plan (Future)
-
-**Schedule:** `vercel.pro.json`
-- `update-games`: Every 5 minutes during game windows
-- `update-spreads`: Hourly (13-5 UTC)
-- `update-team-averages`: Weekly Sunday 6 AM UTC
-- `update-rankings`: Twice weekly (Sunday & Wednesday 3 AM UTC)
-
-**Migration:** Copy `vercel.pro.json` to `vercel.json` after upgrade
+**Pro Plan**: `vercel.pro.json` - `update-games` (every 5 min during game windows), `update-spreads` (hourly 13-5 UTC), `update-team-averages` (weekly Sunday 6 AM), `update-rankings` (twice weekly Sun/Wed 3 AM). Migration: Copy `vercel.pro.json` to `vercel.json` after upgrade
 
 ---
 
-## Error Handling
+## Error Handling & Performance
 
-**ESPN API Failure:**
-- Cron returns 200 (not 500)
-- `errors` array contains error messages
-- Partial updates still saved
+**ESPN API Failure**: Cron returns 200 (not 500), `errors` array contains messages, partial updates saved, errors logged to database
 
-**Checks:**
-- Cron doesn't crash
-- Errors logged to database (`errors` collection)
-- Error array in response populated
+**Performance**: Execution within Vercel limits (10s Hobby, 60s Pro), no 429 errors, connections properly closed
 
----
-
-## Performance & Idempotency
-
-**Performance:**
-- Execution times within Vercel limits (10s Hobby, 60s Pro)
-- No 429 (rate limit) errors from ESPN
-- Database connections properly closed
-
-**Idempotency:**
-- Multiple runs don't cause errors
-- Data integrity maintained
-- Subsequent runs may show `updated: 0` (no changes)
-
----
+**Idempotency**: Multiple runs don't cause errors, data integrity maintained, subsequent runs may show `updated: 0`
 
 ## Troubleshooting
 
-**401 Unauthorized:** `CRON_SECRET` not set in Vercel environment variables
+**401 Unauthorized**: `CRON_SECRET` not set in Vercel environment variables
 
-**Cron Not Executing:** Verify Hobby plan limits (max 2 crons, min 1 day frequency), check `vercel.json` syntax
+**Cron Not Executing**: Verify Hobby plan limits (max 2 crons, min 1 day frequency), check `vercel.json` syntax
 
-**High API Call Count:** Review cron logic, implement caching, adjust Pro plan schedule
+**High API Call Count**: Review cron logic, implement caching, adjust Pro plan schedule
 
-**Database Connection Errors:** Ensure `dbConnect()` called once per request, check MongoDB Atlas limits
+**Database Connection Errors**: Ensure `dbConnect()` called once per request, check MongoDB Atlas limits
 
 ---
 
 ## Testing Checklist
 
-**Local:**
-- [ ] Update games cron (all modes)
-- [ ] Update rankings cron
-- [ ] Authentication tests
-- [ ] Database verification
-- [ ] Batch update endpoint
-- [ ] Idempotency test
+**Local**: Update games cron (all modes), update rankings cron, authentication tests, database verification, batch update endpoint, idempotency test
 
-**Vercel:**
-- [ ] Cron configuration in dashboard
-- [ ] Execution logs show success
-- [ ] Monitor for 1 week
+**Vercel**: Cron configuration in dashboard, execution logs show success, monitor for 1 week

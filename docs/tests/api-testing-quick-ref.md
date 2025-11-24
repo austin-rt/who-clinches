@@ -15,19 +15,20 @@
 
 ## Key Endpoints to Test
 
-### GET /api/games
-- Filter by: `season`, `week`, `conferenceId`, `state`, `from`, `to`
+### GET /api/games/cfb/[conf]
+- Path: `conf` (conference slug, e.g., "sec")
+- Filter by: `season`, `week`, `state`, `from`, `to`
 - Verify: `TeamMetadata` fields (id, abbrev, displayName, logo, color, alternateColor)
 - Cache: 10s for live games, 60s otherwise
 
-### POST /api/simulate
-- Input: `{ season, conferenceId, overrides }`
+### POST /api/simulate/cfb/sec
+- Input: `{ season, overrides }`
 - Verify: 16 teams, rankings 1-16, tiebreaker rules (A-E), championship array
 - Validation: Non-negative integers, no ties, required fields
 
 ### Cron Endpoints
 - Auth: `Authorization: Bearer ${CRON_SECRET}`
-- Endpoints: `/api/cron/update-games`, `/api/cron/update-rankings`, `/api/cron/update-spreads`, `/api/cron/update-team-averages`
+- Endpoints: `/api/cron/cfb/[conf]/update-games`, `/api/cron/cfb/[conf]/update-rankings`, `/api/cron/cfb/[conf]/update-spreads`, `/api/cron/cfb/[conf]/update-team-averages`
 - Verify: 401 without auth, 200/500 with valid auth
 
 ---
@@ -50,7 +51,7 @@ npm run db:check
 npm run test:api
 
 # Run specific test file
-npm run test -- __tests__/api/games.test.ts
+npm run test -- __tests__/api/cfb/games.test.ts
 ```
 
 ---
