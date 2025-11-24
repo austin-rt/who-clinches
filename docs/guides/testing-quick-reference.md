@@ -1,6 +1,6 @@
 # Testing Quick Reference
 
-Quick commands and environment setup. Detailed procedures: [Comprehensive API Testing](../tests/comprehensive-api-testing.md).
+Quick commands and environment setup.
 
 ## Common Commands
 
@@ -26,7 +26,7 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm run test -- __tests__/api/games.test.ts
+npm run test -- __tests__/api/cfb/games.test.ts
 
 # Run all tests (auto-seeds main DB first)
 npm run test:all
@@ -48,7 +48,7 @@ npm run test:all
 
 ## Test Structure
 
-- `__tests__/api/` - API endpoint tests (games, simulate, pull-teams, pull-games, cron)
+- `__tests__/api/cfb/` - API endpoint tests (games, simulate, pull-teams, pull-games, cron)
 - `__tests__/lib/` - Reshape function tests (uses test DB with real ESPN data)
 - `__tests__/setup.ts` - Test helpers (fetchAPI, validateNestedFields)
 

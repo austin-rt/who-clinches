@@ -6,12 +6,7 @@ How to maintain `CHANGELOG.md` for the Conference Tiebreaker project.
 
 ## Overview
 
-We follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
-
-- One file (`CHANGELOG.md`) that grows over time
-- Most recent changes at the top
-- Human-readable format
-- Changes grouped by type
+Follows **[Keep a Changelog](https://keepachangelog.com/)** standard: one file that grows over time, most recent at top, human-readable, grouped by type.
 
 ---
 
@@ -19,66 +14,13 @@ We follow the **[Keep a Changelog](https://keepachangelog.com/)** standard:
 
 ### 1. During Development (on `develop` branch)
 
-Add changes to the **`[Unreleased]`** section as you work:
-
-```markdown
-## [Unreleased]
-
-### Added
-
-- New feature X
-
-### Fixed
-
-- Bug Y
-```
-
-**Change Types:**
-
-- `Added`: New features
-- `Changed`: Changes to existing functionality
-- `Deprecated`: Soon-to-be-removed features
-- `Removed`: Removed features
-- `Fixed`: Bug fixes
-- `Security`: Security fixes
+Add changes to `[Unreleased]` section as you work. **Change Types**: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
 ### 2. Before Merging to `main` (Production Release)
 
-When ready to deploy to production:
-
-1. **Create a version section**
-   - Move all "Unreleased" content to a new version section
-   - Add version number and date
-   - Leave "Unreleased" section empty
-
-```markdown
-## [Unreleased]
-
-## [0.1.0] - 2025-11-12
-
-### Added
-
-- New feature X
-
-### Fixed
-
-- Bug Y
-```
-
-2. **Commit the changelog update**
-
-```bash
-git add CHANGELOG.md
-git commit -m "chore: prepare v0.1.0 release"
-```
-
-3. **Merge to main**
-
-```bash
-git checkout main
-git merge develop
-git push origin main
-```
+1. Create version section: Move "Unreleased" content to new version section, add version number and date, leave "Unreleased" empty
+2. Commit: `git add CHANGELOG.md && git commit -m "chore: prepare v0.1.0 release"`
+3. Merge to main: `git checkout main && git merge develop && git push origin main`
 
 ---
 
@@ -86,135 +28,59 @@ git push origin main
 
 We use **[Semantic Versioning](https://semver.org/)**: `MAJOR.MINOR.PATCH`
 
-### When to Increment:
+**When to Increment**: MAJOR (1.0.0) - Breaking changes, MINOR (0.1.0) - New features (backward-compatible), PATCH (0.0.1) - Bug fixes only
 
-- **MAJOR (1.0.0)**: Breaking changes (API changes, database schema changes)
-- **MINOR (0.1.0)**: New features (backward-compatible)
-- **PATCH (0.0.1)**: Bug fixes only
-
-### Examples:
-
-**PATCH (0.0.1 → 0.0.2):**
-
-- Fixed typo in API response
-- Fixed bug in tiebreaker logic
-- Updated documentation
-
-**MINOR (0.0.2 → 0.1.0):**
-
-- Added new `/api/simulate` endpoint
-- Added `predictedScore` field
-- New cron job
-
-**MAJOR (0.1.0 → 1.0.0):**
-
-- Changed API response format (breaking)
-- Removed deprecated endpoints
-- Database schema redesign requiring migration
+**Examples**: PATCH - Fixed typo/bug, updated docs. MINOR - New endpoint, new field, new cron job. MAJOR - API format change, removed endpoints, schema redesign
 
 ---
 
 ## Pre-1.0.0 Versioning
 
-Before 1.0.0 (initial production release):
-
-- Use `0.x.x` versions
-- Breaking changes are OK in MINOR versions (0.1.0 → 0.2.0)
-- First production-ready release should be `1.0.0`
-
-**Current Status:** Pre-release (0.x.x)
+Before 1.0.0: Use `0.x.x` versions, breaking changes OK in MINOR versions (0.1.0 → 0.2.0), first production-ready release should be `1.0.0`. **Current Status:** Pre-release (0.x.x)
 
 ---
 
-## Example Changelog Entry
+## Example Entry
 
 ```markdown
 ## [0.2.0] - 2025-11-15
-
 ### Added
-
-- **Frontend UI**: Initial standings page with team logos and rankings
-- **WebSocket Support**: Real-time score updates during games
-- **User Authentication**: OAuth login via Google
-
+- Frontend UI: Initial standings page
+- WebSocket Support: Real-time score updates
 ### Changed
-
-- **API Response Format**: `simulate` endpoint now returns `standingsV2` format
-  - Migration guide: (Not yet implemented - placeholder for future migration documentation)
-- **Cron Schedule**: Live games now update every 3 minutes (was 5 minutes)
-
+- API Response Format: `simulate` returns `standingsV2`
+- Cron Schedule: Live games update every 3 minutes (was 5)
 ### Fixed
-
-- **Rule E Calculation**: Fixed scoring margin bug for overtime games
-- **MSST Logo**: Updated Mississippi State team logo URL
-
-### Deprecated
-
-- `standingsV1` format will be removed in v0.3.0
-
+- Rule E Calculation: Fixed scoring margin bug
 ## [0.1.0] - 2025-11-12
-
 ### Added
-
-- **Initial API**: Teams, games, simulate endpoints
-- **Tiebreaker Logic**: Conference tiebreaker rules A-E implementation
-- **Cron Jobs**: Automated data updates (live games, rankings, spreads, averages)
-- **Predicted Scores**: Server-side prefill logic for incomplete games
-
-### Fixed
-
-- **MSST Abbreviation**: Corrected from "MSU" to "MSST"
-- **Duplicate Indexes**: Removed duplicate Mongoose indexes
+- Initial API: Teams, games, simulate endpoints
+- Tiebreaker Logic: Rules A-E implementation
 ```
 
 ---
 
 ## Tips
 
-### Daily Development:
+**Daily Development**: Update `[Unreleased]` as you code, don't worry about version numbers, group related changes
 
-- Update `[Unreleased]` section as you code
-- Don't worry about version numbers yet
-- Group related changes together
+**Before Production Deploy**: Review unreleased changes, choose version number, move to versioned section, add date
 
-### Before Production Deploy:
-
-- Review all unreleased changes
-- Choose appropriate version number
-- Move changes to versioned section
-- Add date
-
-### After Production Deploy:
-
-- Tag the commit: `git tag v0.1.0`
-- Push tag: `git push origin v0.1.0`
-- GitHub Releases can auto-populate from changelog
+**After Production Deploy**: Tag commit (`git tag v0.1.0`), push tag (`git push origin v0.1.0`), GitHub Releases can auto-populate
 
 ---
 
 ## Long-Term Management
 
-### File Size:
+**File Size**: One file fine for years (even 1000+ lines), most projects never split, if needed create `CHANGELOG-ARCHIVE.md`
 
-- One file is fine for years (even 1000+ lines)
-- Most projects never split it
-- If needed (rare), create `CHANGELOG-ARCHIVE.md` for old versions
+**Search/Navigation**: Use Markdown anchors (`[0.1.0](#010---2025-11-12)`), GitHub auto-generates TOC, use Cmd+F to search
 
-### Search/Navigation:
-
-- Use Markdown anchors for linking: `[0.1.0](#010---2025-11-12)`
-- GitHub auto-generates table of contents
-- Use Cmd+F to search versions
-
-### Automation (Future):
-
-- Tools like `semantic-release` can auto-generate changelogs from commits
-- Convention: Use conventional commits (`feat:`, `fix:`, `docs:`)
-- For now, manual updates are fine
+**Automation (Future)**: Tools like `semantic-release` can auto-generate from commits, use conventional commits (`feat:`, `fix:`, `docs:`), manual updates for now
 
 ---
 
-## Quick Reference Commands
+## Quick Reference
 
 ```bash
 # View current version
@@ -223,17 +89,9 @@ head -20 CHANGELOG.md
 # Check unreleased changes
 sed -n '/## \[Unreleased\]/,/## \[/p' CHANGELOG.md | head -n -1
 
-# Create new version (example)
-# 1. Edit CHANGELOG.md (move Unreleased to new version)
-# 2. Commit
-git add CHANGELOG.md
-git commit -m "chore: release v0.1.0"
-
-# 3. Tag
-git tag -a v0.1.0 -m "Release v0.1.0"
-
-# 4. Push
-git push origin main --tags
+# Create new version: Edit CHANGELOG.md, commit, tag, push
+git add CHANGELOG.md && git commit -m "chore: release v0.1.0"
+git tag -a v0.1.0 -m "Release v0.1.0" && git push origin main --tags
 ```
 
 ---

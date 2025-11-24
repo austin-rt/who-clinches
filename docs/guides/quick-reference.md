@@ -10,7 +10,7 @@ Domain-specific content locations for common tasks.
 - **ESPN API testing**: `docs/tests/espn-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
-- **Test data management**: `docs/plans/test-data-snapshots.md`, `docs/plans/test-data-auto-retesting.md`
+- **Test data management**: Implemented - see `__tests__/helpers/test-data-loader.ts` and `app/api/cron/update-test-data/route.ts`
 - **Unit tests plan**: `docs/plans/unit-tests.md`
 
 ## API Development
@@ -34,7 +34,7 @@ Domain-specific content locations for common tasks.
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
 - **Planning doc**: `docs/plans/tiebreaker-logic.md` (historical)
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
-- **Simulate endpoint**: `app/api/simulate/route.ts`
+- **Simulate endpoint**: `app/api/simulate/cfb/sec/route.ts`
 
 ## Cron Jobs
 
