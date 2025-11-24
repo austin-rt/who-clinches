@@ -27,15 +27,15 @@ This is a specialized college football application built for simulating conferen
 - **Real-Time Data**: Automatically updates from ESPN API via scheduled cron jobs
 
 **Key Endpoints:**
-- `/api/simulate` - Accepts game score overrides and returns full standings
-- `/api/pull-games` and `/api/pull-teams` - Populate database from ESPN API
-- `/api/games` - Query games endpoint
-- Cron jobs: `update-games`, `update-rankings`, `update-spreads`, `update-team-averages` (see `vercel.json`/`vercel.pro.json`)
+- `/api/simulate/cfb/sec` - Accepts game score overrides and returns full standings
+- `/api/pull-games/cfb/[conf]` and `/api/pull-teams/cfb/[conf]` - Populate database from ESPN API
+- `/api/games/cfb/[conf]` - Query games endpoint
+- Cron jobs: `/api/cron/cfb/[conf]/update-games`, `/api/cron/cfb/[conf]/update-rankings`, `/api/cron/cfb/[conf]/update-spreads`, `/api/cron/cfb/[conf]/update-team-averages` (see `vercel.json`/`vercel.pro.json`)
 
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes (cron jobs, games, simulate, pull-teams, pull-games)
+- `app/api/` - API routes (sport-specific: `/api/games/cfb/[conf]`, `/api/simulate/cfb/sec`, `/api/pull-teams/cfb/[conf]`, `/api/pull-games/cfb/[conf]`, cron jobs in `/api/cron/cfb/[conf]/`)
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/models/` - Mongoose schemas (Game, Team, Error)
@@ -43,41 +43,7 @@ This is a specialized college football application built for simulating conferen
 - `lib/` - Core utilities (espn-client, reshape-*, tiebreaker-helpers, prefill-helpers)
 - `scripts/` - Database and type generation scripts
 
-**File Structure:**
-```
-app/
-├── api/                    # API routes
-│   ├── cron/               # Cron job endpoints
-│   ├── games/              # Games query endpoint
-│   ├── pull-games/         # Pull games from ESPN
-│   ├── pull-teams/         # Pull teams from ESPN
-│   └── simulate/           # Simulation endpoint
-├── components/             # React components
-│   ├── Button/             # Button component system
-│   │   ├── Button.tsx      # Solid variant
-│   │   ├── StrokedButton/  # Outlined variant
-│   │   ├── FlatButton/     # Flat variant
-│   │   └── index.ts        # Exports
-│   ├── StoreProvider.tsx   # Redux Provider wrapper
-│   ├── GamesList.tsx       # Main games container
-│   ├── GameCard.tsx        # Game card component
-│   └── [other components]  # Various UI components
-├── store/                  # Redux state management
-│   ├── store.ts            # Store configuration
-│   ├── uiSlice.ts          # UI state (theme, mode, view)
-│   ├── gamePicksSlice.ts  # User game picks
-│   ├── apiSlice.ts        # RTK Query API slice
-│   ├── hooks.ts            # Typed Redux hooks
-│   └── useUI.ts            # UI state selector hook
-├── config/                 # Configuration
-│   └── theme-config.ts     # Conference theme config
-├── styles/                 # CSS styles
-│   └── buttons.css         # Button component styles
-├── layout.tsx              # Root layout
-└── page.tsx                # Home page
-```
-
-For detailed frontend documentation, see [Frontend Documentation](./guides/frontend/index.md).
+**File Structure:** `app/api/` (routes), `app/components/` (React), `app/store/` (Redux), `lib/models/` (Mongoose), `lib/espn/` (types), `lib/` (utilities). See [Frontend Documentation](./guides/frontend/index.md) for details.
 
 ## Quick Start
 

@@ -27,11 +27,11 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 sec-tiebreaker/
 ├── app/
 │   ├── api/
-│   │   ├── games/route.ts       # Query games from database
-│   │   ├── pull-games/route.ts  # Ingest game data from ESPN
-│   │   ├── pull-teams/route.ts  # Ingest team data from ESPN
-│   │   ├── simulate/route.ts    # Tiebreaker simulation endpoint
-│   │   └── cron/                # Automated update endpoints
+│   │   ├── games/cfb/[conf]/route.ts       # Query games from database
+│   │   ├── pull-games/cfb/[conf]/route.ts  # Ingest game data from ESPN
+│   │   ├── pull-teams/cfb/[conf]/route.ts  # Ingest team data from ESPN
+│   │   ├── simulate/cfb/sec/route.ts       # Tiebreaker simulation endpoint
+│   │   └── cron/cfb/[conf]/                # Automated update endpoints
 │   ├── page.tsx                 # Main UI
 │   └── layout.tsx
 ├── lib/
@@ -149,8 +149,8 @@ ESPN API → reshape functions → MongoDB
 
 **Endpoints:**
 
-- `POST /api/pull-games` - Fetch and store game data
-- `POST /api/pull-teams` - Fetch and store team data
+- `POST /api/pull-games/cfb/[conf]` - Fetch and store game data
+- `POST /api/pull-teams/cfb/[conf]` - Fetch and store team data
 
 ### 2. Data Retrieval (MongoDB → Frontend)
 
@@ -160,7 +160,7 @@ MongoDB → lean queries → strongly typed transformations → API response
 
 **Endpoints:**
 
-- `GET /api/games` - Query games with filters (season, week, team, etc.)
+- `GET /api/games/cfb/[conf]` - Query games with filters (season, week, state, etc.)
 
 ### 3. Simulation Engine
 
@@ -170,7 +170,7 @@ User overrides → tiebreaker calculation → standings display
 
 **Endpoints:**
 
-- `POST /api/simulate` - Simulate SEC standings with optional game overrides
+- `POST /api/simulate/cfb/sec` - Simulate SEC standings with optional game overrides
 
 ## Key Design Decisions
 
@@ -220,17 +220,17 @@ The ESPN client and data models support multiple sports/leagues for future expan
 
 ## API Endpoints
 
-### GET /api/games
+### GET /api/games/cfb/[conf]
 
-Query stored games with filters.
+Query stored games with filters for a specific conference.
+
+**Path Parameters:**
+- `conf` - Conference slug (e.g., "sec")
 
 **Query Parameters:**
 
-- `season` - Year (e.g., 2024)
+- `season` - Year (e.g., 2025)
 - `week` - Week number
-- `sport` - Sport type (default: "football")
-- `league` - League type (default: "college-football")
-- `conferenceId` - Conference ID (8 for SEC)
 - `state` - Game state: "pre", "in", "post"
 - `from` / `to` - Date range filters
 
@@ -244,29 +244,33 @@ Query stored games with filters.
 }
 ```
 
-### POST /api/pull-games
+### POST /api/pull-games/cfb/[conf]
 
-Fetch game data from ESPN and store in database.
+Fetch game data from ESPN and store in database for a specific conference.
+
+**Path Parameters:**
+- `conf` - Conference slug (e.g., "sec")
 
 **Request Body:**
 
 ```json
 {
   "season": 2025,
-  "conferenceId": 8,
-  "week": 12,
-  "sport": "football",
-  "league": "college-football"
+  "week": 12
 }
 ```
 
-### POST /api/pull-teams
+### POST /api/pull-teams/cfb/[conf]
 
-Fetch team data from ESPN and store in database.
+Fetch team data from ESPN and store in database for a specific conference.
+
+**Path Parameters:**
+- `conf` - Conference slug (e.g., "sec")
 
 **Request Body:**
 
 ```json
+{}
 {
   "teams": ["ALA", "UGA", "LSU"],
   "sport": "football",
@@ -373,7 +377,7 @@ npm run lint
 ✅ **Phase 2 Complete**: Tiebreaker Engine
 
 - SEC rules implementation (Rules A-E)
-- Simulation endpoint (`/api/simulate`)
+- Simulation endpoint (`/api/simulate/cfb/sec`)
 - User score overrides
 - Automated cron jobs for data updates
 
