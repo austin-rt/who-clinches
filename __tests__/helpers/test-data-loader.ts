@@ -5,7 +5,7 @@
  * These snapshots are updated daily via cron job to ensure tests use current API format.
  */
 
-import dbConnectTest from '@/lib/mongodb-test';
+import dbConnect from '@/lib/mongodb';
 import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestData';
 import { getESPNGameSummaryTestData } from '@/lib/models/test/ESPNGameSummaryTestData';
 import { getESPNTeamTestData } from '@/lib/models/test/ESPNTeamTestData';
@@ -15,22 +15,27 @@ import type { EspnGameSummaryGenerated } from '@/lib/espn/espn-game-summary-gene
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 
-const SEASON = 2025;
-
 /**
  * Load scoreboard test data from test database
  */
 export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated> => {
-  await dbConnectTest();
+  console.log('[Test Data Loader] loadScoreboardTestData() called');
+  console.log('[Test Data Loader] Connecting to database...');
+  await dbConnect();
+  console.log('[Test Data Loader] Getting ESPNScoreboardTestData model...');
   const Model = await getESPNScoreboardTestData();
-  const data = await Model.findOne({ season: SEASON });
+  // Find any document since we seed all data from /test database
+  console.log('[Test Data Loader] Finding scoreboard test data...');
+  const data = await Model.findOne({});
 
   if (!data) {
+    console.error('[Test Data Loader] ERROR: Scoreboard test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
     );
   }
 
+  console.log('[Test Data Loader] Scoreboard test data loaded');
   return data.response;
 };
 
@@ -38,16 +43,23 @@ export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated>
  * Load team test data from test database
  */
 export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
-  await dbConnectTest();
+  console.log('[Test Data Loader] loadTeamTestData() called');
+  console.log('[Test Data Loader] Connecting to database...');
+  await dbConnect();
+  console.log('[Test Data Loader] Getting ESPNTeamTestData model...');
   const Model = await getESPNTeamTestData();
-  const data = await Model.findOne({ season: SEASON });
+  // Find any document since we seed all data from /test database
+  console.log('[Test Data Loader] Finding team test data...');
+  const data = await Model.findOne({});
 
   if (!data) {
+    console.error('[Test Data Loader] ERROR: Team test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:TeamTestData | ISSUE:missing_data | TYPE:team | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:TeamTestData | ISSUE:missing_data | TYPE:team | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
     );
   }
 
+  console.log('[Test Data Loader] Team test data loaded');
   return data.response;
 };
 
@@ -55,16 +67,23 @@ export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
  * Load game summary test data from test database
  */
 export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerated> => {
-  await dbConnectTest();
+  console.log('[Test Data Loader] loadGameSummaryTestData() called');
+  console.log('[Test Data Loader] Connecting to database...');
+  await dbConnect();
+  console.log('[Test Data Loader] Getting ESPNGameSummaryTestData model...');
   const Model = await getESPNGameSummaryTestData();
-  const data = await Model.findOne({ season: SEASON });
+  // Find any document since we seed all data from /test database
+  console.log('[Test Data Loader] Finding game summary test data...');
+  const data = await Model.findOne({});
 
   if (!data) {
+    console.error('[Test Data Loader] ERROR: Game summary test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:GameSummaryTestData | ISSUE:missing_data | TYPE:gameSummary | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:GameSummaryTestData | ISSUE:missing_data | TYPE:gameSummary | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
     );
   }
 
+  console.log('[Test Data Loader] Game summary test data loaded');
   return data.response;
 };
 
@@ -72,16 +91,23 @@ export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerate
  * Load team records test data from test database
  */
 export const loadTeamRecordsTestData = async (): Promise<EspnTeamRecordsGenerated> => {
-  await dbConnectTest();
+  console.log('[Test Data Loader] loadTeamRecordsTestData() called');
+  console.log('[Test Data Loader] Connecting to database...');
+  await dbConnect();
+  console.log('[Test Data Loader] Getting ESPNTeamRecordsTestData model...');
   const Model = await getESPNTeamRecordsTestData();
-  const data = await Model.findOne({ season: SEASON });
+  // Find any document since we seed all data from /test database
+  console.log('[Test Data Loader] Finding team records test data...');
+  const data = await Model.findOne({});
 
   if (!data) {
+    console.error('[Test Data Loader] ERROR: Team records test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:TeamRecordsTestData | ISSUE:missing_data | TYPE:teamRecords | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:TeamRecordsTestData | ISSUE:missing_data | TYPE:teamRecords | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
     );
   }
 
+  console.log('[Test Data Loader] Team records test data loaded');
   return data.response;
 }
 
@@ -92,25 +118,37 @@ export const checkTestDataAvailable = async (): Promise<{
   available: boolean;
   missing: string[];
 }> => {
-  await dbConnectTest();
+  process.stdout.write('[checkTestDataAvailable] Starting...\n');
+  await dbConnect();
+  process.stdout.write('[checkTestDataAvailable] Connection established\n');
   const missing: string[] = [];
 
+  // Check for any documents (not filtered by season) since we seed all data
+  process.stdout.write('[checkTestDataAvailable] Checking scoreboard...\n');
   const ScoreboardModel = await getESPNScoreboardTestData();
-  const scoreboard = await ScoreboardModel.findOne({ season: SEASON });
+  const scoreboard = await ScoreboardModel.findOne({});
   if (!scoreboard) missing.push('scoreboard');
+  process.stdout.write(`[checkTestDataAvailable] Scoreboard: ${scoreboard ? 'found' : 'missing'}\n`);
 
+  process.stdout.write('[checkTestDataAvailable] Checking gameSummary...\n');
   const GameSummaryModel = await getESPNGameSummaryTestData();
-  const gameSummary = await GameSummaryModel.findOne({ season: SEASON });
+  const gameSummary = await GameSummaryModel.findOne({});
   if (!gameSummary) missing.push('gameSummary');
+  process.stdout.write(`[checkTestDataAvailable] GameSummary: ${gameSummary ? 'found' : 'missing'}\n`);
 
+  process.stdout.write('[checkTestDataAvailable] Checking team...\n');
   const TeamModel = await getESPNTeamTestData();
-  const team = await TeamModel.findOne({ season: SEASON });
+  const team = await TeamModel.findOne({});
   if (!team) missing.push('team');
+  process.stdout.write(`[checkTestDataAvailable] Team: ${team ? 'found' : 'missing'}\n`);
 
+  process.stdout.write('[checkTestDataAvailable] Checking teamRecords...\n');
   const TeamRecordsModel = await getESPNTeamRecordsTestData();
-  const teamRecords = await TeamRecordsModel.findOne({ season: SEASON });
+  const teamRecords = await TeamRecordsModel.findOne({});
   if (!teamRecords) missing.push('teamRecords');
+  process.stdout.write(`[checkTestDataAvailable] TeamRecords: ${teamRecords ? 'found' : 'missing'}\n`);
 
+  process.stdout.write(`[checkTestDataAvailable] Complete. Available: ${missing.length === 0}, Missing: ${missing.join(',') || 'none'}\n`);
   return {
     available: missing.length === 0,
     missing,

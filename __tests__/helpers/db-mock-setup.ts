@@ -8,17 +8,10 @@
 
 /* eslint-disable no-console */
 
-import {
-  stopMongoMemoryServer,
-  clearMongoMemoryServerData,
-} from '../mocks/mongodb-memory-server.mock';
+import { stopMongoMemoryServer } from '../mocks/mongodb-memory-server.mock';
 import { checkTestDataAvailable } from './test-data-loader';
-import dbConnectTest from '@/lib/mongodb-test';
 import dbConnect from '@/lib/mongodb';
-import Team from '@/lib/models/Team';
-import Game from '@/lib/models/Game';
-import { CONFERENCE_METADATA } from '@/lib/cfb/constants';
-import { SUPPORTED_SPORTS_CONFS } from '@/lib/cfb/supported-config';
+import mongoose from 'mongoose';
 
 let memoryServerUri: string | null = null;
 
@@ -30,19 +23,28 @@ let memoryServerUri: string | null = null;
  * - Note: Memory server is started in jest.server-setup.js BEFORE Next.js server starts
  */
 export const setupTestDB = async (): Promise<void> => {
+  console.log('[Test DB Setup] ===== setupTestDB() START =====');
+  process.stdout.write('[setupTestDB] Starting...\n');
   // 1. Verify test DB snapshots are available (for ESPN client mocks)
-  console.log('[Test DB Setup] Verifying test DB snapshots are available...');
+  console.log('[Test DB Setup] Step 1: Verifying test DB snapshots are available...');
+  process.stdout.write('[Test DB Setup] Verifying test DB snapshots are available...\n');
   const testDataCheck = await checkTestDataAvailable();
+  console.log(`[Test DB Setup] Test data check result: available=${testDataCheck.available}, missing=${testDataCheck.missing.join(',') || 'none'}`);
+  process.stdout.write(`[Test DB Setup] Test data check result: available=${testDataCheck.available}, missing=${testDataCheck.missing.join(',') || 'none'}\n`);
   if (!testDataCheck.available) {
+    console.error(`[Test DB Setup] ERROR: Missing test data types: ${testDataCheck.missing.join(',')}`);
     throw new Error(
       `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_snapshots | MISSING_TYPES:${testDataCheck.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | NOTE:Run 'npm run test:db:check' to populate test data snapshots`
     );
   }
-  console.log('[Test DB Setup] Test DB snapshots verified');
+  console.log('[Test DB Setup] Step 1: Test DB snapshots verified');
+  process.stdout.write('[Test DB Setup] Test DB snapshots verified\n');
 
   // 2. Memory server should already be started in jest.server-setup.js
   // The URI is stored in the environment variable, so we just verify it's set
+  console.log('[Test DB Setup] Step 2: Verifying MongoDB Memory Server is started...');
   if (!process.env.MONGODB_MEMORY_SERVER_URI) {
+    console.error('[Test DB Setup] ERROR: MONGODB_MEMORY_SERVER_URI not set');
     throw new Error(
       'MongoDB Memory Server not started. It should be started in jest.server-setup.js before Next.js server starts.'
     );
@@ -50,7 +52,10 @@ export const setupTestDB = async (): Promise<void> => {
 
   // Store the URI for reference (it's already in process.env)
   memoryServerUri = process.env.MONGODB_MEMORY_SERVER_URI;
-  console.log(`[Test DB Setup] MongoDB Memory Server verified at ${memoryServerUri}`);
+  console.log(`[Test DB Setup] Step 2: MongoDB Memory Server verified at ${memoryServerUri}`);
+  process.stdout.write(`[Test DB Setup] MongoDB Memory Server verified at ${memoryServerUri}\n`);
+  console.log('[Test DB Setup] ===== setupTestDB() COMPLETE =====');
+  process.stdout.write('[setupTestDB] Complete\n');
 };
 
 /**
@@ -59,103 +64,59 @@ export const setupTestDB = async (): Promise<void> => {
  * - Clears environment variable
  */
 export const teardownTestDB = async (): Promise<void> => {
+  console.log('[Test DB Teardown] ===== teardownTestDB() START =====');
   console.log('[Test DB Teardown] Stopping MongoDB Memory Server...');
   await stopMongoMemoryServer();
   memoryServerUri = null;
   delete process.env.MONGODB_MEMORY_SERVER_URI;
   console.log('[Test DB Teardown] MongoDB Memory Server stopped');
+  console.log('[Test DB Teardown] ===== teardownTestDB() COMPLETE =====');
 };
 
 /**
- * Seed memory server with data from test database
- * Copies teams and games for all supported conferences from test DB snapshots
- * NOTE: Currently unused - tests seed via API calls instead
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const seedMemoryServerFromTestDB = async (): Promise<void> => {
-  try {
-    // CRITICAL: Establish connection to memory server BEFORE using Team/Game models
-    // The Team and Game models use the default mongoose connection (from lib/mongodb.ts)
-    // which connects to the memory server in test mode
-    console.log('[Test DB Seed] Establishing connection to memory server...');
-    await dbConnect();
-    console.log('[Test DB Seed] Memory server connection established');
-
-    // Connect to test database (separate connection for reading test data)
-    const testConnection = await dbConnectTest();
-
-    // Get models bound to test connection for reading
-    const TestTeam = testConnection.models.Team || Team;
-    const TestGame = testConnection.models.Game || Game;
-
-    // Get all supported conference IDs
-    const conferenceIds = SUPPORTED_SPORTS_CONFS.map(({ conf }) =>
-      CONFERENCE_METADATA[conf].espnId.toString()
-    );
-    console.log(
-      `[Test DB Seed] Looking for teams with conferenceId in: ${conferenceIds.join(', ')}`
-    );
-
-    // 1. Read teams from test DB for all supported conferences
-    const testTeams = await TestTeam.find({
-      conferenceId: { $in: conferenceIds },
-    })
-      .lean()
-      .exec();
-
-    console.log(`[Test DB Seed] Found ${testTeams.length} teams in test database`);
-
-    if (testTeams.length > 0) {
-      // Insert into memory server using the Team model (which uses main/memory connection)
-      // dbConnect() was called above, so connection should be ready
-      await Team.insertMany(testTeams);
-      console.log(`[Test DB Seed] Inserted ${testTeams.length} teams into memory server`);
-    } else {
-      console.log('[Test DB Seed] WARNING: No teams found in test database to seed');
-    }
-
-    // 2. Copy games (for current season)
-    const currentSeason = new Date().getFullYear();
-    const testGames = await TestGame.find({
-      season: currentSeason,
-      conferenceGame: true,
-      league: 'college-football',
-    })
-      .lean()
-      .exec();
-
-    // Filter to only conference games (games where both teams are in supported conferences)
-    const supportedTeamIds = new Set(testTeams.map((t) => t._id));
-    const conferenceGames = testGames.filter(
-      (game) =>
-        supportedTeamIds.has(game.home.teamEspnId) && supportedTeamIds.has(game.away.teamEspnId)
-    );
-
-    if (conferenceGames.length > 0) {
-      // Insert into memory server using the Game model (which uses main/memory connection)
-      // dbConnect() was called above, so connection should be ready
-      await Game.insertMany(conferenceGames);
-      console.log(
-        `[Test DB Seed] Inserted ${conferenceGames.length} conference games into memory server`
-      );
-    }
-  } catch (error) {
-    console.error('[Test DB Seed] Error seeding memory server:', error);
-    throw error;
-  }
-};
-
-/**
- * Clear all collections in memory server
+ * Clear all collections in memory server EXCEPT ESPN test data collections
  * Call this in beforeEach() to ensure clean state between tests
- * Note: Tests that need data should seed via API calls (pull-teams/pull-games)
- * rather than relying on test database seeding, as the test database only contains
- * ESPN API snapshots, not teams/games data
+ * Note: ESPN test data collections are preserved since they're seeded once at startup
  */
 export const clearTestDB = async (): Promise<void> => {
+  console.log('[Test DB Setup] ===== clearTestDB() START =====');
+  process.stdout.write('[clearTestDB] Starting...\n');
   // Ensure connection is established before clearing
+  console.log('[Test DB Setup] Establishing database connection...');
   await dbConnect();
-  await clearMongoMemoryServerData();
+  console.log('[Test DB Setup] Database connection established');
+  process.stdout.write('[clearTestDB] Connection established\n');
+  
+  // ESPN test data collections to preserve (seeded once at startup)
+  const preservedCollections = [
+    'espn_scoreboard_test_data',
+    'espn_game_summary_test_data',
+    'espn_team_test_data',
+    'espn_team_records_test_data',
+  ];
+  
+  // Clear all collections except ESPN test data
+  const collections = mongoose.connection.collections;
+  const collectionNames = Object.keys(collections);
+  console.log(`[Test DB Setup] Found ${collectionNames.length} collections`);
+  process.stdout.write(`[clearTestDB] Found ${collectionNames.length} collections\n`);
+  let clearedCount = 0;
+  for (const key of collectionNames) {
+    if (!preservedCollections.includes(key)) {
+      console.log(`[Test DB Setup] Clearing collection: ${key}...`);
+      process.stdout.write(`[clearTestDB] Clearing collection: ${key}\n`);
+      const collection = collections[key];
+      const result = await collection.deleteMany({});
+      console.log(`[Test DB Setup] Cleared ${result.deletedCount} documents from ${key}`);
+      clearedCount++;
+    } else {
+      console.log(`[Test DB Setup] Preserving collection: ${key}`);
+      process.stdout.write(`[clearTestDB] Preserving collection: ${key}\n`);
+    }
+  }
+  console.log(`[Test DB Setup] Cleared ${clearedCount} collections`);
+  process.stdout.write(`[clearTestDB] Complete. Cleared ${clearedCount} collections\n`);
+  console.log('[Test DB Setup] ===== clearTestDB() COMPLETE =====');
 };
 
 /**
