@@ -1,19 +1,10 @@
-/**
- * ESPN API Client for College Football Data
- * Based on tech spec endpoints and field mappings
- *
- * Types are now generated from ESPN API responses via quicktype.
- * See lib/espn/ for generated type definitions.
- */
-
-// Import generated types for use in method signatures
 import type { EspnScoreboardGenerated } from '../espn/espn-scoreboard-generated';
 import type { EspnTeamGenerated } from '../espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from '../espn/espn-team-records-generated';
 import type { EspnGameSummaryGenerated } from '../espn/espn-game-summary-generated';
 import { fetchWithTimeout } from '../fetch-with-timeout';
 
-const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+const REQUEST_TIMEOUT_MS = 60000;
 
 export class ESPNClient {
   private baseUrl: string;
@@ -25,32 +16,20 @@ export class ESPNClient {
     this.baseUrl = `http://site.api.espn.com/apis/site/v2/sports/${sport}/${league}`;
   }
 
-  /**
-   * Fetch all teams in a conference
-   * Note: This method is not implemented. Use conference-specific constants from lib/cfb/constants.ts
-   * (e.g., SEC_TEAMS for SEC conference)
-   */
-  getConferenceTeams(conferenceId: number): Promise<string[]> {
-    throw new Error(
-      `getConferenceTeams not implemented for conference ${conferenceId}. Use conference-specific constants from lib/cfb/constants.ts`
-    );
-  }
-
-  /**
-   * Fetch scoreboard data for a specific conference/week/season
-   */
   async getScoreboard(
     params: {
-      groups?: number; // Conference ID (8 for SEC, etc.)
-      season?: number; // YYYY
-      week?: number; // Week number (varies by sport)
+      groups?: string;
+      season?: number;
+      week?: number;
+      dates?: number | string;
     } = {}
   ): Promise<EspnScoreboardGenerated> {
     const searchParams = new URLSearchParams();
 
-    if (params.groups) searchParams.set('groups', params.groups.toString());
-    if (params.season) searchParams.set('year', params.season.toString()); // Note: 'year' not 'season'
+    if (params.groups) searchParams.set('groups', params.groups);
+    if (params.season) searchParams.set('year', params.season.toString());
     if (params.week !== undefined) searchParams.set('week', params.week.toString());
+    if (params.dates !== undefined) searchParams.set('dates', params.dates.toString());
 
     const url = `${this.baseUrl}/scoreboard?${searchParams.toString()}`;
 
@@ -58,8 +37,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -76,9 +55,6 @@ export class ESPNClient {
     }
   }
 
-  /**
-   * Fetch individual game summary (for live polling)
-   */
   async getGameSummary(gameId: string): Promise<EspnGameSummaryGenerated> {
     const url = `${this.baseUrl}/summary?event=${gameId}`;
 
@@ -86,8 +62,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -104,9 +80,6 @@ export class ESPNClient {
     }
   }
 
-  /**
-   * Fetch team metadata (for manual seeding)
-   */
   async getTeam(teamAbbrev: string): Promise<EspnTeamGenerated> {
     const url = `${this.baseUrl}/teams/${teamAbbrev}`;
 
@@ -114,8 +87,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -132,10 +105,6 @@ export class ESPNClient {
     }
   }
 
-  /**
-   * Fetch detailed team records from core API
-   * Provides overall, conference, home, and away records
-   */
   async getTeamRecords(
     teamId: string,
     season: number = 2025,
@@ -147,8 +116,8 @@ export class ESPNClient {
       const response = await fetchWithTimeout(
         url,
         {
-        headers: {
-          'User-Agent': 'SEC-Tiebreaker/1.0',
+          headers: {
+            'User-Agent': 'SEC-Tiebreaker/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -166,11 +135,9 @@ export class ESPNClient {
   }
 }
 
-// Default client for SEC college football
 export const espnClient = new ESPNClient('football', 'college-football');
 
-// Factory function for creating clients for different sports/leagues
-export const createESPNClient = (sport: string, league: string) => {
+export const createESPNClient = (espnRoute: string) => {
+  const [sport, league] = espnRoute.split('/');
   return new ESPNClient(sport, league);
 };
-
