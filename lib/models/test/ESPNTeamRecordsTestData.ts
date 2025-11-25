@@ -61,10 +61,10 @@ const ESPNTeamRecordsTestDataSchema = new Schema<IESPNTeamRecordsTestData>(
 // Unique index: one snapshot per season
 ESPNTeamRecordsTestDataSchema.index({ season: 1 }, { unique: true });
 
-// Get model using test database connection
+// Get model using main database connection (memory server in test mode)
 export const getESPNTeamRecordsTestData = async () => {
-  const dbConnectTest = (await import('@/lib/mongodb-test')).default;
-  const conn = await dbConnectTest();
+  const dbConnect = (await import('@/lib/mongodb')).default;
+  const conn = await dbConnect();
   return (
     conn.models.ESPNTeamRecordsTestData ||
     conn.model<IESPNTeamRecordsTestData>('ESPNTeamRecordsTestData', ESPNTeamRecordsTestDataSchema)
