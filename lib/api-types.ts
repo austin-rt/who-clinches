@@ -1,32 +1,13 @@
-/**
- * Shared API request and response types
- */
-
 import { GameLean, GameState } from './types';
 
-// ============================================================================
-// Error Types
-// ============================================================================
-
-/**
- * Base error fields shared across error responses and error documents
- */
 export interface BaseError {
   error: string;
 }
 
-/**
- * HTTP API error response sent to clients
- */
 export interface ApiErrorResponse extends BaseError {
   code: string;
 }
 
-/**
- * Error document stored in MongoDB
- * Note: The full IError interface is in lib/models/Error.ts
- * This type represents the common structure for error logging
- */
 export interface ErrorLogFields extends BaseError {
   timestamp: Date;
   endpoint: string;
@@ -34,16 +15,12 @@ export interface ErrorLogFields extends BaseError {
   stackTrace: string;
 }
 
-// ============================================================================
-// /api/pull-teams
-// ============================================================================
-
 export interface PullTeamsRequest {
   sport: string;
   league: string;
   conf?: string;
   teams?: string[];
-  force?: boolean; // Manual override to bypass season check for testing
+  force?: boolean;
 }
 
 export interface PullTeamsResponse {
@@ -52,17 +29,13 @@ export interface PullTeamsResponse {
   errors?: string[];
 }
 
-// ============================================================================
-// /api/pull-games
-// ============================================================================
-
 export interface PullGamesRequest {
   sport: string;
   league: string;
   season: number;
   conf: string;
   week?: number;
-  force?: boolean; // Manual override to bypass season check for testing
+  force?: boolean;
 }
 
 export interface PullGamesResponse {
@@ -71,10 +44,6 @@ export interface PullGamesResponse {
   lastUpdated: string;
   errors?: string[];
 }
-
-// ============================================================================
-// /api/games (GET)
-// ============================================================================
 
 export interface GamesQueryParams {
   conf?: string;
@@ -102,10 +71,6 @@ export interface GamesResponse {
   lastUpdated: string;
 }
 
-// ============================================================================
-// /api/cron/update-games
-// ============================================================================
-
 export interface CronGamesResponse {
   updated: number;
   gamesChecked: number;
@@ -115,10 +80,6 @@ export interface CronGamesResponse {
   errors?: string[];
 }
 
-// ============================================================================
-// /api/cron/update-rankings
-// ============================================================================
-
 export interface CronRankingsResponse {
   updated: number;
   teamsChecked: number;
@@ -127,10 +88,6 @@ export interface CronRankingsResponse {
   errors?: string[];
 }
 
-// ============================================================================
-// /api/cron/health (OPTIONAL)
-// ============================================================================
-
 export interface CronHealthCheckResponse {
   endpoint: string;
   lastRun: string | null;
@@ -138,10 +95,6 @@ export interface CronHealthCheckResponse {
   executionTime?: number;
   details?: string;
 }
-
-// ============================================================================
-// /api/simulate (POST)
-// ============================================================================
 
 export interface SimulateRequest {
   season: number;

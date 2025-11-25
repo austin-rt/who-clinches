@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ITeam extends Document {
-  _id: string; // ESPN team ID used as primary key
+  _id: string;
   name: string;
   displayName: string;
   abbreviation: string;
@@ -9,12 +9,11 @@ export interface ITeam extends Document {
   color: string;
   alternateColor: string;
   conferenceId: string;
-  // Rich data from ESPN team endpoint
   record?: {
-    overall?: string; // "8-1"
-    conference?: string; // "6-1"
-    home?: string; // "4-1"
-    away?: string; // "3-0"
+    overall?: string;
+    conference?: string;
+    home?: string;
+    away?: string;
     stats?: {
       wins?: number;
       losses?: number;
@@ -26,10 +25,10 @@ export interface ITeam extends Document {
       avgPointsAgainst?: number;
     };
   };
-  conferenceStanding?: string; // "3rd in SEC" - from ESPN standingSummary
-  nationalRanking?: number; // AP/Coaches poll ranking (1-25, null if unranked)
-  playoffSeed?: number; // CFP ranking if available
-  nextGameId?: string; // ESPN ID of next game
+  conferenceStanding?: string;
+  nationalRanking?: number;
+  playoffSeed?: number;
+  nextGameId?: string;
   lastUpdated: Date;
 }
 
@@ -37,7 +36,7 @@ const TeamSchema = new Schema<ITeam>(
   {
     _id: {
       type: String,
-      required: true, // ESPN team ID as primary key
+      required: true,
     },
     name: {
       type: String,
@@ -68,7 +67,6 @@ const TeamSchema = new Schema<ITeam>(
       required: true,
       index: true,
     },
-    // Rich data from ESPN team endpoint
     record: {
       overall: { type: String },
       conference: { type: String },
@@ -95,7 +93,7 @@ const TeamSchema = new Schema<ITeam>(
     },
   },
   {
-    _id: false, // We're using custom _id
+    _id: false,
     timestamps: true,
   }
 );

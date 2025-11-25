@@ -57,31 +57,51 @@ interface MongooseCache {
   promise: Promise<typeof mongoose> | null;
 }
 
-// Use a module-level cache instead of global
-const cached: MongooseCache = { conn: null, promise: null };
+// Use global cache to persist across hot reloads in development (industry standard pattern)
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: MongooseCache | undefined;
+}
+
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+
+if (!global.mongoose) {
+  global.mongoose = cached;
+}
 
 const dbConnect = async () => {
+  console.log('[MongoDB] dbConnect() called');
   if (cached.conn) {
+    console.log('[MongoDB] Using cached connection');
     return cached.conn;
   }
 
   if (!cached.promise) {
+    console.log('[MongoDB] No cached promise, creating new connection...');
     logConnection();
     const opts = {
       bufferCommands: false,
     };
 
     const mongoUri = getMongoDBUri();
+    console.log(`[MongoDB] Connecting to: ${mongoUri.replace(/\/\/[^:]+:[^@]+@/, '//***:***@')}`);
     cached.promise = mongoose.connect(mongoUri, opts);
+    console.log('[MongoDB] Connection promise created');
+  } else {
+    console.log('[MongoDB] Using existing connection promise');
   }
 
   try {
+    console.log('[MongoDB] Waiting for connection promise to resolve...');
     cached.conn = await cached.promise;
+    console.log(`[MongoDB] Connection established (readyState: ${cached.conn.connection.readyState})`);
   } catch (e) {
+    console.error(`[MongoDB] Connection error: ${e instanceof Error ? e.message : String(e)}`);
     cached.promise = null;
     throw e;
   }
 
+  console.log('[MongoDB] dbConnect() complete');
   return cached.conn;
 };
 

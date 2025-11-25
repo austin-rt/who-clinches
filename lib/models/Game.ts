@@ -3,7 +3,7 @@ import { GameState } from '../types';
 
 export interface IGame extends Document {
   espnId: string;
-  displayName: string; // "{away abbrev} @ {home abbrev}"
+  displayName: string;
   date: string;
   week: number | null;
   season: number;
@@ -209,7 +209,6 @@ const GameSchema = new Schema<IGame>(
   }
 );
 
-// Compound indexes as specified in tech spec
 GameSchema.index({
   sport: 1,
   league: 1,
@@ -219,9 +218,7 @@ GameSchema.index({
 });
 GameSchema.index({ state: 1, completed: 1 });
 GameSchema.index({ sport: 1, league: 1 });
-// Note: home.teamEspnId and away.teamEspnId already have index: true in field definitions
 
-// Force delete cached model to pick up schema changes
 if (mongoose.models.Game) {
   delete mongoose.models.Game;
 }

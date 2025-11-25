@@ -1,18 +1,11 @@
-/**
- * Internal application types for reshaped data
- */
-
 import type { EspnTeamGenerated } from './espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
 
-/**
- * Game state type - represents the current state of a game
- */
 export type GameState = 'pre' | 'in' | 'post';
 
 export interface ReshapedGame {
   espnId: string;
-  displayName: string; // "{away abbrev} @ {home abbrev}"
+  displayName: string;
   date: string;
   week: number | null;
   season: number;
@@ -117,11 +110,10 @@ export interface MongoQuery {
   };
 }
 
-// Lean document types (what Mongoose returns with .lean())
 export interface GameLean {
   _id: string;
   espnId: string;
-  displayName: string; // "{away abbrev} @ {home abbrev}"
+  displayName: string;
   date: string;
   week: number | null;
   season: number;

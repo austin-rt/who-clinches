@@ -1,13 +1,5 @@
 import mongoose from 'mongoose';
 
-/**
- * Test Database Connection
- *
- * Hardcoded connection to /test database for storing ESPN API test data snapshots.
- * Separate from main application database to keep test data isolated.
- */
-
-// Build MongoDB URI for test database
 const MONGODB_USER = process.env.MONGODB_USER;
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 const MONGODB_HOST = process.env.MONGODB_HOST;
@@ -19,7 +11,6 @@ if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_HOST || !MONGODB_APP_NAME) {
   );
 }
 
-// Hardcoded test database name
 const TEST_DB_NAME = 'test';
 const TEST_MONGODB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${TEST_DB_NAME}?appName=${MONGODB_APP_NAME}`;
 
@@ -31,45 +22,56 @@ interface MongooseCache {
   promise: Promise<mongoose.Connection> | null;
 }
 
-// Use a module-level cache for test database connection
 const cached: MongooseCache = { conn: null, promise: null };
 
 const dbConnectTest = async (): Promise<mongoose.Connection> => {
+  console.log('[MongoDB Test] dbConnectTest() called');
   if (cached.conn) {
+    console.log('[MongoDB Test] Using cached connection');
     return cached.conn;
   }
 
   if (!cached.promise) {
-    // Using createConnection() instead of mongoose.connect() to avoid conflicts with main connection
+    console.log('[MongoDB Test] No cached promise, creating new connection...');
+    console.log(`[MongoDB Test] Connecting to test database: ${TEST_DB_NAME}`);
     cached.promise = mongoose
       .createConnection(TEST_MONGODB_URI, {
         bufferCommands: false,
-        serverSelectionTimeoutMS: 10000, // 10 second timeout for server selection
-        socketTimeoutMS: 45000, // 45 second timeout for socket operations
+        serverSelectionTimeoutMS: 10000,
+        socketTimeoutMS: 45000,
       })
       .asPromise();
+    console.log('[MongoDB Test] Connection promise created');
+  } else {
+    console.log('[MongoDB Test] Using existing connection promise');
   }
 
   try {
+    console.log('[MongoDB Test] Waiting for connection promise to resolve...');
     cached.conn = await cached.promise;
+    console.log(`[MongoDB Test] Connection established (readyState: ${cached.conn.readyState})`);
   } catch (e) {
+    console.error(`[MongoDB Test] Connection error: ${e instanceof Error ? e.message : String(e)}`);
     cached.promise = null;
     throw e;
   }
 
+  console.log('[MongoDB Test] dbConnectTest() complete');
   return cached.conn;
 };
 
-/**
- * Close test database connection
- * Call this in test afterAll hooks to prevent Jest from hanging
- */
 export const dbDisconnectTest = async (): Promise<void> => {
+  console.log('[MongoDB Test] dbDisconnectTest() called');
   if (cached.conn) {
+    console.log(`[MongoDB Test] Closing connection (readyState: ${cached.conn.readyState})...`);
     await cached.conn.close();
     cached.conn = null;
     cached.promise = null;
+    console.log('[MongoDB Test] Connection closed and cache cleared');
+  } else {
+    console.log('[MongoDB Test] No connection to close');
   }
+  console.log('[MongoDB Test] dbDisconnectTest() complete');
 };
 
 export default dbConnectTest;
