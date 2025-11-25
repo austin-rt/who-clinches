@@ -23,21 +23,18 @@
 - Scores prefilled with `predictedScore` from API
 - Button styling: Dynamic team colors (see [Styling Guide](./phase3-styling.md))
 
-**Override Persistence**: localStorage key `"sec-tiebreaker-overrides-{season}"`, format `{ [gameEspnId]: { homeScore: number, awayScore: number } }`. Uses `game.espnId` as key. Only valid scores persisted.
+**Override Persistence**: localStorage key `"sec-tiebreaker-overrides-{season}"`, format `{ [gameEspnId]: { homeScore, awayScore } }`. Uses `game.espnId` as key. Only valid scores persisted.
 
-**Reset to Live**: Button triggers cron job, calls `/api/games`, clears overrides, refills inputs, shows loading state.
+**Reset to Live**: Button calls `/api/games`, clears overrides, refills inputs, shows loading state.
 
 ---
 
 ## Validation Rules
 
-**Rules** (React Hook Form):
-1. No tie scores: `homeScore !== awayScore` - Error: "Scores cannot be equal"
-2. Non-negative: `homeScore >= 0 AND awayScore >= 0` - Error: "Scores cannot be negative"
-3. Whole numbers: `Number.isInteger(homeScore) && Number.isInteger(awayScore)` - Error: "Scores must be whole numbers"
-4. No max cap: Any positive integer allowed
-
-**Validation Timing**: Real-time on keystroke, on button click (auto-calculated scores always valid), errors below inputs, auto-save valid changes only, backend validates defensively.
+**Validation Rules** (React Hook Form):
+- No tie scores (`homeScore !== awayScore`)
+- Non-negative integers (`>= 0`, `Number.isInteger()`)
+- Real-time validation on keystroke, errors below inputs, auto-save valid changes only
 
 **Type** (`types/frontend.ts`):
 ```typescript
@@ -97,14 +94,8 @@ See [Styling Guide](./phase3-styling.md) for CSS variables approach and implemen
 
 ## Important Notes
 
-**espnId as Primary Key**: Override keys use `game.espnId` (not MongoDB `_id`), matches backend `applyOverrides()`, always available in schema.
-
-**Real-time Validation**: React Hook Form validates on keystroke, button clicks always valid (auto-calculated), backend validates defensively, errors shown inline (toast in Phase 4+).
-
-**Prefill Strategy**: `predictedScore` always present, buttons/inputs use it as default, all games valid by default (can simulate immediately).
-
-**Button State**: Clicks calculate opponent -1, styling reflects selected winner, multiple clicks toggle, state from localStorage.
-
-**localStorage**: Key `"sec-tiebreaker-overrides-{season}"`, format `{ [gameEspnId]: { homeScore, awayScore } }`, only valid scores stored, treat corrupted as no overrides.
-
-**React Hook Form**: Real-time validation, preserve prefilled values, handle reset cleanly, auto-save on valid change.
+**Important Notes:**
+- Override keys use `game.espnId` (matches backend `applyOverrides()`)
+- `predictedScore` always present, used as default for buttons/inputs
+- Button clicks calculate opponent -1, styling reflects selected winner
+- localStorage key: `"sec-tiebreaker-overrides-{season}"`, only valid scores stored

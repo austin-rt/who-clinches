@@ -16,7 +16,7 @@
 - `app/components/TieBreakerExplainer.tsx` (new)
 - `app/page.tsx` (update to show standings after simulate)
 
-**API Integration (RTK Query)**: RTK Query set up in `app/store/apiSlice.ts` with `useSimulateMutation` hook. Use `useSimulateMutation()` - automatically handles loading/error states (`isLoading`, `isError`, `error`), full TypeScript support, optimistic updates, cache invalidation
+**API Integration (RTK Query)**: RTK Query set up in `app/store/apiSlice.ts` with `useSimulateMutation` hook. Use `useSimulateMutation()` with dynamic routes - requires `{ sport, conf, season, overrides }` in request body. Automatically handles loading/error states (`isLoading`, `isError`, `error`), full TypeScript support, optimistic updates, cache invalidation
 
 **Component Definitions**: `SimulateButton.tsx` (DaisyUI btn, loading state), `StandingsTable.tsx` (DaisyUI table, columns: Rank/Team/Record/Conf Record/Explanation), `StandingRow.tsx` (single row with team info + tiebreaker explanation), `TieBreakerExplainer.tsx` (collapsible section explaining tiebreaker steps)
 

@@ -6,13 +6,14 @@ Complete reference for data query and ingestion endpoints.
 
 ---
 
-## GET /api/games/cfb/[conf]
+## GET /api/games/[sport]/[conf]
 
 Queries game data from the database for a specific sport and conference.
 
 **Authentication:** None required
 
-**Path Parameters**: `conf` (string) - Conference slug (e.g., "sec")
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
+**Example**: `/api/games/cfb/sec`
 
 **Query Parameters**: `season` (string) - Season year, `week` (string) - Week number, `state` (string) - "pre", "in", or "post", `from`/`to` (string) - Date range (ISO format)
 
@@ -24,13 +25,14 @@ Queries game data from the database for a specific sport and conference.
 
 ---
 
-## POST /api/pull-teams/cfb/[conf]
+## POST /api/pull-teams/[sport]/[conf]
 
-Seeds or updates team data from ESPN API for a specific conference.
+Seeds or updates team data from ESPN API for a specific sport and conference.
 
 **Authentication:** None required
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
+**Example**: `/api/pull-teams/cfb/sec`
 
 **Request Body**: `{}` (empty, conference determined from path)
 
@@ -42,13 +44,14 @@ Seeds or updates team data from ESPN API for a specific conference.
 
 ---
 
-## POST /api/pull-games/cfb/[conf]
+## POST /api/pull-games/[sport]/[conf]
 
-Pulls game data from ESPN for a specific season and conference.
+Pulls game data from ESPN for a specific season, sport, and conference.
 
 **Authentication:** None required
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
+**Example**: `/api/pull-games/cfb/sec`
 
 **Request Body**: `{ "season": 2025, "week": 1 }` (week optional - if omitted, pulls entire regular season)
 
@@ -64,13 +67,14 @@ Pulls game data from ESPN for a specific season and conference.
 
 ---
 
-## POST /api/simulate/cfb/sec
+## POST /api/simulate/[sport]/[conf]
 
 Simulates conference tiebreaker standings with optional user-provided game outcomes.
 
 **Authentication:** None required
 
-**Path Parameters**: Fixed to "sec" (only SEC supported currently)
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
+**Example**: `/api/simulate/cfb/sec`
 
 **Request Body**: `{ "season": 2025, "overrides": { "gameEspnId": { "homeScore": 45, "awayScore": 10 } } }`
 

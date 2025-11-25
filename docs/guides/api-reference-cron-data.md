@@ -10,11 +10,13 @@ Reference for data update cron endpoints.
 
 ---
 
-## GET /api/cron/cfb/[conf]/update-games
+## GET /api/cron/[sport]/[conf]/update-games
+
+**Example**: `/api/cron/cfb/sec/update-games`
 
 Updates scores, states, and odds for games.
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")
 
 **Query Parameters**: `mode` (string) - `active` (default, incomplete games only), `week` (current week), `season` (entire season)
 
@@ -41,11 +43,13 @@ Updates scores, states, and odds for games.
 
 ---
 
-## GET /api/cron/cfb/[conf]/update-spreads
+## GET /api/cron/[sport]/[conf]/update-spreads
+
+**Example**: `/api/cron/cfb/sec/update-spreads`
 
 **Pro Mode Only**: Updates betting odds and recalculates predicted scores for upcoming games.
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")
 
 **Schedule**: Pro: Every hour 1PM-5AM ET (`0 13-5 * * *` UTC). Hobby: Not used (via batch endpoint)
 
@@ -59,11 +63,13 @@ Updates scores, states, and odds for games.
 
 ---
 
-## GET /api/cron/cfb/[conf]/update-rankings
+## GET /api/cron/[sport]/[conf]/update-rankings
+
+**Example**: `/api/cron/cfb/sec/update-rankings`
 
 Updates team rankings, standings, and season statistics.
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")
 
 **Schedule**: Hobby: via `update-all` daily 10PM ET (`0 2 * * *` UTC). Pro: Sunday 3AM ET + Wednesday 3AM ET (`0 3 * * 0` + `0 3 * * 3`)
 
@@ -77,11 +83,13 @@ Updates team rankings, standings, and season statistics.
 
 ---
 
-## GET /api/cron/cfb/[conf]/update-team-averages
+## GET /api/cron/[sport]/[conf]/update-team-averages
+
+**Example**: `/api/cron/cfb/sec/update-team-averages`
 
 **Pro Mode Only**: Updates team season statistics more frequently than rankings cron.
 
-**Path Parameters**: `conf` (string) - Conference slug
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")
 
 **Schedule**: Pro: Sunday 1AM ET (`0 6 * * 0` UTC). Hobby: Not used (via `update-rankings`)
 

@@ -17,10 +17,10 @@
 
 | Endpoint | Purpose | Status |
 |----------|---------|--------|
-| `GET /api/games` | Query game data | ✅ Active |
-| `POST /api/pull-games` | Ingest ESPN game data | ✅ Active |
-| `POST /api/pull-teams` | Ingest ESPN team data | ✅ Active |
-| `POST /api/simulate` | Calculate standings | ✅ Active |
+| `GET /api/games/[sport]/[conf]` | Query game data | ✅ Active |
+| `POST /api/pull-games/[sport]/[conf]` | Ingest ESPN game data | ✅ Active |
+| `POST /api/pull-teams/[sport]/[conf]` | Ingest ESPN team data | ✅ Active |
+| `POST /api/simulate/[sport]/[conf]` | Calculate standings | ✅ Active |
 
 **Cron Jobs:** See [API Reference - Cron Jobs](../guides/api-reference-cron.md)
 
@@ -38,9 +38,9 @@
 
 ## ESPN Integration
 
-- **`lib/espn-client.ts`** - Multi-sport ESPN API client
-- **`lib/reshape-games.ts`** - Game data transformation
-- **`lib/reshape-teams.ts`** - Team data transformation
+- **`lib/cfb/espn-client.ts`** - CFB-specific ESPN API client
+- **`lib/reshape-games.ts`** - Generic game data transformation (sport-agnostic)
+- **`lib/reshape-teams.ts`** - Generic team data transformation (sport-agnostic)
 
 **Conference ID:** `8` (example: SEC) for scoreboard API
 

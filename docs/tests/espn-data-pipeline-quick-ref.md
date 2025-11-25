@@ -31,12 +31,14 @@ MONGODB_URI="mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MON
 ### Seed Teams
 ```bash
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+# Dynamic route structure: /api/[operation]/[sport]/[conf]
 curl -X POST "{BASE_URL}/api/pull-teams/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" -d '{}'
 ```
 
 ### Seed Games (Full Season)
 ```bash
+# Dynamic route structure: /api/[operation]/[sport]/[conf]
 curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" -d '{"season": 2025}'
 ```

@@ -24,17 +24,17 @@ Domain-specific content locations for common tasks.
 - **API patterns**: `docs/tests/espn-api-testing.md`
 - **Data pipeline**: `docs/tests/espn-data-pipeline.md`
 - **Type generation workflow**: `docs/tests/generated-types-workflow-testing.md`
-- **Client code**: `lib/espn-client.ts`
-- **Reshape functions**: `lib/reshape-games.ts`, `lib/reshape-teams.ts`
+- **Client code**: `lib/cfb/espn-client.ts` (CFB-specific)
+- **Reshape functions**: `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic)
 
 ## Tiebreaker Logic
 
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
-- **Implementation**: `lib/tiebreaker-helpers.ts` - Must enforce rules exactly as specified in the rules files
+- **Implementation**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
 - **Planning doc**: `docs/plans/tiebreaker-logic.md` (historical)
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
-- **Simulate endpoint**: `app/api/simulate/cfb/sec/route.ts`
+- **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (e.g., `app/api/simulate/cfb/sec/route.ts`)
 
 ## Cron Jobs
 
@@ -86,10 +86,15 @@ npm run test:db:check         # Check/seed test DB
 |------|----------|
 | API endpoints | `app/api/` |
 | Data models | `lib/models/` |
-| ESPN client | `lib/espn-client.ts` |
-| Tiebreaker logic | `lib/tiebreaker-helpers.ts` |
+| ESPN client | `lib/cfb/espn-client.ts` (CFB-specific) |
+| Tiebreaker logic | `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` (SEC-specific) |
 | Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt` |
-| Constants | `lib/constants.ts` |
+| Constants | `lib/constants.ts` (sports and conference configuration) |
+| Reshape games | `lib/reshape-games.ts` (generic) |
+| Reshape teams | `lib/reshape-teams.ts` (generic) |
+| Reshape teams from scoreboard | `lib/reshape-teams-from-scoreboard.ts` (generic) |
+| Prefill helpers | `lib/cfb/helpers/prefill-helpers.ts` (CFB-specific) |
+| Season check | `lib/cfb/helpers/season-check-espn.ts` (CFB-specific) |
 | Types | `lib/types.ts`, `lib/api-types.ts` |
 | Tests | `__tests__/` |
 | Cron schedules | `vercel.json`, `vercel.pro.json` |

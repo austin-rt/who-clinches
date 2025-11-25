@@ -3,11 +3,11 @@
 > **⚠️ PLANNING DOCUMENT - IMPLEMENTATION MAY DIFFER**
 > 
 > For actual implementation details, refer to:
-> - Actual code in `/app/api/simulate/route.ts`
-> - `/lib/tiebreaker-helpers.ts` for tiebreaker logic
+> - Actual code in `/app/api/simulate/[sport]/[conf]/route.ts` (e.g., `/app/api/simulate/cfb/sec/route.ts`)
+> - `/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` for tiebreaker logic
 > - [API Reference](../guides/api-reference.md) for current API documentation
 > - [Tiebreaker Testing](../tests/tiebreaker-and-simulate.md) for test procedures
-> - `/lib/constants.ts` for actual constant definitions
+> - `/lib/constants.ts` for sports and conference configuration
 
 ---
 
@@ -31,7 +31,7 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 
 ## Implementation
 
-**Core Functions** (`lib/tiebreaker-helpers.ts`):
+**Core Functions** (`lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`):
 - `applyOverrides()` - Validates/applies score overrides
 - `getTeamRecord()` - Calculates wins/losses
 - `ruleAHeadToHead()` - Rule A implementation
@@ -42,7 +42,7 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 - `resolveTies()` - Cascading tiebreaker engine
 - `calculateStandings()` - Full standings calculation
 
-**API Endpoint** (`app/api/simulate/route.ts`):
+**API Endpoint** (`app/api/simulate/[sport]/[conf]/route.ts`, e.g., `app/api/simulate/cfb/sec/route.ts`):
 - Input: `{ season, conferenceId, overrides }`
 - Output: `{ standings, championship, tieLogs }`
 - Validates: Non-negative integers, no ties
@@ -64,4 +64,4 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 
 ---
 
-**For current implementation details, see actual code in `/lib/tiebreaker-helpers.ts` and `/app/api/simulate/route.ts`.**
+**For current implementation details, see actual code in `/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` and `/app/api/simulate/[sport]/[conf]/route.ts` (e.g., `/app/api/simulate/cfb/sec/route.ts`).**

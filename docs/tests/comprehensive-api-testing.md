@@ -27,13 +27,13 @@ Complete testing procedures for all Conference Tiebreaker API endpoints.
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 ```
 
-**POST /api/pull-teams/cfb/[conf]**: Pre-check teams exist. Expected: Status 200, `upserted: 16`. Invalid: Unsupported conference → Status 400
+**POST /api/pull-teams/[sport]/[conf]**: Pre-check teams exist. Expected: Status 200, `upserted: 16`. Invalid: Unsupported conference → Status 400. Example: `/api/pull-teams/cfb/sec`
 
-**POST /api/pull-games/cfb/[conf]**: Prerequisites: Teams seeded first. Pre-check games exist. Expected: Status 200, `upserted`, `weeksPulled` array. Invalid: Missing `season` → Status 400
+**POST /api/pull-games/[sport]/[conf]**: Prerequisites: Teams seeded first. Pre-check games exist. Expected: Status 200, `upserted`, `weeksPulled` array. Invalid: Missing `season` → Status 400. Example: `/api/pull-games/cfb/sec`
 
-**GET /api/games/cfb/[conf]**: Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`. Expected: Status 200, `events` array, `teams` array (TeamMetadata: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`), `lastUpdated`
+**GET /api/games/[sport]/[conf]**: Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`. Expected: Status 200, `events` array, `teams` array (TeamMetadata: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`), `lastUpdated`. Example: `/api/games/cfb/sec`
 
-**POST /api/simulate/cfb/sec**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400
+**POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Example: `/api/simulate/cfb/sec`
 
 **Cron Jobs** (all require `Authorization: Bearer ${CRON_SECRET}`): `update-games` (modes: `season`, `week`, default), `update-rankings` (16 teams), `update-spreads`, `update-team-averages`, `update-all` (batch). Invalid: Missing/invalid auth → Status 401
 

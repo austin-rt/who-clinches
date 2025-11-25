@@ -10,7 +10,7 @@ Redux store structure, slices, and persistence patterns.
 
 ## Store Provider
 
-**StoreProvider** (`app/components/StoreProvider.tsx`): Wraps app with Redux `Provider` and `PersistGate` for SSR-safe hydration. Automatically restores persisted state from localStorage on app load.
+**StoreProvider** (`app/components/StoreProvider.tsx`): Wraps app with Redux `Provider` and `PersistGate` for SSR-safe hydration. Automatically restores persisted state from localStorage.
 
 ---
 
@@ -83,29 +83,12 @@ interface GamePicksState {
 **Configuration:**
 
 **Persistence Config** (`app/store/store.ts`):
-```typescript
-const uiPersistConfig = {
-  key: 'ui',
-  storage,
-  blacklist: ['lastUpdated'], // Server data, not user preference
-};
+- `uiPersistConfig`: key `'ui'`, blacklist `['lastUpdated']` (server data)
+- `gamePicksPersistConfig`: key `'gamePicks'`
+- localStorage keys: `persist:ui`, `persist:gamePicks`
+- Middleware: redux-persist actions ignored in serializableCheck
 
-const gamePicksPersistConfig = {
-  key: 'gamePicks',
-  storage,
-};
-```
+**Usage:** Components dispatch Redux actions normally - persistence is automatic.
 
-**localStorage Keys:**
-- `persist:ui` - UI preferences (theme, mode, view, hideCompletedGames)
-- `persist:gamePicks` - User game picks
-
-**Middleware:** Redux Toolkit includes thunk by default. redux-persist actions (`persist/PERSIST`, `persist/REHYDRATE`, `persist/PURGE`) are ignored in serializableCheck.
-
-**Usage:** Components dispatch Redux actions normally - persistence is automatic. No manual localStorage calls needed.
-
-**Important Notes:**
-- API slice (RTK Query) is NOT persisted - cache is ephemeral
-- `lastUpdated` field in UI state is blacklisted (server data, not user preference)
-- State is restored on app load via `PersistGate` before rendering children
+**Notes:** API slice (RTK Query) is NOT persisted. State restored on app load via `PersistGate`.
 

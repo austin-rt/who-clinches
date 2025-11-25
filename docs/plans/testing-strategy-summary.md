@@ -9,8 +9,9 @@
 ## Test Framework
 
 - **Framework:** Jest (Next.js standard)
-- **Database:** Real ESPN API data in `/test` database (auto-seeded)
+- **Database:** MongoDB Memory Server (in-memory) with test data seeded from Atlas `/test` database
 - **Coverage Threshold:** 80% minimum (branches, functions, lines, statements)
+- **Configuration:** `forceExit: true`, `testTimeout: 120000`, `maxWorkers: 1` (sequential execution)
 
 ---
 
@@ -20,21 +21,20 @@
 
 | Endpoint | Test Focus | File |
 |----------|------------|------|
-| `GET /api/games` | Filtering, cache headers, structure | `__tests__/api/games.test.ts` |
-| `POST /api/simulate` | Overrides, tiebreakers, validation | `__tests__/api/simulate.test.ts` |
-| `POST /api/pull-teams` | Team ingestion, validation | `__tests__/api/pull-teams.test.ts` |
-| `POST /api/pull-games` | Game ingestion, validation | `__tests__/api/pull-games.test.ts` |
-| Cron endpoints | Auth, accessibility | `__tests__/api/cron.test.ts` |
+| `POST /api/simulate/[sport]/[conf]` | Team rankings, championship validation, tiebreakers, input validation, dynamic routes | `__tests__/api/cfb/sec/simulate.test.ts` |
+| `POST /api/pull-teams/[sport]/[conf]` | Team count validation, idempotency, dynamic routes | `__tests__/api/cfb/pull-teams.test.ts` |
+| `POST /api/pull-games/[sport]/[conf]` | Game ingestion validation, input validation, dynamic routes | `__tests__/api/cfb/pull-games.test.ts` |
+| Cron endpoints `[sport]/[conf]/*` | Auth, accessibility, dynamic routes | `__tests__/api/cron.test.ts` |
 
-**Key Tests:** Structure validation, error handling, edge cases, cache headers
+**Key Tests:** Business logic, error handling, edge cases, API contracts, data integrity
 
 ### 2. Helper Functions (100% coverage target)
 
-- **Reshape Functions** (`lib/reshape-*.ts`) - Data transformation
-- **Tiebreaker Functions** (`lib/tiebreaker-helpers.ts`) - Rules A-E
+- **Reshape Functions** (`lib/reshape-*.ts`) - Generic data transformation (sport-agnostic)
+- **Tiebreaker Functions** (`lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`) - SEC Rules A-E
 - **Calculation Functions** - Record calculations, win percentages
 
-**Key Tests:** Transform accuracy, null handling, type casting
+**Key Tests:** Transform accuracy, null handling, edge cases, error handling
 
 ---
 
@@ -55,8 +55,10 @@ npm run test:coverage     # Generate coverage report
 
 ## Test Data Strategy
 
-- **Real ESPN Data:** Test database stores actual ESPN API snapshots
-- **Separate Databases:** `/dev` (main), `/test` (reshape tests)
+- **Real ESPN Data:** Atlas `/test` database stores actual ESPN API snapshots
+- **In-Memory Testing:** All tests use MongoDB Memory Server (isolated, no side effects)
+- **Data Seeding:** Test data is copied from Atlas `/test` to memory server at test startup
+- **Isolation:** Each test run gets a fresh in-memory database, no cleanup needed
 - **Auto-Populated:** Via `/api/cron/update-test-data` endpoint
 - **Models:** `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
 
@@ -64,9 +66,9 @@ npm run test:coverage     # Generate coverage report
 
 ## Coverage Goals
 
-- **API Endpoints:** 100% coverage (60+ tests)
-- **Helper Functions:** 100% coverage (~30 tests)
-- **Total:** ~90 tests, 300+ assertions
+- **API Endpoints:** Business logic and behavior tests (focus on logic that TypeScript can't validate)
+- **Helper Functions:** Edge cases and transformation logic tests
+- **Tiebreaker Rules:** Comprehensive Rules A-E tests
 - **Threshold:** 80% minimum enforced
 
 ---

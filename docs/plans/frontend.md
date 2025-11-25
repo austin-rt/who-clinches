@@ -26,9 +26,9 @@ High-level frontend development summary. For detailed implementation, see [`docs
 
 | Phase | Status | Description | Doc |
 |-------|--------|-------------|-----|
-| Phase 0 | ✅ Complete | Config & Setup | [archived](../HISTORICAL/archived-phases/phase-0.md) |
-| Phase 1 | ✅ Complete | Layout & Navigation | [archived](../HISTORICAL/archived-phases/phase-1.md) |
-| Phase 2 | ✅ Complete | Games List & Filtering | [archived](../HISTORICAL/archived-phases/phase-2.md) |
+| Phase 0 | ✅ Complete | Config & Setup | [archived](./HISTORICAL/archived-phases/phase-0.md) |
+| Phase 1 | ✅ Complete | Layout & Navigation | [archived](./HISTORICAL/archived-phases/phase-1.md) |
+| Phase 2 | ✅ Complete | Games List & Filtering | [archived](./HISTORICAL/archived-phases/phase-2.md) |
 | Phase 3 | 🔄 Current | Game Overrides & Score Inputs | [phase3.md](./frontend/phase3.md) |
 | Phase 4 | 📋 Planned | Simulation & Standings Display | [phase4.md](./frontend/phase4.md) |
 | Phase 5 | 📋 Planned | Team Theme Selector | [phase5.md](./frontend/phase5.md) |

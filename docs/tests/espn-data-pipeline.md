@@ -18,7 +18,9 @@ Credentials in `.env.local`:
 
 ## API Endpoints
 
-### POST /api/pull-teams/cfb/[conf]
+### POST /api/pull-teams/[sport]/[conf]
+
+**Example**: `/api/pull-teams/cfb/sec`
 
 Fetches team data from ESPN (site + core APIs) and stores in MongoDB for a specific conference.
 
@@ -39,7 +41,9 @@ curl -X POST "{BASE_URL}/api/pull-teams/cfb/sec?x-vercel-protection-bypass=${BYP
 
 ---
 
-### POST /api/pull-games/cfb/[conf]
+### POST /api/pull-games/[sport]/[conf]
+
+**Example**: `/api/pull-games/cfb/sec`
 
 Fetches game data from ESPN scoreboard API and stores in MongoDB for a specific conference.
 
@@ -67,7 +71,9 @@ curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYP
 
 ---
 
-### GET /api/games/cfb/[conf]
+### GET /api/games/[sport]/[conf]
+
+**Example**: `/api/games/cfb/sec`
 
 **Command**:
 ```bash

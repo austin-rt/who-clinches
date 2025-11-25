@@ -26,10 +26,10 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm run test -- __tests__/api/cfb/games.test.ts
+npm run test -- __tests__/api/cfb/pull-games.test.ts
 
-# Run all tests (auto-seeds main DB first)
-npm run test:all
+# Run all tests
+npm run test
 ```
 
 ## Environment Files
@@ -48,68 +48,60 @@ npm run test:all
 
 ## Test Structure
 
-- `__tests__/api/cfb/` - API endpoint tests (games, simulate, pull-teams, pull-games, cron)
-- `__tests__/lib/` - Reshape function tests (uses test DB with real ESPN data)
-- `__tests__/setup.ts` - Test helpers (fetchAPI, validateNestedFields)
+- `__tests__/api/cfb/` - API endpoint tests (simulate, pull-teams, pull-games, calculate-predicted-score, cron)
+- `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration)
+- `__tests__/lib/` - Unit tests (reshape-games, reshape-teams, extract-teams-from-scoreboard) using MongoDB Memory Server with real ESPN data
+- `__tests__/setup.ts` - Test helpers (fetchAPI)
+- `jest.server-setup.js` - Global setup (starts MongoDB Memory Server, seeds test data, starts Next.js dev server)
+- `jest.server-teardown.js` - Global teardown (stops memory server and dev server)
 
 ---
 
 ## Test Coverage
 
-- API endpoints: 60 tests (games: 16, simulate: 21, pull-teams: 10, pull-games: 10, cron: 4)
-- Reshape functions: ~30 tests
-- **Total: ~90 tests, 300+ assertions**
-
----
-
-## What's Tested
-
-- Cache headers (60s non-live, shorter for live)
-- Error messages (missing params, invalid scores, etc.)
-- Data validation (required fields, hex colors, team count, rankings)
-- Edge cases (week/state filtering, multiple overrides, tie scores)
-
----
-
-## Coverage Threshold
-
-Minimum 80% (branches, functions, lines, statements). Tests fail if below threshold.
+- API endpoints: Business logic and behavior tests (simulate, pull-teams, pull-games, calculate-predicted-score, cron)
+- Reshape functions: Edge cases and transformation logic
+- Tiebreaker rules: Comprehensive Rules A-E tests
+- **Coverage threshold:** 80% minimum (branches, functions, lines, statements)
+- **What's tested:** Business logic, edge cases, error handling, API contracts, data integrity
 
 ---
 
 ## Test Database
 
-Separate `/test` database stores ESPN API snapshots for reshape unit tests.
+**MongoDB Memory Server** - All tests run against an in-memory database (isolated, no side effects).
 
-**Setup:**
-- Run `npm run test:db:check` before reshape tests (auto-seeds if empty)
+**Test Data Source:**
+- Atlas `/test` database stores ESPN API snapshots
+- Data is copied to MongoDB Memory Server at test startup (via `jest.server-setup.js`)
 - Populated via `/api/cron/update-test-data` endpoint
 - Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
-- Separate from main database (dropping main DB doesn't affect test DB)
+
+**Setup Process:**
+1. Global setup starts MongoDB Memory Server
+2. Test data is copied from Atlas `/test` database to memory server
+3. Next.js dev server is started for API route testing
+4. Tests run against isolated in-memory database
+5. Global teardown stops memory server and dev server
+
+**Benefits:**
+- Complete isolation (no side effects on real databases)
+- Fast execution (in-memory operations)
+- No cleanup required (memory server is destroyed after tests)
 
 ---
 
 ## Troubleshooting
 
-- **TEST_DATA_ERROR**: Run `npm run test:db:check` (auto-seeds test DB)
-- **Timeouts**: Ensure dev server running (`npm run dev`), wait 5-10s for ESPN API calls
+- **TEST_DATA_ERROR**: Run `npm run test:db:check` (ensures Atlas `/test` database has data)
+- **Tests hanging**: Check logs for teardown issues. `forceExit: true` in Jest config prevents hanging
+- **Timeouts**: Test timeout is 120s per test
 - **401 Unauthorized**: Verify `CRON_SECRET` in `.env.local`
-- **Database errors**: Run `npm run db:check` or seed via API
+- **Memory server errors**: Check Atlas `/test` database accessibility
 - **Empty coverage**: Run `npm run test:coverage`, open `coverage/index.html`
-
----
+- **Port conflicts**: Global teardown should free port 3000
 
 ## CI/CD
 
 Command: `npm run test:api`  
-Expected: 5 test suites, 60 tests, ~70s execution
-
----
-
-## Summary
-
-✅ 60 API tests (5 endpoints)  
-✅ Auto database seeding  
-✅ 80% coverage threshold enforced  
-✅ Cache headers, error messages, edge cases validated  
-✅ Ready for development and CI/CD
+Expected: Test suites covering API endpoints, business logic, and edge cases

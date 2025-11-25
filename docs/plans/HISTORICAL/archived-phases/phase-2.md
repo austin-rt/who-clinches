@@ -24,11 +24,13 @@ RTK Query is already set up in `app/store/apiSlice.ts` with `useGetGamesQuery` h
 import { useGetGamesQuery } from '@/app/store/apiSlice';
 import { useMemo } from 'react';
 
-const GamesList = ({ season, conferenceId }: { season: number; conferenceId: number }) => {
+const GamesList = ({ sport, conf, season }: { sport: string; conf: string; season: number }) => {
   // RTK Query hook - automatically handles loading, error, caching, and refetching
+  // Dynamic routes require sport and conf parameters
   const { data, isLoading, isError, error } = useGetGamesQuery({
+    sport,
+    conf,
     season: season.toString(),
-    conferenceId: conferenceId.toString(),
   });
 
         // Enrich games with team metadata

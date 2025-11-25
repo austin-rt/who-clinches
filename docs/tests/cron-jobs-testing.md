@@ -22,13 +22,13 @@ BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 ```
 
-**Update Games**: `GET /api/cron/cfb/sec/update-games?mode=season` (modes: `season`, `week`, default=incomplete only). Expected: Status 200, `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors`
+**Update Games**: `GET /api/cron/[sport]/[conf]/update-games?mode=season` (e.g., `/api/cron/cfb/sec/update-games?mode=season`). Modes: `season`, `week`, default=incomplete only. Expected: Status 200, `updated`, `gamesChecked`, `activeGames`, `espnCalls`, `lastUpdated`, `errors`
 
-**Update Rankings**: `GET /api/cron/cfb/sec/update-rankings`. Expected: Status 200, `updated: 16`, `teamsChecked: 16`, `espnCalls >= 16`
+**Update Rankings**: `GET /api/cron/[sport]/[conf]/update-rankings` (e.g., `/api/cron/cfb/sec/update-rankings`). Expected: Status 200, `updated: 16`, `teamsChecked: 16`, `espnCalls >= 16`
 
-**Update Spreads**: `GET /api/cron/cfb/sec/update-spreads`. Expected: Status 200, update counts
+**Update Spreads**: `GET /api/cron/[sport]/[conf]/update-spreads` (e.g., `/api/cron/cfb/sec/update-spreads`). Expected: Status 200, update counts
 
-**Update Team Averages**: `GET /api/cron/cfb/sec/update-team-averages`. Expected: Status 200, update counts
+**Update Team Averages**: `GET /api/cron/[sport]/[conf]/update-team-averages` (e.g., `/api/cron/cfb/sec/update-team-averages`). Expected: Status 200, update counts
 
 **Batch Update (Hobby)**: `GET /api/cron/update-all`. Expected: Status 200, `success`, `jobsRun: 3`, `jobsSucceeded`, `totalDuration`, `results` array
 
@@ -36,7 +36,7 @@ CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 
 ## Authentication Tests
 
-**Missing Token**: `curl -X GET "${BASE_URL}/api/cron/cfb/sec/update-games"` → Status 401
+**Missing Token**: `curl -X GET "${BASE_URL}/api/cron/cfb/sec/update-games"` → Status 401 (dynamic route: `/api/cron/[sport]/[conf]/update-games`)
 
 **Invalid Token**: `curl -X GET "${BASE_URL}/api/cron/cfb/sec/update-games" -H "Authorization: Bearer invalid-token"` → Status 401
 

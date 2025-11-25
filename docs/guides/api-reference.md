@@ -6,7 +6,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/cfb/[conf], POST /api/pull-teams/cfb/[conf], POST /api/pull-games/cfb/[conf], POST /api/simulate/cfb/sec
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], POST /api/pull-teams/[sport]/[conf], POST /api/pull-games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
 - **[Cron Jobs](./api-reference-cron.md)** - All scheduled update endpoints
 
 ---

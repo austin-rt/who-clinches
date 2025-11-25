@@ -12,7 +12,7 @@ How data flows through the application: fetching, user interactions, and state u
 ## Game Data Fetching
 
 - RTK Query with automatic caching
-- `useGetGamesQuery` hook
+- `useGetGamesQuery({ sport, conf, season?, week?, state?, from?, to? })` hook - Dynamic routes require sport/conf parameters
 - Automatic refetch on window focus
 - `lastUpdated` synced to Redux on successful fetch
 

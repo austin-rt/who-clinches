@@ -1,7 +1,7 @@
 # Comprehensive Integration Tests for SEC Tiebreaker Rules
 
 ## Overview
-Replace existing smoke tests in `__tests__/lib/tiebreaker-rules/integration.test.ts` with comprehensive integration tests that verify:
+Replace existing smoke tests in `__tests__/api/cfb/sec/tiebreaker-rules/integration.test.ts` with comprehensive integration tests that verify:
 1. Rules cascade correctly (A → B → C → D → E)
 2. Recursion works when teams are eliminated and re-ranked
 3. Final outcomes match official SEC rules document expectations
@@ -9,7 +9,7 @@ Replace existing smoke tests in `__tests__/lib/tiebreaker-rules/integration.test
 ## Implementation Details
 
 ### File to Update
-- `__tests__/lib/tiebreaker-rules/integration.test.ts` - Replace all existing tests with comprehensive integration tests
+- `__tests__/api/cfb/sec/tiebreaker-rules/integration.test.ts` - Replace all existing tests with comprehensive integration tests
 
 ### Test Approach
 **Critical**: Tests must be written based SOLELY on the official SEC rules documents in `docs/tiebreaker-rules/sec/`. The current implementation should be ignored when writing tests. Tests verify that the implementation produces the correct outcomes according to the official rules, not that it matches current behavior.

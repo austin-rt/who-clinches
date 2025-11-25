@@ -10,6 +10,8 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 
 **Database Setup**: Fresh database with updated Game model, all conference teams pulled via `/api/pull-teams/cfb/sec`, full 2025 regular season games (weeks 1-14) pulled via `/api/pull-games/cfb/sec`
 
+**Note**: Routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is "sec" for SEC conference.
+
 **Data Requirements**: All conference teams in database, ~128 conference games (2025, weeks 1-14), games include `displayName`, team display fields, `predictedScore`, all completed games have final scores
 
 ---
@@ -21,7 +23,7 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 ```
 
-**Basic Simulate**: `POST /api/simulate/cfb/sec` with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (16 teams), `championship` (top 2), `tieLogs`. Checks: All 16 teams, ranks 1-16, team display fields populated, championship array has 2 teams
+**Basic Simulate**: `POST /api/simulate/cfb/sec` (or `/api/simulate/[sport]/[conf]` with sport="cfb", conf="sec") with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (16 teams), `championship` (top 2), `tieLogs`. Checks: All 16 teams, ranks 1-16, team display fields populated, championship array has 2 teams
 
 **Simulate with Overrides**: `{"season": 2025, "overrides": {"gameEspnId": {"homeScore": 35, "awayScore": 24}}}`. Expected: Status 200, standings reflect overrides
 
