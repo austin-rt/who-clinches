@@ -15,8 +15,12 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/$1',
   },
   testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.tsx'],
+  // Run tests sequentially to avoid race conditions with shared memory server
+  maxWorkers: 1,
+  // Force exit after tests complete to prevent hanging
+  forceExit: true,
   // Increase test timeout for API tests that may take longer
-  testTimeout: 60000,
+  testTimeout: 120000, // 2 minutes per test to account for sequential execution
   collectCoverageFrom: [
     'app/**/*.{ts,tsx}',
     'lib/**/*.{ts,tsx}',
