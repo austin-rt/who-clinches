@@ -1,20 +1,5 @@
-/**
- * SEC Tiebreaker Rule E: Capped Relative Total Scoring Margin - Unit Tests
- *
- * Tests extracted directly from the official SEC tiebreaker rules document.
- * Rule E: Capped relative total scoring margin per SportSource Analytics versus
- * all Conference opponents among the tied teams
- *
- * Rules document specifies:
- * - Each team has 6-2 conference record (8 conference games)
- * - Team A: +45.0% scoring margin
- * - Team B: +40.0% scoring margin
- * - Team C: +35.0% scoring margin
- * - Team A advances to the championship game
- */
-
 import { applyRuleEScoringMargin } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
-import { createMockGame } from './test-helpers';
+import { createGameLean } from './test-helpers';
 
 describe('SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', () => {
   describe('Two-Team Tie for Second Place', () => {
@@ -26,60 +11,268 @@ describe('SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', 
       // - Team A advances to the championship game
       const games = [
         // Team A: 8 conference games (6-2 record)
-        createMockGame('1', 'A', 'C', 35, 28, 'ALA', 'LSU'),
-        createMockGame('2', 'A', 'D', 42, 21, 'ALA', 'UGA'),
-        createMockGame('3', 'A', 'E', 35, 28, 'ALA', 'TENN'),
-        createMockGame('4', 'A', 'F', 38, 24, 'ALA', 'FLA'),
-        createMockGame('5', 'A', 'G', 35, 21, 'ALA', 'AUB'),
-        createMockGame('6', 'A', 'H', 42, 28, 'ALA', 'ARK'),
-        createMockGame('7', 'A', 'I', 24, 28, 'ALA', 'TEX'),
-        createMockGame('8', 'A', 'J', 21, 28, 'ALA', 'OKLA'),
+        createGameLean({
+          gameEspnId: '1',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+        }),
+        createGameLean({
+          gameEspnId: '2',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'D', score: 21, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '3',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '4',
+          home: { teamEspnId: 'A', score: 38, abbrev: 'ALA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '5',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'G', score: 21, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '6',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '7',
+          home: { teamEspnId: 'A', score: 24, abbrev: 'ALA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '8',
+          home: { teamEspnId: 'A', score: 21, abbrev: 'ALA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
         // Team B: 8 conference games (6-2 record)
-        createMockGame('9', 'B', 'C', 31, 24, 'UA', 'LSU'),
-        createMockGame('10', 'B', 'D', 35, 28, 'UA', 'UGA'),
-        createMockGame('11', 'B', 'E', 31, 24, 'UA', 'TENN'),
-        createMockGame('12', 'B', 'F', 35, 28, 'UA', 'FLA'),
-        createMockGame('13', 'B', 'G', 31, 24, 'UA', 'AUB'),
-        createMockGame('14', 'B', 'H', 35, 28, 'UA', 'ARK'),
-        createMockGame('15', 'B', 'I', 24, 31, 'UA', 'TEX'),
-        createMockGame('16', 'B', 'K', 21, 28, 'UA', 'MISS'),
+        createGameLean({
+          gameEspnId: '9',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+        }),
+        createGameLean({
+          gameEspnId: '10',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '11',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '12',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '13',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '14',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '15',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'I', score: 31, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '16',
+          home: { teamEspnId: 'B', score: 21, abbrev: 'UA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Additional games to establish opponent season averages (required for scoring margin calculation)
-        createMockGame('17', 'C', 'D', 28, 24, 'LSU', 'UGA'),
-        createMockGame('18', 'C', 'E', 28, 24, 'LSU', 'TENN'),
-        createMockGame('19', 'C', 'F', 24, 28, 'LSU', 'FLA'),
-        createMockGame('20', 'C', 'G', 28, 24, 'LSU', 'AUB'),
-        createMockGame('21', 'C', 'H', 24, 28, 'LSU', 'ARK'),
-        createMockGame('22', 'C', 'I', 24, 28, 'LSU', 'TEX'),
-        createMockGame('23', 'C', 'J', 24, 28, 'LSU', 'OKLA'),
-        createMockGame('24', 'C', 'K', 24, 28, 'LSU', 'MISS'),
-        createMockGame('25', 'D', 'E', 28, 24, 'UGA', 'TENN'),
-        createMockGame('26', 'D', 'F', 28, 24, 'UGA', 'FLA'),
-        createMockGame('27', 'D', 'G', 28, 24, 'UGA', 'AUB'),
-        createMockGame('28', 'D', 'H', 28, 24, 'UGA', 'ARK'),
-        createMockGame('29', 'D', 'I', 24, 28, 'UGA', 'TEX'),
-        createMockGame('30', 'D', 'J', 24, 28, 'UGA', 'OKLA'),
-        createMockGame('31', 'D', 'K', 24, 28, 'UGA', 'MISS'),
-        createMockGame('32', 'E', 'F', 28, 24, 'TENN', 'FLA'),
-        createMockGame('33', 'E', 'G', 28, 24, 'TENN', 'AUB'),
-        createMockGame('34', 'E', 'H', 28, 24, 'TENN', 'ARK'),
-        createMockGame('35', 'E', 'I', 24, 28, 'TENN', 'TEX'),
-        createMockGame('36', 'E', 'J', 24, 28, 'TENN', 'OKLA'),
-        createMockGame('37', 'E', 'K', 24, 28, 'TENN', 'MISS'),
-        createMockGame('38', 'F', 'G', 28, 24, 'FLA', 'AUB'),
-        createMockGame('39', 'F', 'H', 28, 24, 'FLA', 'ARK'),
-        createMockGame('40', 'F', 'I', 24, 28, 'FLA', 'TEX'),
-        createMockGame('41', 'F', 'J', 24, 28, 'FLA', 'OKLA'),
-        createMockGame('42', 'F', 'K', 24, 28, 'FLA', 'MISS'),
-        createMockGame('43', 'G', 'H', 28, 24, 'AUB', 'ARK'),
-        createMockGame('44', 'G', 'I', 24, 28, 'AUB', 'TEX'),
-        createMockGame('45', 'G', 'J', 24, 28, 'AUB', 'OKLA'),
-        createMockGame('46', 'G', 'K', 24, 28, 'AUB', 'MISS'),
-        createMockGame('47', 'H', 'I', 24, 28, 'ARK', 'TEX'),
-        createMockGame('48', 'H', 'J', 24, 28, 'ARK', 'OKLA'),
-        createMockGame('49', 'H', 'K', 24, 28, 'ARK', 'MISS'),
-        createMockGame('50', 'I', 'J', 28, 24, 'TEX', 'OKLA'),
-        createMockGame('51', 'I', 'K', 28, 24, 'TEX', 'MISS'),
-        createMockGame('52', 'J', 'K', 28, 24, 'OKLA', 'MISS'),
+        createGameLean({
+          gameEspnId: '17',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '18',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '19',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '20',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '21',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '22',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '23',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '24',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '25',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '26',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '27',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '28',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '29',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '30',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '31',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '32',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '33',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '34',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '35',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '36',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '37',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '38',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '39',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '40',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '41',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '42',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '43',
+          home: { teamEspnId: 'G', score: 28, abbrev: 'AUB' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '44',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '45',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '46',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '47',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '48',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '49',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '50',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'J', score: 24, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '51',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '52',
+          home: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
       ];
 
       const result = applyRuleEScoringMargin(['A', 'B'], games);
@@ -100,61 +293,269 @@ describe('SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', 
       // - Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second place
       const games = [
         // Team A: 8 conference games (6-2 record)
-        createMockGame('1', 'A', 'D', 42, 21, 'ALA', 'UGA'),
-        createMockGame('2', 'A', 'E', 35, 28, 'ALA', 'TENN'),
-        createMockGame('3', 'A', 'F', 38, 24, 'ALA', 'FLA'),
-        createMockGame('4', 'A', 'G', 35, 21, 'ALA', 'AUB'),
-        createMockGame('5', 'A', 'H', 42, 28, 'ALA', 'ARK'),
-        createMockGame('6', 'A', 'I', 35, 24, 'ALA', 'TEX'),
-        createMockGame('7', 'A', 'J', 24, 28, 'ALA', 'OKLA'),
-        createMockGame('8', 'A', 'K', 21, 28, 'ALA', 'MISS'),
+        createGameLean({
+          gameEspnId: '1',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'D', score: 21, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '2',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '3',
+          home: { teamEspnId: 'A', score: 38, abbrev: 'ALA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '4',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'G', score: 21, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '5',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '6',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '7',
+          home: { teamEspnId: 'A', score: 24, abbrev: 'ALA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '8',
+          home: { teamEspnId: 'A', score: 21, abbrev: 'ALA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Team B: 8 conference games (6-2 record)
-        createMockGame('9', 'B', 'D', 35, 28, 'UA', 'UGA'),
-        createMockGame('10', 'B', 'E', 31, 24, 'UA', 'TENN'),
-        createMockGame('11', 'B', 'F', 35, 28, 'UA', 'FLA'),
-        createMockGame('12', 'B', 'G', 31, 24, 'UA', 'AUB'),
-        createMockGame('13', 'B', 'H', 35, 28, 'UA', 'ARK'),
-        createMockGame('14', 'B', 'I', 31, 24, 'UA', 'TEX'),
-        createMockGame('15', 'B', 'J', 24, 31, 'UA', 'OKLA'),
-        createMockGame('16', 'B', 'K', 21, 28, 'UA', 'MISS'),
+        createGameLean({
+          gameEspnId: '9',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '10',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '11',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '12',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '13',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '14',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '15',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'J', score: 31, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '16',
+          home: { teamEspnId: 'B', score: 21, abbrev: 'UA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Team C: 8 conference games (6-2 record)
-        createMockGame('17', 'C', 'D', 28, 24, 'LSU', 'UGA'),
-        createMockGame('18', 'C', 'E', 28, 24, 'LSU', 'TENN'),
-        createMockGame('19', 'C', 'F', 28, 24, 'LSU', 'FLA'),
-        createMockGame('20', 'C', 'G', 28, 24, 'LSU', 'AUB'),
-        createMockGame('21', 'C', 'H', 28, 24, 'LSU', 'ARK'),
-        createMockGame('22', 'C', 'I', 28, 24, 'LSU', 'TEX'),
-        createMockGame('23', 'C', 'J', 24, 28, 'LSU', 'OKLA'),
-        createMockGame('24', 'C', 'K', 21, 28, 'LSU', 'MISS'),
+        createGameLean({
+          gameEspnId: '17',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '18',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '19',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '20',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '21',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '22',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '23',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '24',
+          home: { teamEspnId: 'C', score: 21, abbrev: 'LSU' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Additional games to establish opponent season averages (required for scoring margin calculation)
-        createMockGame('25', 'D', 'E', 28, 24, 'UGA', 'TENN'),
-        createMockGame('26', 'D', 'F', 28, 24, 'UGA', 'FLA'),
-        createMockGame('27', 'D', 'G', 28, 24, 'UGA', 'AUB'),
-        createMockGame('28', 'D', 'H', 28, 24, 'UGA', 'ARK'),
-        createMockGame('29', 'D', 'I', 24, 28, 'UGA', 'TEX'),
-        createMockGame('30', 'D', 'J', 24, 28, 'UGA', 'OKLA'),
-        createMockGame('31', 'D', 'K', 24, 28, 'UGA', 'MISS'),
-        createMockGame('32', 'E', 'F', 28, 24, 'TENN', 'FLA'),
-        createMockGame('33', 'E', 'G', 28, 24, 'TENN', 'AUB'),
-        createMockGame('34', 'E', 'H', 28, 24, 'TENN', 'ARK'),
-        createMockGame('35', 'E', 'I', 24, 28, 'TENN', 'TEX'),
-        createMockGame('36', 'E', 'J', 24, 28, 'TENN', 'OKLA'),
-        createMockGame('37', 'E', 'K', 24, 28, 'TENN', 'MISS'),
-        createMockGame('38', 'F', 'G', 28, 24, 'FLA', 'AUB'),
-        createMockGame('39', 'F', 'H', 28, 24, 'FLA', 'ARK'),
-        createMockGame('40', 'F', 'I', 24, 28, 'FLA', 'TEX'),
-        createMockGame('41', 'F', 'J', 24, 28, 'FLA', 'OKLA'),
-        createMockGame('42', 'F', 'K', 24, 28, 'FLA', 'MISS'),
-        createMockGame('43', 'G', 'H', 28, 24, 'AUB', 'ARK'),
-        createMockGame('44', 'G', 'I', 24, 28, 'AUB', 'TEX'),
-        createMockGame('45', 'G', 'J', 24, 28, 'AUB', 'OKLA'),
-        createMockGame('46', 'G', 'K', 24, 28, 'AUB', 'MISS'),
-        createMockGame('47', 'H', 'I', 24, 28, 'ARK', 'TEX'),
-        createMockGame('48', 'H', 'J', 24, 28, 'ARK', 'OKLA'),
-        createMockGame('49', 'H', 'K', 24, 28, 'ARK', 'MISS'),
-        createMockGame('50', 'I', 'J', 28, 24, 'TEX', 'OKLA'),
-        createMockGame('51', 'I', 'K', 28, 24, 'TEX', 'MISS'),
-        createMockGame('52', 'J', 'K', 28, 24, 'OKLA', 'MISS'),
+        createGameLean({
+          gameEspnId: '25',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '26',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '27',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '28',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '29',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '30',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '31',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '32',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '33',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '34',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '35',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '36',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '37',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '38',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '39',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '40',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '41',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '42',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '43',
+          home: { teamEspnId: 'G', score: 28, abbrev: 'AUB' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '44',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '45',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '46',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '47',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '48',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '49',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '50',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'J', score: 24, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '51',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '52',
+          home: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
       ];
 
       const result = applyRuleEScoringMargin(['A', 'B', 'C'], games);
@@ -198,49 +599,173 @@ describe('SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', 
       const games = [
         // The key game: Team A defeats Team B 31-28
         // Team A (home) scored 31, Team B (away) scored 28
-        createMockGame('1', 'A', 'B', 31, 28, 'ALA', 'UA'),
+        createGameLean({
+          gameEspnId: '1',
+          home: { teamEspnId: 'A', score: 31, abbrev: 'ALA' },
+          away: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
+        }),
         // Team B's other 7 games to establish season averages
         // Need: 164 points scored, 137 points allowed
         // Solution: 1 game 22/19, 2 games 23/19, 4 games 24/20
         // Total scored: 28 + 22 + 46 + 96 = 192, avg = 24 ✓
         // Total allowed: 31 + 19 + 38 + 80 = 168, avg = 21 ✓
-        createMockGame('2', 'B', 'C', 22, 19, 'UA', 'LSU'),
-        createMockGame('3', 'B', 'D', 23, 19, 'UA', 'UGA'),
-        createMockGame('4', 'B', 'E', 23, 19, 'UA', 'TENN'),
-        createMockGame('5', 'B', 'F', 24, 20, 'UA', 'FLA'),
-        createMockGame('6', 'B', 'G', 24, 20, 'UA', 'AUB'),
-        createMockGame('7', 'B', 'H', 24, 20, 'UA', 'ARK'),
-        createMockGame('8', 'B', 'I', 24, 20, 'UA', 'TEX'),
+        createGameLean({
+          gameEspnId: '2',
+          home: { teamEspnId: 'B', score: 22, abbrev: 'UA' },
+          away: { teamEspnId: 'C', score: 19, abbrev: 'LSU' },
+        }),
+        createGameLean({
+          gameEspnId: '3',
+          home: { teamEspnId: 'B', score: 23, abbrev: 'UA' },
+          away: { teamEspnId: 'D', score: 19, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '4',
+          home: { teamEspnId: 'B', score: 23, abbrev: 'UA' },
+          away: { teamEspnId: 'E', score: 19, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '5',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'F', score: 20, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '6',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'G', score: 20, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '7',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'H', score: 20, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '8',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'I', score: 20, abbrev: 'TEX' },
+        }),
         // Additional games to complete the conference schedule
         // (needed so averages are calculated correctly)
         // Additional games to complete the conference schedule
         // (needed so averages are calculated correctly)
-        createMockGame('9', 'C', 'D', 19, 22, 'LSU', 'UGA'),
-        createMockGame('10', 'C', 'E', 19, 23, 'LSU', 'TENN'),
-        createMockGame('11', 'C', 'F', 20, 24, 'LSU', 'FLA'),
-        createMockGame('12', 'C', 'G', 20, 24, 'LSU', 'AUB'),
-        createMockGame('13', 'C', 'H', 20, 24, 'LSU', 'ARK'),
-        createMockGame('14', 'C', 'I', 20, 24, 'LSU', 'TEX'),
-        createMockGame('15', 'D', 'E', 19, 23, 'UGA', 'TENN'),
-        createMockGame('16', 'D', 'F', 20, 24, 'UGA', 'FLA'),
-        createMockGame('17', 'D', 'G', 20, 24, 'UGA', 'AUB'),
-        createMockGame('18', 'D', 'H', 20, 24, 'UGA', 'ARK'),
-        createMockGame('19', 'D', 'I', 20, 24, 'UGA', 'TEX'),
-        createMockGame('20', 'E', 'F', 20, 24, 'TENN', 'FLA'),
-        createMockGame('21', 'E', 'G', 20, 24, 'TENN', 'AUB'),
-        createMockGame('22', 'E', 'H', 20, 24, 'TENN', 'ARK'),
-        createMockGame('23', 'E', 'I', 20, 24, 'TENN', 'TEX'),
-        createMockGame('24', 'F', 'G', 24, 20, 'FLA', 'AUB'),
-        createMockGame('25', 'F', 'H', 24, 20, 'FLA', 'ARK'),
-        createMockGame('26', 'F', 'I', 24, 20, 'FLA', 'TEX'),
-        createMockGame('27', 'G', 'H', 20, 24, 'AUB', 'ARK'),
-        createMockGame('28', 'G', 'I', 20, 24, 'AUB', 'TEX'),
-        createMockGame('29', 'H', 'I', 24, 20, 'ARK', 'TEX'),
+        createGameLean({
+          gameEspnId: '9',
+          home: { teamEspnId: 'C', score: 19, abbrev: 'LSU' },
+          away: { teamEspnId: 'D', score: 22, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '10',
+          home: { teamEspnId: 'C', score: 19, abbrev: 'LSU' },
+          away: { teamEspnId: 'E', score: 23, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '11',
+          home: { teamEspnId: 'C', score: 20, abbrev: 'LSU' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '12',
+          home: { teamEspnId: 'C', score: 20, abbrev: 'LSU' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '13',
+          home: { teamEspnId: 'C', score: 20, abbrev: 'LSU' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '14',
+          home: { teamEspnId: 'C', score: 20, abbrev: 'LSU' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '15',
+          home: { teamEspnId: 'D', score: 19, abbrev: 'UGA' },
+          away: { teamEspnId: 'E', score: 23, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '16',
+          home: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '17',
+          home: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '18',
+          home: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '19',
+          home: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '20',
+          home: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '21',
+          home: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '22',
+          home: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '23',
+          home: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '24',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'G', score: 20, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '25',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'H', score: 20, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '26',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'I', score: 20, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '27',
+          home: { teamEspnId: 'G', score: 20, abbrev: 'AUB' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '28',
+          home: { teamEspnId: 'G', score: 20, abbrev: 'AUB' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '29',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'I', score: 20, abbrev: 'TEX' },
+        }),
         // Add Team Z with a lower margin to ensure Team A wins
         // Team Z plays one game: scores 20, allows 20 vs opponent that averages 20 scored/20 allowed
         // Margin: (20/20)*100 - (20/20)*100 = 100 - 100 = 0%
-        createMockGame('30', 'Z', 'J', 20, 20, 'VAND', 'OKLA'),
-        createMockGame('31', 'J', 'K', 20, 20, 'OKLA', 'MISS'),
+        createGameLean({
+          gameEspnId: '30',
+          home: { teamEspnId: 'Z', score: 20, abbrev: 'VAND' },
+          away: { teamEspnId: 'J', score: 20, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '31',
+          home: { teamEspnId: 'J', score: 20, abbrev: 'OKLA' },
+          away: { teamEspnId: 'K', score: 20, abbrev: 'MISS' },
+        }),
       ];
 
       // Need at least 2 teams for the function to work (it returns early if < 2)
@@ -275,61 +800,269 @@ describe('SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', 
       // - Team A advances to the championship game
       const games = [
         // Team A: 8 conference games (6-2 record)
-        createMockGame('1', 'A', 'D', 42, 21, 'ALA', 'UGA'),
-        createMockGame('2', 'A', 'E', 35, 28, 'ALA', 'TENN'),
-        createMockGame('3', 'A', 'F', 38, 24, 'ALA', 'FLA'),
-        createMockGame('4', 'A', 'G', 35, 21, 'ALA', 'AUB'),
-        createMockGame('5', 'A', 'H', 42, 28, 'ALA', 'ARK'),
-        createMockGame('6', 'A', 'I', 35, 24, 'ALA', 'TEX'),
-        createMockGame('7', 'A', 'J', 24, 28, 'ALA', 'OKLA'),
-        createMockGame('8', 'A', 'K', 21, 28, 'ALA', 'MISS'),
+        createGameLean({
+          gameEspnId: '1',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'D', score: 21, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '2',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '3',
+          home: { teamEspnId: 'A', score: 38, abbrev: 'ALA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '4',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'G', score: 21, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '5',
+          home: { teamEspnId: 'A', score: 42, abbrev: 'ALA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '6',
+          home: { teamEspnId: 'A', score: 35, abbrev: 'ALA' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '7',
+          home: { teamEspnId: 'A', score: 24, abbrev: 'ALA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '8',
+          home: { teamEspnId: 'A', score: 21, abbrev: 'ALA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Team B: 8 conference games (6-2 record)
-        createMockGame('9', 'B', 'D', 35, 28, 'UA', 'UGA'),
-        createMockGame('10', 'B', 'E', 31, 24, 'UA', 'TENN'),
-        createMockGame('11', 'B', 'F', 35, 28, 'UA', 'FLA'),
-        createMockGame('12', 'B', 'G', 31, 24, 'UA', 'AUB'),
-        createMockGame('13', 'B', 'H', 35, 28, 'UA', 'ARK'),
-        createMockGame('14', 'B', 'I', 31, 24, 'UA', 'TEX'),
-        createMockGame('15', 'B', 'J', 24, 31, 'UA', 'OKLA'),
-        createMockGame('16', 'B', 'K', 21, 28, 'UA', 'MISS'),
+        createGameLean({
+          gameEspnId: '9',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '10',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '11',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '12',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '13',
+          home: { teamEspnId: 'B', score: 35, abbrev: 'UA' },
+          away: { teamEspnId: 'H', score: 28, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '14',
+          home: { teamEspnId: 'B', score: 31, abbrev: 'UA' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '15',
+          home: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          away: { teamEspnId: 'J', score: 31, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '16',
+          home: { teamEspnId: 'B', score: 21, abbrev: 'UA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Team C: 8 conference games (6-2 record)
-        createMockGame('17', 'C', 'D', 28, 24, 'LSU', 'UGA'),
-        createMockGame('18', 'C', 'E', 28, 24, 'LSU', 'TENN'),
-        createMockGame('19', 'C', 'F', 28, 24, 'LSU', 'FLA'),
-        createMockGame('20', 'C', 'G', 28, 24, 'LSU', 'AUB'),
-        createMockGame('21', 'C', 'H', 28, 24, 'LSU', 'ARK'),
-        createMockGame('22', 'C', 'I', 28, 24, 'LSU', 'TEX'),
-        createMockGame('23', 'C', 'J', 24, 28, 'LSU', 'OKLA'),
-        createMockGame('24', 'C', 'K', 21, 28, 'LSU', 'MISS'),
+        createGameLean({
+          gameEspnId: '17',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+        }),
+        createGameLean({
+          gameEspnId: '18',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '19',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '20',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '21',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '22',
+          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamEspnId: 'I', score: 24, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '23',
+          home: { teamEspnId: 'C', score: 24, abbrev: 'LSU' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '24',
+          home: { teamEspnId: 'C', score: 21, abbrev: 'LSU' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
         // Additional games to establish opponent season averages (required for scoring margin calculation)
-        createMockGame('25', 'D', 'E', 28, 24, 'UGA', 'TENN'),
-        createMockGame('26', 'D', 'F', 28, 24, 'UGA', 'FLA'),
-        createMockGame('27', 'D', 'G', 28, 24, 'UGA', 'AUB'),
-        createMockGame('28', 'D', 'H', 28, 24, 'UGA', 'ARK'),
-        createMockGame('29', 'D', 'I', 24, 28, 'UGA', 'TEX'),
-        createMockGame('30', 'D', 'J', 24, 28, 'UGA', 'OKLA'),
-        createMockGame('31', 'D', 'K', 24, 28, 'UGA', 'MISS'),
-        createMockGame('32', 'E', 'F', 28, 24, 'TENN', 'FLA'),
-        createMockGame('33', 'E', 'G', 28, 24, 'TENN', 'AUB'),
-        createMockGame('34', 'E', 'H', 28, 24, 'TENN', 'ARK'),
-        createMockGame('35', 'E', 'I', 24, 28, 'TENN', 'TEX'),
-        createMockGame('36', 'E', 'J', 24, 28, 'TENN', 'OKLA'),
-        createMockGame('37', 'E', 'K', 24, 28, 'TENN', 'MISS'),
-        createMockGame('38', 'F', 'G', 28, 24, 'FLA', 'AUB'),
-        createMockGame('39', 'F', 'H', 28, 24, 'FLA', 'ARK'),
-        createMockGame('40', 'F', 'I', 24, 28, 'FLA', 'TEX'),
-        createMockGame('41', 'F', 'J', 24, 28, 'FLA', 'OKLA'),
-        createMockGame('42', 'F', 'K', 24, 28, 'FLA', 'MISS'),
-        createMockGame('43', 'G', 'H', 28, 24, 'AUB', 'ARK'),
-        createMockGame('44', 'G', 'I', 24, 28, 'AUB', 'TEX'),
-        createMockGame('45', 'G', 'J', 24, 28, 'AUB', 'OKLA'),
-        createMockGame('46', 'G', 'K', 24, 28, 'AUB', 'MISS'),
-        createMockGame('47', 'H', 'I', 24, 28, 'ARK', 'TEX'),
-        createMockGame('48', 'H', 'J', 24, 28, 'ARK', 'OKLA'),
-        createMockGame('49', 'H', 'K', 24, 28, 'ARK', 'MISS'),
-        createMockGame('50', 'I', 'J', 28, 24, 'TEX', 'OKLA'),
-        createMockGame('51', 'I', 'K', 28, 24, 'TEX', 'MISS'),
-        createMockGame('52', 'J', 'K', 28, 24, 'OKLA', 'MISS'),
+        createGameLean({
+          gameEspnId: '25',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+        }),
+        createGameLean({
+          gameEspnId: '26',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '27',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '28',
+          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '29',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '30',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '31',
+          home: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '32',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+        }),
+        createGameLean({
+          gameEspnId: '33',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '34',
+          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '35',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '36',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '37',
+          home: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '38',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+        }),
+        createGameLean({
+          gameEspnId: '39',
+          home: { teamEspnId: 'F', score: 28, abbrev: 'FLA' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '40',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '41',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '42',
+          home: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '43',
+          home: { teamEspnId: 'G', score: 28, abbrev: 'AUB' },
+          away: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+        }),
+        createGameLean({
+          gameEspnId: '44',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '45',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '46',
+          home: { teamEspnId: 'G', score: 24, abbrev: 'AUB' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '47',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+        }),
+        createGameLean({
+          gameEspnId: '48',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '49',
+          home: { teamEspnId: 'H', score: 24, abbrev: 'ARK' },
+          away: { teamEspnId: 'K', score: 28, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '50',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'J', score: 24, abbrev: 'OKLA' },
+        }),
+        createGameLean({
+          gameEspnId: '51',
+          home: { teamEspnId: 'I', score: 28, abbrev: 'TEX' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
+        createGameLean({
+          gameEspnId: '52',
+          home: { teamEspnId: 'J', score: 28, abbrev: 'OKLA' },
+          away: { teamEspnId: 'K', score: 24, abbrev: 'MISS' },
+        }),
       ];
 
       const result = applyRuleEScoringMargin(['A', 'B', 'C'], games);

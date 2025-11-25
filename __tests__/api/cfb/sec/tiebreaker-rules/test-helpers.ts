@@ -1,27 +1,29 @@
-/**
- * Shared test helpers for SEC tiebreaker rules tests
- */
-
 import { GameLean } from '@/lib/types';
 
-export const createMockGame = (
-  espnId: string,
-  homeTeamId: string,
-  awayTeamId: string,
-  homeScore: number | null,
-  awayScore: number | null,
-  homeAbbrev: string,
-  awayAbbrev: string
-): GameLean => ({
-  _id: espnId,
-  espnId,
-  displayName: `${awayAbbrev} @ ${homeAbbrev}`,
+interface GameForTiebreaker {
+  gameEspnId: string;
+  home: {
+    teamEspnId: string;
+    score: number | null;
+    abbrev: string;
+  };
+  away: {
+    teamEspnId: string;
+    score: number | null;
+    abbrev: string;
+  };
+}
+
+export const createGameLean = (game: GameForTiebreaker): GameLean => ({
+  _id: game.gameEspnId,
+  espnId: game.gameEspnId,
+  displayName: `${game.away.abbrev} @ ${game.home.abbrev}`,
   season: 2025,
   week: 1,
   sport: 'football',
   league: 'college-football',
-  state: homeScore !== null && awayScore !== null ? 'post' : 'pre',
-  completed: homeScore !== null && awayScore !== null,
+  state: game.home.score !== null && game.away.score !== null ? 'post' : 'pre',
+  completed: game.home.score !== null && game.away.score !== null,
   conferenceGame: true,
   neutralSite: false,
   venue: {
@@ -32,19 +34,19 @@ export const createMockGame = (
   },
   date: '2025-09-06T12:00Z',
   home: {
-    teamEspnId: homeTeamId,
-    abbrev: homeAbbrev,
-    displayName: homeAbbrev,
-    score: homeScore,
+    teamEspnId: game.home.teamEspnId,
+    abbrev: game.home.abbrev,
+    displayName: game.home.abbrev,
+    score: game.home.score,
     rank: null,
     logo: '',
     color: '000000',
   },
   away: {
-    teamEspnId: awayTeamId,
-    abbrev: awayAbbrev,
-    displayName: awayAbbrev,
-    score: awayScore,
+    teamEspnId: game.away.teamEspnId,
+    abbrev: game.away.abbrev,
+    displayName: game.away.abbrev,
+    score: game.away.score,
     rank: null,
     logo: '',
     color: '000000',
