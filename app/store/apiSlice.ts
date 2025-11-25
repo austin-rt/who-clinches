@@ -33,15 +33,17 @@ export const apiSlice = createApi({
             dispatch(setLastUpdated(data.lastUpdated));
           }
         } catch {
-          // Ignore errors - don't update lastUpdated if query fails
         }
       },
       providesTags: ['Games'],
     }),
-    simulate: builder.mutation<SimulateResponse, SimulateRequest>({
-      query: (request) => {
+    simulate: builder.mutation<
+      SimulateResponse,
+      SimulateRequest & { sport: string; conf: string }
+    >({
+      query: ({ sport, conf, ...request }) => {
         return {
-          url: 'simulate/cfb/sec',
+          url: `simulate/${sport}/${conf}`,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: request,

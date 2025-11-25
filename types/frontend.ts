@@ -1,20 +1,9 @@
-/* Frontend-specific type definitions */
-
 import { TeamMetadata, StandingEntry, GamesResponse } from '@/lib/api-types';
 
-/**
- * Theme mode type for light/dark mode switching
- */
 export type ThemeMode = 'light' | 'dark';
 
-/**
- * View mode type for picks/scores view switching
- */
 export type ViewMode = 'picks' | 'scores';
 
-/**
- * Game from API response
- */
 export interface GameFromResponse {
   espnId: string;
   displayName: string;
@@ -36,10 +25,6 @@ export interface GameFromResponse {
   };
 }
 
-/**
- * User overrides stored in localStorage
- * Key: game ESPN ID, Value: override scores
- */
 export interface UserOverrides {
   [gameEspnId: string]: {
     homeScore: number;
@@ -47,28 +32,15 @@ export interface UserOverrides {
   };
 }
 
-/**
- * SECTeam type for specific conference teams
- * Extends TeamMetadata with conference-specific data
- */
 export type SECTeam = TeamMetadata;
 
-/**
- * Theme configuration for multi-conference support
- */
 export interface ThemeConfig {
   defaultTheme: string;
   name: string;
 }
 
-/**
- * Conference themes mapping
- */
 export interface ConferenceThemes {
   [conferenceId: string]: ThemeConfig;
 }
 
-/**
- * Re-export API types for convenience
- */
 export type { TeamMetadata, StandingEntry, GamesResponse };
