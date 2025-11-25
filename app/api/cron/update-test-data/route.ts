@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnectTest from '@/lib/mongodb-test';
+import dbConnect from '@/lib/mongodb';
+import Team from '@/lib/models/Team';
 import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestData';
 import { getESPNGameSummaryTestData } from '@/lib/models/test/ESPNGameSummaryTestData';
 import { getESPNTeamTestData } from '@/lib/models/test/ESPNTeamTestData';
 import { getESPNTeamRecordsTestData } from '@/lib/models/test/ESPNTeamRecordsTestData';
-import { espnClient } from '@/lib/cfb/espn-client';
-import { SEC_TEAMS } from '@/lib/cfb/constants';
+import { createESPNClient } from '@/lib/cfb/espn-client';
+import { sports } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -31,66 +33,25 @@ export const GET = async (request: NextRequest) => {
     const season = 2025;
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
 
-    // 3. Pull scoreboard data for all weeks
+    // 3. Pull scoreboard data for entire season using dates parameter
     try {
-      // Get all available weeks from ESPN calendar
-      let weeksToPull: number[] = [];
-      try {
-        // Fetch calendar without season parameter - ESPN only returns calendar without season
-        const calendarResponse = await espnClient.getScoreboard({
-          groups: 8, // SEC
-        });
-
-        const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
-          (cal) => cal.label === 'Regular Season'
-        );
-
-        if (regularSeason?.entries) {
-          weeksToPull = regularSeason.entries
-            .map((entry) => parseInt(entry.value, 10))
-            .filter((val: number) => !isNaN(val));
-        }
-
-        // If no weeks found from calendar, calculate maxWeek from entries if available
-        if (weeksToPull.length === 0) {
-          let maxWeek = 15; // Default fallback
-          if (regularSeason?.entries && regularSeason.entries.length > 0) {
-            // Calculate maxWeek from the highest week number in entries
-            const weekNumbers = regularSeason.entries
-              .map((entry) => parseInt(entry.value, 10))
-              .filter((val: number) => !isNaN(val));
-            if (weekNumbers.length > 0) {
-              maxWeek = Math.max(...weekNumbers);
-            }
-          }
-          weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
-        }
-      } catch {
-        // Fallback: try to use a reasonable default, but ESPN data should always be available
-        const maxWeek = 15;
-        weeksToPull = Array.from({ length: maxWeek }, (_, i) => i + 1);
-      }
+        const { espnRoute, conferences } = sports.cfb;
+        const client = createESPNClient(espnRoute);
+      const scoreboard = await client.getScoreboard({
+          groups: conferences.sec.espnId,
+        dates: season,
+      });
 
       const ScoreboardModel = await getESPNScoreboardTestData();
-      let weeksPulled = 0;
-      const weekErrors: string[] = [];
-
-      // Pull scoreboard for each week
-      for (const week of weeksToPull) {
-        try {
-          const scoreboard = await espnClient.getScoreboard({
-            groups: 8, // SEC
-            week,
-            season,
-          });
-
-          // Store each week as separate document (remove unique constraint on season)
+      
+      // Store entire season response (dates parameter returns whole season)
+      // Store with week: 0 to indicate it's the full season response
           await ScoreboardModel.findOneAndUpdate(
-            { season, week },
+        { season, week: 0 },
             {
               season,
-              week,
-              endpoint: `/v2/sports/football/leagues/college-football/scoreboard?groups=8&week=${week}&seasontype=2&dates=${season}`,
+          week: 0,
+          endpoint: `/v2/sports/football/leagues/college-football/scoreboard?groups=8&dates=${season}`,
               response: scoreboard,
               pulledAt: new Date(),
               lastUpdated: new Date(),
@@ -98,31 +59,7 @@ export const GET = async (request: NextRequest) => {
             { upsert: true }
           );
 
-          weeksPulled++;
-        } catch (error) {
-          const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-          weekErrors.push(`Week ${week}: ${errorMessage}`);
-        }
-
-        // Rate limiting between weeks
-        if (weeksToPull.length > 1) {
-          await new Promise((resolve) => setTimeout(resolve, 500));
-        }
-      }
-
-      if (weeksPulled > 0) {
-        results.push({
-          type: 'scoreboard',
-          success: true,
-          error: weekErrors.length > 0 ? weekErrors.join('; ') : undefined,
-        });
-      } else {
-        results.push({
-          type: 'scoreboard',
-          success: false,
-          error: `Failed to pull any weeks. Errors: ${weekErrors.join('; ')}`,
-        });
-      }
+      results.push({ type: 'scoreboard', success: true });
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       results.push({ type: 'scoreboard', success: false, error: errorMessage });
@@ -140,7 +77,9 @@ export const GET = async (request: NextRequest) => {
         scoreboardData.response.events.length > 0
       ) {
         const gameId = scoreboardData.response.events[0].id;
-        const gameSummary = await espnClient.getGameSummary(gameId);
+        const { espnRoute } = sports.cfb;
+        const client = createESPNClient(espnRoute);
+        const gameSummary = await client.getGameSummary(gameId);
 
         const GameSummaryModel = await getESPNGameSummaryTestData();
         await GameSummaryModel.findOneAndUpdate(
@@ -167,8 +106,18 @@ export const GET = async (request: NextRequest) => {
 
     // 5. Pull team example (first SEC team)
     try {
-      const teamAbbrev = SEC_TEAMS[0];
-      const teamResponse = await espnClient.getTeam(teamAbbrev);
+      // Get first team from SEC conference for testing (from database)
+      await dbConnect();
+      const { conferences } = sports.cfb;
+      const secTeams = await Team.find({ conferenceId: conferences.sec.espnId }).lean();
+      if (secTeams.length === 0) {
+        throw new Error('No SEC teams found in database. Call pull-games first.');
+      }
+      const firstTeam = secTeams[0];
+      const teamAbbrev = firstTeam.abbreviation;
+      const { espnRoute } = sports.cfb;
+      const client = createESPNClient(espnRoute);
+      const teamResponse = await client.getTeam(teamAbbrev);
 
       const TeamModel = await getESPNTeamTestData();
       await TeamModel.findOneAndUpdate(
@@ -193,9 +142,19 @@ export const GET = async (request: NextRequest) => {
 
     // 6. Pull team records example (same team as above)
     try {
-      const teamAbbrev = SEC_TEAMS[0];
-      const teamResponse = await espnClient.getTeam(teamAbbrev);
-      const teamRecords = await espnClient.getTeamRecords(teamResponse.team.id, season);
+      // Get first team from SEC conference for testing (from database)
+      await dbConnect();
+      const { conferences } = sports.cfb;
+      const secTeams = await Team.find({ conferenceId: conferences.sec.espnId }).lean();
+      if (secTeams.length === 0) {
+        throw new Error('No SEC teams found in database. Call pull-games first.');
+      }
+      const firstTeam = secTeams[0];
+      const teamAbbrev = firstTeam.abbreviation;
+      const { espnRoute } = sports.cfb;
+      const client = createESPNClient(espnRoute);
+      const teamResponse = await client.getTeam(teamAbbrev);
+      const teamRecords = await client.getTeamRecords(teamResponse.team.id, season);
 
       const TeamRecordsModel = await getESPNTeamRecordsTestData();
       await TeamRecordsModel.findOneAndUpdate(

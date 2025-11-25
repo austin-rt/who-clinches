@@ -2,65 +2,76 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Team from '@/lib/models/Team';
 import ErrorLog from '@/lib/models/Error';
-import { espnClient } from '@/lib/cfb/espn-client';
+import { createESPNClient } from '@/lib/cfb/espn-client';
 import {
-  CONFERENCE_TEAMS_MAP,
   RECORD_TYPE_OVERALL,
   RECORD_TYPE_HOME,
+  RECORD_TYPE_HOME_BASKETBALL,
   RECORD_TYPE_AWAY,
+  RECORD_TYPE_AWAY_BASKETBALL,
   RECORD_TYPE_CONFERENCE,
   STAT_AVG_POINTS_FOR,
   STAT_AVG_POINTS_AGAINST,
   STAT_WINS,
   STAT_LOSSES,
   STAT_DIFFERENTIAL,
-  CONFERENCE_METADATA,
+  sports,
+  type SportSlug,
   type ConferenceSlug,
-} from '@/lib/cfb/constants';
+} from '@/lib/constants';
 import { CronRankingsResponse } from '@/lib/api-types';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-export const GET = async (request: NextRequest, { params }: { params: { conf: string } }) => {
+/**
+ * Pro Mode Only: Weekly team season averages update
+ * Fetches avgPointsFor/Against from ESPN Core API
+ * Runs Sunday 1 AM ET after all week's games complete
+ */
+export const GET = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
+) => {
   // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const conf = (await params).conf as ConferenceSlug;
+  const { sport, conf } = await params;
 
-  if (!CONFERENCE_METADATA[conf]) {
+  const { conferences, espnRoute } = sports[sport];
+  const conferenceMeta = conferences[conf];
+
+  if (!conferenceMeta) {
     return NextResponse.json({ error: `Unsupported conference: ${conf}` }, { status: 400 });
-  }
-
-  const teams = CONFERENCE_TEAMS_MAP[CONFERENCE_METADATA[conf].espnId];
-  if (!teams) {
-    return NextResponse.json(
-      {
-        error: `Conference ${conf} not supported. Add conference to CONFERENCE_TEAMS_MAP in lib/cfb/constants.ts`,
-      },
-      { status: 400 }
-    );
   }
 
   try {
     // 2. Connect to database
     await dbConnect();
 
+    // Fetch teams from database (stored from pull-games scoreboard extraction)
+    const conferenceTeams = await Team.find({ conferenceId: conferenceMeta.espnId }).lean();
+
+    if (conferenceTeams.length === 0) {
+      return NextResponse.json(
+        { error: `No teams found for conference ${conf}. Call pull-games first to extract teams.` },
+        { status: 400 }
+      );
+    }
+
+    const client = createESPNClient(espnRoute);
+
     // 3. Check if in season using ESPN calendar (with manual override for testing)
-    // Use current year as season since this cron doesn't have a season parameter
     const { searchParams } = new URL(request.url);
     // Tests automatically bypass the check since they're testing functionality, not season logic
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
-    const currentSeason = new Date().getFullYear();
-    const sport = 'football';
-    const league = 'college-football';
 
-    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, league, conf, currentSeason))) {
+    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, conf))) {
       return NextResponse.json(
         {
           error:
@@ -71,30 +82,29 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
       );
     }
 
-    // 4. Update rankings and standings for all conference teams
-    // Site API provides: nationalRanking, conferenceStanding
-    // ESPN doesn't have a rankings-only endpoint, so we must call team endpoint
-
+    // 4. Update team season averages for all conference teams
     const failedTeams: string[] = [];
     let successfulUpdates = 0;
 
-    for (const teamAbbrev of teams) {
+    for (const team of conferenceTeams) {
       try {
-        // Fetch team data from Site API (rankings, standings)
-        const teamData = await espnClient.getTeam(teamAbbrev);
-
-        // Extract ranking fields
-        const nationalRanking =
-          teamData.team.rank && teamData.team.rank !== 99 ? teamData.team.rank : null;
-        const conferenceStanding = teamData.team.standingSummary;
+        const teamAbbrev = team.abbreviation;
+        // Fetch team ID first (need ID for Core API)
+        const teamData = await client.getTeam(teamAbbrev);
 
         // Fetch team record from Core API (includes avgPointsFor/Against)
-        const recordData = await espnClient.getTeamRecords(teamData.team.id);
+        const recordData = await client.getTeamRecords(teamData.team.id);
 
         // Extract records by type from Core API
+        // Note: Home/Away record types differ by sport (CFB: "homerecord"/"awayrecord", Basketball: "home"/"road")
+        // Check for both to support multiple sports
         const overallRecord = recordData?.items?.find((item) => item.name === RECORD_TYPE_OVERALL);
-        const homeRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_HOME);
-        const awayRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_AWAY);
+        const homeRecord = recordData?.items?.find(
+          (item) => item.type === RECORD_TYPE_HOME || item.type === RECORD_TYPE_HOME_BASKETBALL
+        );
+        const awayRecord = recordData?.items?.find(
+          (item) => item.type === RECORD_TYPE_AWAY || item.type === RECORD_TYPE_AWAY_BASKETBALL
+        );
         const conferenceRecord = recordData?.items?.find(
           (item) => item.type === RECORD_TYPE_CONFERENCE
         );
@@ -116,19 +126,16 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
 
         let recordStats;
         if (useSiteAPI) {
-          // Parse Site API format (same flat array structure)
-          const getSiteStatValue = (statName: string): number => {
-            return siteStats.find((s) => s.name === statName)?.value ?? 0;
-          };
+          // Parse Site API format
           recordStats = {
-            wins: getSiteStatValue('wins'),
-            losses: getSiteStatValue('losses'),
-            winPercent: getSiteStatValue('winPercent'),
-            pointsFor: getSiteStatValue('pointsFor'),
-            pointsAgainst: getSiteStatValue('pointsAgainst'),
-            pointDifferential: getSiteStatValue('pointDifferential'),
-            avgPointsFor: getSiteStatValue('avgPointsFor'),
-            avgPointsAgainst: getSiteStatValue('avgPointsAgainst'),
+            wins: getStatValue(siteStats, 'wins'),
+            losses: getStatValue(siteStats, 'losses'),
+            winPercent: getStatValue(siteStats, 'winPercent'),
+            pointsFor: getStatValue(siteStats, 'pointsFor'),
+            pointsAgainst: getStatValue(siteStats, 'pointsAgainst'),
+            pointDifferential: getStatValue(siteStats, 'pointDifferential'),
+            avgPointsFor: getStatValue(siteStats, 'avgPointsFor'),
+            avgPointsAgainst: getStatValue(siteStats, 'avgPointsAgainst'),
           };
         } else {
           // Parse Core API format (flat stats array)
@@ -144,13 +151,11 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
           };
         }
 
-        // Update team with rankings AND season averages
+        // Update only record and stats fields (not rankings - those are handled by update-rankings cron)
         await Team.updateOne(
           { _id: teamData.team.id },
           {
             $set: {
-              nationalRanking,
-              conferenceStanding,
               'record.overall':
                 overallRecord?.summary || teamData.team.record?.items?.[0]?.summary || null,
               'record.conference': conferenceRecord?.summary || null,
@@ -174,15 +179,14 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
         // Rate limit between calls (2 API calls per team)
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
-        // Log error and track failed team for retry
         await ErrorLog.create({
           timestamp: new Date(),
-          endpoint: `/api/cron/cfb/${conf}/update-rankings`,
-          payload: { team: teamAbbrev, conf },
+          endpoint: `/api/cron/${sport}/${conf}/update-team-averages`,
+          payload: { team: team.abbreviation, conf },
           error: error instanceof Error ? error.message : String(error),
           stackTrace: error instanceof Error ? error.stack || '' : '',
         });
-        failedTeams.push(teamAbbrev);
+        failedTeams.push(team.abbreviation);
       }
     }
 
@@ -194,22 +198,19 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
 
       for (const teamAbbrev of failedTeams) {
         try {
-          // Retry: Fetch team data from Site API
-          const teamData = await espnClient.getTeam(teamAbbrev);
-
-          const nationalRanking =
-            teamData.team.rank && teamData.team.rank !== 99 ? teamData.team.rank : null;
-          const conferenceStanding = teamData.team.standingSummary;
-
-          // Retry: Fetch team record from Core API
-          const recordData = await espnClient.getTeamRecords(teamData.team.id);
+          const teamData = await client.getTeam(teamAbbrev);
+          const recordData = await client.getTeamRecords(teamData.team.id);
 
           // Extract records by type from Core API
           const overallRecord = recordData?.items?.find(
             (item) => item.name === RECORD_TYPE_OVERALL
           );
-          const homeRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_HOME);
-          const awayRecord = recordData?.items?.find((item) => item.type === RECORD_TYPE_AWAY);
+          const homeRecord = recordData?.items?.find(
+            (item) => item.type === RECORD_TYPE_HOME || item.type === RECORD_TYPE_HOME_BASKETBALL
+          );
+          const awayRecord = recordData?.items?.find(
+            (item) => item.type === RECORD_TYPE_AWAY || item.type === RECORD_TYPE_AWAY_BASKETBALL
+          );
           const conferenceRecord = recordData?.items?.find(
             (item) => item.type === RECORD_TYPE_CONFERENCE
           );
@@ -263,8 +264,6 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
             { _id: teamData.team.id },
             {
               $set: {
-                nationalRanking,
-                conferenceStanding,
                 'record.overall':
                   overallRecord?.summary || teamData.team.record?.items?.[0]?.summary || null,
                 'record.conference': conferenceRecord?.summary || null,
@@ -284,13 +283,11 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
           );
 
           successfulUpdates++;
-
           await new Promise((resolve) => setTimeout(resolve, 500));
         } catch (error) {
-          // Log retry failure - will be handled by next week's cron
           await ErrorLog.create({
             timestamp: new Date(),
-            endpoint: `/api/cron/cfb/${conf}/update-rankings`,
+            endpoint: `/api/cron/${sport}/${conf}/update-team-averages`,
             payload: { team: teamAbbrev, conf, retry: true },
             error: error instanceof Error ? error.message : String(error),
             stackTrace: error instanceof Error ? error.stack || '' : '',
@@ -298,24 +295,18 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
           retryFailures.push(teamAbbrev);
         }
       }
-
-      // Update failed teams list to only include those that failed retry
-      failedTeams.length = 0;
-      failedTeams.push(...retryFailures);
     }
 
     return NextResponse.json<CronRankingsResponse>({
       updated: successfulUpdates,
-      teamsChecked: teams.length,
-      espnCalls: teams.length + (teams.length - successfulUpdates), // Original attempts + retries
+      teamsChecked: conferenceTeams.length,
+      espnCalls: successfulUpdates * 2, // 2 API calls per successful team
       lastUpdated: new Date().toISOString(),
-      errors: failedTeams.length > 0 ? failedTeams : undefined,
     });
   } catch (error) {
-    // Unexpected error - log and return
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-rankings`,
+      endpoint: `/api/cron/${sport}/${conf}/update-team-averages`,
       payload: { conf },
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',

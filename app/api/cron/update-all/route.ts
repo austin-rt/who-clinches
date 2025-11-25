@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SUPPORTED_SPORTS_CONFS } from '@/lib/cfb/supported-config';
+import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -55,13 +55,17 @@ export const GET = async (request: NextRequest) => {
   }> = [];
 
   // Loop through all supported sport/conf combinations
-  for (const { sport, conf } of SUPPORTED_SPORTS_CONFS) {
+  for (const [sport, sportConfig] of Object.entries(sports)) {
+    for (const conf of Object.keys(sportConfig.conferences)) {
+      const sportSlug = sport as SportSlug;
+      const confSlug = conf as ConferenceSlug;
+
     // 1. Pull teams
     try {
       const start = Date.now();
       const pullTeamsUrl = bypassParam
-        ? `${baseUrl}/api/pull-teams/${sport}/${conf}?${bypassParam}`
-        : `${baseUrl}/api/pull-teams/${sport}/${conf}`;
+          ? `${baseUrl}/api/pull-teams/${sportSlug}/${confSlug}?${bypassParam}`
+          : `${baseUrl}/api/pull-teams/${sportSlug}/${confSlug}`;
       const response = await fetch(pullTeamsUrl, {
         method: 'POST',
         headers: {
@@ -73,14 +77,14 @@ export const GET = async (request: NextRequest) => {
       const duration = Date.now() - start;
 
       results.push({
-        job: `pull-teams-${sport}-${conf}`,
+          job: `pull-teams-${sportSlug}-${confSlug}`,
         success: response.ok,
         status: response.status,
         duration,
       });
     } catch (error) {
       results.push({
-        job: `pull-teams-${sport}-${conf}`,
+          job: `pull-teams-${sportSlug}-${confSlug}`,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: 0,
@@ -91,8 +95,8 @@ export const GET = async (request: NextRequest) => {
     try {
       const start = Date.now();
       const pullGamesUrl = bypassParam
-        ? `${baseUrl}/api/pull-games/${sport}/${conf}?${bypassParam}`
-        : `${baseUrl}/api/pull-games/${sport}/${conf}`;
+          ? `${baseUrl}/api/pull-games/${sportSlug}/${confSlug}?${bypassParam}`
+          : `${baseUrl}/api/pull-games/${sportSlug}/${confSlug}`;
       const response = await fetch(pullGamesUrl, {
         method: 'POST',
         headers: {
@@ -106,14 +110,14 @@ export const GET = async (request: NextRequest) => {
       const duration = Date.now() - start;
 
       results.push({
-        job: `pull-games-${sport}-${conf}`,
+          job: `pull-games-${sportSlug}-${confSlug}`,
         success: response.ok,
         status: response.status,
         duration,
       });
     } catch (error) {
       results.push({
-        job: `pull-games-${sport}-${conf}`,
+          job: `pull-games-${sportSlug}-${confSlug}`,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: 0,
@@ -124,8 +128,8 @@ export const GET = async (request: NextRequest) => {
     try {
       const start = Date.now();
       const updateRankingsUrl = bypassParam
-        ? `${baseUrl}/api/cron/${sport}/${conf}/update-rankings?${bypassParam}`
-        : `${baseUrl}/api/cron/${sport}/${conf}/update-rankings`;
+          ? `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-rankings?${bypassParam}`
+          : `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-rankings`;
       const response = await fetch(updateRankingsUrl, {
         method: 'GET',
         headers: authHeaders,
@@ -133,14 +137,14 @@ export const GET = async (request: NextRequest) => {
       const duration = Date.now() - start;
 
       results.push({
-        job: `update-rankings-${sport}-${conf}`,
+          job: `update-rankings-${sportSlug}-${confSlug}`,
         success: response.ok,
         status: response.status,
         duration,
       });
     } catch (error) {
       results.push({
-        job: `update-rankings-${sport}-${conf}`,
+          job: `update-rankings-${sportSlug}-${confSlug}`,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: 0,
@@ -151,8 +155,8 @@ export const GET = async (request: NextRequest) => {
     try {
       const start = Date.now();
       const updateSpreadsUrl = bypassParam
-        ? `${baseUrl}/api/cron/${sport}/${conf}/update-spreads?${bypassParam}`
-        : `${baseUrl}/api/cron/${sport}/${conf}/update-spreads`;
+          ? `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-spreads?${bypassParam}`
+          : `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-spreads`;
       const response = await fetch(updateSpreadsUrl, {
         method: 'GET',
         headers: authHeaders,
@@ -160,14 +164,14 @@ export const GET = async (request: NextRequest) => {
       const duration = Date.now() - start;
 
       results.push({
-        job: `update-spreads-${sport}-${conf}`,
+          job: `update-spreads-${sportSlug}-${confSlug}`,
         success: response.ok,
         status: response.status,
         duration,
       });
     } catch (error) {
       results.push({
-        job: `update-spreads-${sport}-${conf}`,
+          job: `update-spreads-${sportSlug}-${confSlug}`,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: 0,
@@ -178,8 +182,8 @@ export const GET = async (request: NextRequest) => {
     try {
       const start = Date.now();
       const updateTeamAveragesUrl = bypassParam
-        ? `${baseUrl}/api/cron/${sport}/${conf}/update-team-averages?${bypassParam}`
-        : `${baseUrl}/api/cron/${sport}/${conf}/update-team-averages`;
+          ? `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-team-averages?${bypassParam}`
+          : `${baseUrl}/api/cron/${sportSlug}/${confSlug}/update-team-averages`;
       const response = await fetch(updateTeamAveragesUrl, {
         method: 'GET',
         headers: authHeaders,
@@ -187,18 +191,19 @@ export const GET = async (request: NextRequest) => {
       const duration = Date.now() - start;
 
       results.push({
-        job: `update-team-averages-${sport}-${conf}`,
+          job: `update-team-averages-${sportSlug}-${confSlug}`,
         success: response.ok,
         status: response.status,
         duration,
       });
     } catch (error) {
       results.push({
-        job: `update-team-averages-${sport}-${conf}`,
+          job: `update-team-averages-${sportSlug}-${confSlug}`,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         duration: 0,
       });
+      }
     }
   }
 

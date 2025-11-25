@@ -6,8 +6,8 @@ import {
   loadTeamRecordsTestData,
   checkTestDataAvailable,
 } from '@/__tests__/helpers/test-data-loader';
-import { reshapeScoreboardData } from '@/lib/cfb/helpers/reshape-games';
-import { reshapeTeamData } from '@/lib/cfb/helpers/reshape-teams';
+import { reshapeScoreboardData } from '@/lib/reshape-games';
+import { reshapeTeamData } from '@/lib/reshape-teams';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

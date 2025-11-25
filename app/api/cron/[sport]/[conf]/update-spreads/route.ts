@@ -3,9 +3,9 @@ import dbConnect from '@/lib/mongodb';
 import Game from '@/lib/models/Game';
 import Team from '@/lib/models/Team';
 import ErrorLog from '@/lib/models/Error';
-import { espnClient } from '@/lib/cfb/espn-client';
-import { reshapeScoreboardData } from '@/lib/cfb/helpers/reshape-games';
-import { CONFERENCE_METADATA, type ConferenceSlug } from '@/lib/cfb/constants';
+import { createESPNClient } from '@/lib/cfb/espn-client';
+import { reshapeScoreboardData } from '@/lib/reshape-games';
+import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { CronGamesResponse } from '@/lib/api-types';
 import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
@@ -17,16 +17,22 @@ export const dynamic = 'force-dynamic';
  * Pro Mode Only: Hourly spread updates for upcoming games
  * Updates betting odds and recalculates predictedScore
  */
-export const GET = async (request: NextRequest, { params }: { params: { conf: string } }) => {
+export const GET = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
+) => {
   // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const conf = (await params).conf as ConferenceSlug;
+  const { sport, conf } = await params;
 
-  if (!CONFERENCE_METADATA[conf]) {
+  const { conferences, espnRoute } = sports[sport];
+  const conferenceMeta = conferences[conf];
+
+  if (!conferenceMeta) {
     return NextResponse.json({ error: `Unsupported conference: ${conf}` }, { status: 400 });
   }
 
@@ -40,10 +46,8 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
     const season = 2025; // Hardcoded for now
-    const sport = 'football';
-    const league = 'college-football';
 
-    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, league, conf, season))) {
+    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, conf))) {
       return NextResponse.json(
         {
           error:
@@ -84,14 +88,15 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
     }
 
     // 5. Fetch scoreboard from ESPN
-    const scoreboard = await espnClient.getScoreboard({
-      groups: CONFERENCE_METADATA[conf].espnId,
+    const client = createESPNClient(espnRoute);
+    const scoreboard = await client.getScoreboard({
+      groups: conferenceMeta.espnId,
       week: parseInt(String(currentWeek), 10),
       season: 2025,
     });
 
     // 6. Reshape ESPN data
-    const result = reshapeScoreboardData(scoreboard, 'football', 'college-football');
+    const result = reshapeScoreboardData(scoreboard, espnRoute);
     const reshapedGames = result.games || [];
 
     // 7. Filter to only games we have in DB
@@ -170,7 +175,7 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
   } catch (error) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-spreads`,
+      endpoint: `/api/cron/${sport}/${conf}/update-spreads`,
       payload: { conf },
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',

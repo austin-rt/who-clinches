@@ -3,9 +3,9 @@ import dbConnect from '@/lib/mongodb';
 import Game from '@/lib/models/Game';
 import Team from '@/lib/models/Team';
 import ErrorLog from '@/lib/models/Error';
-import { espnClient, createESPNClient } from '@/lib/cfb/espn-client';
-import { reshapeScoreboardData } from '@/lib/cfb/helpers/reshape-games';
-import { CONFERENCE_METADATA, type ConferenceSlug } from '@/lib/cfb/constants';
+import { createESPNClient } from '@/lib/cfb/espn-client';
+import { reshapeScoreboardData } from '@/lib/reshape-games';
+import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { CronGamesResponse } from '@/lib/api-types';
 import { GameLean, GameState } from '@/lib/types';
 import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
@@ -22,16 +22,22 @@ export const dynamic = 'force-dynamic';
  * - week: Pull/update current week only (no past, no future)
  * - season: Pull/update entire season (all weeks, creates new games)
  */
-export const GET = async (request: NextRequest, { params }: { params: { conf: string } }) => {
+export const GET = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
+) => {
   // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const conf = (await params).conf as ConferenceSlug;
+  const { sport, conf } = await params;
 
-  if (!CONFERENCE_METADATA[conf]) {
+  const { conferences, espnRoute } = sports[sport];
+  const conferenceMeta = conferences[conf];
+
+  if (!conferenceMeta) {
     return NextResponse.json({ error: `Unsupported conference: ${conf}` }, { status: 400 });
   }
 
@@ -44,15 +50,13 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
     const mode = searchParams.get('mode') || 'active'; // active, week, or season
 
     const season = 2025; // Hardcoded for now
-    const sport = 'football';
-    const league = 'college-football';
 
     // 4. Check if in season using ESPN calendar (with manual override for testing)
     // Tests automatically bypass the check since they're testing functionality, not season logic
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
 
-    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, league, conf, season))) {
+    if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, conf))) {
       return NextResponse.json(
         {
           error:
@@ -66,19 +70,19 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
     // 5. Handle different modes
     if (mode === 'season') {
       // Pull entire season - loop through all weeks and upsert
-      return await handleSeasonMode(season, sport, league, conf);
+      return await handleSeasonMode(season, sport, espnRoute, conf);
     } else if (mode === 'week') {
       // Pull current week only
-      return await handleWeekMode(season, sport, league, conf);
+      return await handleWeekMode(season, sport, espnRoute, conf, conferenceMeta);
     } else {
       // Default: active mode - only incomplete games
-      return await handleActiveMode(season, sport, league, conf);
+      return await handleActiveMode(season, sport, espnRoute, conf, conferenceMeta);
     }
   } catch (error) {
     // Unexpected error - log and return
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-games`,
+      endpoint: `/api/cron/${sport}/${conf}/update-games`,
       payload: { conf },
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',
@@ -98,8 +102,8 @@ export const GET = async (request: NextRequest, { params }: { params: { conf: st
  */
 const handleSeasonMode = async (
   season: number,
-  sport: string,
-  league: string,
+  sport: SportSlug,
+  espnRoute: string,
   conf: ConferenceSlug
 ): Promise<NextResponse<CronGamesResponse>> => {
   const baseUrl = process.env.VERCEL_URL
@@ -135,8 +139,8 @@ const handleSeasonMode = async (
   } catch (error) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-games`,
-      payload: { mode: 'season', season, sport, league, conf },
+      endpoint: `/api/cron/${sport}/${conf}/update-games`,
+      payload: { mode: 'season', season, sport, espnRoute, conf },
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',
     });
@@ -157,18 +161,19 @@ const handleSeasonMode = async (
  */
 const handleWeekMode = async (
   season: number,
-  sport: string,
-  league: string,
-  conf: ConferenceSlug
+  sport: SportSlug,
+  espnRoute: string,
+  conf: ConferenceSlug,
+  conferenceMeta: { espnId: string }
 ): Promise<NextResponse<CronGamesResponse>> => {
-  const client = createESPNClient(sport, league);
+  const client = createESPNClient(espnRoute);
 
   // Get current week from ESPN calendar
   let currentWeek: number | null = null;
   try {
     // Fetch calendar without season parameter - ESPN only returns calendar without season
     const calendarResponse = await client.getScoreboard({
-      groups: CONFERENCE_METADATA[conf].espnId,
+      groups: conferenceMeta.espnId,
     });
 
     const regularSeason = calendarResponse.leagues?.[0]?.calendar?.find(
@@ -209,7 +214,7 @@ const handleWeekMode = async (
   } catch (error) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-games`,
+      endpoint: `/api/cron/${sport}/${conf}/update-games`,
       payload: { mode: 'week', season, conf },
       error: `Failed to determine current week: ${
         error instanceof Error ? error.message : String(error)
@@ -276,7 +281,7 @@ const handleWeekMode = async (
   } catch (error) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-games`,
+      endpoint: `/api/cron/${sport}/${conf}/update-games`,
       payload: { mode: 'week', season, week: currentWeek, conf },
       error: error instanceof Error ? error.message : String(error),
       stackTrace: error instanceof Error ? error.stack || '' : '',
@@ -298,9 +303,10 @@ const handleWeekMode = async (
  */
 const handleActiveMode = async (
   season: number,
-  sport: string,
-  league: string,
-  conf: ConferenceSlug
+  sport: SportSlug,
+  espnRoute: string,
+  conf: ConferenceSlug,
+  conferenceMeta: { espnId: string }
 ): Promise<NextResponse<CronGamesResponse>> => {
   // Query only incomplete games
   const gamesRaw = await Game.find({
@@ -404,8 +410,9 @@ const handleActiveMode = async (
     let espnResponse;
     try {
       espnCalls++;
-      espnResponse = await espnClient.getScoreboard({
-        groups: CONFERENCE_METADATA[conf].espnId,
+      const client = createESPNClient(espnRoute);
+      espnResponse = await client.getScoreboard({
+        groups: conferenceMeta.espnId,
         season: season,
         week: week,
       });
@@ -417,7 +424,7 @@ const handleActiveMode = async (
     }
 
     // Reshape ESPN response
-    const result = reshapeScoreboardData(espnResponse, sport, league);
+    const result = reshapeScoreboardData(espnResponse, espnRoute);
     const reshapedGames = result.games || [];
 
     // Update each game
@@ -509,7 +516,7 @@ const handleActiveMode = async (
   if (errors.length > 0) {
     await ErrorLog.create({
       timestamp: new Date(),
-      endpoint: `/api/cron/cfb/${conf}/update-games`,
+      endpoint: `/api/cron/${sport}/${conf}/update-games`,
       payload: { mode: 'active', season, conf },
       error: errors.join('; '),
       stackTrace: '',
