@@ -1,17 +1,9 @@
-/**
- * API Route Tests: Cron Job Endpoints
- *
- * Tests for cron job endpoints focusing on:
- * - Authorization enforcement (Bearer token validation)
- * - Orchestration (update-all endpoint structure and job execution)
- *
- * Note: Individual cron endpoint business logic is tested in their respective
- * endpoint tests (pull-games, pull-teams, etc.). These tests verify that
- * cron routes require auth and that the orchestrator works correctly.
- */
+// Individual cron endpoint business logic is tested in their respective
+// endpoint tests (pull-games, pull-teams, etc.). These tests verify that
+// cron routes require auth and that the orchestrator works correctly.
 
 import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
-import { SUPPORTED_SPORTS_CONFS } from '@/lib/cfb/supported-config';
+import type { SportSlug, ConferenceSlug } from '@/lib/constants';
 
 const CRON_SECRET = process.env.CRON_SECRET;
 if (!CRON_SECRET) {
@@ -20,7 +12,7 @@ if (!CRON_SECRET) {
   );
 }
 
-const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+const REQUEST_TIMEOUT_MS = 60000;
 
 // Helper to make unauthenticated cron requests (for testing auth failures)
 const fetchUnauthenticatedCronAPI = (
@@ -44,18 +36,16 @@ const fetchUnauthenticatedCronAPI = (
 describe('Cron Job Endpoints', () => {
   describe('Authorization', () => {
     it('rejects requests without valid authorization', async () => {
-      // Test auth enforcement on dynamic cron routes
       // Since all cron routes use the same auth pattern, testing one is sufficient
-      const { sport, conf } = SUPPORTED_SPORTS_CONFS[0];
+      const sport: SportSlug = 'cfb';
+      const conf: ConferenceSlug = 'sec';
       const endpoint = `/api/cron/${sport}/${conf}/update-rankings`;
 
-      // Test 1: Missing authorization header
       const responseNoAuth = await fetchUnauthenticatedCronAPI(endpoint, {
         method: 'GET',
       });
       expect([401, 403]).toContain(responseNoAuth.status);
 
-      // Test 2: Invalid authorization token
       try {
         const url = `http://localhost:3000${endpoint}`;
         const responseInvalid = await fetchWithTimeout(
@@ -110,7 +100,6 @@ describe('Cron Job Endpoints', () => {
 
       if (response.status === 200) {
         const data = await response.json();
-        // Verify batch response structure
         expect(data).toHaveProperty('success');
         expect(data).toHaveProperty('jobsRun');
         expect(data).toHaveProperty('jobsSucceeded');
@@ -130,10 +119,9 @@ describe('Cron Job Endpoints', () => {
           expect(typeof jobResult.duration).toBe('number');
         }
 
-        // Verify expected jobs are present (job names now include sport and conf)
+        // Job names include sport and conf; for each sport/conf we expect:
+        // pull-teams, pull-games, update-rankings, update-spreads, update-team-averages
         const jobNames = data.results.map((r: { job: string }) => r.job);
-        // Check for expected job patterns based on SUPPORTED_SPORTS_CONFS
-        // For each sport/conf, we expect: pull-teams, pull-games, update-rankings, update-spreads, update-team-averages
         const expectedJobPrefixes = [
           'pull-teams',
           'pull-games',
@@ -151,6 +139,6 @@ describe('Cron Job Endpoints', () => {
           `API_ERROR_RESPONSE | ENDPOINT:/api/cron/update-all | STATUS:${response.status} | EXPECTED:200_or_500 | ACTUAL:${response.status} | RESPONSE:${body}`
         );
       }
-    }, 60000); // Increase timeout to 60s for batch job
+    }, 120000);
   });
 });

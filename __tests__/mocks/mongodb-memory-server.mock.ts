@@ -16,18 +16,28 @@ let isConnected = false;
  * Call in beforeAll() hook
  */
 export const startMongoMemoryServer = async () => {
+  console.log('[MongoDB Memory Server] startMongoMemoryServer() called');
   if (mongoServer) {
-    return mongoServer.getUri();
+    const uri = mongoServer.getUri();
+    console.log(`[MongoDB Memory Server] Memory server already exists, returning URI: ${uri}`);
+    return uri;
   }
 
+  console.log('[MongoDB Memory Server] Creating new MongoMemoryServer...');
   mongoServer = await MongoMemoryServer.create();
   const mongoUri = mongoServer.getUri();
+  console.log(`[MongoDB Memory Server] MongoMemoryServer created, URI: ${mongoUri}`);
 
   if (mongoose.connection.readyState !== 1) {
+    console.log(`[MongoDB Memory Server] Connecting mongoose (readyState: ${mongoose.connection.readyState})...`);
     await mongoose.connect(mongoUri);
     isConnected = true;
+    console.log(`[MongoDB Memory Server] Mongoose connected (readyState: ${mongoose.connection.readyState})`);
+  } else {
+    console.log('[MongoDB Memory Server] Mongoose already connected');
   }
 
+  console.log('[MongoDB Memory Server] startMongoMemoryServer() complete');
   return mongoUri;
 };
 
@@ -36,15 +46,25 @@ export const startMongoMemoryServer = async () => {
  * Call in afterAll() hook
  */
 export const stopMongoMemoryServer = async () => {
+  console.log('[MongoDB Memory Server] stopMongoMemoryServer() called');
   if (isConnected && mongoose.connection.readyState === 1) {
+    console.log(`[MongoDB Memory Server] Disconnecting mongoose (readyState: ${mongoose.connection.readyState})...`);
     await mongoose.disconnect();
     isConnected = false;
+    console.log('[MongoDB Memory Server] Mongoose disconnected');
+  } else {
+    console.log(`[MongoDB Memory Server] Mongoose not connected (isConnected: ${isConnected}, readyState: ${mongoose.connection.readyState})`);
   }
 
   if (mongoServer) {
+    console.log('[MongoDB Memory Server] Stopping MongoMemoryServer...');
     await mongoServer.stop();
     mongoServer = null;
+    console.log('[MongoDB Memory Server] MongoMemoryServer stopped');
+  } else {
+    console.log('[MongoDB Memory Server] No MongoMemoryServer to stop');
   }
+  console.log('[MongoDB Memory Server] stopMongoMemoryServer() complete');
 };
 
 /**
@@ -53,17 +73,25 @@ export const stopMongoMemoryServer = async () => {
  * Note: Connection should be established before calling this function
  */
 export const clearMongoMemoryServerData = async () => {
+  console.log('[MongoDB Memory Server] clearMongoMemoryServerData() called');
   // Connection should be ready (established via dbConnect() before calling this)
-  if (mongoose.connection.readyState !== 1) {
+  const readyState = mongoose.connection.readyState;
+  console.log(`[MongoDB Memory Server] Connection readyState: ${readyState}`);
+  if (readyState !== 1) {
     throw new Error(
-      `Cannot clear MongoDB Memory Server data: connection not ready. ReadyState: ${mongoose.connection.readyState}`
+      `Cannot clear MongoDB Memory Server data: connection not ready. ReadyState: ${readyState}`
     );
   }
   const collections = mongoose.connection.collections;
-  for (const key in collections) {
+  const collectionNames = Object.keys(collections);
+  console.log(`[MongoDB Memory Server] Found ${collectionNames.length} collections to clear`);
+  for (const key of collectionNames) {
+    console.log(`[MongoDB Memory Server] Clearing collection: ${key}...`);
     const collection = collections[key];
-    await collection.deleteMany({});
+    const result = await collection.deleteMany({});
+    console.log(`[MongoDB Memory Server] Cleared ${result.deletedCount} documents from ${key}`);
   }
+  console.log('[MongoDB Memory Server] clearMongoMemoryServerData() complete');
 };
 
 /**

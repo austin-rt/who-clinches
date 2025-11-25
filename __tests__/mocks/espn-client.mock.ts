@@ -15,7 +15,7 @@ import {
   loadTeamRecordsTestData,
   loadGameSummaryTestData,
 } from '../helpers/test-data-loader';
-import dbConnectTest from '@/lib/mongodb-test';
+import dbConnect from '@/lib/mongodb';
 import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestData';
 
 const SEASON = 2025;
@@ -36,17 +36,20 @@ export class MockESPNClient {
    * Mock getScoreboard - returns test data from MongoDB Atlas /test database
    * Handles both calendar fetching (no season/week) and game fetching (with season/week)
    */
-  async getScoreboard(params: {
-    groups?: number;
-    season?: number;
-    week?: number;
-  } = {}): Promise<EspnScoreboardGenerated> {
-    await dbConnectTest();
+  async getScoreboard(
+    params: {
+      groups?: number;
+      season?: number;
+      week?: number;
+      dates?: number | string;
+    } = {}
+  ): Promise<EspnScoreboardGenerated> {
+    await dbConnect();
     const Model = await getESPNScoreboardTestData();
 
-    // If no season/week specified, this is likely a calendar fetch
+    // If no season/week/dates specified, this is likely a calendar fetch
     // Return the first available scoreboard data (which contains calendar)
-    if (!params.season && params.week === undefined) {
+    if (!params.season && params.week === undefined && params.dates === undefined) {
       const data = await Model.findOne({ season: SEASON }).sort({ week: 1 });
       if (!data) {
         throw new Error(
@@ -69,6 +72,23 @@ export class MockESPNClient {
       }
     }
 
+    // If dates is specified (full season fetch), return full season response (week: 0)
+    // Real ESPN API with dates=2025 returns entire season in one response
+    if (params.dates !== undefined) {
+      const data = await Model.findOne({ season: SEASON, week: 0 });
+      if (!data) {
+        // Fallback to first week if full season not available
+        const fallback = await Model.findOne({ season: SEASON }).sort({ week: 1 });
+        if (!fallback) {
+          throw new Error(
+            `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | NOTE:Run /api/cron/update-test-data to populate test data`
+          );
+        }
+        return fallback.response;
+      }
+      return data.response;
+    }
+
     // Default: return first available scoreboard data
     const data = await Model.findOne({ season: SEASON }).sort({ week: 1 });
     if (!data) {
@@ -82,10 +102,8 @@ export class MockESPNClient {
   /**
    * Mock getTeam - returns test data from MongoDB Atlas /test database
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getTeam(teamAbbrev: string): Promise<EspnTeamGenerated> {
-    // Test data loader doesn't take teamAbbrev, it just returns the stored team data
-    // This is fine for tests - we're testing route logic, not team-specific data
+    void teamAbbrev;
     return await loadTeamTestData();
   }
 
@@ -94,23 +112,21 @@ export class MockESPNClient {
    */
   async getTeamRecords(
     teamId: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     season: number = SEASON,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     seasonType: number = 2
   ): Promise<EspnTeamRecordsGenerated> {
-    // Test data loader doesn't take teamId, it just returns the stored team records
-    // This is fine for tests - we're testing route logic, not team-specific data
+    void teamId;
+    void season;
+    void seasonType;
     return await loadTeamRecordsTestData();
   }
 
   /**
    * Mock getGameSummary - returns test data from MongoDB Atlas /test database
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   async getGameSummary(gameId: string): Promise<EspnGameSummaryGenerated> {
-    // Test data loader doesn't take gameId, it just returns the stored game summary
-    // This is fine for tests - we're testing route logic, not game-specific data
+    void gameId;
     return await loadGameSummaryTestData();
   }
 
@@ -130,4 +146,3 @@ export class MockESPNClient {
 export const createMockESPNClient = (sport: string, league: string) => {
   return new MockESPNClient(sport, league);
 };
-

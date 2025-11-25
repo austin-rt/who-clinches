@@ -6,14 +6,9 @@
  * Uses real ESPN API response snapshots from test database.
  */
 
-import { reshapeTeamData, reshapeTeamsData } from '@/lib/reshape-teams';
+import { reshapeTeamData } from '@/lib/reshape-teams';
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
-import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
-import {
-  loadTeamTestData,
-  loadTeamRecordsTestData,
-  checkTestDataAvailable,
-} from '../helpers/test-data-loader';
+import { loadTeamTestData, checkTestDataAvailable } from '../helpers/test-data-loader';
 import { dbDisconnectTest } from '@/lib/mongodb-test';
 
 describe('reshapeTeamData', () => {
@@ -139,71 +134,5 @@ describe('reshapeTeamData', () => {
       // Should still have a conferenceId (may default to SEC)
       expect(result?.conferenceId).toBeDefined();
     });
-  });
-});
-
-describe('reshapeTeamsData', () => {
-  let teamResponse: EspnTeamGenerated;
-  let recordResponse: EspnTeamRecordsGenerated;
-
-  beforeAll(async () => {
-    try {
-      const available = await checkTestDataAvailable();
-      if (!available.available) {
-        throw new Error(
-          `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_data | MISSING_TYPES:${available.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
-        );
-      }
-
-      teamResponse = await loadTeamTestData();
-      recordResponse = await loadTeamRecordsTestData();
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      throw new Error(
-        `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated by running /api/cron/update-test-data, then update reshape functions if API format changed`
-      );
-    }
-  });
-
-  afterAll(async () => {
-    // Close MongoDB connection to prevent Jest from hanging
-    await dbDisconnectTest();
-  });
-
-  it('transforms multiple team responses', () => {
-    const result = reshapeTeamsData([
-      {
-        abbreviation: teamResponse.team.abbreviation,
-        data: teamResponse,
-        recordData: recordResponse,
-      },
-      {
-        abbreviation: teamResponse.team.abbreviation,
-        data: teamResponse,
-        recordData: recordResponse,
-      },
-    ]);
-
-    expect(result).toHaveLength(2);
-    expect(result[0]._id).toBe(teamResponse.team.id);
-    expect(result[1]._id).toBe(teamResponse.team.id);
-  });
-
-  it('filters out null results', () => {
-    const invalidResponse = { team: null };
-    const result = reshapeTeamsData([
-      {
-        abbreviation: teamResponse.team.abbreviation,
-        data: teamResponse,
-        recordData: recordResponse,
-      },
-      {
-        abbreviation: 'INV',
-        data: invalidResponse as unknown as EspnTeamGenerated,
-        recordData: recordResponse,
-      },
-    ]);
-
-    expect(result).toHaveLength(1);
   });
 });

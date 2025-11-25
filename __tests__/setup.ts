@@ -135,30 +135,50 @@ const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => 
 };
 
 // Global test configuration
+// Note: Console logging is NOT suppressed to allow debugging and progress tracking
+// If you need to suppress specific logs, do it in individual test files
 beforeAll(() => {
-  // Suppress console output during tests
-  jest.spyOn(console, 'log').mockImplementation(() => {});
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+  console.log('[Test Setup] ===== beforeAll() START =====');
+  // Don't suppress console output - we want to see what's happening
+  // jest.spyOn(console, 'log').mockImplementation(() => {});
+  // jest.spyOn(console, 'warn').mockImplementation(() => {});
+  // jest.spyOn(console, 'error').mockImplementation(() => {});
+  console.log('[Test Setup] ===== beforeAll() COMPLETE =====');
 });
 
 afterAll(async () => {
+  console.log('[Test Setup] ===== afterAll() START =====');
+  console.log('[Test Setup] Restoring all mocks...');
   jest.restoreAllMocks();
+  console.log('[Test Setup] Mocks restored');
   // Ensure all database connections are closed
   // This is a safety net - the global teardown will also handle cleanup
   try {
+    console.log('[Test Setup] Closing database connections...');
     // eslint-disable-next-line @typescript-eslint/no-require-imports -- Dynamic import needed for cleanup
     const mongoose = require('mongoose');
+    console.log('[Test Setup] Mongoose required');
     // eslint-disable-next-line @typescript-eslint/no-require-imports -- Dynamic import needed for cleanup
     const { dbDisconnectTest } = require('../lib/mongodb-test');
+    console.log('[Test Setup] dbDisconnectTest imported');
 
+    console.log('[Test Setup] Calling dbDisconnectTest()...');
     await dbDisconnectTest();
+    console.log('[Test Setup] dbDisconnectTest() complete');
 
     // Close any remaining mongoose connections
-    if (mongoose.connection.readyState !== 0) {
+    const readyState = mongoose.connection.readyState;
+    console.log(`[Test Setup] Checking default mongoose connection (readyState: ${readyState})...`);
+    if (readyState !== 0) {
+      console.log('[Test Setup] Disconnecting default mongoose connection...');
       await mongoose.disconnect();
+      console.log('[Test Setup] Default mongoose connection disconnected');
+    } else {
+      console.log('[Test Setup] Default mongoose connection already closed');
     }
-  } catch {
+  } catch (error) {
+    console.log(`[Test Setup] Error in afterAll cleanup: ${error instanceof Error ? error.message : String(error)}`);
     // Ignore errors if connection is already closed or already disconnected
   }
+  console.log('[Test Setup] ===== afterAll() COMPLETE =====');
 });

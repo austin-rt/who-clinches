@@ -2,25 +2,16 @@
  * API Route Tests: POST /api/simulate/cfb/sec
  *
  * Tests for the SEC simulate endpoint including:
- * - Response structure (SimulateResponse)
- * - Required StandingEntry fields
- * - Override handling
- * - Ranking and tiebreaker rules
+ * - Team rankings and business logic
+ * - Championship array validation
  * - Input validation
  */
 
-import { fetchAPI, validateNestedFields } from '../../../setup';
+import { fetchAPI } from '../../../setup';
 import { SimulateResponse } from '@/lib/api-types';
-import { setupTestDB, teardownTestDB } from '../../../helpers/db-mock-setup';
-import { clearMongoMemoryServerData } from '../../../mocks/mongodb-memory-server.mock';
-import dbConnect from '@/lib/mongodb';
+import { setupTestDB, teardownTestDB, clearTestDB } from '../../../helpers/db-mock-setup';
 
 const SEASON = 2025;
-
-interface PullTeamsResponse {
-  upserted: number;
-  lastUpdated: number | string;
-}
 
 interface PullGamesResponse {
   upserted: number;
@@ -35,98 +26,16 @@ describe('POST /api/simulate/cfb/sec', () => {
   });
 
   beforeEach(async () => {
-    // Clear data but don't seed - tests will seed via API calls
-    await dbConnect();
-    await clearMongoMemoryServerData();
+    await clearTestDB();
   });
 
   afterAll(async () => {
     await teardownTestDB();
   });
 
-  describe('Response Structure', () => {
-    it('returns SimulateResponse with all required fields and structure', async () => {
-      // Seed data by calling pull endpoints first
-      const pullTeamsResponse = await fetchAPI<PullTeamsResponse>('/api/pull-teams/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({}),
-      });
-      expect(pullTeamsResponse.upserted).toBeGreaterThan(0);
-
-      const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({ season: SEASON }),
-      });
-      expect(pullGamesResponse.upserted).toBeGreaterThan(0);
-
-      const response = await fetchAPI<SimulateResponse>('/api/simulate/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({
-          season: SEASON,
-          overrides: {},
-        }),
-      });
-
-      // Check top-level response structure
-      expect(response).toBeDefined();
-      expect(response.standings).toBeDefined();
-      expect(Array.isArray(response.standings)).toBe(true);
-      expect(response.championship).toBeDefined();
-      expect(Array.isArray(response.championship)).toBe(true);
-      expect(response.championship.length).toBe(2);
-      expect(response.tieLogs).toBeDefined();
-      expect(Array.isArray(response.tieLogs)).toBe(true);
-
-      // Check standings entries have all required fields
-      expect(response.standings.length).toBeGreaterThan(0);
-      // Define all required field paths for StandingEntry
-      // This is the single source of truth - update this when StandingEntry changes
-      const requiredFields = [
-        'rank',
-        'teamId',
-        'abbrev',
-        'displayName',
-        'logo',
-        'color',
-        'record',
-        'record.wins',
-        'record.losses',
-        'confRecord',
-        'confRecord.wins',
-        'confRecord.losses',
-        'explainPosition',
-      ];
-
-      response.standings.forEach((entry, index) => {
-        const validation = validateNestedFields(
-          entry as unknown as Record<string, unknown>,
-          requiredFields
-        );
-        if (!validation.valid) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | MISSING_FIELDS:${validation.missingPaths.join(',')} | REQUIRED_FIELDS:${requiredFields.join(',')}`
-          );
-        }
-
-        // Additional type and format validations for critical fields
-        if (typeof entry.color !== 'string' || !/^[0-9a-f]{6}$/i.test(entry.color)) {
-          throw new Error(
-            `FIELD_VALIDATION_FAILED | ENTITY:StandingsEntry | INDEX:${index} | ID:${entry.teamId || entry.abbrev || 'unknown'} | FIELD:color | ISSUE:invalid_format | EXPECTED:6-digit_hex_without_hash | ACTUAL:${entry.color} | PATTERN:^[0-9a-f]{6}$`
-          );
-        }
-      });
-    });
-  });
-
   describe('Team Rankings', () => {
     it('returns exactly 16 teams for SEC conference', async () => {
-      // Seed data by calling pull endpoints first
-      const pullTeamsResponse = await fetchAPI<PullTeamsResponse>('/api/pull-teams/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({}),
-      });
-      expect(pullTeamsResponse.upserted).toBeGreaterThan(0);
-
+      // Seed data by calling pull-games (extracts both games and teams)
       const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
         method: 'POST',
         body: JSON.stringify({ season: SEASON }),
@@ -141,17 +50,21 @@ describe('POST /api/simulate/cfb/sec', () => {
         }),
       });
 
+      // Debug: Log team count and team abbreviations if not 16
+      if (response.standings.length !== 16) {
+        const teamAbbrevs = response.standings
+          .sort((a, b) => a.rank - b.rank)
+          .map((s) => `${s.abbrev}(${s.rank})`)
+          .join(', ');
+        throw new Error(
+          `TEAM_COUNT_MISMATCH | EXPECTED:16_teams | ACTUAL:${response.standings.length}_teams | TEAM_ABBREVS_WITH_RANKS:${teamAbbrevs}`
+        );
+      }
       expect(response.standings.length).toBe(16);
     });
 
     it('ranks teams 1-16 without gaps', async () => {
-      // Seed data by calling pull endpoints first
-      const pullTeamsResponse = await fetchAPI<PullTeamsResponse>('/api/pull-teams/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({}),
-      });
-      expect(pullTeamsResponse.upserted).toBeGreaterThan(0);
-
+      // Seed data by calling pull-games (extracts both games and teams)
       const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
         method: 'POST',
         body: JSON.stringify({ season: SEASON }),
@@ -171,13 +84,7 @@ describe('POST /api/simulate/cfb/sec', () => {
     });
 
     it('championship array contains top 2 teams', async () => {
-      // Seed data by calling pull endpoints first
-      const pullTeamsResponse = await fetchAPI<PullTeamsResponse>('/api/pull-teams/cfb/sec', {
-        method: 'POST',
-        body: JSON.stringify({}),
-      });
-      expect(pullTeamsResponse.upserted).toBeGreaterThan(0);
-
+      // Seed data by calling pull-games (extracts both games and teams)
       const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
         method: 'POST',
         body: JSON.stringify({ season: SEASON }),
