@@ -8,7 +8,7 @@ import {
 } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
 import { GameLean } from '@/lib/types';
-import { CONFERENCE_METADATA, type ConferenceSlug } from '@/lib/cfb/constants';
+import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,16 +24,20 @@ export const POST = async (
       return NextResponse.json({ error: 'Missing required field: season' }, { status: 400 });
     }
 
-    const conf = 'sec' as ConferenceSlug;
+    const sport: SportSlug = 'cfb';
+    const conf: ConferenceSlug = 'sec';
 
-    if (!CONFERENCE_METADATA[conf]) {
+    const { conferences } = sports[sport];
+    const conferenceMeta = conferences[conf];
+
+    if (!conferenceMeta) {
       return NextResponse.json({ error: 'Unsupported conference: sec' }, { status: 400 });
     }
 
     await dbConnect();
 
     const conferenceTeams = await Team.find({
-      conferenceId: CONFERENCE_METADATA[conf].espnId.toString(),
+      conferenceId: conferenceMeta.espnId,
     })
       .lean()
       .exec();
@@ -66,12 +70,21 @@ export const POST = async (
 
     const teamSet = new Set<string>();
     for (const game of finalGames) {
+      if (conferenceTeamIds.has(game.home.teamEspnId)) {
       teamSet.add(game.home.teamEspnId);
+      }
+      if (conferenceTeamIds.has(game.away.teamEspnId)) {
       teamSet.add(game.away.teamEspnId);
+      }
     }
     const allTeams = Array.from(teamSet);
 
-    const { standings, tieLogs } = calculateStandings(finalGames, allTeams);
+    const conferenceGamesOnly = finalGames.filter(
+      (game) =>
+        conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
+    );
+
+    const { standings, tieLogs } = calculateStandings(conferenceGamesOnly, allTeams);
 
     return NextResponse.json<SimulateResponse>(
       {
