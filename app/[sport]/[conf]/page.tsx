@@ -7,20 +7,22 @@ import ViewModeButton from '@/app/components/ViewModeButton';
 import HideCompletedButton from '@/app/components/HideCompletedButton';
 import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
-import { CONFERENCE_METADATA, type ConferenceSlug } from '@/lib/cfb/constants';
+import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 
 const ConferencePage = () => {
   const params = useParams();
-  const sport = params.sport as string;
+  const sport = params.sport as SportSlug;
   const conf = params.conf as ConferenceSlug;
   const currentSeason = useMemo(() => new Date().getFullYear(), []);
   const { mode } = useUIState();
 
-  const conferenceName = CONFERENCE_METADATA[conf]?.name;
-  const conferenceId = CONFERENCE_METADATA[conf]?.espnId;
+  const { conferences } = sports[sport];
+  const conferenceMeta = conferences[conf];
+  const conferenceName = conferenceMeta?.name;
+  const conferenceId = conferenceMeta?.espnId;
 
-  if (!conferenceName || !conferenceId || !['cfb'].includes(sport)) {
+  if (!conferenceName || !conferenceId || !(sport in sports)) {
     return (
       <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <div className="flex flex-col gap-2">

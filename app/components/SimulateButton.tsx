@@ -1,4 +1,5 @@
 'use client';
+import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
 import { SimulateRequest } from '@/lib/api-types';
 import { xLog } from '@/lib/xLog';
@@ -6,12 +7,16 @@ import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { useUIState } from '../store/useUI';
 import { useSimulateMutation } from '../store/apiSlice';
+import { type SportSlug, type ConferenceSlug } from '@/lib/constants';
 
 interface SimulateButtonProps {
   season: number;
 }
 
 const SimulateButton = ({ season }: SimulateButtonProps) => {
+  const params = useParams();
+  const sport = params.sport as SportSlug;
+  const conf = params.conf as ConferenceSlug;
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
 
   const { mode } = useUIState();
@@ -37,7 +42,7 @@ const SimulateButton = ({ season }: SimulateButtonProps) => {
     xLog('Simulate Request Payload:', payload);
 
     try {
-      const response = await simulate(payload).unwrap();
+      const response = await simulate({ ...payload, sport, conf }).unwrap();
 
       // Format response for readable testing
       xLog('=== SIMULATE RESPONSE ===');
