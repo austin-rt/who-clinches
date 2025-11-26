@@ -2,17 +2,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ThemeMode, ViewMode } from '@/types/frontend';
 
 interface UIState {
-  theme: string; // Team theme (e.g., 'sec', 'alabama')
-  mode: ThemeMode; // Light/dark mode
-  view: ViewMode; // Picks/scores view mode
-  hideCompletedGames: boolean; // Whether to hide completed games
-  lastUpdated: string | null; // Last time scoreboard was pulled from ESPN
+  theme: string;
+  mode: ThemeMode;
+  view: ViewMode;
+  hideCompletedGames: boolean;
+  lastUpdated: string | null;
 }
 
 const initialState: UIState = {
   theme: 'sec',
   mode: 'light',
-  view: 'picks', // Default to picks (compact) view
+  view: 'picks',
   hideCompletedGames: false,
   lastUpdated: null,
 };
