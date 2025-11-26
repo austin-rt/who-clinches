@@ -106,8 +106,6 @@ describe('calculatePredictedScore', () => {
 
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
-      // At 0-0, falls through to calculation (not prediction)
-      // Home = round(28) = 28, Away = round(28 - 3) = 25
       expect(result.home).toBe(28);
       expect(result.away).toBe(25);
     });
@@ -115,39 +113,23 @@ describe('calculatePredictedScore', () => {
 
   describe('Pre-Game Calculations - With Spread', () => {
     it('calculates score from spread when favorite is home', () => {
-      const game = createReshapedGame(
-        'pre',
-        null,
-        null,
-        -7, // Home favorite by 7
-        '25' // Alabama (home) is favorite
-      );
-      const homeTeam = createTeamForPrediction(28); // Alabama avg 28
-      const awayTeam = createTeamForPrediction(24); // LSU avg 24
+      const game = createReshapedGame('pre', null, null, -7, '25');
+      const homeTeam = createTeamForPrediction(28);
+      const awayTeam = createTeamForPrediction(24);
 
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
-      // Home favorite score = 28 (rounded avg)
-      // Away underdog score = 28 - 7 = 21
       expect(result.home).toBe(28);
       expect(result.away).toBe(21);
     });
 
     it('calculates score from spread when favorite is away', () => {
-      const game = createReshapedGame(
-        'pre',
-        null,
-        null,
-        7, // Away favorite by 7
-        '2335' // LSU (away) is favorite
-      );
-      const homeTeam = createTeamForPrediction(28); // Alabama
-      const awayTeam = createTeamForPrediction(28); // LSU
+      const game = createReshapedGame('pre', null, null, 7, '2335');
+      const homeTeam = createTeamForPrediction(28);
+      const awayTeam = createTeamForPrediction(28);
 
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
-      // Away favorite score = 28
-      // Home underdog score = 28 - 7 = 21
       expect(result.home).toBe(21);
       expect(result.away).toBe(28);
     });
@@ -161,8 +143,6 @@ describe('calculatePredictedScore', () => {
 
       const result = calculatePredictedScore(game, homeTeam, awayTeam);
 
-      // Home = round(28) = 28
-      // Away = round(28 - 3) = 25
       expect(result.home).toBe(28);
       expect(result.away).toBe(25);
     });

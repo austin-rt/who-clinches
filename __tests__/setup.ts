@@ -1,29 +1,17 @@
-/**
- * Jest Setup and Test Helpers
- *
- * Global test configuration, mocks, and utility functions.
- */
-
+/* eslint-disable no-console, @typescript-eslint/no-require-imports */
 import 'dotenv/config';
 import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 const VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
-const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
+const REQUEST_TIMEOUT_MS = 60000;
 
-/**
- * Fetch helper for API tests
- * Generic type T allows specifying expected response type
- * Automatically adds bypass token for preview/production deployments
- * Includes 60-second timeout to prevent hanging requests
- */
 export const fetchAPI = async <T = unknown>(
   endpoint: string,
   options: RequestInit & { method?: string } = {}
 ): Promise<T> => {
   let url = `${BASE_URL}${endpoint}`;
 
-  // Add bypass token for preview/production deployments
   const isPreviewOrProduction = BASE_URL.includes('vercel.app');
   if (isPreviewOrProduction && VERCEL_AUTOMATION_BYPASS_SECRET) {
     const urlObj = new URL(url);
@@ -38,11 +26,11 @@ export const fetchAPI = async <T = unknown>(
   const response = await fetchWithTimeout(
     url,
     {
-    ...options,
-    headers: {
-      ...defaultHeaders,
-      ...options.headers,
-    },
+      ...options,
+      headers: {
+        ...defaultHeaders,
+        ...options.headers,
+      },
     },
     REQUEST_TIMEOUT_MS
   );
@@ -55,9 +43,6 @@ export const fetchAPI = async <T = unknown>(
   return response.json() as Promise<T>;
 };
 
-/**
- * Create test override scores for simulation
- */
 export const createOverride = (
   gameEspnId: string,
   homeScore: number,
@@ -66,16 +51,10 @@ export const createOverride = (
   return [gameEspnId, { homeScore, awayScore }];
 };
 
-/**
- * Sleep helper for timing issues
- */
 export const sleep = (ms: number): Promise<void> => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
-/**
- * Validate required fields in an object
- */
 export const validateFields = <T extends Record<string, unknown>>(
   obj: T,
   requiredFields: (keyof T)[]
@@ -87,10 +66,6 @@ export const validateFields = <T extends Record<string, unknown>>(
   };
 };
 
-/**
- * Validate nested required fields using dot-notation paths
- * Example: ['espnId', 'venue.fullName', 'home.teamEspnId']
- */
 export const validateNestedFields = (
   obj: Record<string, unknown>,
   requiredPaths: string[]
@@ -113,10 +88,6 @@ export const validateNestedFields = (
   };
 };
 
-/**
- * Get nested value from object using dot-notation path
- * Example: getNestedValue(obj, 'venue.fullName') => obj.venue.fullName
- */
 const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => {
   const parts = path.split('.');
   let current: unknown = obj;
@@ -134,15 +105,8 @@ const getNestedValue = (obj: Record<string, unknown>, path: string): unknown => 
   return current;
 };
 
-// Global test configuration
-// Note: Console logging is NOT suppressed to allow debugging and progress tracking
-// If you need to suppress specific logs, do it in individual test files
 beforeAll(() => {
   console.log('[Test Setup] ===== beforeAll() START =====');
-  // Don't suppress console output - we want to see what's happening
-  // jest.spyOn(console, 'log').mockImplementation(() => {});
-  // jest.spyOn(console, 'warn').mockImplementation(() => {});
-  // jest.spyOn(console, 'error').mockImplementation(() => {});
   console.log('[Test Setup] ===== beforeAll() COMPLETE =====');
 });
 
@@ -151,14 +115,10 @@ afterAll(async () => {
   console.log('[Test Setup] Restoring all mocks...');
   jest.restoreAllMocks();
   console.log('[Test Setup] Mocks restored');
-  // Ensure all database connections are closed
-  // This is a safety net - the global teardown will also handle cleanup
   try {
     console.log('[Test Setup] Closing database connections...');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports -- Dynamic import needed for cleanup
     const mongoose = require('mongoose');
     console.log('[Test Setup] Mongoose required');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports -- Dynamic import needed for cleanup
     const { dbDisconnectTest } = require('../lib/mongodb-test');
     console.log('[Test Setup] dbDisconnectTest imported');
 
@@ -166,7 +126,6 @@ afterAll(async () => {
     await dbDisconnectTest();
     console.log('[Test Setup] dbDisconnectTest() complete');
 
-    // Close any remaining mongoose connections
     const readyState = mongoose.connection.readyState;
     console.log(`[Test Setup] Checking default mongoose connection (readyState: ${readyState})...`);
     if (readyState !== 0) {
@@ -177,8 +136,9 @@ afterAll(async () => {
       console.log('[Test Setup] Default mongoose connection already closed');
     }
   } catch (error) {
-    console.log(`[Test Setup] Error in afterAll cleanup: ${error instanceof Error ? error.message : String(error)}`);
-    // Ignore errors if connection is already closed or already disconnected
+    console.log(
+      `[Test Setup] Error in afterAll cleanup: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
   console.log('[Test Setup] ===== afterAll() COMPLETE =====');
 });

@@ -1,7 +1,3 @@
-// Individual cron endpoint business logic is tested in their respective
-// endpoint tests (pull-games, pull-teams, etc.). These tests verify that
-// cron routes require auth and that the orchestrator works correctly.
-
 import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 import type { SportSlug, ConferenceSlug } from '@/lib/constants';
 
@@ -14,7 +10,6 @@ if (!CRON_SECRET) {
 
 const REQUEST_TIMEOUT_MS = 60000;
 
-// Helper to make unauthenticated cron requests (for testing auth failures)
 const fetchUnauthenticatedCronAPI = (
   endpoint: string,
   options: RequestInit & { method?: string } = {}
@@ -36,7 +31,6 @@ const fetchUnauthenticatedCronAPI = (
 describe('Cron Job Endpoints', () => {
   describe('Authorization', () => {
     it('rejects requests without valid authorization', async () => {
-      // Since all cron routes use the same auth pattern, testing one is sufficient
       const sport: SportSlug = 'cfb';
       const conf: ConferenceSlug = 'sec';
       const endpoint = `/api/cron/${sport}/${conf}/update-rankings`;
@@ -89,7 +83,6 @@ describe('Cron Job Endpoints', () => {
         REQUEST_TIMEOUT_MS
       );
 
-      // Should return 200 or 500 (if processing), not 404 or 401
       expect(response.status).not.toBe(404);
       if (response.status === 401) {
         const body = await response.text().catch(() => 'unable to read response');
@@ -110,7 +103,6 @@ describe('Cron Job Endpoints', () => {
         expect(data.jobsSucceeded).toBeGreaterThanOrEqual(0);
         expect(data.jobsSucceeded).toBeLessThanOrEqual(data.jobsRun);
 
-        // Verify each job result has required fields
         for (const jobResult of data.results) {
           expect(jobResult).toHaveProperty('job');
           expect(jobResult).toHaveProperty('success');
@@ -119,8 +111,6 @@ describe('Cron Job Endpoints', () => {
           expect(typeof jobResult.duration).toBe('number');
         }
 
-        // Job names include sport and conf; for each sport/conf we expect:
-        // pull-teams, pull-games, update-rankings, update-spreads, update-team-averages
         const jobNames = data.results.map((r: { job: string }) => r.job);
         const expectedJobPrefixes = [
           'pull-teams',

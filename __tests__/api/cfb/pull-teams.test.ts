@@ -25,7 +25,6 @@ describe.each(CFB_CONFS)('POST /api/pull-teams/cfb/%s', (conf) => {
 
   describe('Conference Pull', () => {
     it(`pulls all ${conf.toUpperCase()} teams`, async () => {
-      // Clear teams to ensure extraction happens
       const conferenceMeta = sports.cfb.conferences[conf];
       await Team.deleteMany({ conferenceId: conferenceMeta.espnId });
 
@@ -40,7 +39,6 @@ describe.each(CFB_CONFS)('POST /api/pull-teams/cfb/%s', (conf) => {
 
   describe('Existing Teams', () => {
     it('returns existing team count when teams already exist', async () => {
-      // Call pull-games first to seed teams
       interface PullGamesResponse {
         upserted: number;
         weeksPulled: number[];
@@ -52,7 +50,6 @@ describe.each(CFB_CONFS)('POST /api/pull-teams/cfb/%s', (conf) => {
       });
       expect(pullGamesResponse.upserted).toBeGreaterThan(0);
 
-      // Now call pull-teams (should return existing count, not extract again)
       const pullTeamsResponse = await fetchAPI<PullTeamsResponse>(`/api/pull-teams/cfb/${conf}`, {
         method: 'POST',
         body: JSON.stringify({}),

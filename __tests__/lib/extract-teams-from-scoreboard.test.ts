@@ -1,10 +1,3 @@
-/**
- * Unit Tests: Extract Teams From Scoreboard
- *
- * Tests for extracting teams from ESPN scoreboard responses.
- * Pure function test - no database or server required.
- */
-
 import { extractTeamsFromScoreboard } from '@/lib/reshape-teams-from-scoreboard';
 import { sports } from '@/lib/constants';
 import type { EspnScoreboardGenerated } from '@/lib/espn/espn-scoreboard-generated';

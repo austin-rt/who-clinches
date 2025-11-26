@@ -1,11 +1,3 @@
-/**
- * Unit Tests: Reshape Games Functions
- *
- * Tests for ESPN scoreboard data transformation into our internal format.
- * Validates game state parsing, score extraction, ranking handling, and odds parsing.
- * Uses real ESPN API response snapshots from test database.
- */
-
 import { reshapeScoreboardData } from '@/lib/reshape-games';
 import type {
   Competition,
@@ -16,7 +8,6 @@ import type {
 import { loadScoreboardTestData, checkTestDataAvailable } from '../helpers/test-data-loader';
 import { dbDisconnectTest } from '@/lib/mongodb-test';
 
-// Helper to create a minimal Odd object for testing
 const createTestOdd = (overrides: Partial<Odd>): Odd => ({
   provider: {
     id: '1',
@@ -138,7 +129,6 @@ const createTestOdd = (overrides: Partial<Odd>): Odd => ({
   ...overrides,
 });
 
-// Helper to create modified events for edge case testing
 const createTestEvent = (baseEvent: Event, overrides: Partial<Event['competitions'][0]>): Event => {
   const competition = baseEvent.competitions[0];
   return {
@@ -174,7 +164,6 @@ describe('reshapeScoreboardData', () => {
   });
 
   afterAll(async () => {
-    // Close MongoDB connection to prevent Jest from hanging
     await dbDisconnectTest();
   });
 
@@ -186,7 +175,6 @@ describe('reshapeScoreboardData', () => {
         );
       }
 
-      // Create a pre-game event from the first event
       const firstEvent = scoreboardResponse.events[0];
       const preGameEvent = createTestEvent(firstEvent, {
         status: {
@@ -228,7 +216,6 @@ describe('reshapeScoreboardData', () => {
         );
       }
 
-      // Create an in-progress event
       const firstEvent = scoreboardResponse.events[0];
       const inProgressEvent = createTestEvent(firstEvent, {
         status: {
@@ -495,7 +482,7 @@ describe('reshapeScoreboardData', () => {
         odds: [
           createTestOdd({
             details: 'Spread',
-            spread: -7, // Home favorite by 7
+            spread: -7,
             overUnder: 54.5,
             awayTeamOdds: {
               favorite: false,
@@ -521,9 +508,6 @@ describe('reshapeScoreboardData', () => {
       const result = reshapeScoreboardData(response);
       const game = result.games![0];
 
-      // With overUnder = 54.5, spread = -7 (home favorite):
-      // Favored (home) = round(54.5 / 2 + 7) = round(27.25 + 7) = round(34.25) = 34
-      // Underdog (away) = round(54.5 / 2 - 7) = round(27.25 - 7) = round(20.25) = 20
       expect(game.predictedScore).toBeDefined();
       expect(game.predictedScore?.home).toBe(34);
       expect(game.predictedScore?.away).toBe(20);
@@ -564,7 +548,7 @@ describe('reshapeScoreboardData', () => {
       const validEvent = scoreboardResponse.events[0];
       const invalidEvent = {
         id: '999',
-        competitions: [], // Missing competition
+        competitions: [],
       } as unknown as Event;
 
       const response: EspnScoreboardGenerated = {
@@ -591,7 +575,7 @@ describe('reshapeScoreboardData', () => {
         competitions: [
           {
             id: 'comp-999',
-            competitors: [], // Missing competitors
+            competitors: [],
             conferenceCompetition: false,
             status: {
               type: {
@@ -639,7 +623,7 @@ describe('reshapeScoreboardData', () => {
             ...firstComp,
             id: 'comp-999',
             competitors: [
-              firstComp.competitors[0], // Only one competitor instead of two
+              firstComp.competitors[0],
             ],
           },
         ],

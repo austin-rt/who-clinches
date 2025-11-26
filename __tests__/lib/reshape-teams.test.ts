@@ -1,11 +1,3 @@
-/**
- * Unit Tests: Reshape Team Data Functions
- *
- * Tests for team data transformation functions that convert
- * ESPN Team API responses into our internal team data format.
- * Uses real ESPN API response snapshots from test database.
- */
-
 import { reshapeTeamData } from '@/lib/reshape-teams';
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
 import { loadTeamTestData, checkTestDataAvailable } from '../helpers/test-data-loader';
@@ -33,7 +25,6 @@ describe('reshapeTeamData', () => {
   });
 
   afterAll(async () => {
-    // Close MongoDB connection to prevent Jest from hanging
     await dbDisconnectTest();
   });
 
@@ -131,7 +122,6 @@ describe('reshapeTeamData', () => {
       };
 
       const result = reshapeTeamData(responseNoConf);
-      // Should still have a conferenceId (may default to SEC)
       expect(result?.conferenceId).toBeDefined();
     });
   });

@@ -1,10 +1,3 @@
-/**
- * Test Data Loader
- *
- * Loads real ESPN API response snapshots from database for unit testing.
- * These snapshots are updated daily via cron job to ensure tests use current API format.
- */
-
 import dbConnect from '@/lib/mongodb';
 import { getESPNScoreboardTestData } from '@/lib/models/test/ESPNScoreboardTestData';
 import { getESPNGameSummaryTestData } from '@/lib/models/test/ESPNGameSummaryTestData';
@@ -15,16 +8,12 @@ import type { EspnGameSummaryGenerated } from '@/lib/espn/espn-game-summary-gene
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
 import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 
-/**
- * Load scoreboard test data from test database
- */
 export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated> => {
   console.log('[Test Data Loader] loadScoreboardTestData() called');
   console.log('[Test Data Loader] Connecting to database...');
   await dbConnect();
   console.log('[Test Data Loader] Getting ESPNScoreboardTestData model...');
   const Model = await getESPNScoreboardTestData();
-  // Find any document since we seed all data from /test database
   console.log('[Test Data Loader] Finding scoreboard test data...');
   const data = await Model.findOne({});
 
@@ -39,16 +28,12 @@ export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated>
   return data.response;
 };
 
-/**
- * Load team test data from test database
- */
 export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
   console.log('[Test Data Loader] loadTeamTestData() called');
   console.log('[Test Data Loader] Connecting to database...');
   await dbConnect();
   console.log('[Test Data Loader] Getting ESPNTeamTestData model...');
   const Model = await getESPNTeamTestData();
-  // Find any document since we seed all data from /test database
   console.log('[Test Data Loader] Finding team test data...');
   const data = await Model.findOne({});
 
@@ -63,16 +48,12 @@ export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
   return data.response;
 };
 
-/**
- * Load game summary test data from test database
- */
 export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerated> => {
   console.log('[Test Data Loader] loadGameSummaryTestData() called');
   console.log('[Test Data Loader] Connecting to database...');
   await dbConnect();
   console.log('[Test Data Loader] Getting ESPNGameSummaryTestData model...');
   const Model = await getESPNGameSummaryTestData();
-  // Find any document since we seed all data from /test database
   console.log('[Test Data Loader] Finding game summary test data...');
   const data = await Model.findOne({});
 
@@ -87,16 +68,12 @@ export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerate
   return data.response;
 };
 
-/**
- * Load team records test data from test database
- */
 export const loadTeamRecordsTestData = async (): Promise<EspnTeamRecordsGenerated> => {
   console.log('[Test Data Loader] loadTeamRecordsTestData() called');
   console.log('[Test Data Loader] Connecting to database...');
   await dbConnect();
   console.log('[Test Data Loader] Getting ESPNTeamRecordsTestData model...');
   const Model = await getESPNTeamRecordsTestData();
-  // Find any document since we seed all data from /test database
   console.log('[Test Data Loader] Finding team records test data...');
   const data = await Model.findOne({});
 
@@ -111,9 +88,6 @@ export const loadTeamRecordsTestData = async (): Promise<EspnTeamRecordsGenerate
   return data.response;
 }
 
-/**
- * Check if test data exists for all required types
- */
 export const checkTestDataAvailable = async (): Promise<{
   available: boolean;
   missing: string[];
@@ -123,7 +97,6 @@ export const checkTestDataAvailable = async (): Promise<{
   process.stdout.write('[checkTestDataAvailable] Connection established\n');
   const missing: string[] = [];
 
-  // Check for any documents (not filtered by season) since we seed all data
   process.stdout.write('[checkTestDataAvailable] Checking scoreboard...\n');
   const ScoreboardModel = await getESPNScoreboardTestData();
   const scoreboard = await ScoreboardModel.findOne({});

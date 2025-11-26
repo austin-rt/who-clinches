@@ -1,20 +1,9 @@
-/**
- * MongoDB Memory Server Setup
- *
- * Provides isolated in-memory MongoDB for each test suite.
- * Ensures tests don't interfere with each other or production data.
- */
-
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
 let mongoServer: MongoMemoryServer | null = null;
 let isConnected = false;
 
-/**
- * Start in-memory MongoDB server
- * Call in beforeAll() hook
- */
 export const startMongoMemoryServer = async () => {
   console.log('[MongoDB Memory Server] startMongoMemoryServer() called');
   if (mongoServer) {
@@ -41,10 +30,6 @@ export const startMongoMemoryServer = async () => {
   return mongoUri;
 };
 
-/**
- * Stop in-memory MongoDB server
- * Call in afterAll() hook
- */
 export const stopMongoMemoryServer = async () => {
   console.log('[MongoDB Memory Server] stopMongoMemoryServer() called');
   if (isConnected && mongoose.connection.readyState === 1) {
@@ -67,14 +52,8 @@ export const stopMongoMemoryServer = async () => {
   console.log('[MongoDB Memory Server] stopMongoMemoryServer() complete');
 };
 
-/**
- * Clear all collections
- * Call in beforeEach() to ensure clean state
- * Note: Connection should be established before calling this function
- */
 export const clearMongoMemoryServerData = async () => {
   console.log('[MongoDB Memory Server] clearMongoMemoryServerData() called');
-  // Connection should be ready (established via dbConnect() before calling this)
   const readyState = mongoose.connection.readyState;
   console.log(`[MongoDB Memory Server] Connection readyState: ${readyState}`);
   if (readyState !== 1) {
@@ -94,9 +73,6 @@ export const clearMongoMemoryServerData = async () => {
   console.log('[MongoDB Memory Server] clearMongoMemoryServerData() complete');
 };
 
-/**
- * Get current MongoDB connection URI
- */
 export const getMongoMemoryServerUri = (): string => {
   if (!mongoServer) {
     throw new Error('MongoDB Memory Server not started. Call startMongoMemoryServer() first.');
@@ -104,9 +80,6 @@ export const getMongoMemoryServerUri = (): string => {
   return mongoServer.getUri();
 };
 
-/**
- * Insert test data into MongoDB
- */
 export const insertTestData = async <T extends Record<string, unknown>>(
   collectionName: string,
   data: T | T[]
@@ -124,9 +97,6 @@ export const insertTestData = async <T extends Record<string, unknown>>(
   return result;
 };
 
-/**
- * Query test data from MongoDB
- */
 export const queryTestData = async <T = Record<string, unknown>>(
   collectionName: string,
   filter: Record<string, unknown> = {}
@@ -140,9 +110,6 @@ export const queryTestData = async <T = Record<string, unknown>>(
   return (await collection.find(filter).toArray()) as T[];
 };
 
-/**
- * Count documents in collection
- */
 export const countTestData = async (
   collectionName: string,
   filter: Record<string, unknown> = {}
@@ -156,20 +123,10 @@ export const countTestData = async (
   return await collection.countDocuments(filter);
 };
 
-/**
- * Setup helper for test suites
- * Usage in beforeEach():
- *   await setupMongoTestEnv();
- */
 export const setupMongoTestEnv = async () => {
   await clearMongoMemoryServerData();
 };
 
-/**
- * Teardown helper for test suites
- * Usage in afterEach():
- *   await teardownMongoTestEnv();
- */
 export const teardownMongoTestEnv = async () => {
   await clearMongoMemoryServerData();
 };
