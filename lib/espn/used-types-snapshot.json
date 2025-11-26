@@ -19,7 +19,7 @@
     "Competition.venue.address.city": "string",
     "Competition.venue.address.state": "string",
     "Competitor.homeAway": "string",
-    "Competitor.score": "string",
+    "Competitor.score": "number",
     "Competitor.curatedRank.current": "number",
     "Competitor.team.id": "string",
     "Competitor.team.abbreviation": "string",
