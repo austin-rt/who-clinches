@@ -19,7 +19,7 @@
     "Competition.venue.address.city": "string",
     "Competition.venue.address.state": "string",
     "Competitor.homeAway": "string",
-    "Competitor.score": "number",
+    "Competitor.score": "string",
     "Competitor.curatedRank.current": "number",
     "Competitor.team.id": "string",
     "Competitor.team.abbreviation": "string",
@@ -56,7 +56,7 @@
     "Stat.value": "number",
     "Item.name": "string"
   },
-  "extractedAt": "2025-11-26T21:28:07.877Z",
+  "extractedAt": "2025-11-26T21:39:46.706Z",
   "fieldCount": {
     "scoreboard": 41,
     "team": 20,
