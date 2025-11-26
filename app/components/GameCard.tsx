@@ -21,15 +21,12 @@ const GameCard = ({ game }: GameCardProps) => {
           {game.state === 'in' && <LiveBadge />}
         </div>
 
-        {/* Scoreboard Layout: Logos with scores, team names below */}
         <div className="flex flex-col gap-2">
-          {/* Top row: Logos and scores */}
           <div className="flex items-center justify-around">
             <Team team={game.away} showLogoOnly />
             <Score game={game} />
             <Team team={game.home} showLogoOnly />
           </div>
-          {/* Bottom row: Team names */}
           <div className="flex items-center justify-around">
             <Team team={game.away} showNameOnly />
             <div className="text-base-content/40 text-base">@</div>

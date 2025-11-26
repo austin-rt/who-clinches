@@ -11,14 +11,12 @@ interface DaySectionProps {
 }
 
 const DaySection = ({ weekNumber, games, dayLabel }: DaySectionProps) => {
-  // Format date range for the header
   const dateRange = useMemo(() => {
     if (games.length === 0) return '';
     const dates = games
       .map((game) => new Date(game.date))
       .sort((a, b) => a.getTime() - b.getTime());
 
-    // Get unique date strings
     const uniqueDateStrings = Array.from(
       new Set(dates.map((d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })))
     );
@@ -27,7 +25,6 @@ const DaySection = ({ weekNumber, games, dayLabel }: DaySectionProps) => {
       return uniqueDateStrings[0];
     }
 
-    // Get first and last dates
     const firstDate = dates[0];
     const lastDate = dates[dates.length - 1];
 
@@ -40,7 +37,6 @@ const DaySection = ({ weekNumber, games, dayLabel }: DaySectionProps) => {
     return `${firstFormatted} - ${lastFormatted}`;
   }, [games]);
 
-  // Don't render if there are no games
   if (games.length === 0) {
     return null;
   }

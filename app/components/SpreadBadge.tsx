@@ -23,13 +23,11 @@ const SpreadBadge = ({ game }: SpreadBadgeProps) => {
     }
 
     if (mode === 'light') {
-      // Light mode: use team colors
       return {
         backgroundColor: `#${favoredTeamColor}33`,
         color: `#${favoredTeamColor}`,
       };
     } else {
-      // Dark mode: only set text color, background handled by className
       return {
         backgroundColor: `#${favoredTeamColor}`,
         color: `#ffffff`,

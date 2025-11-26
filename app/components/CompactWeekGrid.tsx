@@ -15,14 +15,12 @@ interface CompactWeekGridProps {
 const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridProps) => {
   const { hideCompletedGames } = useUIState();
 
-  // Group games by week for display
   const weeksData = useMemo(() => {
     const weeksMap = new Map<
       number,
-      { weekNumber: number; dateRange: string; games: GameLean[] }
+      { weekNumber: number; dateRange: string;       games: GameLean[] }
     >();
 
-    // Process remaining games (always shown - incomplete games should always show)
     remainingWeekDays.forEach((weekDay) => {
       const week = weekDay.weekNumber;
       if (!weeksMap.has(week)) {
@@ -35,8 +33,6 @@ const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridPr
       weeksMap.get(week)!.games.push(...weekDay.games);
     });
 
-    // Process final games (shown if not hidden)
-    // Note: Incomplete games are already added above, so they'll always show
     if (!hideCompletedGames) {
       finalWeekDays.forEach((weekDay) => {
         const week = weekDay.weekNumber;
@@ -51,7 +47,6 @@ const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridPr
       });
     }
 
-    // Calculate date ranges for each week
     weeksMap.forEach((weekData) => {
       if (weekData.games.length === 0) return;
 
@@ -78,7 +73,6 @@ const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridPr
       }
     });
 
-    // Convert to array and sort by week number
     return Array.from(weeksMap.values()).sort((a, b) => a.weekNumber - b.weekNumber);
   }, [finalWeekDays, remainingWeekDays, hideCompletedGames]);
 

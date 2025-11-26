@@ -13,7 +13,6 @@ interface WeekAccordionProps {
 const WeekAccordion = ({ weekNumber, games, dayLabel }: WeekAccordionProps) => {
   const [isOpen, setIsOpen] = useState(true);
 
-  // Format date range for the header
   const dateRange = useMemo(() => {
     if (games.length === 0) return '';
 
@@ -21,7 +20,6 @@ const WeekAccordion = ({ weekNumber, games, dayLabel }: WeekAccordionProps) => {
       .map((game) => new Date(game.date))
       .sort((a, b) => a.getTime() - b.getTime());
 
-    // Get unique date strings
     const uniqueDateStrings = Array.from(
       new Set(dates.map((d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })))
     );
@@ -30,7 +28,6 @@ const WeekAccordion = ({ weekNumber, games, dayLabel }: WeekAccordionProps) => {
       return uniqueDateStrings[0];
     }
 
-    // Get first and last dates
     const firstDate = dates[0];
     const lastDate = dates[dates.length - 1];
 

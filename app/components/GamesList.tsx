@@ -28,7 +28,6 @@ const GamesList = ({ season }: GamesListProps) => {
     season: season.toString(),
   });
 
-  // Enrich games with team metadata from teams array
   const enrichedGames = useMemo(() => {
     if (!data) return [];
 
@@ -58,7 +57,6 @@ const GamesList = ({ season }: GamesListProps) => {
     }) as GameLean[];
   }, [data]);
 
-  // Separate final and remaining games
   const { finalGames, remainingGames } = useMemo(() => {
     const final: GameLean[] = [];
     const remaining: GameLean[] = [];
@@ -74,7 +72,6 @@ const GamesList = ({ season }: GamesListProps) => {
     return { finalGames: final, remainingGames: remaining };
   }, [enrichedGames]);
 
-  // Helper function to get day label from day of week
   const getDayLabel = (dayOfWeek: number): string => {
     const dayLabels = [
       'Sunday',
@@ -88,9 +85,7 @@ const GamesList = ({ season }: GamesListProps) => {
     return dayLabels[dayOfWeek] || '';
   };
 
-  // Group and sort games by week and day of week for both final and remaining
   const weekDays = useMemo(() => {
-    // Group final games by week and day
     const finalWeekDays: WeekDay[] = [];
     const finalGamesByWeek = new Map<number, GameLean[]>();
 
@@ -102,15 +97,13 @@ const GamesList = ({ season }: GamesListProps) => {
       finalGamesByWeek.get(week)!.push(game);
     });
 
-    // For each week, group by day of week
     finalGamesByWeek.forEach((games, weekNumber) => {
       const gamesByDay = new Map<number, GameLean[]>();
 
       games.forEach((game) => {
         const gameDate = new Date(game.date);
-        const dayOfWeek = gameDate.getDay(); // 0 = Sunday, 4 = Thursday, 5 = Friday, 6 = Saturday
+        const dayOfWeek = gameDate.getDay();
 
-        // Only include Thursday (4), Friday (5), Saturday (6), Sunday (0)
         if ([0, 4, 5, 6].includes(dayOfWeek)) {
           if (!gamesByDay.has(dayOfWeek)) {
             gamesByDay.set(dayOfWeek, []);
@@ -119,12 +112,10 @@ const GamesList = ({ season }: GamesListProps) => {
         }
       });
 
-      // Sort days: Thursday (4), Friday (5), Saturday (6), Sunday (0)
       const dayOrder = [4, 5, 6, 0];
       dayOrder.forEach((dayOfWeek) => {
         const dayGames = gamesByDay.get(dayOfWeek);
         if (dayGames && dayGames.length > 0) {
-          // Sort games within day by date
           dayGames.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
           finalWeekDays.push({
             weekNumber,
@@ -136,7 +127,6 @@ const GamesList = ({ season }: GamesListProps) => {
       });
     });
 
-    // Sort by week number, then by day order
     finalWeekDays.sort((a, b) => {
       if (a.weekNumber !== b.weekNumber) {
         return a.weekNumber - b.weekNumber;
@@ -145,7 +135,6 @@ const GamesList = ({ season }: GamesListProps) => {
       return dayOrder.indexOf(a.dayOfWeek) - dayOrder.indexOf(b.dayOfWeek);
     });
 
-    // Group remaining games by week and day
     const remainingWeekDays: WeekDay[] = [];
     const remainingGamesByWeek = new Map<number, GameLean[]>();
 
@@ -157,7 +146,6 @@ const GamesList = ({ season }: GamesListProps) => {
       remainingGamesByWeek.get(week)!.push(game);
     });
 
-    // For each week, group by day of week
     remainingGamesByWeek.forEach((games, weekNumber) => {
       const gamesByDay = new Map<number, GameLean[]>();
 
@@ -165,7 +153,6 @@ const GamesList = ({ season }: GamesListProps) => {
         const gameDate = new Date(game.date);
         const dayOfWeek = gameDate.getDay();
 
-        // Only include Thursday (4), Friday (5), Saturday (6), Sunday (0)
         if ([0, 4, 5, 6].includes(dayOfWeek)) {
           if (!gamesByDay.has(dayOfWeek)) {
             gamesByDay.set(dayOfWeek, []);
@@ -174,12 +161,10 @@ const GamesList = ({ season }: GamesListProps) => {
         }
       });
 
-      // Sort days: Thursday (4), Friday (5), Saturday (6), Sunday (0)
       const dayOrder = [4, 5, 6, 0];
       dayOrder.forEach((dayOfWeek) => {
         const dayGames = gamesByDay.get(dayOfWeek);
         if (dayGames && dayGames.length > 0) {
-          // Sort games within day by date
           dayGames.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
           remainingWeekDays.push({
             weekNumber,
@@ -191,7 +176,6 @@ const GamesList = ({ season }: GamesListProps) => {
       });
     });
 
-    // Sort by week number, then by day order
     remainingWeekDays.sort((a, b) => {
       if (a.weekNumber !== b.weekNumber) {
         return a.weekNumber - b.weekNumber;
@@ -203,7 +187,6 @@ const GamesList = ({ season }: GamesListProps) => {
     return { final: finalWeekDays, remaining: remainingWeekDays };
   }, [finalGames, remainingGames]);
 
-  // Handle loading state
   if (isLoading) {
     return (
       <div className="flex flex-1 items-center justify-center py-8">
@@ -212,12 +195,10 @@ const GamesList = ({ season }: GamesListProps) => {
     );
   }
 
-  // Handle error state
   if (isError) {
     return <div>Error loading games</div>;
   }
 
-  // Handle empty state - only show if query has been initialized and completed
   if (!isUninitialized && !isLoading && remainingGames.length === 0 && finalGames.length === 0) {
     return (
       <div className="py-8 text-center">
@@ -226,7 +207,6 @@ const GamesList = ({ season }: GamesListProps) => {
     );
   }
 
-  // Render compact view (picks mode) or expanded view (scores mode)
   if (view === 'picks') {
     return (
       <CompactWeekGrid finalWeekDays={weekDays.final} remainingWeekDays={weekDays.remaining} />

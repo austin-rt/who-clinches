@@ -54,9 +54,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
     }
   };
 
-  // Determine default selection: winner if completed, or predicted score winner
   const defaultSelectedTeam = useMemo(() => {
-    // If game is completed, use the actual winner
     if (game.completed) {
       const homeScore = game.home.score ?? 0;
       const awayScore = game.away.score ?? 0;
@@ -66,7 +64,6 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
         return game.away.teamEspnId;
       }
     }
-    // If not completed, use predicted score winner
     if (game.predictedScore) {
       if (game.predictedScore.home > game.predictedScore.away) {
         return game.home.teamEspnId;
@@ -74,11 +71,9 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
         return game.away.teamEspnId;
       }
     }
-    // Fallback to favorite if available
     if (game.odds.favoriteTeamEspnId) {
       return game.odds.favoriteTeamEspnId;
     }
-    // Final fallback to home team (home field advantage)
     return game.home.teamEspnId;
   }, [
     game.completed,
@@ -90,26 +85,21 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
     game.odds.favoriteTeamEspnId,
   ]);
 
-  // Auto-select default team if no pick exists
   useEffect(() => {
     if (!gamePick && defaultSelectedTeam) {
       const scores = calculateScoresForPick(defaultSelectedTeam);
       dispatch(setGamePick({ gameId: game.espnId, pick: scores }));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gamePick, defaultSelectedTeam, game.espnId, dispatch]);
 
-  // Determine which team is currently selected (if any)
   const selectedTeam = useMemo(() => {
     if (!gamePick) {
       return defaultSelectedTeam;
     }
 
-    // If home score > away score, home is selected
     if (gamePick.homeScore > gamePick.awayScore) {
       return game.home.teamEspnId;
     }
-    // If away score > home score, away is selected
     if (gamePick.awayScore > gamePick.homeScore) {
       return game.away.teamEspnId;
     }
@@ -125,7 +115,6 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const isAwaySelected = selectedTeam === game.away.teamEspnId;
   const isSelected = isHomeSelected || isAwaySelected;
 
-  // Determine win/loss status for each team
   const awayWon = isAwaySelected;
   const homeWon = isHomeSelected;
 

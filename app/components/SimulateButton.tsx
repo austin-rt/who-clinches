@@ -44,7 +44,6 @@ const SimulateButton = ({ season }: SimulateButtonProps) => {
     try {
       const response = await simulate({ ...payload, sport, conf }).unwrap();
 
-      // Format response for readable testing
       xLog('=== SIMULATE RESPONSE ===');
       xLog('Championship Matchup:', response.championship);
       xLog('');

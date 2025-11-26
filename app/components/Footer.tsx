@@ -2,7 +2,7 @@
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const currentSeason = 2025; // TODO: Get from API or context
+  const currentSeason = 2025;
 
   return (
     <footer className="footer footer-center mt-auto bg-base-300 p-6 text-base-content">
