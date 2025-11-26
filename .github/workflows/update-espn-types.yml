@@ -40,6 +40,7 @@ jobs:
           MONGODB_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
           MONGODB_HOST: ${{ secrets.MONGODB_HOST }}
           MONGODB_APP_NAME: ${{ secrets.MONGODB_APP_NAME }}
+          MONGODB_DB: ${{ secrets.MONGODB_DB }}
         run: |
           npx tsx scripts/extract-espn-types.ts && echo "generated=true" >> $GITHUB_OUTPUT || (echo "generated=false" >> $GITHUB_OUTPUT && exit 1)
 
