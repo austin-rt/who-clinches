@@ -24,6 +24,21 @@ function extractFieldPathsFromReshapeFunctions(): {
 } {
   const reshapeGamesPath = path.join(process.cwd(), 'lib/reshape-games.ts');
   const reshapeTeamsPath = path.join(process.cwd(), 'lib/reshape-teams.ts');
+  const reshapeTeamsFromScoreboardPath = path.join(
+    process.cwd(),
+    'lib/reshape-teams-from-scoreboard.ts'
+  );
+  const updateRankingsPath = path.join(
+    process.cwd(),
+    'app/api/cron/[sport]/[conf]/update-rankings/route.ts'
+  );
+  const seasonCheckPath = path.join(process.cwd(), 'lib/cfb/helpers/season-check-espn.ts');
+  const updateGamesPath = path.join(
+    process.cwd(),
+    'app/api/cron/[sport]/[conf]/update-games/route.ts'
+  );
+  const pullGamesPath = path.join(process.cwd(), 'app/api/pull-games/[sport]/[conf]/route.ts');
+  const pullTeamsPath = path.join(process.cwd(), 'app/api/pull-teams/[sport]/[conf]/route.ts');
 
   const fields = {
     scoreboard: [] as string[],
@@ -37,12 +52,16 @@ function extractFieldPathsFromReshapeFunctions(): {
     const patterns = [
       { pattern: /event\.id/g, path: 'Event.id' },
       { pattern: /event\.competitions/g, path: 'Event.competitions' },
+      { pattern: /event\.week\?\.number/g, path: 'Event.week.number' },
+      { pattern: /event\.season\?\.year/g, path: 'Event.season.year' },
       { pattern: /espnResponse\.events/g, path: 'EspnScoreboardGenerated.events' },
       { pattern: /espnResponse\.week\?\.number/g, path: 'EspnScoreboardGenerated.week.number' },
       { pattern: /espnResponse\.season\?\.year/g, path: 'EspnScoreboardGenerated.season.year' },
       { pattern: /competition\.date/g, path: 'Competition.date' },
+      { pattern: /competition\.startDate/g, path: 'Competition.startDate' },
       { pattern: /competition\.competitors/g, path: 'Competition.competitors' },
       { pattern: /competition\.odds/g, path: 'Competition.odds' },
+      { pattern: /competition\.attendance/g, path: 'Competition.attendance' },
       { pattern: /competition\.status\.type\.state/g, path: 'Competition.status.type.state' },
       {
         pattern: /competition\.status\.type\.completed/g,
@@ -50,10 +69,16 @@ function extractFieldPathsFromReshapeFunctions(): {
       },
       { pattern: /competition\.conferenceCompetition/g, path: 'Competition.conferenceCompetition' },
       { pattern: /competition\.neutralSite/g, path: 'Competition.neutralSite' },
+      { pattern: /competition\.venue\.fullName/g, path: 'Competition.venue.fullName' },
+      { pattern: /competition\.venue\.address\?\.city/g, path: 'Competition.venue.address.city' },
+      { pattern: /competition\.venue\.address\?\.state/g, path: 'Competition.venue.address.state' },
       { pattern: /competition\.week\?\.number/g, path: 'Competition.week.number' },
       { pattern: /competition\.season\?\.year/g, path: 'Competition.season.year' },
+      { pattern: /\.homeAway\s*===/g, path: 'Competitor.homeAway' },
       { pattern: /(homeTeam|awayTeam)\.homeAway/g, path: 'Competitor.homeAway' },
       { pattern: /(homeTeam|awayTeam)\.score/g, path: 'Competitor.score' },
+      { pattern: /competition\.odds\s*&&/g, path: 'Competition.odds' },
+      { pattern: /competition\.odds\s*\.length/g, path: 'Competition.odds' },
       {
         pattern: /(homeTeam|awayTeam)\.curatedRank\?\.current/g,
         path: 'Competitor.curatedRank.current',
@@ -76,10 +101,109 @@ function extractFieldPathsFromReshapeFunctions(): {
     }
   }
 
+  if (fs.existsSync(reshapeTeamsFromScoreboardPath)) {
+    const content = fs.readFileSync(reshapeTeamsFromScoreboardPath, 'utf-8');
+
+    const patterns = [
+      { pattern: /scoreboardResponse\.events/g, path: 'EspnScoreboardGenerated.events' },
+      { pattern: /event\.competitions/g, path: 'Event.competitions' },
+      { pattern: /competition\.conferenceCompetition/g, path: 'Competition.conferenceCompetition' },
+      { pattern: /competition\.competitors/g, path: 'Competition.competitors' },
+      { pattern: /competitor\.team\.id/g, path: 'Competitor.team.id' },
+      { pattern: /competitor\.team\.conferenceId/g, path: 'Competitor.team.conferenceId' },
+      { pattern: /competitor\.team\.name/g, path: 'Competitor.team.name' },
+      { pattern: /competitor\.team\.displayName/g, path: 'Competitor.team.displayName' },
+      { pattern: /competitor\.team\.abbreviation/g, path: 'Competitor.team.abbreviation' },
+      { pattern: /competitor\.team\.logo/g, path: 'Competitor.team.logo' },
+      { pattern: /competitor\.team\.color/g, path: 'Competitor.team.color' },
+      { pattern: /competitor\.team\.alternateColor/g, path: 'Competitor.team.alternateColor' },
+    ];
+
+    for (const { pattern, path: fieldPath } of patterns) {
+      if (pattern.test(content) && !fields.scoreboard.includes(fieldPath)) {
+        fields.scoreboard.push(fieldPath);
+      }
+    }
+  }
+
+  if (fs.existsSync(seasonCheckPath)) {
+    const content = fs.readFileSync(seasonCheckPath, 'utf-8');
+
+    const patterns = [
+      { pattern: /calendarResponse\.leagues\?\.\[0\]/g, path: 'EspnScoreboardGenerated.leagues' },
+      { pattern: /leagueData\.calendar/g, path: 'League.calendar' },
+      { pattern: /cal\.label/g, path: 'Calendar.label' },
+      { pattern: /regularSeason\.startDate/g, path: 'Calendar.startDate' },
+      { pattern: /regularSeason\.endDate/g, path: 'Calendar.endDate' },
+    ];
+
+    for (const { pattern, path: fieldPath } of patterns) {
+      if (pattern.test(content) && !fields.scoreboard.includes(fieldPath)) {
+        fields.scoreboard.push(fieldPath);
+      }
+    }
+  }
+
+  if (fs.existsSync(updateGamesPath)) {
+    const content = fs.readFileSync(updateGamesPath, 'utf-8');
+
+    const patterns = [
+      { pattern: /calendarResponse\.leagues\?\.\[0\]\?\.calendar/g, path: 'League.calendar' },
+      { pattern: /cal\.label/g, path: 'Calendar.label' },
+      { pattern: /regularSeason\.entries/g, path: 'Calendar.entries' },
+      { pattern: /entry\.startDate/g, path: 'CalendarEntry.startDate' },
+      { pattern: /entry\.endDate/g, path: 'CalendarEntry.endDate' },
+      { pattern: /entry\.value/g, path: 'CalendarEntry.value' },
+    ];
+
+    for (const { pattern, path: fieldPath } of patterns) {
+      if (pattern.test(content) && !fields.scoreboard.includes(fieldPath)) {
+        fields.scoreboard.push(fieldPath);
+      }
+    }
+  }
+
+  if (fs.existsSync(pullGamesPath)) {
+    const content = fs.readFileSync(pullGamesPath, 'utf-8');
+
+    const patterns = [
+      { pattern: /calendarResponse\.season\?\.year/g, path: 'EspnScoreboardGenerated.season.year' },
+      {
+        pattern: /calendarResponse\.leagues\?\.\[0\]\?\.season\?\.year/g,
+        path: 'League.season.year',
+      },
+    ];
+
+    for (const { pattern, path: fieldPath } of patterns) {
+      if (pattern.test(content) && !fields.scoreboard.includes(fieldPath)) {
+        fields.scoreboard.push(fieldPath);
+      }
+    }
+  }
+
+  if (fs.existsSync(pullTeamsPath)) {
+    const content = fs.readFileSync(pullTeamsPath, 'utf-8');
+
+    const patterns = [
+      { pattern: /calendarResponse\.season\?\.year/g, path: 'EspnScoreboardGenerated.season.year' },
+      {
+        pattern: /calendarResponse\.leagues\?\.\[0\]\?\.season\?\.year/g,
+        path: 'League.season.year',
+      },
+    ];
+
+    for (const { pattern, path: fieldPath } of patterns) {
+      if (pattern.test(content) && !fields.scoreboard.includes(fieldPath)) {
+        fields.scoreboard.push(fieldPath);
+      }
+    }
+  }
+
   if (fs.existsSync(reshapeTeamsPath)) {
     const content = fs.readFileSync(reshapeTeamsPath, 'utf-8');
 
     const patterns = [
+      { pattern: /espnTeamResponse\.team/g, path: 'EspnTeamGenerated.team' },
       { pattern: /team\.id/g, path: 'Team.id' },
       { pattern: /team\.name/g, path: 'Team.name' },
       { pattern: /team\.displayName/g, path: 'Team.displayName' },
@@ -93,13 +217,17 @@ function extractFieldPathsFromReshapeFunctions(): {
       { pattern: /team\.record\?\.items/g, path: 'Team.record.items' },
       { pattern: /logo\?\.href/g, path: 'Logo.href' },
       { pattern: /logo\?\.width/g, path: 'Logo.width' },
+      { pattern: /l\.width/g, path: 'Logo.width' },
+      { pattern: /l\.href/g, path: 'Logo.href' },
       { pattern: /recordItem\.type/g, path: 'Item.type' },
       { pattern: /recordItem\.summary/g, path: 'Item.summary' },
       { pattern: /recordItem\.stats/g, path: 'Item.stats' },
-      { pattern: /stats\.find\(/g, path: 'Stat.name' },
-      { pattern: /\.value/g, path: 'Stat.value' },
+      { pattern: /stats\.find\(.*s\)\s*=>\s*s\.name/g, path: 'Stat.name' },
+      { pattern: /stats\.find\(.*\)\s*=>\s*.*\.name/g, path: 'Stat.name' },
+      { pattern: /stats\.find\(.*\)\s*=>\s*.*\.value/g, path: 'Stat.value' },
+      { pattern: /getStatValue\(/g, path: 'Stat.name' },
       { pattern: /nextEvent\?\.\[0\]\?\.id/g, path: 'NextEvent.id' },
-      { pattern: /espnTeamResponse\.nextEvent/g, path: 'NextEvent.id' },
+      { pattern: /espnTeamResponse\.team\.nextEvent/g, path: 'Team.nextEvent' },
     ];
 
     for (const { pattern, path: fieldPath } of patterns) {
@@ -109,13 +237,50 @@ function extractFieldPathsFromReshapeFunctions(): {
     }
 
     const teamRecordsPatterns = [
-      { pattern: /coreRecordResponse\?\.items/g, path: 'Item[]' },
+      { pattern: /coreRecordResponse\?\.items/g, path: 'EspnTeamRecordsGenerated.items' },
       { pattern: /items\.find\(.*item\.name/g, path: 'Item.name' },
       { pattern: /items\.find\(.*item\.type/g, path: 'Item.type' },
       { pattern: /overallRecord\?\.summary/g, path: 'Item.summary' },
       { pattern: /overallRecord\?\.stats/g, path: 'Item.stats' },
       { pattern: /stats\.find\(.*s\.name/g, path: 'Stat.name' },
       { pattern: /stats\.find\(.*\.value/g, path: 'Stat.value' },
+    ];
+
+    for (const { pattern, path: fieldPath } of teamRecordsPatterns) {
+      if (pattern.test(content) && !fields.teamRecords.includes(fieldPath)) {
+        fields.teamRecords.push(fieldPath);
+      }
+    }
+  }
+
+  if (fs.existsSync(updateRankingsPath)) {
+    const content = fs.readFileSync(updateRankingsPath, 'utf-8');
+
+    const teamPatterns = [
+      { pattern: /teamData\.team\.id/g, path: 'Team.id' },
+      { pattern: /teamData\.team\.rank/g, path: 'Team.rank' },
+      { pattern: /teamData\.team\.standingSummary/g, path: 'Team.standingSummary' },
+      { pattern: /teamData\.team\.record\?\.items/g, path: 'Team.record.items' },
+      { pattern: /item\.summary/g, path: 'Item.summary' },
+      { pattern: /item\.stats/g, path: 'Item.stats' },
+    ];
+
+    for (const { pattern, path: fieldPath } of teamPatterns) {
+      if (pattern.test(content) && !fields.team.includes(fieldPath)) {
+        fields.team.push(fieldPath);
+      }
+    }
+
+    const teamRecordsPatterns = [
+      { pattern: /recordData\?\.items/g, path: 'EspnTeamRecordsGenerated.items' },
+      { pattern: /items\?\.find\(.*item\.name/g, path: 'Item.name' },
+      { pattern: /items\?\.find\(.*item\.type/g, path: 'Item.type' },
+      { pattern: /items\?\.find\(.*item\.summary/g, path: 'Item.summary' },
+      { pattern: /overallRecord\?\.stats/g, path: 'Item.stats' },
+      { pattern: /stats\?\.find\(.*s\.name/g, path: 'Stat.name' },
+      { pattern: /stats\?\.find\(.*s\.value/g, path: 'Stat.value' },
+      { pattern: /getStatValue\(.*stats.*name/g, path: 'Stat.name' },
+      { pattern: /getStatValue\(.*stats.*value/g, path: 'Stat.value' },
     ];
 
     for (const { pattern, path: fieldPath } of teamRecordsPatterns) {

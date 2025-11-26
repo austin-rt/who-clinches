@@ -2,16 +2,24 @@
   "scoreboard": {
     "Event.id": "string",
     "Event.competitions": "Competition[]",
+    "Event.week.number": "number",
+    "Event.season.year": "number",
     "EspnScoreboardGenerated.events": "Event[]",
     "EspnScoreboardGenerated.week.number": "number",
     "EspnScoreboardGenerated.season.year": "number",
     "Competition.date": "string",
+    "Competition.startDate": "string",
     "Competition.competitors": "Competitor[]",
+    "Competition.attendance": "number",
     "Competition.status.type.state": "GameState",
     "Competition.status.type.completed": "boolean",
     "Competition.conferenceCompetition": "boolean",
     "Competition.neutralSite": "boolean",
-    "Competitor.score": "string",
+    "Competition.venue.fullName": "string",
+    "Competition.venue.address.city": "string",
+    "Competition.venue.address.state": "string",
+    "Competitor.homeAway": "string",
+    "Competitor.score": "number",
     "Competitor.curatedRank.current": "number",
     "Competitor.team.id": "string",
     "Competitor.team.abbreviation": "string",
@@ -20,10 +28,19 @@
     "Odd.overUnder": "number",
     "Odd.spread": "number",
     "Odd.awayTeamOdds.favorite": "boolean",
-    "Odd.homeTeamOdds.favorite": "boolean"
+    "Odd.homeTeamOdds.favorite": "boolean",
+    "EspnScoreboardGenerated.leagues": "League[]",
+    "League.calendar": "Calendar[]",
+    "Calendar.label": "string",
+    "Calendar.startDate": "string",
+    "Calendar.endDate": "string",
+    "Calendar.entries": "Entry[]",
+    "League.season.year": "number"
   },
   "team": {
+    "EspnTeamGenerated.team": "EspnTeamGeneratedTeam",
     "Logo.href": "string",
+    "Logo.width": "number",
     "Item.summary": "string",
     "Item.stats": "Stat[]",
     "Stat.name": "string",
@@ -31,16 +48,18 @@
     "NextEvent.id": "string"
   },
   "teamRecords": {
+    "EspnTeamRecordsGenerated.items": "Item[]",
     "Item.type": "string",
     "Item.summary": "string",
     "Item.stats": "Stat[]",
     "Stat.name": "string",
-    "Stat.value": "number"
+    "Stat.value": "number",
+    "Item.name": "string"
   },
-  "extractedAt": "2025-11-16T05:08:28.617Z",
+  "extractedAt": "2025-11-26T21:28:07.877Z",
   "fieldCount": {
-    "scoreboard": 23,
-    "team": 17,
-    "teamRecords": 6
+    "scoreboard": 41,
+    "team": 20,
+    "teamRecords": 7
   }
 }
