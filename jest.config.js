@@ -1,11 +1,9 @@
 const nextJest = require('next/jest');
 
 const createJestConfig = nextJest({
-  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
   dir: './',
 });
 
-// Add any custom config to be passed to Jest
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   globalSetup: '<rootDir>/jest.server-setup.js',
@@ -20,7 +18,7 @@ const customJestConfig = {
   // Force exit after tests complete to prevent hanging
   forceExit: true,
   // Increase test timeout for API tests that may take longer
-  testTimeout: 120000, // 2 minutes per test to account for sequential execution
+  testTimeout: 120000,
   collectCoverageFrom: [
     'app/**/*.{ts,tsx}',
     'lib/**/*.{ts,tsx}',

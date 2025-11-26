@@ -1,11 +1,6 @@
-/**
- * Jest Global Teardown
- *
- * Ensures all database connections and async operations are properly closed
- * to prevent Jest processes from hanging after tests complete.
- *
- * Use --detectOpenHandles to identify any remaining open handles during development.
- */
+// Ensures all database connections and async operations are properly closed
+// to prevent Jest processes from hanging after tests complete.
+// Use --detectOpenHandles to identify any remaining open handles during development.
 
 module.exports = async () => {
   console.log('[Jest Teardown] ===== TEARDOWN START =====');
@@ -16,7 +11,6 @@ module.exports = async () => {
     const mongoose = require('mongoose');
     console.log('[Jest Teardown] Mongoose required');
 
-    // Close all mongoose connections
     const connections = mongoose.connections || [];
     console.log(`[Jest Teardown] Found ${connections.length} mongoose connection(s)`);
     let closedCount = 0;
@@ -32,14 +26,12 @@ module.exports = async () => {
           console.log(`[Jest Teardown] Connection ${i} closed`);
         } catch (error) {
           console.log(`[Jest Teardown] Error closing connection ${i}: ${error.message}`);
-          // Ignore errors for individual connections
         }
       } else {
         console.log(`[Jest Teardown] Connection ${i} already closed (readyState: ${conn?.readyState})`);
       }
     }
 
-    // Also close the default connection if it's still open
     console.log(`[Jest Teardown] Checking default connection (readyState: ${mongoose.connection.readyState})...`);
     if (mongoose.connection.readyState !== 0) {
       try {
@@ -49,7 +41,6 @@ module.exports = async () => {
         console.log('[Jest Teardown] Default connection disconnected');
       } catch (error) {
         console.log(`[Jest Teardown] Error disconnecting default connection: ${error.message}`);
-        // Ignore errors
       }
     } else {
       console.log('[Jest Teardown] Default connection already closed');
@@ -61,7 +52,6 @@ module.exports = async () => {
       console.log('[Jest Teardown] No open database connections found');
     }
   } catch (error) {
-    // Ignore errors - forceExit will handle termination
     console.log(`[Jest Teardown] Error in teardown: ${error.message}`);
     console.log('[Jest Teardown] Teardown complete (some connections may remain)');
   }
