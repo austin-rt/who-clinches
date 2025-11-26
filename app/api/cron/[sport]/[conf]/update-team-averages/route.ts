@@ -25,16 +25,10 @@ import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * Pro Mode Only: Weekly team season averages update
- * Fetches avgPointsFor/Against from ESPN Core API
- * Runs Sunday 1 AM ET after all week's games complete
- */
 export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
 ) => {
-  // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -50,10 +44,8 @@ export const GET = async (
   }
 
   try {
-    // 2. Connect to database
     await dbConnect();
 
-    // Fetch teams from database (stored from pull-games scoreboard extraction)
     const conferenceTeams = await Team.find({ conferenceId: conferenceMeta.espnId }).lean();
 
     if (conferenceTeams.length === 0) {
@@ -65,9 +57,7 @@ export const GET = async (
 
     const client = createESPNClient(espnRoute);
 
-    // 3. Check if in season using ESPN calendar (with manual override for testing)
     const { searchParams } = new URL(request.url);
-    // Tests automatically bypass the check since they're testing functionality, not season logic
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
 
@@ -82,22 +72,16 @@ export const GET = async (
       );
     }
 
-    // 4. Update team season averages for all conference teams
     const failedTeams: string[] = [];
     let successfulUpdates = 0;
 
     for (const team of conferenceTeams) {
       try {
         const teamAbbrev = team.abbreviation;
-        // Fetch team ID first (need ID for Core API)
         const teamData = await client.getTeam(teamAbbrev);
 
-        // Fetch team record from Core API (includes avgPointsFor/Against)
         const recordData = await client.getTeamRecords(teamData.team.id);
 
-        // Extract records by type from Core API
-        // Note: Home/Away record types differ by sport (CFB: "homerecord"/"awayrecord", Basketball: "home"/"road")
-        // Check for both to support multiple sports
         const overallRecord = recordData?.items?.find((item) => item.name === RECORD_TYPE_OVERALL);
         const homeRecord = recordData?.items?.find(
           (item) => item.type === RECORD_TYPE_HOME || item.type === RECORD_TYPE_HOME_BASKETBALL
@@ -109,7 +93,6 @@ export const GET = async (
           (item) => item.type === RECORD_TYPE_CONFERENCE
         );
 
-        // Helper to extract stat value from flat stats array
         const getStatValue = (
           stats: Array<{ name: string; value: number }> | undefined,
           statName: string
@@ -117,16 +100,13 @@ export const GET = async (
           return stats?.find((s) => s.name === statName)?.value ?? 0;
         };
 
-        // Try Core API stats first
         const coreStats = overallRecord?.stats;
 
-        // Fallback to Site API stats if Core API returns no data
         const siteStats = teamData.team.record?.items?.find((item) => item.summary)?.stats || [];
         const useSiteAPI = !coreStats && siteStats.length > 0;
 
         let recordStats;
         if (useSiteAPI) {
-          // Parse Site API format
           recordStats = {
             wins: getStatValue(siteStats, 'wins'),
             losses: getStatValue(siteStats, 'losses'),
@@ -138,7 +118,6 @@ export const GET = async (
             avgPointsAgainst: getStatValue(siteStats, 'avgPointsAgainst'),
           };
         } else {
-          // Parse Core API format (flat stats array)
           recordStats = {
             wins: getStatValue(coreStats, STAT_WINS),
             losses: getStatValue(coreStats, STAT_LOSSES),
@@ -151,7 +130,6 @@ export const GET = async (
           };
         }
 
-        // Update only record and stats fields (not rankings - those are handled by update-rankings cron)
         await Team.updateOne(
           { _id: teamData.team.id },
           {
@@ -176,7 +154,6 @@ export const GET = async (
 
         successfulUpdates++;
 
-        // Rate limit between calls (2 API calls per team)
         await new Promise((resolve) => setTimeout(resolve, 500));
       } catch (error) {
         await ErrorLog.create({
@@ -190,7 +167,6 @@ export const GET = async (
       }
     }
 
-    // 5. Retry failed teams once (after 5 second delay)
     if (failedTeams.length > 0) {
       await new Promise((resolve) => setTimeout(resolve, 5000));
 
@@ -201,7 +177,6 @@ export const GET = async (
           const teamData = await client.getTeam(teamAbbrev);
           const recordData = await client.getTeamRecords(teamData.team.id);
 
-          // Extract records by type from Core API
           const overallRecord = recordData?.items?.find(
             (item) => item.name === RECORD_TYPE_OVERALL
           );
@@ -215,7 +190,6 @@ export const GET = async (
             (item) => item.type === RECORD_TYPE_CONFERENCE
           );
 
-          // Helper to extract stat value from flat stats array
           const getStatValue = (
             stats: Array<{ name: string; value: number }> | undefined,
             statName: string
@@ -223,16 +197,13 @@ export const GET = async (
             return stats?.find((s) => s.name === statName)?.value ?? 0;
           };
 
-          // Try Core API stats first
           const coreStats = overallRecord?.stats;
 
-          // Fallback to Site API stats if Core API returns no data
           const siteStats = teamData.team.record?.items?.find((item) => item.summary)?.stats || [];
           const useSiteAPI = !coreStats && siteStats.length > 0;
 
           let recordStats;
           if (useSiteAPI) {
-            // Parse Site API format (same flat array structure)
             const getSiteStatValue = (statName: string): number => {
               return siteStats.find((s) => s.name === statName)?.value ?? 0;
             };
@@ -247,7 +218,6 @@ export const GET = async (
               avgPointsAgainst: getSiteStatValue('avgPointsAgainst'),
             };
           } else {
-            // Parse Core API format (flat stats array)
             recordStats = {
               wins: getStatValue(coreStats, STAT_WINS),
               losses: getStatValue(coreStats, STAT_LOSSES),
@@ -300,7 +270,7 @@ export const GET = async (
     return NextResponse.json<CronRankingsResponse>({
       updated: successfulUpdates,
       teamsChecked: conferenceTeams.length,
-      espnCalls: successfulUpdates * 2, // 2 API calls per successful team
+      espnCalls: successfulUpdates * 2,
       lastUpdated: new Date().toISOString(),
     });
   } catch (error) {

@@ -80,7 +80,6 @@ export const POST = async (
       seasonYear = season || new Date().getFullYear();
     }
 
-    // If week is specified, use it; otherwise fetch entire season
     let scoreboardResponse;
     if (week !== undefined) {
       scoreboardResponse = await client.getScoreboard({
@@ -89,15 +88,12 @@ export const POST = async (
         week: week,
       });
     } else {
-      // Fetch entire season in one call using dates parameter
       scoreboardResponse = await client.getScoreboard({
         groups: conferenceMeta.espnId,
         dates: seasonYear,
       });
     }
 
-    // Extract and store teams from scoreboard response BEFORE reshaping/checking games
-    // Teams must exist even if there are no games yet (early season, etc.)
     const conferenceId = String(conferenceMeta.espnId);
     const existingTeams = await Team.find({ conferenceId }).lean();
 
@@ -105,7 +101,6 @@ export const POST = async (
     const errors: string[] = [];
 
     if (existingTeams.length === 0 || existingTeams.length < conferenceMeta.teams) {
-      // Extract teams from scoreboard response
       const teams = extractTeamsFromScoreboard(scoreboardResponse, conferenceMeta);
 
       if (process.env.NODE_ENV === 'test' && teams.length === 0) {
@@ -117,7 +112,6 @@ export const POST = async (
         );
       }
 
-      // Store teams with required fields only (upsert handles both create and update)
       for (const team of teams) {
         try {
           await Team.findOneAndUpdate({ _id: team._id }, team, { upsert: true, new: true });
@@ -151,8 +145,6 @@ export const POST = async (
       );
     }
 
-    // Filter games to only include conference games (using ESPN's conferenceCompetition field)
-    // ESPN's API already tells us which games are conference games
     const conferenceGamesOnly = reshaped.games.filter((game) => game.conferenceGame === true);
 
     if (conferenceGamesOnly.length === 0) {
@@ -166,12 +158,10 @@ export const POST = async (
       );
     }
 
-    // Ensure season is set correctly (conferenceGame is already set from ESPN's conferenceCompetition)
     for (const game of conferenceGamesOnly) {
       game.season = season;
     }
 
-    // Fetch teams for predictedScore calculation
     const teamIds = [
       ...new Set([
         ...conferenceGamesOnly.map((g) => g.home.teamEspnId),
@@ -231,7 +221,6 @@ export const POST = async (
       }
     }
 
-    // Extract unique week numbers from conference games
     const weeksPulled = [
       ...new Set(conferenceGamesOnly.map((g) => g.week).filter((w) => w !== null)),
     ].sort((a, b) => (a || 0) - (b || 0)) as number[];

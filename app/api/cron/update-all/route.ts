@@ -4,28 +4,7 @@ import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * Batch Cron Endpoint - Pull Everything
- *
- * Calls all cron jobs to pull/update all data:
- * - Games (entire season)
- * - Teams
- * - Rankings
- * - Spreads
- *
- * Each sub-job handles its own:
- * - Authentication (uses same CRON_SECRET)
- * - Error handling
- * - Early exits (e.g., update-rankings only runs in season)
- *
- * Flow:
- * 1. pull-teams - Pull all SEC teams
- * 2. update-games?mode=season - Pull/update entire season (all weeks)
- * 3. update-rankings - Update team rankings
- * 4. update-spreads - Update game spreads
- */
 export const GET = async (request: NextRequest) => {
-  // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -39,7 +18,6 @@ export const GET = async (request: NextRequest) => {
     Authorization: `Bearer ${process.env.CRON_SECRET}`,
   };
 
-  // Get bypass token from environment or request for protected Vercel deployments
   const bypassToken =
     process.env.VERCEL_AUTOMATION_BYPASS_SECRET ||
     request.nextUrl.searchParams.get('x-vercel-protection-bypass') ||
@@ -54,13 +32,11 @@ export const GET = async (request: NextRequest) => {
     duration: number;
   }> = [];
 
-  // Loop through all supported sport/conf combinations
   for (const [sport, sportConfig] of Object.entries(sports)) {
     for (const conf of Object.keys(sportConfig.conferences)) {
       const sportSlug = sport as SportSlug;
       const confSlug = conf as ConferenceSlug;
 
-    // 1. Pull teams
     try {
       const start = Date.now();
       const pullTeamsUrl = bypassParam
@@ -91,7 +67,6 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    // 2. Pull/update games for entire season
     try {
       const start = Date.now();
       const pullGamesUrl = bypassParam
@@ -124,7 +99,6 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    // 3. Update rankings
     try {
       const start = Date.now();
       const updateRankingsUrl = bypassParam
@@ -151,7 +125,6 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    // 4. Update spreads
     try {
       const start = Date.now();
       const updateSpreadsUrl = bypassParam
@@ -178,7 +151,6 @@ export const GET = async (request: NextRequest) => {
       });
     }
 
-    // 5. Update team averages
     try {
       const start = Date.now();
       const updateTeamAveragesUrl = bypassParam
@@ -207,7 +179,6 @@ export const GET = async (request: NextRequest) => {
     }
   }
 
-  // 5. Summary
   const successCount = results.filter((r) => r.success).length;
   const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
 
@@ -220,6 +191,6 @@ export const GET = async (request: NextRequest) => {
       results,
       lastUpdated: new Date().toISOString(),
     },
-    { status: successCount === results.length ? 200 : 207 } // 207 = Multi-Status
+    { status: successCount === results.length ? 200 : 207 }
   );
 };

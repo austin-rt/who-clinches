@@ -14,19 +14,10 @@ import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * Update games cron endpoint
- *
- * Modes:
- * - active (default): Only update incomplete games
- * - week: Pull/update current week only (no past, no future)
- * - season: Pull/update entire season (all weeks, creates new games)
- */
 export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
 ) => {
-  // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -42,17 +33,13 @@ export const GET = async (
   }
 
   try {
-    // 2. Connect to database
     await dbConnect();
 
-    // 3. Get mode parameter and season
     const { searchParams } = new URL(request.url);
-    const mode = searchParams.get('mode') || 'active'; // active, week, or season
+    const mode = searchParams.get('mode') || 'active';
 
-    const season = 2025; // Hardcoded for now
+    const season = 2025;
 
-    // 4. Check if in season using ESPN calendar (with manual override for testing)
-    // Tests automatically bypass the check since they're testing functionality, not season logic
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
 
@@ -67,19 +54,14 @@ export const GET = async (
       );
     }
 
-    // 5. Handle different modes
     if (mode === 'season') {
-      // Pull entire season - loop through all weeks and upsert
       return await handleSeasonMode(season, sport, espnRoute, conf);
     } else if (mode === 'week') {
-      // Pull current week only
       return await handleWeekMode(season, sport, espnRoute, conf, conferenceMeta);
     } else {
-      // Default: active mode - only incomplete games
       return await handleActiveMode(season, sport, espnRoute, conf, conferenceMeta);
     }
   } catch (error) {
-    // Unexpected error - log and return
     await ErrorLog.create({
       timestamp: new Date(),
       endpoint: `/api/cron/${sport}/${conf}/update-games`,
@@ -97,9 +79,6 @@ export const GET = async (
   }
 };
 
-/**
- * Handle season mode: Call existing pull-games endpoint
- */
 const handleSeasonMode = async (
   season: number,
   sport: SportSlug,
@@ -127,12 +106,11 @@ const handleSeasonMode = async (
 
     const result = await response.json();
 
-    // Transform PullGamesResponse to CronGamesResponse
     return NextResponse.json<CronGamesResponse>({
       updated: result.upserted || 0,
       gamesChecked: result.upserted || 0,
-      activeGames: 0, // Not applicable for season mode
-      espnCalls: 0, // Not tracked by pull-games endpoint
+      activeGames: 0,
+      espnCalls: 0,
       lastUpdated: result.lastUpdated || new Date().toISOString(),
       errors: result.errors,
     });
@@ -156,9 +134,6 @@ const handleSeasonMode = async (
   }
 };
 
-/**
- * Handle week mode: Determine current week, then call existing pull-games endpoint
- */
 const handleWeekMode = async (
   season: number,
   sport: SportSlug,
@@ -168,10 +143,8 @@ const handleWeekMode = async (
 ): Promise<NextResponse<CronGamesResponse>> => {
   const client = createESPNClient(espnRoute);
 
-  // Get current week from ESPN calendar
   let currentWeek: number | null = null;
   try {
-    // Fetch calendar without season parameter - ESPN only returns calendar without season
     const calendarResponse = await client.getScoreboard({
       groups: conferenceMeta.espnId,
     });
@@ -181,7 +154,6 @@ const handleWeekMode = async (
     );
 
     if (regularSeason?.entries && regularSeason.entries.length > 0) {
-      // Find the current week based on today's date
       const today = new Date();
       for (const entry of regularSeason.entries) {
         if (entry.startDate && entry.endDate) {
@@ -194,7 +166,6 @@ const handleWeekMode = async (
         }
       }
 
-      // If no current week found, use the first future week or latest past week
       if (currentWeek === null) {
         for (const entry of regularSeason.entries) {
           if (entry.startDate) {
@@ -205,7 +176,6 @@ const handleWeekMode = async (
             }
           }
         }
-        // If still no week found, use the last entry
         if (currentWeek === null && regularSeason.entries.length > 0) {
           currentWeek = parseInt(regularSeason.entries[regularSeason.entries.length - 1].value, 10);
         }
@@ -247,7 +217,6 @@ const handleWeekMode = async (
     });
   }
 
-  // Call existing pull-games endpoint with specific week
   const baseUrl = process.env.VERCEL_URL
     ? `https://${process.env.VERCEL_URL}`
     : 'http://localhost:3000';
@@ -269,12 +238,11 @@ const handleWeekMode = async (
 
     const result = await response.json();
 
-    // Transform PullGamesResponse to CronGamesResponse
     return NextResponse.json<CronGamesResponse>({
       updated: result.upserted || 0,
       gamesChecked: result.upserted || 0,
-      activeGames: 0, // Not applicable for week mode
-      espnCalls: 0, // Not tracked by pull-games endpoint
+      activeGames: 0,
+      espnCalls: 0,
       lastUpdated: result.lastUpdated || new Date().toISOString(),
       errors: result.errors,
     });
@@ -298,9 +266,6 @@ const handleWeekMode = async (
   }
 };
 
-/**
- * Handle active mode: Only update incomplete games (existing behavior)
- */
 const handleActiveMode = async (
   season: number,
   sport: SportSlug,
@@ -308,7 +273,6 @@ const handleActiveMode = async (
   conf: ConferenceSlug,
   conferenceMeta: { espnId: string }
 ): Promise<NextResponse<CronGamesResponse>> => {
-  // Query only incomplete games
   const gamesRaw = await Game.find({
     season: season,
     conferenceGame: true,
@@ -327,7 +291,6 @@ const handleActiveMode = async (
     });
   }
 
-  // Group games by week
   const gamesByWeek = new Map<number, typeof gamesRaw>();
   for (const game of gamesRaw) {
     const week = typeof game.week === 'number' ? game.week : 0;
@@ -342,13 +305,11 @@ const handleActiveMode = async (
   let espnCalls = 0;
   const errors: string[] = [];
 
-  // Process each week
   for (const [week, weekGames] of gamesByWeek.entries()) {
     if (week === 0) {
-      continue; // Skip games without week numbers
+      continue;
     }
 
-    // Cast to GameLean
     const games: GameLean[] = weekGames.map((g) => ({
       _id: String(g._id),
       espnId: String(g.espnId),
@@ -406,7 +367,6 @@ const handleActiveMode = async (
         : undefined,
     }));
 
-    // Fetch scoreboard from ESPN
     let espnResponse;
     try {
       espnCalls++;
@@ -423,16 +383,13 @@ const handleActiveMode = async (
       continue;
     }
 
-    // Reshape ESPN response
     const result = reshapeScoreboardData(espnResponse, espnRoute);
     const reshapedGames = result.games || [];
 
-    // Update each game
     const gameIds = new Set(games.map((g) => g.espnId));
     const gamesToUpdate = reshapedGames.filter((game) => gameIds.has(game.espnId));
     totalChecked += gamesToUpdate.length;
 
-    // Fetch teams for predictedScore calculation
     const teamIds = [
       ...new Set([
         ...gamesToUpdate.map((g) => g.home.teamEspnId),
@@ -467,7 +424,6 @@ const handleActiveMode = async (
         }
       );
 
-      // Check if anything changed
       const venueChanged = JSON.stringify(reshapedGame.venue) !== JSON.stringify(currentGame.venue);
 
       const hasChanges =
@@ -499,7 +455,6 @@ const handleActiveMode = async (
           lastUpdated: new Date(),
         };
 
-        // Update venue (always required)
         updateData.venue = {
           fullName: reshapedGame.venue.fullName || '',
           city: reshapedGame.venue.city || '',

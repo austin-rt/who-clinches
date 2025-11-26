@@ -72,16 +72,13 @@ export const POST = async (
         seasonYear = new Date().getFullYear();
       }
 
-      // Call scoreboard to extract teams
       const scoreboardResponse = await client.getScoreboard({
         groups: conferenceMeta.espnId,
         dates: seasonYear,
       });
 
-      // Extract teams from scoreboard
       const teams = extractTeamsFromScoreboard(scoreboardResponse, conferenceMeta);
 
-      // Store teams using findOneAndUpdate with upsert (handles both create and update)
       for (const team of teams) {
         try {
           await Team.findOneAndUpdate({ _id: team._id }, team, { upsert: true, new: true });
@@ -102,13 +99,10 @@ export const POST = async (
         }
       }
     } else if (existingTeams.length === conferenceMeta.teams) {
-      // All teams exist - return existing count
       upserted = existingTeams.length;
     } else {
-      // Partial teams - extract to fill gaps
       const client = createESPNClient(espnRoute);
 
-      // Get season year from calendar
       let seasonYear: number;
       try {
         const calendarResponse = await client.getScoreboard({
@@ -122,16 +116,13 @@ export const POST = async (
         seasonYear = new Date().getFullYear();
       }
 
-      // Call scoreboard to extract teams
       const scoreboardResponse = await client.getScoreboard({
         groups: conferenceMeta.espnId,
         dates: seasonYear,
       });
 
-      // Extract teams from scoreboard
       const teams = extractTeamsFromScoreboard(scoreboardResponse, conferenceMeta);
 
-      // Store teams using findOneAndUpdate with upsert (handles both create and update)
       for (const team of teams) {
         try {
           await Team.findOneAndUpdate({ _id: team._id }, team, { upsert: true, new: true });

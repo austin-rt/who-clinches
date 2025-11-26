@@ -13,15 +13,10 @@ import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * Pro Mode Only: Hourly spread updates for upcoming games
- * Updates betting odds and recalculates predictedScore
- */
 export const GET = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
 ) => {
-  // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -37,15 +32,12 @@ export const GET = async (
   }
 
   try {
-    // 2. Connect to database
     await dbConnect();
 
-    // 3. Check if in season using ESPN calendar (with manual override for testing)
     const { searchParams } = new URL(request.url);
-    // Tests automatically bypass the check since they're testing functionality, not season logic
     const bypassSeasonCheck =
       searchParams.get('force') === 'true' || process.env.NODE_ENV === 'test';
-    const season = 2025; // Hardcoded for now
+    const season = 2025;
 
     if (!bypassSeasonCheck && !(await isInSeasonFromESPN(sport, conf))) {
       return NextResponse.json(
@@ -58,11 +50,10 @@ export const GET = async (
       );
     }
 
-    // 4. Query DB for upcoming games (pre-state only, spreads change before kickoff)
     const games = await Game.find({
       season: season,
       conferenceGame: true,
-      state: 'pre', // Only pre-game spreads matter
+      state: 'pre',
     }).lean();
 
     if (games.length === 0) {
@@ -75,7 +66,6 @@ export const GET = async (
       });
     }
 
-    // 4. Get week from first game
     const currentWeek = games[0].week;
     if (!currentWeek) {
       return NextResponse.json<CronGamesResponse>({
@@ -87,7 +77,6 @@ export const GET = async (
       });
     }
 
-    // 5. Fetch scoreboard from ESPN
     const client = createESPNClient(espnRoute);
     const scoreboard = await client.getScoreboard({
       groups: conferenceMeta.espnId,
@@ -95,15 +84,12 @@ export const GET = async (
       season: 2025,
     });
 
-    // 6. Reshape ESPN data
     const result = reshapeScoreboardData(scoreboard, espnRoute);
     const reshapedGames = result.games || [];
 
-    // 7. Filter to only games we have in DB
     const gameIds = new Set(games.map((g) => String(g.espnId)));
     const gamesToUpdate = reshapedGames.filter((game) => gameIds.has(game.espnId));
 
-    // 8. Fetch teams for predictedScore calculation
     const teamIds = [
       ...new Set([
         ...gamesToUpdate.map((g) => g.home.teamEspnId),
@@ -113,7 +99,6 @@ export const GET = async (
     const teams = await Team.find({ _id: { $in: teamIds } }).lean();
     const teamMap = new Map(teams.map((t) => [String(t._id), t]));
 
-    // 9. Update spreads and predictedScore
     let updateCount = 0;
     for (const reshapedGame of gamesToUpdate) {
       const currentGame = games.find((g) => String(g.espnId) === reshapedGame.espnId);
@@ -124,7 +109,6 @@ export const GET = async (
 
       if (!homeTeam || !awayTeam) continue;
 
-      // Always recalculate predictedScore
       const predictedScore = calculatePredictedScore(
         reshapedGame,
         homeTeam as unknown as {
@@ -139,7 +123,6 @@ export const GET = async (
         }
       );
 
-      // Check if odds or predictedScore changed
       const hasChanges =
         reshapedGame.odds?.spread !== currentGame.odds?.spread ||
         reshapedGame.odds?.favoriteTeamEspnId !== currentGame.odds?.favoriteTeamEspnId ||

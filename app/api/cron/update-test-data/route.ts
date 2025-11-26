@@ -12,28 +12,18 @@ import { sports } from '@/lib/constants';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-/**
- * Pro Mode Only: Daily test data snapshot update
- * Pulls one example of each ESPN API response type for unit testing
- * Runs daily at low traffic time (e.g., 3 AM ET)
- *
- * In Hobby tier, this should be part of the batch pull cron job
- */
 export const GET = async (request: NextRequest) => {
-  // 1. Verify cron secret
   const authHeader = request.headers.get('authorization');
   if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   try {
-    // 2. Connect to test database
     await dbConnectTest();
 
     const season = 2025;
     const results: Array<{ type: string; success: boolean; error?: string }> = [];
 
-    // 3. Pull scoreboard data for entire season using dates parameter
     try {
         const { espnRoute, conferences } = sports.cfb;
         const client = createESPNClient(espnRoute);
@@ -43,10 +33,8 @@ export const GET = async (request: NextRequest) => {
       });
 
       const ScoreboardModel = await getESPNScoreboardTestData();
-      
-      // Store entire season response (dates parameter returns whole season)
-      // Store with week: 0 to indicate it's the full season response
-          await ScoreboardModel.findOneAndUpdate(
+
+      await ScoreboardModel.findOneAndUpdate(
         { season, week: 0 },
             {
               season,
@@ -65,9 +53,7 @@ export const GET = async (request: NextRequest) => {
       results.push({ type: 'scoreboard', success: false, error: errorMessage });
     }
 
-    // 4. Pull game summary example (first game from scoreboard)
     try {
-      // Get a game ID from the scoreboard we just pulled
       const ScoreboardModel = await getESPNScoreboardTestData();
       const scoreboardData = await ScoreboardModel.findOne({ season });
 
@@ -104,9 +90,7 @@ export const GET = async (request: NextRequest) => {
       results.push({ type: 'gameSummary', success: false, error: errorMessage });
     }
 
-    // 5. Pull team example (first SEC team)
     try {
-      // Get first team from SEC conference for testing (from database)
       await dbConnect();
       const { conferences } = sports.cfb;
       const secTeams = await Team.find({ conferenceId: conferences.sec.espnId }).lean();
@@ -140,9 +124,7 @@ export const GET = async (request: NextRequest) => {
       results.push({ type: 'team', success: false, error: errorMessage });
     }
 
-    // 6. Pull team records example (same team as above)
     try {
-      // Get first team from SEC conference for testing (from database)
       await dbConnect();
       const { conferences } = sports.cfb;
       const secTeams = await Team.find({ conferenceId: conferences.sec.espnId }).lean();
@@ -179,17 +161,13 @@ export const GET = async (request: NextRequest) => {
 
     const successCount = results.filter((r) => r.success).length;
 
-    // 7. Trigger reshape tests (non-blocking, fire-and-forget)
-    // Tests run in background to verify reshape functions still work with new API format
     if (successCount > 0 && process.env.CRON_SECRET) {
-      // Fire and forget - don't wait for response
       fetch(`${process.env.VERCEL_URL || 'http://localhost:3000'}/api/cron/run-reshape-tests`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${process.env.CRON_SECRET}`,
         },
       }).catch(() => {
-        // Silently fail - test failure is logged separately in test endpoint
       });
     }
 
