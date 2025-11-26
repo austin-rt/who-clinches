@@ -1,21 +1,5 @@
 /* eslint-disable no-console */
 
-/**
- * Database Check and Seed Script
- *
- * Checks if teams and games are seeded in the database.
- * If empty, automatically seeds via API endpoints.
- * This runs before tests to ensure DB is ready.
- *
- * Usage:
- *   npx tsx scripts/db-check-and-seed.ts [--env dev|preview|production] [--sport cfb] [--conf sec]
- *   npm run db:check
- *
- * Examples:
- *   npx tsx scripts/db-check-and-seed.ts --env dev
- *   npx tsx scripts/db-check-and-seed.ts --env preview --sport cfb --conf sec
- */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
@@ -30,11 +14,10 @@ interface SimulateResponse {
   standings?: unknown[];
 }
 
-// Parse command line arguments
 const args = process.argv.slice(2);
-let envName = 'dev'; // Default to dev
-let sportSlug: SportSlug = 'cfb'; // Default to cfb
-let confSlug: ConferenceSlug = 'sec'; // Default to sec
+let envName = 'dev';
+let sportSlug: SportSlug = 'cfb';
+let confSlug: ConferenceSlug = 'sec';
 
 const envIndex = args.indexOf('--env');
 if (envIndex !== -1 && args[envIndex + 1]) {
@@ -51,12 +34,10 @@ if (confIndex !== -1 && args[confIndex + 1]) {
   confSlug = args[confIndex + 1] as ConferenceSlug;
 }
 
-// Treat 'local' as alias for 'dev' for backward compatibility
 if (envName === 'local') {
   envName = 'dev';
 }
 
-// Load .env.local for read-only credentials (always needed)
 const localEnvFile = path.join(process.cwd(), '.env.local');
 if (!fs.existsSync(localEnvFile)) {
   console.error(`[ERROR] .env.local file not found`);
@@ -73,25 +54,21 @@ try {
   process.exit(1);
 }
 
-// Determine BASE_URL: hardcoded for preview/production, from .env.local or default for dev
 let BASE_URL: string;
 if (envName === 'preview') {
   BASE_URL = 'https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app';
 } else if (envName === 'production') {
   BASE_URL = 'https://sec-tiebreaker-git-main-austinrts-projects.vercel.app';
 } else {
-  // For dev, use from .env.local or default to localhost
   BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 }
 
-// Determine database name: derive from env name for preview/production, from .env.local for dev
 let DATABASE: string;
 if (envName === 'preview') {
   DATABASE = 'preview';
 } else if (envName === 'production') {
   DATABASE = 'production';
 } else {
-  // For dev, must be in .env.local
   DATABASE = process.env.MONGODB_DB || '';
   if (!DATABASE) {
     console.error(`[ERROR] MONGODB_DB not found in .env.local`);
@@ -100,7 +77,6 @@ if (envName === 'preview') {
   }
 }
 
-// Get read-only credentials: from .env.local first, then process.env (for Vercel)
 const MONGODB_USER_READONLY = process.env.MONGODB_USER_READONLY;
 const MONGODB_PASSWORD_READONLY = process.env.MONGODB_PASSWORD_READONLY;
 
@@ -111,7 +87,6 @@ if (!MONGODB_USER_READONLY || !MONGODB_PASSWORD_READONLY) {
   process.exit(1);
 }
 
-// Get Vercel bypass token for preview/production deployments
 const VERCEL_AUTOMATION_BYPASS_SECRET = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
 if ((envName === 'preview' || envName === 'production') && !VERCEL_AUTOMATION_BYPASS_SECRET) {
   console.error(`[ERROR] VERCEL_AUTOMATION_BYPASS_SECRET not found`);
@@ -120,7 +95,6 @@ if ((envName === 'preview' || envName === 'production') && !VERCEL_AUTOMATION_BY
   process.exit(1);
 }
 
-// Load conference metadata from constants (single source of truth)
 const sportConfig = sports[sportSlug];
 if (!sportConfig) {
   console.error(`[ERROR] Unsupported sport: ${sportSlug}`);
@@ -137,8 +111,6 @@ if (!conferenceMeta) {
   process.exit(1);
 }
 
-// Calculate expected game count: (teams * confGames) / 2
-// Each team plays confGames games, but each game involves 2 teams, so divide by 2
 const expectedGames = (conferenceMeta.teams * conferenceMeta.confGames) / 2;
 
 console.log('================================================');
@@ -152,17 +124,10 @@ console.log(`Expected teams: ${conferenceMeta.teams}`);
 console.log(`Expected games: ${expectedGames}`);
 console.log('');
 
-/**
- * Fetch helper with timeout - simple wrapper around fetch API
- * Automatically adds bypass token for preview/production deployments
- * Includes 120-second timeout to prevent hanging requests
- * Note: pull-teams endpoint can take 60-90 seconds for 16 teams with ESPN API rate limiting
- */
 async function fetchAPI<T = unknown>(url: string, options: RequestInit = {}): Promise<T> {
-  const REQUEST_TIMEOUT_MS = 120000; // 120 seconds (16 teams × 2 API calls + 500ms delays + network latency)
+  const REQUEST_TIMEOUT_MS = 120000;
 
   try {
-    // Add bypass token for preview/production deployments
     let finalUrl = url;
     if ((envName === 'preview' || envName === 'production') && VERCEL_AUTOMATION_BYPASS_SECRET) {
       const urlObj = new URL(url);
@@ -170,7 +135,6 @@ async function fetchAPI<T = unknown>(url: string, options: RequestInit = {}): Pr
       finalUrl = urlObj.toString();
     }
 
-    // Create AbortController for timeout
     const controller = new AbortController();
     const timeoutId = setTimeout(() => {
       controller.abort();
@@ -192,7 +156,6 @@ async function fetchAPI<T = unknown>(url: string, options: RequestInit = {}): Pr
     } catch (fetchError) {
       clearTimeout(timeoutId);
 
-      // Check if the error was due to timeout
       if (fetchError instanceof Error && fetchError.name === 'AbortError') {
         throw new Error(
           `Request timeout: ${finalUrl} did not complete within ${REQUEST_TIMEOUT_MS}ms`
@@ -207,9 +170,6 @@ async function fetchAPI<T = unknown>(url: string, options: RequestInit = {}): Pr
   }
 }
 
-/**
- * Main execution flow
- */
 async function main() {
   const isDevEnvironment = envName === 'dev' && BASE_URL.startsWith('http://localhost');
   let serverStarted = false;
@@ -240,7 +200,6 @@ async function main() {
   }
 
   try {
-    // Step 1: Check if games are seeded (pull-games now extracts teams automatically)
     console.log('Step 1: Checking if games are seeded...');
     try {
       const allGamesResponse = await fetchAPI<GamesResponse>(
@@ -249,7 +208,6 @@ async function main() {
       const gameCount = allGamesResponse.events?.length || 0;
       const teamCount = allGamesResponse.teams?.length || 0;
 
-      // Check for exact expected counts
       if (teamCount === conferenceMeta.teams && gameCount === expectedGames) {
         console.log(
           `[OK] Found ${teamCount} team(s) and ${gameCount} conference game(s) in database (expected ${conferenceMeta.teams} teams, ${expectedGames} games)`
@@ -260,7 +218,6 @@ async function main() {
         );
         await seedGames();
         await sleep(2000);
-        // Verify after seeding
         const verifyResponse = await fetchAPI<GamesResponse>(
           `${BASE_URL}/api/games/${sportSlug}/${confSlug}?season=2025`
         );
@@ -282,7 +239,6 @@ async function main() {
       await sleep(2000);
     }
 
-    // Step 3: Verify response structures
     console.log('');
     console.log('Step 3: Verifying API response structures...');
     await verifyGamesResponse();
@@ -291,7 +247,6 @@ async function main() {
     console.log('Step 4: Verifying simulate response structure...');
     await verifySimulateResponse();
 
-    // Success
     console.log('');
     console.log('================================================');
     console.log('[OK] Database ready for testing');
@@ -321,9 +276,6 @@ async function main() {
   process.exit(exitCode);
 }
 
-/**
- * Seed games via API (also extracts teams automatically)
- */
 async function seedGames() {
   console.log('  Seeding games (this will also extract teams)...');
   try {
@@ -341,9 +293,6 @@ async function seedGames() {
   }
 }
 
-/**
- * Verify /api/games response structure
- */
 async function verifyGamesResponse() {
   try {
     const response = await fetchAPI<GamesResponse>(
@@ -357,7 +306,6 @@ async function verifyGamesResponse() {
       throw new Error('Missing or invalid teams array');
     }
 
-    // Check first team has required fields
     if (response.teams.length > 0) {
       const requiredFields = ['id', 'abbrev', 'displayName', 'logo', 'color', 'alternateColor'];
       const team = response.teams[0] as Record<string, unknown>;
@@ -378,9 +326,6 @@ async function verifyGamesResponse() {
   }
 }
 
-/**
- * Verify /api/simulate response structure
- */
 async function verifySimulateResponse() {
   try {
     const response = await fetchAPI<SimulateResponse>(
@@ -402,7 +347,6 @@ async function verifySimulateResponse() {
       throw new Error(`Expected ${conferenceMeta.teams} teams, got ${response.standings.length}`);
     }
 
-    // Check first team has required fields
     if (response.standings.length > 0) {
       const requiredFields = [
         'rank',
@@ -431,12 +375,8 @@ async function verifySimulateResponse() {
   }
 }
 
-/**
- * Sleep helper
- */
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Run
 void main();

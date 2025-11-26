@@ -1,21 +1,8 @@
 #!/usr/bin/env node
 
-/**
- * Test Database Check and Seed Script
- *
- * Checks if test data snapshots are seeded in the /test database.
- * If empty, automatically seeds via cron endpoint.
- * This runs before reshape unit tests to ensure test DB is ready.
- *
- * Usage:
- *   node scripts/test-db-check-and-seed.js
- *   npm run test:db:check
- */
-
 const fs = require('fs');
 const path = require('path');
 
-// Load .env.local - fail if it doesn't exist
 const envFile = path.join(process.cwd(), '.env.local');
 if (!fs.existsSync(envFile)) {
   console.error('[ERROR] Environment file not found: .env.local');
@@ -48,7 +35,6 @@ console.log(`Base URL: ${BASE_URL}`);
 console.log(`Test Database: ${TEST_DB_NAME}`);
 console.log('');
 
-// Validate required environment variables - fail if missing
 if (!CRON_SECRET) {
   console.error('[ERROR] CRON_SECRET not found in .env.local');
   console.error('  Required for test data seeding');
@@ -62,9 +48,6 @@ if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_HOST || !MONGODB_APP_NAME) {
 }
 
 
-/**
- * Check MongoDB connection
- */
 async function checkMongoDB() {
   try {
     const { MongoClient } = require('mongodb');
@@ -80,9 +63,6 @@ async function checkMongoDB() {
   }
 }
 
-/**
- * Check if test data exists in test database
- */
 async function checkTestData() {
   try {
     const { MongoClient } = require('mongodb');
@@ -114,9 +94,6 @@ async function checkTestData() {
   }
 }
 
-/**
- * Seed test data via cron endpoint
- */
 async function seedTestData() {
   console.log('Seeding test data via /api/cron/update-test-data...');
   try {
@@ -146,19 +123,14 @@ async function seedTestData() {
   }
 }
 
-/**
- * Main execution flow
- */
 async function main() {
   try {
-    // Step 1: Check MongoDB connection
     console.log('Step 1: Checking MongoDB connection...');
     if (!(await checkMongoDB())) {
       process.exit(1);
     }
     console.log('[OK] MongoDB connection successful');
 
-    // Step 2: Check if test data is seeded
     console.log('');
     console.log('Step 2: Checking if test data is seeded...');
     const { allPresent, results } = await checkTestData();
@@ -179,9 +151,7 @@ async function main() {
       if (!(await seedTestData())) {
         process.exit(1);
       }
-      // Wait for data to be written (MongoDB writes can take a moment)
       await new Promise((resolve) => setTimeout(resolve, 5000));
-      // Verify after seeding
       const { allPresent: verifyPresent } = await checkTestData();
       if (!verifyPresent) {
         console.error('[ERROR] Test data seeding completed but verification failed');
@@ -191,7 +161,6 @@ async function main() {
       console.log('[OK] Test data verification successful');
     }
 
-    // Success
     console.log('');
     console.log('================================================');
     console.log('[OK] Test database ready for testing');

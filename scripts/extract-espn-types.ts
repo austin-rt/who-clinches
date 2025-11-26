@@ -1,15 +1,3 @@
-/**
- * Generate TypeScript Types from ESPN API Responses
- *
- * Extracts all ESPN API responses from test database and uses quicktype
- * to generate TypeScript types. Analyzes all records to capture all
- * possible field variations and string literal unions.
- *
- * Usage:
- *   npx tsx scripts/extract-espn-types.ts
- */
-
-// Load environment variables FIRST, before any other imports
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -29,10 +17,6 @@ interface TypeGenerationResult {
   error?: string;
 }
 
-/**
- * Generate types using quicktype from JSON samples
- * Passes all samples to quicktype so it can infer unions for string literals
- */
 function generateTypesWithQuicktype(
   jsonSamples: unknown[],
   outputName: string
@@ -41,12 +25,10 @@ function generateTypesWithQuicktype(
     return { success: false, error: 'No JSON samples provided' };
   }
 
-  // Create temp directory
   if (!fs.existsSync(TEMP_DIR)) {
     fs.mkdirSync(TEMP_DIR, { recursive: true });
   }
 
-  // Save all samples as separate files for quicktype to analyze
   const sampleFiles: string[] = [];
   jsonSamples.forEach((sample, index) => {
     const samplePath = path.join(TEMP_DIR, `${outputName}-sample-${index}.json`);
@@ -54,43 +36,34 @@ function generateTypesWithQuicktype(
     sampleFiles.push(samplePath);
   });
 
-  // Generate types using quicktype
-  // quicktype analyzes all samples and infers unions for string literals
   const outputPath = path.join(OUTPUT_DIR, `${outputName}-generated.ts`);
 
   try {
-    // Use quicktype with all sample files
-    // --src flag accepts multiple files
     const quicktypeArgs = [
       'quicktype',
       ...sampleFiles,
       '--lang',
       'typescript',
       '--just-types',
-      '--no-enums', // Use string unions instead of enums
-      '--prefer-unions', // Prefer unions for string literals
+      '--no-enums',
+      '--prefer-unions',
       '--acronym-style',
-      'original', // Keep original field names
+      'original',
       '-o',
       outputPath,
     ];
 
     execSync(quicktypeArgs.join(' '), { stdio: 'inherit' });
 
-    // Clean up sample files
     sampleFiles.forEach((file) => {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file);
       }
     });
 
-    // Post-process: Replace state: string with GameState type in StatusType interface
     if (fs.existsSync(outputPath)) {
       let content = fs.readFileSync(outputPath, 'utf-8');
 
-      // Replace state: string with state: GameState only in StatusType interface
-      // Match StatusType interface block and replace state field within the interface block only
-      // Use a more precise match that stops at the closing brace
       const statusTypeMatch = content.match(/export interface StatusType\s*\{[\s\S]*?\n\}/);
       if (statusTypeMatch) {
         const statusTypeBlock = statusTypeMatch[0];
@@ -99,10 +72,8 @@ function generateTypesWithQuicktype(
           '$1GameState$2'
         );
 
-        // Only add import if we actually replaced something and GameState is now used
         if (updatedBlock !== statusTypeBlock && !content.includes('import { GameState }')) {
           const gameStateImport = "import { GameState } from '@/lib/types';\n";
-          // Find the first import or add at the top
           const importMatch = content.match(/^import .+$/m);
           if (importMatch) {
             content = content.replace(/^(import .+)$/m, `${gameStateImport}$1`);
@@ -114,12 +85,8 @@ function generateTypesWithQuicktype(
         content = content.replace(statusTypeMatch[0], updatedBlock);
       }
 
-      // Post-process: Add Odd interface and odds field to Competition if missing
-      // ESPN doesn't always provide odds, so test data may not have it, but our code expects it
       if (outputName === 'espn-scoreboard') {
-        // Check if Odd interface exists
         if (!content.includes('export interface Odd {')) {
-          // Find where to insert (before the last closing brace or after StatusType)
           const oddInterface = `
 export interface Odd {
   provider: Provider;
@@ -247,10 +214,8 @@ export interface Total {
 }
 `;
 
-          // Insert before the last closing brace (end of file) or after StatusType
           const statusTypeEnd = content.lastIndexOf('export interface StatusType');
           if (statusTypeEnd !== -1) {
-            // Find the end of StatusType interface
             const afterStatusType = content.indexOf('\n}', statusTypeEnd);
             if (afterStatusType !== -1) {
               content =
@@ -258,25 +223,20 @@ export interface Total {
                 oddInterface +
                 content.slice(afterStatusType + 2);
             } else {
-              // Fallback: add at end before last brace
               content = content.replace(/\n}$/, oddInterface + '\n}');
             }
           } else {
-            // Fallback: add at end before last brace
             content = content.replace(/\n}$/, oddInterface + '\n}');
           }
         }
 
-        // Add odds?: Odd[] to Competition interface if missing
         if (
           content.includes('export interface Competition {') &&
           !content.includes('odds?: Odd[]')
         ) {
-          // Find Competition interface and add odds field before closing brace
           const competitionMatch = content.match(/export interface Competition\s*\{[\s\S]*?\n\}/);
           if (competitionMatch) {
             const competitionBlock = competitionMatch[0];
-            // Add odds field before the closing brace (after last field)
             const updatedCompetition = competitionBlock.replace(/(\n\})$/, '\n  odds?: Odd[]$1');
             content = content.replace(competitionMatch[0], updatedCompetition);
           }
@@ -288,7 +248,6 @@ export interface Total {
 
     return { success: true, filePath: outputPath };
   } catch (error) {
-    // Clean up sample files on error
     sampleFiles.forEach((file) => {
       if (fs.existsSync(file)) {
         fs.unlinkSync(file);
@@ -304,7 +263,6 @@ export interface Total {
 
 async function generateESPNTypes() {
   try {
-    // Dynamic imports after environment variables are loaded
     const { default: dbConnectTest } = await import('../lib/mongodb-test');
     const { default: getESPNScoreboardTestData } = await import(
       '../lib/models/test/ESPNScoreboardTestData'
@@ -319,14 +277,12 @@ async function generateESPNTypes() {
 
     await dbConnectTest();
 
-    // Create output directory
     if (!fs.existsSync(OUTPUT_DIR)) {
       fs.mkdirSync(OUTPUT_DIR, { recursive: true });
     }
 
     const results: Array<{ type: string; result: TypeGenerationResult }> = [];
 
-    // 1. Generate Scoreboard Types - analyze ALL documents
     const ScoreboardModel = await getESPNScoreboardTestData();
     const scoreboardDocs = await ScoreboardModel.find().lean();
     const scoreboardSamples = scoreboardDocs
@@ -343,7 +299,6 @@ async function generateESPNTypes() {
       });
     }
 
-    // 2. Generate Team Types - analyze ALL documents
     const TeamModel = await getESPNTeamTestData();
     const teamDocs = await TeamModel.find().lean();
     const teamSamples = teamDocs
@@ -360,7 +315,6 @@ async function generateESPNTypes() {
       });
     }
 
-    // 3. Generate Game Summary Types - analyze ALL documents
     const GameSummaryModel = await getESPNGameSummaryTestData();
     const gameSummaryDocs = await GameSummaryModel.find().lean();
     const gameSummarySamples = gameSummaryDocs
@@ -377,7 +331,6 @@ async function generateESPNTypes() {
       });
     }
 
-    // 4. Generate Team Records Types - analyze ALL documents
     const TeamRecordsModel = await getESPNTeamRecordsTestData();
     const teamRecordsDocs = await TeamRecordsModel.find().lean();
     const teamRecordsSamples = teamRecordsDocs
@@ -394,7 +347,6 @@ async function generateESPNTypes() {
       });
     }
 
-    // Report results
     const successCount = results.filter((r) => r.result.success).length;
     const failureCount = results.length - successCount;
 

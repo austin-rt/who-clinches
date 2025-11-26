@@ -1,9 +1,3 @@
-/**
- * Analyze Test Database Content
- *
- * Analyzes what data is stored in the test database collections
- */
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -29,7 +23,6 @@ async function analyzeTestData() {
 
     await dbConnectTest();
 
-    // Analyze Scoreboard Data
     const ScoreboardModel = await getESPNScoreboardTestData();
     const scoreboardDocs = await ScoreboardModel.find().lean();
 
@@ -39,7 +32,6 @@ async function analyzeTestData() {
       eventCount: (doc as { response?: { events?: unknown[] } }).response?.events?.length || 0,
     }));
 
-    // Analyze Game Summary Data
     const GameSummaryModel = await getESPNGameSummaryTestData();
     const gameSummaryDocs = await GameSummaryModel.find().lean();
 
@@ -48,7 +40,6 @@ async function analyzeTestData() {
       gameId: (doc as { gameId?: string }).gameId,
     }));
 
-    // Analyze Team Data
     const TeamModel = await getESPNTeamTestData();
     const teamDocs = await TeamModel.find().lean();
 
@@ -58,7 +49,6 @@ async function analyzeTestData() {
       teamAbbrev: (doc as { teamAbbrev?: string }).teamAbbrev,
     }));
 
-    // Analyze Team Records Data
     const TeamRecordsModel = await getESPNTeamRecordsTestData();
     const teamRecordsDocs = await TeamRecordsModel.find().lean();
 
@@ -68,7 +58,6 @@ async function analyzeTestData() {
       teamAbbrev: (doc as { teamAbbrev?: string }).teamAbbrev,
     }));
 
-    // Extract state values and date formats from scoreboard events
     const allStates: string[] = [];
     const dateFormats: Array<{ date: string; startDate: string; venue: string }> = [];
     scoreboardDocs.forEach((doc) => {
@@ -93,7 +82,6 @@ async function analyzeTestData() {
           if (state) {
             allStates.push(state);
           }
-          // Collect date format samples
           if (comp.date || comp.startDate) {
             dateFormats.push({
               date: comp.date || '',
@@ -105,7 +93,6 @@ async function analyzeTestData() {
       });
     });
 
-    // Output results
     process.stdout.write('=== Scoreboard Test Data ===\n');
     process.stdout.write(`Total documents: ${scoreboardDocs.length}\n`);
     scoreboardWeeks.forEach((w) => {

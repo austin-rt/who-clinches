@@ -1,9 +1,3 @@
-/**
- * Fix ESPN Scoreboard Test Data Index
- *
- * Drops old unique index on season and creates new compound index on season+week
- */
-
 import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -23,7 +17,6 @@ async function fixIndex() {
       throw new Error('Database connection failed');
     }
 
-    // Drop old index if it exists
     try {
       await db.collection('espn_scoreboard_test_data').dropIndex('season_1');
       process.stdout.write('Dropped old index: season_1\n');
@@ -31,7 +24,6 @@ async function fixIndex() {
       process.stdout.write('Old index may not exist (this is OK)\n');
     }
 
-    // Create new compound index
     try {
       await db
         .collection('espn_scoreboard_test_data')

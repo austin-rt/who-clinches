@@ -37,41 +37,34 @@ else
   ENV="dev"
 fi
 
-# Get secrets from .env.local
 CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
-# Handle "all" environment - run for all environments sequentially
 if [[ "$ENV" == "all" ]]; then
   echo "Running for all environments: dev, preview, production"
   echo ""
   
-  # Run for dev
   echo "=== DEV ==="
   bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "dev"
   DEV_EXIT=$?
   echo ""
   
-  # Run for preview
   echo "=== PREVIEW ==="
   bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "preview"
   PREVIEW_EXIT=$?
   echo ""
   
-  # Run for production
   echo "=== PRODUCTION ==="
   bash "$0" "$ENDPOINT" "$QUERY_PARAMS" "production"
   PROD_EXIT=$?
   echo ""
   
-  # Exit with error if any failed
   if [[ $DEV_EXIT -ne 0 || $PREVIEW_EXIT -ne 0 || $PROD_EXIT -ne 0 ]]; then
     exit 1
   fi
   exit 0
 fi
 
-# Set base URL and build full URL based on environment
 case $ENV in
   dev)
     BASE_URL="http://localhost:3000"
@@ -91,7 +84,6 @@ case $ENV in
     ;;
 esac
 
-# Build query string
 QUERY_STRING=""
 if [ -n "$QUERY_PARAMS" ]; then
   QUERY_STRING="?${QUERY_PARAMS}"
@@ -105,10 +97,8 @@ if [ -n "$BYPASS_PARAM" ]; then
   fi
 fi
 
-# Build full URL
 FULL_URL="${BASE_URL}/api/cron/${ENDPOINT}${QUERY_STRING}"
 
-# Make the request
 echo "Running cron job: ${ENDPOINT} on ${ENV}..."
 curl -X GET "${FULL_URL}" \
   -H "Authorization: Bearer ${CRON_SECRET}" \

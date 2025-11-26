@@ -2,7 +2,6 @@
 
 set -e
 
-# Configuration
 BASE_URL="${BASE_URL:-http://localhost:3000}"
 BYPASS_TOKEN="${BYPASS_TOKEN:-}"
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)

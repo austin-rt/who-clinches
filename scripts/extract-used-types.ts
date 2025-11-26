@@ -1,24 +1,14 @@
-/**
- * Extract only the types for fields we actually use from generated ESPN types
- * This creates a minimal snapshot of only relevant type information
- *
- * Automatically extracts field paths from reshape functions to detect:
- * 1. When ESPN source types change (e.g., string → number)
- * 2. When we add/remove usage of fields
- */
-
 import * as fs from 'fs';
 import * as path from 'path';
 
 interface TypeSnapshot {
-  [fieldPath: string]: string; // field path -> type string
+  [fieldPath: string]: string;
 }
 
 interface SnapshotData {
   scoreboard: TypeSnapshot;
   team: TypeSnapshot;
   teamRecords: TypeSnapshot;
-  // Metadata about when fields were extracted
   extractedAt: string;
   fieldCount: {
     scoreboard: number;
@@ -27,9 +17,6 @@ interface SnapshotData {
   };
 }
 
-/**
- * Extract field paths from reshape functions by parsing the source code
- */
 function extractFieldPathsFromReshapeFunctions(): {
   scoreboard: string[];
   team: string[];
@@ -44,21 +31,15 @@ function extractFieldPathsFromReshapeFunctions(): {
     teamRecords: [] as string[],
   };
 
-  // Extract from reshape-games.ts
   if (fs.existsSync(reshapeGamesPath)) {
     const content = fs.readFileSync(reshapeGamesPath, 'utf-8');
 
-    // Pattern: event.id, event.competitions[0], competition.date, etc.
-    // Look for patterns like: event.id, competition.date, awayTeam.score, etc.
     const patterns = [
-      // Event fields
       { pattern: /event\.id/g, path: 'Event.id' },
       { pattern: /event\.competitions/g, path: 'Event.competitions' },
       { pattern: /espnResponse\.events/g, path: 'EspnScoreboardGenerated.events' },
       { pattern: /espnResponse\.week\?\.number/g, path: 'EspnScoreboardGenerated.week.number' },
       { pattern: /espnResponse\.season\?\.year/g, path: 'EspnScoreboardGenerated.season.year' },
-
-      // Competition fields
       { pattern: /competition\.date/g, path: 'Competition.date' },
       { pattern: /competition\.competitors/g, path: 'Competition.competitors' },
       { pattern: /competition\.odds/g, path: 'Competition.odds' },
@@ -71,8 +52,6 @@ function extractFieldPathsFromReshapeFunctions(): {
       { pattern: /competition\.neutralSite/g, path: 'Competition.neutralSite' },
       { pattern: /competition\.week\?\.number/g, path: 'Competition.week.number' },
       { pattern: /competition\.season\?\.year/g, path: 'Competition.season.year' },
-
-      // Competitor fields
       { pattern: /(homeTeam|awayTeam)\.homeAway/g, path: 'Competitor.homeAway' },
       { pattern: /(homeTeam|awayTeam)\.score/g, path: 'Competitor.score' },
       {
@@ -84,8 +63,6 @@ function extractFieldPathsFromReshapeFunctions(): {
       { pattern: /(homeTeam|awayTeam)\.team\.displayName/g, path: 'Competitor.team.displayName' },
       { pattern: /(homeTeam|awayTeam)\.team\.logo/g, path: 'Competitor.team.logo' },
       { pattern: /(homeTeam|awayTeam)\.team\.color/g, path: 'Competitor.team.color' },
-
-      // Odds fields
       { pattern: /odds\.overUnder/g, path: 'Odd.overUnder' },
       { pattern: /odds\.spread/g, path: 'Odd.spread' },
       { pattern: /odds\.awayTeamOdds\?\.favorite/g, path: 'Odd.awayTeamOdds.favorite' },
@@ -99,12 +76,10 @@ function extractFieldPathsFromReshapeFunctions(): {
     }
   }
 
-  // Extract from reshape-teams.ts
   if (fs.existsSync(reshapeTeamsPath)) {
     const content = fs.readFileSync(reshapeTeamsPath, 'utf-8');
 
     const patterns = [
-      // Team fields
       { pattern: /team\.id/g, path: 'Team.id' },
       { pattern: /team\.name/g, path: 'Team.name' },
       { pattern: /team\.displayName/g, path: 'Team.displayName' },
@@ -116,21 +91,13 @@ function extractFieldPathsFromReshapeFunctions(): {
       { pattern: /team\.groups\?\.parent\?\.id/g, path: 'Team.groups.parent.id' },
       { pattern: /team\.logos/g, path: 'Team.logos' },
       { pattern: /team\.record\?\.items/g, path: 'Team.record.items' },
-
-      // Logo fields
       { pattern: /logo\?\.href/g, path: 'Logo.href' },
       { pattern: /logo\?\.width/g, path: 'Logo.width' },
-
-      // Record Item fields (from team.record.items)
       { pattern: /recordItem\.type/g, path: 'Item.type' },
       { pattern: /recordItem\.summary/g, path: 'Item.summary' },
       { pattern: /recordItem\.stats/g, path: 'Item.stats' },
-
-      // Stats fields
-      { pattern: /stats\.find\(/g, path: 'Stat.name' }, // We use stats.find, so we need name
-      { pattern: /\.value/g, path: 'Stat.value' }, // We access .value on stats
-
-      // NextEvent fields
+      { pattern: /stats\.find\(/g, path: 'Stat.name' },
+      { pattern: /\.value/g, path: 'Stat.value' },
       { pattern: /nextEvent\?\.\[0\]\?\.id/g, path: 'NextEvent.id' },
       { pattern: /espnTeamResponse\.nextEvent/g, path: 'NextEvent.id' },
     ];
@@ -141,7 +108,6 @@ function extractFieldPathsFromReshapeFunctions(): {
       }
     }
 
-    // Team Records (from coreRecordResponse)
     const teamRecordsPatterns = [
       { pattern: /coreRecordResponse\?\.items/g, path: 'Item[]' },
       { pattern: /items\.find\(.*item\.name/g, path: 'Item.name' },
@@ -183,18 +149,13 @@ function extractTypeFromGeneratedTypes(
     return snapshot;
   }
 
-  // Read the generated types file
-  // Note: This file may contain manual overrides (e.g., GameState replacement)
-  // but for type tracking purposes, we use the generated file directly
   const content = fs.readFileSync(filePath, 'utf-8');
 
-  // Extract types for each field path
   for (const fieldPath of fieldPaths) {
     const parts = fieldPath.split('.');
     const interfaceName = parts[0];
     const fieldName = parts[parts.length - 1];
 
-    // Find the interface
     const interfaceMatch = content.match(
       new RegExp(`export interface ${interfaceName}\\s*\\{([\\s\\S]*?)\\n\\}`, 'm')
     );
@@ -203,7 +164,6 @@ function extractTypeFromGeneratedTypes(
       continue;
     }
 
-    // Simple case: direct field in interface
     if (parts.length === 2) {
       const fieldMatch = interfaceMatch[1].match(
         new RegExp(`\\s+${fieldName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*:\\s*([^;|]+)`, 'm')
@@ -215,7 +175,6 @@ function extractTypeFromGeneratedTypes(
       }
     }
 
-    // Nested case: navigate through nested types
     let currentContent = interfaceMatch[1];
     let found = false;
 
@@ -224,7 +183,6 @@ function extractTypeFromGeneratedTypes(
       const isLast = i === parts.length - 1;
       const propName = part;
 
-      // Find property in current content
       const propMatch = currentContent.match(
         new RegExp(`\\s+${propName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*:\\s*([^;|]+)`, 'm')
       );
@@ -236,13 +194,11 @@ function extractTypeFromGeneratedTypes(
       const typeRef = propMatch[1].trim().replace(/\[\]$/, '').replace(/\?$/, '');
 
       if (isLast) {
-        // Last part - this is the type we want
         snapshot[fieldPath] = typeRef;
         found = true;
         break;
       }
 
-      // Look up the referenced interface
       const refInterfaceMatch = content.match(
         new RegExp(`export interface ${typeRef}\\s*\\{([\\s\\S]*?)\\n\\}`, 'm')
       );
@@ -250,7 +206,6 @@ function extractTypeFromGeneratedTypes(
       if (refInterfaceMatch) {
         currentContent = refInterfaceMatch[1];
       } else {
-        // Try with array syntax removed
         const arrayRemoved = typeRef.replace(/\[\]$/, '');
         const refInterfaceMatch2 = content.match(
           new RegExp(`export interface ${arrayRemoved}\\s*\\{([\\s\\S]*?)\\n\\}`, 'm')
@@ -264,10 +219,7 @@ function extractTypeFromGeneratedTypes(
     }
 
     if (!found) {
-      // Try alternative: maybe the field path uses different naming
-      // For example, "Competitor.team.color" might need to look in CompetitorTeam
       if (fieldPath.includes('.team.')) {
-        // Try finding team-related fields
         const teamFieldMatch = content.match(
           new RegExp(`export interface CompetitorTeam\\s*\\{([\\s\\S]*?)\\n\\}`, 'm')
         );
@@ -292,10 +244,8 @@ function extractTypeFromGeneratedTypes(
 
 function createTypeSnapshot(): SnapshotData {
   const generatedTypesDir = path.join(process.cwd(), 'lib/espn');
-  // Save snapshot alongside generated types so it's tracked in git
   const snapshotDir = generatedTypesDir;
 
-  // Automatically extract field paths from reshape functions
   const fieldPaths = extractFieldPathsFromReshapeFunctions();
 
   const snapshots: SnapshotData = {
@@ -318,7 +268,6 @@ function createTypeSnapshot(): SnapshotData {
     },
   };
 
-  // Save snapshot alongside generated types
   const snapshotPath = path.join(snapshotDir, 'used-types-snapshot.json');
   fs.writeFileSync(snapshotPath, JSON.stringify(snapshots, null, 2));
 
@@ -336,7 +285,7 @@ function compareSnapshots(
 ): { changed: boolean; diff: string; summary: string } {
   if (!fs.existsSync(oldPath)) {
     return {
-      changed: false, // First run - no PR needed, just create snapshot
+      changed: false,
       diff: 'No previous snapshot found - this is the first run. Snapshot created for future comparisons.',
       summary: 'First snapshot created',
     };
@@ -348,27 +297,20 @@ function compareSnapshots(
   const espnTypeChanges: string[] = [];
   const usageChanges: string[] = [];
 
-  // Compare each type set
   for (const typeSet of ['scoreboard', 'team', 'teamRecords'] as const) {
     const old = oldSnapshot[typeSet] || {};
     const new_ = newSnapshot[typeSet] || {};
 
-    // Only compare fields that exist in BOTH old and new
-    // This means we're comparing ESPN types for fields we currently use
     for (const fieldPath of Object.keys(new_)) {
       if (fieldPath in old) {
-        // Field exists in both - compare ESPN types
         if (old[fieldPath] !== new_[fieldPath]) {
-          // ESPN changed the type
           espnTypeChanges.push(`~ ${typeSet}.${fieldPath}: ${old[fieldPath]} → ${new_[fieldPath]}`);
         }
       } else {
-        // Field added (we started using it) - no PR, just track it
         usageChanges.push(`+ ${typeSet}.${fieldPath}: ${new_[fieldPath]} (newly tracked, no PR)`);
       }
     }
 
-    // Fields removed (we stopped using them) - no PR, just stop tracking
     for (const fieldPath of Object.keys(old)) {
       if (!(fieldPath in new_)) {
         usageChanges.push(
@@ -378,10 +320,8 @@ function compareSnapshots(
     }
   }
 
-  // Only trigger PR if ESPN types changed
   const hasEspnChanges = espnTypeChanges.length > 0;
 
-  // Build summary
   let summary: string;
   if (hasEspnChanges) {
     summary = `${espnTypeChanges.length} ESPN type change(s) detected`;
@@ -391,7 +331,6 @@ function compareSnapshots(
     summary = 'No changes detected';
   }
 
-  // Build diff - only show ESPN changes (these trigger PRs)
   let diff: string;
   if (hasEspnChanges) {
     diff = '=== ESPN TYPE CHANGES (triggers PR) ===\n' + espnTypeChanges.join('\n');
@@ -403,13 +342,12 @@ function compareSnapshots(
   }
 
   return {
-    changed: hasEspnChanges, // Only true if ESPN types changed
+    changed: hasEspnChanges,
     diff,
     summary,
   };
 }
 
-// Main execution
 const command = process.argv[2];
 
 if (command === 'create') {
@@ -419,7 +357,6 @@ if (command === 'create') {
   const oldPath = process.argv[3] || defaultPath;
   const newPath = process.argv[4] || defaultPath;
 
-  // Create new snapshot first
   createTypeSnapshot();
 
   const result = compareSnapshots(oldPath, newPath);
@@ -428,10 +365,8 @@ if (command === 'create') {
   process.stdout.write('\n');
 
   if (result.changed) {
-    // ESPN type changed - trigger PR
     process.exit(1);
   } else {
-    // No ESPN type changes - snapshot updated silently if usage changed
     process.exit(0);
   }
 } else {

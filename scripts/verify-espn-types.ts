@@ -1,7 +1,3 @@
-/**
- * Verify that all ESPN API fields we use are correctly typed in generated types
- */
-
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -17,18 +13,15 @@ function verifyTypes() {
   const warnings: string[] = [];
   const verified: string[] = [];
 
-  // Check scoreboard types
   if (fs.existsSync(files.scoreboard)) {
     const content = fs.readFileSync(files.scoreboard, 'utf-8');
 
-    // Check odds array - we use it
     const oddsMatch = content.match(/odds\?:\s*([^;]+);/);
     if (oddsMatch) {
       if (oddsMatch[1].includes('any[]')) {
         issues.push('Competition.odds is any[] but we use it (overUnder, spread, favorite)');
       } else if (oddsMatch[1].includes('Odd[]')) {
         verified.push('Competition.odds is correctly typed as Odd[]');
-        // Verify Odd interface has required fields
         if (
           content.includes('overUnder:') &&
           content.includes('spread:') &&
@@ -44,17 +37,14 @@ function verifyTypes() {
       }
     }
 
-    // Check statistics - we don't use it
     if (content.includes('statistics:  any[]')) {
       warnings.push("Competitor.statistics is any[] (we don't use it, so this is fine)");
     }
 
-    // Check records - we don't use competitor.records
     if (content.includes('records:     Record[]')) {
       warnings.push("Competitor.records is typed (we don't use it, but it's correctly typed)");
     }
 
-    // Verify Competitor fields we use
     if (
       content.includes('homeAway:') &&
       content.includes('score:') &&
@@ -64,7 +54,6 @@ function verifyTypes() {
       verified.push('Competitor has all fields we use (homeAway, score, curatedRank, team)');
     }
 
-    // Verify CompetitorTeam fields we use
     if (
       content.includes('abbreviation:') &&
       content.includes('displayName:') &&
@@ -76,15 +65,12 @@ function verifyTypes() {
     }
   }
 
-  // Check team types
   if (fs.existsSync(files.team)) {
     const content = fs.readFileSync(files.team, 'utf-8');
 
-    // Check record.items - we use it
     const recordMatch = content.match(/export interface Record\s*\{[\s\S]*?\n\}/);
     if (recordMatch && recordMatch[0].includes('items:')) {
       verified.push('Team Record has items array');
-      // Check Item interface
       const itemMatch = content.match(/export interface Item\s*\{[\s\S]*?\n\}/);
       if (itemMatch) {
         if (
@@ -101,12 +87,10 @@ function verifyTypes() {
       issues.push('Team Record interface missing items array');
     }
 
-    // Check notes - we don't use it
     if (content.includes('notes:             any[]')) {
       warnings.push("Team.notes is any[] (we don't use it, so this is fine)");
     }
 
-    // Verify Team fields we use
     if (
       content.includes('id:') &&
       content.includes('name:') &&
@@ -124,14 +108,11 @@ function verifyTypes() {
     }
   }
 
-  // Check team records types
   if (fs.existsSync(files.teamRecords)) {
     const content = fs.readFileSync(files.teamRecords, 'utf-8');
 
-    // Check items array - we use it
     if (content.includes('items:') && content.includes('Item[]')) {
       verified.push('TeamRecords has items array');
-      // Check Item interface
       const itemMatch = content.match(/export interface Item\s*\{[\s\S]*?\n\}/);
       if (itemMatch) {
         if (
@@ -145,7 +126,6 @@ function verifyTypes() {
           issues.push('TeamRecords Item missing required fields');
         }
       }
-      // Check Stat interface
       const statMatch = content.match(/export interface Stat\s*\{[\s\S]*?\n\}/);
       if (statMatch && statMatch[0].includes('name:') && statMatch[0].includes('value:')) {
         verified.push('TeamRecords Stat has all fields we use (name, value)');
@@ -157,7 +137,6 @@ function verifyTypes() {
     }
   }
 
-  // Report results
   process.stdout.write('=== ESPN Type Verification ===\n\n');
 
   if (verified.length > 0) {
