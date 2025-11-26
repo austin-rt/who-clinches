@@ -103,7 +103,7 @@ jobs:
           # Commit snapshot when only usage changed (no PR needed)
           # This keeps tracking current for next comparison
           if ! git diff --staged --quiet; then
-            git commit -m "chore: update ESPN type tracking snapshot
+            git commit --no-verify -m "chore: update ESPN type tracking snapshot
 
             Tracking updated to reflect current field usage in reshape functions.
             No ESPN type changes detected."
