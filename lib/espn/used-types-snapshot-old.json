@@ -5,6 +5,8 @@
     "Event.week.number": "number",
     "Event.season.year": "number",
     "EspnScoreboardGenerated.events": "Event[]",
+    "EspnScoreboardGenerated.week.number": "number",
+    "EspnScoreboardGenerated.season.year": "number",
     "Competition.date": "string",
     "Competition.startDate": "string",
     "Competition.competitors": "Competitor[]",
@@ -17,7 +19,7 @@
     "Competition.venue.address.city": "string",
     "Competition.venue.address.state": "string",
     "Competitor.homeAway": "string",
-    "Competitor.score": "string",
+    "Competitor.score": "number",
     "Competitor.curatedRank.current": "number",
     "Competitor.team.id": "string",
     "Competitor.team.abbreviation": "string",
@@ -54,7 +56,7 @@
     "Stat.value": "number",
     "Item.name": "string"
   },
-  "extractedAt": "2025-11-26T21:43:30.259Z",
+  "extractedAt": "2025-11-26T21:39:46.706Z",
   "fieldCount": {
     "scoreboard": 41,
     "team": 20,
