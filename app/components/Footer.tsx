@@ -2,7 +2,6 @@
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
-  const currentSeason = 2025;
 
   return (
     <footer className="footer footer-center mt-auto bg-base-300 p-6 text-base-content">
@@ -10,7 +9,6 @@ const Footer = () => {
         <div className="grid grid-flow-col gap-4">
           <div>
             <p className="text-sm">© {currentYear} SEC Tiebreaker Calculator</p>
-            <p className="text-base-content/70 text-xs">Season {currentSeason}</p>
           </div>
         </div>
       </div>
