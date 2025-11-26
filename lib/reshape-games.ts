@@ -35,13 +35,11 @@ export const reshapeScoreboardData = (
       const awayScore = awayTeam.score ? parseInt(awayTeam.score, 10) : null;
       const homeScore = homeTeam.score ? parseInt(homeTeam.score, 10) : null;
 
-      // Parse rankings (99 = unranked)
       const awayRank =
         awayTeam.curatedRank?.current === 99 ? null : awayTeam.curatedRank?.current || null;
       const homeRank =
         homeTeam.curatedRank?.current === 99 ? null : homeTeam.curatedRank?.current || null;
 
-      // Parse odds - explicitly handle null vs undefined
       let favoriteTeamEspnId: string | null = null;
       let spread: number | null = null;
       let overUnder: number | null = null;

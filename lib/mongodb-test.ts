@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import mongoose from 'mongoose';
 
 const MONGODB_USER = process.env.MONGODB_USER;
@@ -14,7 +15,6 @@ if (!MONGODB_USER || !MONGODB_PASSWORD || !MONGODB_HOST || !MONGODB_APP_NAME) {
 const TEST_DB_NAME = 'test';
 const TEST_MONGODB_URI = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${TEST_DB_NAME}?appName=${MONGODB_APP_NAME}`;
 
-// eslint-disable-next-line no-console -- Allow DB connection logging
 console.log(`[MongoDB Test] Connecting to test database: ${TEST_DB_NAME}`);
 
 interface MongooseCache {

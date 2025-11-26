@@ -1,19 +1,12 @@
 import { Schema, Document } from 'mongoose';
 import type { EspnScoreboardGenerated } from '@/lib/espn/espn-scoreboard-generated';
 
-/**
- * ESPN Scoreboard Test Data
- *
- * Stores real ESPN scoreboard API responses for use in unit tests.
- * Updated daily via cron job to ensure tests use current API format.
- * Uses dedicated test database connection.
- */
 export interface IESPNScoreboardTestData extends Document {
   season: number;
   week: number;
-  endpoint: string; // Full endpoint URL
-  response: EspnScoreboardGenerated; // Raw ESPN API response
-  pulledAt: Date; // When this snapshot was captured
+  endpoint: string;
+  response: EspnScoreboardGenerated;
+  pulledAt: Date;
   lastUpdated: Date;
 }
 
@@ -48,15 +41,12 @@ const ESPNScoreboardTestDataSchema = new Schema<IESPNScoreboardTestData>(
     },
   },
   {
-    timestamps: false, // We manage lastUpdated manually
-    collection: 'espn_scoreboard_test_data', // Explicit collection name
+    timestamps: false,
+    collection: 'espn_scoreboard_test_data',
   }
 );
 
-// Unique index: one snapshot per season/week combination
 ESPNScoreboardTestDataSchema.index({ season: 1, week: 1 }, { unique: true });
-
-// Get model using main database connection (memory server in test mode)
 export const getESPNScoreboardTestData = async () => {
   const dbConnect = (await import('@/lib/mongodb')).default;
   const conn = await dbConnect();

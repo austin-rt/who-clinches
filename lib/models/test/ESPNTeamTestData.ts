@@ -1,20 +1,13 @@
 import { Schema, Document } from 'mongoose';
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
 
-/**
- * ESPN Team Test Data
- *
- * Stores real ESPN team API responses for use in unit tests.
- * Updated daily via cron job to ensure tests use current API format.
- * Uses dedicated test database connection.
- */
 export interface IESPNTeamTestData extends Document {
   season: number;
   teamId: string;
   teamAbbrev: string;
-  endpoint: string; // Full endpoint URL
-  response: EspnTeamGenerated; // Raw ESPN API response
-  pulledAt: Date; // When this snapshot was captured
+  endpoint: string;
+  response: EspnTeamGenerated;
+  pulledAt: Date;
   lastUpdated: Date;
 }
 
@@ -53,15 +46,12 @@ const ESPNTeamTestDataSchema = new Schema<IESPNTeamTestData>(
     },
   },
   {
-    timestamps: false, // We manage lastUpdated manually
-    collection: 'espn_team_test_data', // Explicit collection name
+    timestamps: false,
+    collection: 'espn_team_test_data',
   }
 );
 
-// Unique index: one snapshot per season
 ESPNTeamTestDataSchema.index({ season: 1 }, { unique: true });
-
-// Get model using main database connection (memory server in test mode)
 export const getESPNTeamTestData = async () => {
   const dbConnect = (await import('@/lib/mongodb')).default;
   const conn = await dbConnect();
