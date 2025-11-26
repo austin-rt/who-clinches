@@ -28,16 +28,16 @@ async function startMongoMemoryServer() {
 async function seedMemoryServerFromTestDB(memoryServerUri) {
   console.log('[Jest Server Setup] seedMemoryServerFromTestDB() called');
   console.log('[Jest Server Setup] Seeding memory server from Atlas /test database...');
-  
+
   let testConnection = null;
   let memoryConnection = null;
-  
+
   try {
     console.log('[Jest Server Setup] Connecting to Atlas /test database...');
     const { default: dbConnectTest } = await import('./lib/mongodb-test');
     testConnection = await dbConnectTest();
     console.log('[Jest Server Setup] Connected to Atlas /test database');
-    
+
     // Connect to memory server directly (NODE_ENV not set to 'test' yet, so use direct connection)
     console.log('[Jest Server Setup] Connecting to memory server...');
     const mongoose = await import('mongoose');
@@ -45,36 +45,40 @@ async function seedMemoryServerFromTestDB(memoryServerUri) {
       bufferCommands: false,
     });
     console.log('[Jest Server Setup] Connected to memory server');
-    
+
     const collections = [
       'espn_scoreboard_test_data',
       'espn_game_summary_test_data',
       'espn_team_test_data',
       'espn_team_records_test_data',
     ];
-    
+
     let totalSeeded = 0;
-    
+
     for (const collectionName of collections) {
       console.log(`[Jest Server Setup] Processing collection: ${collectionName}`);
       const testCollection = testConnection.db.collection(collectionName);
       console.log(`[Jest Server Setup] Reading documents from ${collectionName}...`);
       const documents = await testCollection.find({}).toArray();
       console.log(`[Jest Server Setup] Found ${documents.length} documents in ${collectionName}`);
-      
+
       if (documents.length > 0) {
         const memoryCollection = memoryConnection.db.collection(collectionName);
-        console.log(`[Jest Server Setup] Inserting ${documents.length} documents into memory server ${collectionName}...`);
+        console.log(
+          `[Jest Server Setup] Inserting ${documents.length} documents into memory server ${collectionName}...`
+        );
         await memoryCollection.insertMany(documents);
         totalSeeded += documents.length;
-        console.log(`[Jest Server Setup] Seeded ${documents.length} documents from ${collectionName}`);
+        console.log(
+          `[Jest Server Setup] Seeded ${documents.length} documents from ${collectionName}`
+        );
       } else {
         console.log(`[Jest Server Setup] No documents found in ${collectionName}`);
       }
     }
-    
+
     console.log(`[Jest Server Setup] Seeding complete. Total documents seeded: ${totalSeeded}`);
-    
+
     // Close memory server connection (dbConnect() will create its own connection later)
     console.log('[Jest Server Setup] Closing memory server connection...');
     await memoryConnection.close();
@@ -87,7 +91,9 @@ async function seedMemoryServerFromTestDB(memoryServerUri) {
       try {
         await memoryConnection.close();
       } catch (closeError) {
-        console.log(`[Jest Server Setup] Error closing memory server connection: ${closeError.message}`);
+        console.log(
+          `[Jest Server Setup] Error closing memory server connection: ${closeError.message}`
+        );
       }
     }
     throw error;
@@ -103,7 +109,9 @@ module.exports = async () => {
     // This ensures MONGODB_MEMORY_SERVER_URI is set when Next.js loads lib/mongodb.ts
     console.log('[Jest Server Setup] Step 1: Starting MongoDB Memory Server...');
     const memoryServerUri = await startMongoMemoryServer();
-    console.log(`[Jest Server Setup] Step 1: MongoDB Memory Server started, URI: ${memoryServerUri}`);
+    console.log(
+      `[Jest Server Setup] Step 1: MongoDB Memory Server started, URI: ${memoryServerUri}`
+    );
     process.env.MONGODB_MEMORY_SERVER_URI = memoryServerUri;
     console.log(`[Jest Server Setup] Step 1: MONGODB_MEMORY_SERVER_URI environment variable set`);
     console.log(`[Jest Server Setup] Step 1: MongoDB Memory Server ready at ${memoryServerUri}`);
@@ -138,4 +146,3 @@ module.exports = async () => {
     throw error;
   }
 };
-
