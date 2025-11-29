@@ -179,6 +179,32 @@ export const GET = async (request: NextRequest) => {
     }
   }
 
+  try {
+    const start = Date.now();
+    const updateTestDataUrl = bypassParam
+        ? `${baseUrl}/api/cron/update-test-data?${bypassParam}`
+        : `${baseUrl}/api/cron/update-test-data`;
+    const response = await fetch(updateTestDataUrl, {
+      method: 'GET',
+      headers: authHeaders,
+    });
+    const duration = Date.now() - start;
+
+    results.push({
+      job: 'update-test-data',
+      success: response.ok,
+      status: response.status,
+      duration,
+    });
+  } catch (error) {
+    results.push({
+      job: 'update-test-data',
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      duration: 0,
+    });
+  }
+
   const successCount = results.filter((r) => r.success).length;
   const totalDuration = results.reduce((sum, r) => sum + r.duration, 0);
 
