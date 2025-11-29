@@ -11,10 +11,29 @@ How data flows through the application: fetching, user interactions, and state u
 
 ## Game Data Fetching
 
-- RTK Query with automatic caching
-- `useGetGamesQuery({ sport, conf, season?, week?, state?, from?, to? })` hook - Dynamic routes require sport/conf parameters
+- RTK Query with automatic caching and conditional polling
+- `useGamesData({ sport, conf, season })` hook - Main hook for game data with intelligent polling
+- Dynamic routes require sport/conf parameters: `/api/games/[sport]/[conf]`
 - Automatic refetch on window focus
 - `lastUpdated` synced to Redux on successful fetch
+
+### Polling Strategy
+
+The `useGamesData` hook implements conditional polling based on game states:
+
+1. **Initial Load**: Fetches full season data via `useGetSeasonGameDataQuery`
+2. **Live Games Polling**: When games are in progress (`state: 'in'`):
+   - Polls `/api/games/[sport]/[conf]/live` every 5 minutes
+   - Updates scores and game status only (lightweight)
+   - Stops when all games are completed
+3. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`):
+   - Only in production/preview environments (not localhost)
+   - Only when viewing in "scores" mode
+   - Polls `/api/games/[sport]/[conf]/spreads` every 5 minutes
+   - Updates betting odds and spreads only
+4. **No Polling**: When all games are completed (`state: 'post'` and `completed: true`)
+
+This strategy minimizes API calls while ensuring fresh data when users are actively viewing games.
 
 ---
 
@@ -39,5 +58,5 @@ How data flows through the application: fetching, user interactions, and state u
 
 ---
 
-**Last Updated**: November 2025
+**Last Updated**: January 2025
 

@@ -22,9 +22,10 @@
 | Endpoint | Test Focus | File |
 |----------|------------|------|
 | `POST /api/simulate/[sport]/[conf]` | Team rankings, championship validation, tiebreakers, input validation, dynamic routes | `__tests__/api/cfb/sec/simulate.test.ts` |
-| `POST /api/pull-teams/[sport]/[conf]` | Team count validation, idempotency, dynamic routes | `__tests__/api/cfb/pull-teams.test.ts` |
-| `POST /api/pull-games/[sport]/[conf]` | Game ingestion validation, input validation, dynamic routes | `__tests__/api/cfb/pull-games.test.ts` |
-| Cron endpoints `[sport]/[conf]/*` | Auth, accessibility, dynamic routes | `__tests__/api/cron.test.ts` |
+| `POST /api/games/[sport]/[conf]` | Fetches from ESPN, upserts to database, returns data, dynamic routes | `__tests__/api/cfb/games.test.ts` |
+| `POST /api/games/[sport]/[conf]/live` | Live game updates (scores/status only) | `__tests__/api/cfb/games.test.ts` |
+| `POST /api/games/[sport]/[conf]/spreads` | Spread/odds updates only | `__tests__/api/cfb/games.test.ts` |
+| `POST /api/teams/[sport]/[conf]` | Team count validation, idempotency, dynamic routes | `__tests__/api/cfb/teams.test.ts` |
 
 **Key Tests:** Business logic, error handling, edge cases, API contracts, data integrity
 

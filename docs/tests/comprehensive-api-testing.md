@@ -27,15 +27,17 @@ Complete testing procedures for all Conference Tiebreaker API endpoints.
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 ```
 
-**POST /api/pull-teams/[sport]/[conf]**: Pre-check teams exist. Expected: Status 200, `upserted: 16`. Invalid: Unsupported conference → Status 400. Example: `/api/pull-teams/cfb/sec`
+**POST /api/games/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`. Expected: Status 200, `events` array, `teams` array (TeamMetadata: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`), `lastUpdated`. Example: `/api/games/cfb/sec`
 
-**POST /api/pull-games/[sport]/[conf]**: Prerequisites: Teams seeded first. Pre-check games exist. Expected: Status 200, `upserted`, `weeksPulled` array. Invalid: Missing `season` → Status 400. Example: `/api/pull-games/cfb/sec`
+**POST /api/games/[sport]/[conf]/live**: Lightweight live game updates (scores/status only). Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated scores. Example: `/api/games/cfb/sec/live`
 
-**GET /api/games/[sport]/[conf]**: Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`. Expected: Status 200, `events` array, `teams` array (TeamMetadata: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`), `lastUpdated`. Example: `/api/games/cfb/sec`
+**POST /api/games/[sport]/[conf]/spreads**: Spread/odds updates only. Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated odds. Example: `/api/games/cfb/sec/spreads`
+
+**POST /api/teams/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `update` (rankings/stats/full), `force`. Expected: Status 200, `teams` array, `teamsMetadata` array, `lastUpdated`. Example: `/api/teams/cfb/sec`
 
 **POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Example: `/api/simulate/cfb/sec`
 
-**Cron Jobs** (all require `Authorization: Bearer ${CRON_SECRET}`): `update-games` (modes: `season`, `week`, default), `update-rankings` (16 teams), `update-spreads`, `update-team-averages`, `update-all` (batch). Invalid: Missing/invalid auth → Status 401
+**Note**: Cron endpoints have been removed. All data updates are now handled via on-demand API endpoints with frontend polling.
 
 ---
 

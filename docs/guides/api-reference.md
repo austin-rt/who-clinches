@@ -6,8 +6,8 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], POST /api/pull-teams/[sport]/[conf], POST /api/pull-games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
-- **[Cron Jobs](./api-reference-cron.md)** - All scheduled update endpoints
+- **[Data Endpoints](./api-reference-data.md)** - POST /api/games/[sport]/[conf], POST /api/teams/[sport]/[conf], POST /api/simulate/[sport]/[conf]
+- **[Cron Jobs](./api-reference-cron.md)** - Migration notes
 
 ---
 
@@ -17,7 +17,6 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | ---- | ------------ | -------------------------------------- |
 | 200  | Success      | Request completed successfully         |
 | 400  | Bad Request  | Missing required fields, invalid input |
-| 401  | Unauthorized | Missing or invalid `CRON_SECRET`       |
 | 500  | Server Error | Database error, ESPN API timeout       |
 
 ---
@@ -31,7 +30,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 **Our APIs:**
 - Data endpoints: No rate limit
-- Cron jobs: Scheduled (see individual endpoints)
+- Frontend polling: Conditional (every 5 min when games are active)
 
 ---
 
@@ -39,7 +38,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 | Variable              | Required | Description                          |
 | --------------------- | -------- | ------------------------------------ |
-| `CRON_SECRET`         | Yes      | Bearer token for cron authentication |
+| `CRON_SECRET`         | No       | Not used (on-demand architecture, no cron endpoints) |
 | `MONGODB_USER`        | Yes      | MongoDB username                     |
 | `MONGODB_PASSWORD`    | Yes      | MongoDB password                     |
 | `MONGODB_HOST`        | Yes      | MongoDB cluster host                 |
@@ -68,7 +67,7 @@ All endpoints log errors to MongoDB `errors` collection:
 
 **Query Errors:**
 ```javascript
-db.errors.find({ endpoint: '/api/cron/update-rankings' }).sort({ timestamp: -1 });
+db.errors.find({ endpoint: '/api/games/cfb/sec' }).sort({ timestamp: -1 });
 ```
 
 ---
@@ -76,9 +75,11 @@ db.errors.find({ endpoint: '/api/cron/update-rankings' }).sort({ timestamp: -1 }
 ## Notes
 
 - All timestamps in ISO 8601 format (UTC)
-- Season is hardcoded to 2025 in some cron jobs
+- All endpoints fetch from ESPN, reshape data, upsert to database, and return reshaped data
+- Dev/prod/preview databases store reshaped data (Game, Team models), not raw ESPN responses
 - Conference IDs vary by conference (e.g., 8 for SEC)
 - Team IDs are ESPN team IDs (e.g., "333" = Alabama)
+- Frontend uses RTK Query with conditional polling for live updates
 
 ---
 

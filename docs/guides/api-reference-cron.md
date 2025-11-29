@@ -1,35 +1,21 @@
 # API Reference: Cron Jobs
 
-Complete reference for scheduled update endpoints.
-
 **Related:** [Main API Reference](./api-reference.md) | [Data Endpoints](./api-reference-data.md)
 
-**Cron Job Documentation:**
-- [Data Update Jobs](./api-reference-cron-data.md) - update-games, update-spreads, update-rankings, update-team-averages
-- [Batch & Testing Jobs](./api-reference-cron-batch.md) - update-all, update-test-data, run-reshape-tests
-
 ---
 
-## Authentication
+## Migration to On-Demand Architecture
 
-All cron jobs require Bearer token authentication:
+All scheduled cron jobs have been replaced with on-demand API endpoints:
 
-```
-Authorization: Bearer {CRON_SECRET}
-```
+- **POST /api/games/[sport]/[conf]** - Fetches from ESPN, upserts games, returns data (replaces update-games cron)
+- **POST /api/games/[sport]/[conf]/live** - Lightweight live game updates (scores/status only)
+- **POST /api/games/[sport]/[conf]/spreads** - Spread/odds updates only
+- **POST /api/teams/[sport]/[conf]** - Fetches from ESPN, upserts teams, returns data (replaces update-rankings, update-team-averages crons)
+- Frontend polling drives all updates using RTK Query with conditional polling (every 5 min when games are active)
 
-**401 Response:**
-```json
-{
-  "error": "Unauthorized"
-}
-```
-
----
-
-For detailed endpoint documentation, see:
-- [Data Update Jobs](./api-reference-cron-data.md) - Core data update endpoints
-- [Batch & Testing Jobs](./api-reference-cron-batch.md) - Batch orchestration and testing endpoints
+**Remaining Scheduled Workflow:**
+- **GitHub Actions**: `.github/workflows/update-espn-types.yml` - Type generation (runs daily at 10 PM ET)
 
 ---
 

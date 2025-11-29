@@ -15,13 +15,35 @@
 
 ## Key Endpoints to Test
 
-### GET /api/games/[sport]/[conf]
+### POST /api/games/[sport]/[conf]
 
 **Example**: `/api/games/cfb/sec`
-- Path: `conf` (conference slug, e.g., "sec")
-- Filter by: `season`, `week`, `state`, `from`, `to`
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "sec")
+- Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`
+- Fetches from ESPN, upserts to database, returns reshaped data
 - Verify: `TeamMetadata` fields (id, abbrev, displayName, logo, color, alternateColor)
-- Cache: 10s for live games, 60s otherwise
+- Response: `{ events: [...], teams: [...], lastUpdated: "..." }`
+
+### POST /api/games/[sport]/[conf]/live
+
+**Example**: `/api/games/cfb/sec/live`
+- Lightweight live game updates (scores/status only)
+- Body params: `season`, `week`, `force`
+- Used by frontend polling when games are in progress
+
+### POST /api/games/[sport]/[conf]/spreads
+
+**Example**: `/api/games/cfb/sec/spreads`
+- Spread/odds updates only
+- Body params: `season`, `week`, `force`
+- Used by frontend polling for pre-game games
+
+### POST /api/teams/[sport]/[conf]
+
+**Example**: `/api/teams/cfb/sec`
+- Fetches team data from ESPN, upserts to database, returns data
+- Body params: `update` (rankings/stats/full), `force`
+- Response: `{ teams: [...], teamsMetadata: [...], lastUpdated: "..." }`
 
 ### POST /api/simulate/[sport]/[conf]
 
@@ -30,18 +52,13 @@
 - Verify: 16 teams, rankings 1-16, tiebreaker rules (A-E), championship array
 - Validation: Non-negative integers, no ties, required fields
 
-### Cron Endpoints
-- Auth: `Authorization: Bearer ${CRON_SECRET}`
-- Endpoints: `/api/cron/[sport]/[conf]/update-games`, `/api/cron/[sport]/[conf]/update-rankings`, `/api/cron/[sport]/[conf]/update-spreads`, `/api/cron/[sport]/[conf]/update-team-averages`
-- Examples: `/api/cron/cfb/sec/update-games`, `/api/cron/cfb/sec/update-rankings`
-- Verify: 401 without auth, 200/500 with valid auth
+**Note**: Cron endpoints have been removed. All data updates are now handled via on-demand API endpoints with frontend polling.
 
 ---
 
 ## Authentication Requirements
 
-- **Cron Jobs:** `Authorization: Bearer ${CRON_SECRET}` header required
-- **Data Endpoints:** No authentication required
+- **Data Endpoints:** No authentication required (public endpoints)
 - **Vercel Deployments:** `X-Vercel-Automation-Bypass: ${VERCEL_AUTOMATION_BYPASS_SECRET}` for protected deployments
 
 ---
@@ -56,7 +73,7 @@ npm run db:check
 npm run test:api
 
 # Run specific test file
-npm run test -- __tests__/api/cfb/pull-games.test.ts
+npm run test -- __tests__/api/cfb/games.test.ts
 ```
 
 ---

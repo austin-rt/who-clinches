@@ -26,7 +26,7 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm run test -- __tests__/api/cfb/pull-games.test.ts
+npm run test -- __tests__/api/cfb/games.test.ts
 
 # Run all tests
 npm run test
@@ -34,7 +34,7 @@ npm run test
 
 ## Environment Files
 
-- **`.env.local`** - Local dev (default): `MONGODB_DB=dev`, `CRON_SECRET`, credentials, `VERCEL_AUTOMATION_BYPASS_SECRET`, read-only credentials
+- **`.env.local`** - Local dev (default): `MONGODB_DB=dev`, credentials, `VERCEL_AUTOMATION_BYPASS_SECRET`, read-only credentials
 - **`.env.preview`** - Preview/staging: `MONGODB_DB=preview`
 - **`.env.production`** - Production: `MONGODB_DB=production`
 
@@ -48,7 +48,7 @@ npm run test
 
 ## Test Structure
 
-- `__tests__/api/cfb/` - API endpoint tests (simulate, pull-teams, pull-games, calculate-predicted-score, cron)
+- `__tests__/api/cfb/` - API endpoint tests (simulate, teams, games, calculate-predicted-score)
 - `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration)
 - `__tests__/lib/` - Unit tests (reshape-games, reshape-teams, extract-teams-from-scoreboard) using MongoDB Memory Server with real ESPN data
 - `__tests__/setup.ts` - Test helpers (fetchAPI)
@@ -59,7 +59,7 @@ npm run test
 
 ## Test Coverage
 
-- API endpoints: Business logic and behavior tests (simulate, pull-teams, pull-games, calculate-predicted-score, cron)
+- API endpoints: Business logic and behavior tests (simulate, teams, games, calculate-predicted-score)
 - Reshape functions: Edge cases and transformation logic
 - Tiebreaker rules: Comprehensive Rules A-E tests
 - **Coverage threshold:** 80% minimum (branches, functions, lines, statements)
@@ -96,7 +96,6 @@ npm run test
 - **TEST_DATA_ERROR**: Run `npm run test:db:check` (ensures Atlas `/test` database has data)
 - **Tests hanging**: Check logs for teardown issues. `forceExit: true` in Jest config prevents hanging
 - **Timeouts**: Test timeout is 120s per test
-- **401 Unauthorized**: Verify `CRON_SECRET` in `.env.local`
 - **Memory server errors**: Check Atlas `/test` database accessibility
 - **Empty coverage**: Run `npm run test:coverage`, open `coverage/index.html`
 - **Port conflicts**: Global teardown should free port 3000

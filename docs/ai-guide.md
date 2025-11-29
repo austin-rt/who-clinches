@@ -24,18 +24,19 @@ This is a specialized college football application built for simulating conferen
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
 - **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`
 - **Standings Calculation**: Generates complete conference standings with explanations
-- **Real-Time Data**: Automatically updates from ESPN API via scheduled cron jobs
+- **Real-Time Data**: Automatically updates from ESPN API via frontend polling with conditional logic
 
 **Key Endpoints:**
 - `/api/simulate/[sport]/[conf]` - Accepts game score overrides and returns full standings (e.g., `/api/simulate/cfb/sec`)
-- `/api/pull-games/[sport]/[conf]` and `/api/pull-teams/[sport]/[conf]` - Populate database from ESPN API (e.g., `/api/pull-games/cfb/sec`)
-- `/api/games/[sport]/[conf]` - Query games endpoint (e.g., `/api/games/cfb/sec`)
-- Cron jobs: `/api/cron/[sport]/[conf]/update-games`, `/api/cron/[sport]/[conf]/update-rankings`, `/api/cron/[sport]/[conf]/update-spreads`, `/api/cron/[sport]/[conf]/update-team-averages` (see `vercel.json`/`vercel.pro.json`)
+- `/api/games/[sport]/[conf]` - Fetches from ESPN, upserts to database, and returns reshaped data (e.g., `/api/games/cfb/sec`)
+- `/api/games/[sport]/[conf]/live` - Lightweight live game updates (scores/status only)
+- `/api/games/[sport]/[conf]/spreads` - Spread/odds updates only
+- `/api/teams/[sport]/[conf]` - Fetches team data from ESPN, upserts to database, and returns reshaped data
 
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`, `/api/pull-teams/[sport]/[conf]`, `/api/pull-games/[sport]/[conf]`, cron jobs in `/api/cron/[sport]/[conf]/`)
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/teams/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`)
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/models/` - Mongoose schemas (Game, Team, Error)
@@ -57,13 +58,13 @@ This is a specialized college football application built for simulating conferen
 - ESPN: `lib/cfb/espn-client.ts` (CFB-specific), `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic), `lib/constants.ts` (sports and conference configuration)
 - Tiebreaker: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - SEC tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
 - Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
-- Cron: Auth `Bearer ${CRON_SECRET}`, schedules in `vercel.json`/`vercel.pro.json`
+- Polling: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query (polls every 5 min when games are live or pre-game)
 
 **Tiebreaker Rules (SINGULAR SOURCE OF TRUTH):**
 - Location: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
 - Code must enforce rules exactly as specified in `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`
 
-**Constraints:** Vercel timeouts (60s Pro, 10s Hobby), ESPN API (500ms delays), Cron limits (Hobby: 2 jobs daily, Pro: unlimited)
+**Constraints:** Vercel timeouts (60s Pro, 10s Hobby), ESPN API (500ms delays), Frontend polling (conditional based on game states). Note: Type generation workflow (`.github/workflows/update-espn-types.yml`) runs via GitHub Actions cron schedule, but Vercel cron limitations no longer affect the data refresh strategy since we use frontend polling instead of Vercel crons.
 
 ## Essential Pattern Recognition
 
@@ -76,15 +77,17 @@ This is a specialized college football application built for simulating conferen
   - `reshapeTeamData()` (from `lib/reshape-teams.ts`) → Team format
   - `extractTeamsFromScoreboard()` (from `lib/reshape-teams-from-scoreboard.ts`) → Extract teams from scoreboard
 - **Error Logging**: `ErrorLog.create({ timestamp, endpoint, payload, error, stackTrace })`
-- **Cron Auth**: `authHeader === \`Bearer ${process.env.CRON_SECRET}\``
 - **Type Casting**: `.lean<GameLean[]>()` for MongoDB queries
 - **Redux**: `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
 - **UI State**: `useUIState()` hook from `app/store/useUI.ts`
 - **State Persistence**: redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
 - **RTK Query**: 
-  - `useGetGamesQuery({ sport, conf, season?, week?, state?, from?, to? })` - Dynamic route requires sport/conf
+  - `useGetSeasonGameDataQuery({ sport, conf, season?, week?, state?, from?, to?, force? })` - Full season data
+  - `useGetLiveGameDataQuery({ sport, conf, season?, week?, force? })` - Live game updates
+  - `useGetSpreadDataQuery({ sport, conf, season?, week?, force? })` - Spread/odds updates
   - `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
-  - Both hooks from `app/store/apiSlice.ts`
+  - All hooks from `app/store/apiSlice.ts`
+- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Conditional polling based on game states (live games poll every 5 min, pre-game games poll spreads in production)
 
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 

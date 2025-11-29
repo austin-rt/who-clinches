@@ -2,68 +2,85 @@
 
 Complete reference for data query and ingestion endpoints.
 
-**Related:** [Main API Reference](./api-reference.md) | [Cron Jobs](./api-reference-cron.md)
+**Related:** [Main API Reference](./api-reference.md)
+
+**Note**: All endpoints now fetch from ESPN, reshape data, upsert to database, and return reshaped data. No separate pull endpoints needed.
 
 ---
 
-## GET /api/games/[sport]/[conf]
+## POST /api/games/[sport]/[conf]
 
-Queries game data from the database for a specific sport and conference.
+Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 
 **Authentication:** None required
 
 **Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
-**Example**: `/api/games/cfb/sec`
+**Example**: `POST /api/games/cfb/sec`
 
-**Query Parameters**: `season` (string) - Season year, `week` (string) - Week number, `state` (string) - "pre", "in", or "post", `from`/`to` (string) - Date range (ISO format)
+**Request Body**: 
+```json
+{
+  "season": "2025",
+  "week": "11",
+  "state": "in",
+  "from": "2025-11-01",
+  "to": "2025-11-30",
+  "update": "live",
+  "force": true
+}
+```
+
+**Body Parameters**: 
+- `season` (string | number, optional) - Season year
+- `week` (string | number, optional) - Week number
+- `state` (string, optional) - "pre", "in", or "post"
+- `from`/`to` (string, optional) - Date range (ISO format)
+- `update` (string, optional) - "live" (scores/status only), "spreads" (odds only), or undefined (full update)
+- `force` (boolean, optional) - `true` to bypass season check
 
 **Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
-**Notes**: Results sorted by date/week, only conference games, team metadata included, uses lean queries
+**Notes**: 
+- Automatically fetches from ESPN and upserts reshaped data to database
+- Returns reshaped games data (not raw ESPN responses)
+- Results sorted by date/week, only conference games, team metadata included
+- During off-season, returns existing data from database without fetching from ESPN
 
 ---
 
-## POST /api/pull-teams/[sport]/[conf]
+## POST /api/teams/[sport]/[conf]
 
-Seeds or updates team data from ESPN API for a specific sport and conference.
+Fetches team data from ESPN API, upserts to database, and returns reshaped data.
 
 **Authentication:** None required
 
 **Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
-**Example**: `/api/pull-teams/cfb/sec`
+**Example**: `POST /api/teams/cfb/sec`
 
-**Request Body**: `{}` (empty, conference determined from path)
+**Request Body**: 
+```json
+{
+  "update": "rankings",
+  "force": true
+}
+```
 
-**Response**: `{ "upserted": 16, "lastUpdated": "ISO timestamp" }`
+**Body Parameters**:
+- `update` (string, optional) - "rankings" (rankings/stats only), "stats" (team averages only), or undefined (full update)
+- `force` (boolean, optional) - `true` to bypass season check
 
-**Error Responses**: `400` - Missing required fields, `500` - ESPN API or database error
+**Response**: `{ "teams": [TeamLean[]], "teamsMetadata": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
 
-**Notes**: Uses ESPN Site API, upserts teams (create/update), stores name/logo/colors/conference affiliation, conference ID from path, does NOT fetch team stats (use update-rankings cron), not required before pulling games
+**Error Responses**: `400` - No teams found (must seed teams first), `500` - ESPN API or database error
 
----
-
-## POST /api/pull-games/[sport]/[conf]
-
-Pulls game data from ESPN for a specific season, sport, and conference.
-
-**Authentication:** None required
-
-**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
-**Example**: `/api/pull-games/cfb/sec`
-
-**Request Body**: `{ "season": 2025, "week": 1 }` (week optional - if omitted, pulls entire regular season)
-
-**Response**: `{ "upserted": 128, "weeksPulled": [1-14], "lastUpdated": "ISO timestamp", "errors": [] }`
-
-**Error Responses:**
-- `400`: Missing required fields
-- `500`: ESPN API error or database error
-
-**Game Data Stored**: Basic info (`espnId`, `displayName`, `date`, `week`, `season`), state (`state`, `completed`, `conferenceGame`, `neutralSite`), teams (`home`/`away` with `teamEspnId`, `abbrev`, `score`, `rank`), odds (`spread`, `favoriteTeamEspnId`, `overUnder`), `predictedScore` (calculated: real scores → ESPN odds → team averages + spread → ranking-based → home field advantage)
-
-**Notes**: Dynamically determines season weeks via ESPN calendar API, excludes conference championship, can run independently, optimal order: pull-teams → update-rankings → pull-games for most accurate `predictedScore`
+**Notes**: 
+- Automatically fetches from ESPN and upserts reshaped data to database
+- Returns reshaped team data (not raw ESPN responses)
+- Uses ESPN Site API and Core Records API
+- During off-season, returns existing data from database without fetching from ESPN
+- Teams must be seeded first (via games endpoint which extracts teams from scoreboard)
 
 ---
 

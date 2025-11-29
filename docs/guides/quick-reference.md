@@ -6,11 +6,11 @@ Domain-specific content locations for common tasks.
 
 - **Quick commands**: `docs/guides/testing-quick-reference.md`
 - **API testing procedures**: `docs/tests/comprehensive-api-testing.md`
-- **Cron job testing**: `docs/tests/cron-jobs-testing.md`
+- **Cron job testing**: `docs/tests/cron-jobs-testing.md` (historical - cron endpoints removed)
 - **ESPN API testing**: `docs/tests/espn-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
-- **Test data management**: Implemented - see `__tests__/helpers/test-data-loader.ts` and `app/api/cron/update-test-data/route.ts`
+- **Test data management**: Implemented - see `__tests__/helpers/test-data-loader.ts` and `app/api/cron/update-test-data/route.ts` (test data endpoint only)
 - **Unit tests plan**: `docs/plans/unit-tests.md`
 
 ## API Development
@@ -36,11 +36,12 @@ Domain-specific content locations for common tasks.
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (e.g., `app/api/simulate/cfb/sec/route.ts`)
 
-## Cron Jobs
+## Data Updates
 
-- **Testing**: `docs/tests/cron-jobs-testing.md`
-- **API reference**: `docs/guides/api-reference.md` (Cron Jobs section)
-- **Schedules**: `vercel.json` (Hobby), `vercel.pro.json` (Pro)
+- **Architecture**: On-demand API endpoints with frontend polling
+- **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
+- **Frontend polling**: `app/hooks/useGamesData.ts` - Conditional polling based on game states
+- **Migration notes**: `docs/guides/api-reference-cron.md`
 
 ## Data Models
 
@@ -97,5 +98,5 @@ npm run test:db:check         # Check/seed test DB
 | Season check | `lib/cfb/helpers/season-check-espn.ts` (CFB-specific) |
 | Types | `lib/types.ts`, `lib/api-types.ts` |
 | Tests | `__tests__/` |
-| Cron schedules | `vercel.json`, `vercel.pro.json` |
+| Frontend polling | `app/hooks/useGamesData.ts` |
 
