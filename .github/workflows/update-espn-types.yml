@@ -2,8 +2,8 @@ name: Update ESPN Types
 
 on:
   schedule:
-    # Run daily at 00:15 UTC (15 minutes after cron job at 23:45 UTC / 7:45 PM ET)
-    - cron: '15 0 * * *'
+    # Run daily at 02:15 UTC (15 minutes after update-all cron at 02:00 UTC / 10:00 PM ET)
+    - cron: '15 2 * * *'
   workflow_dispatch: # Allow manual trigger from GitHub UI
 
 jobs:

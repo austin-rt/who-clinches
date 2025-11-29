@@ -149,8 +149,8 @@ ESPN API → reshape functions → MongoDB
 
 **Endpoints:**
 
-- `POST /api/pull-games/cfb/[conf]` - Fetch and store game data
-- `POST /api/pull-teams/cfb/[conf]` - Fetch and store team data
+- `GET /api/games/cfb/[conf]` - Fetch from ESPN, upsert games, return data
+- `GET /api/teams/cfb/[conf]` - Fetch from ESPN, upsert teams, return data
 
 ### 2. Data Retrieval (MongoDB → Frontend)
 
@@ -220,19 +220,34 @@ The ESPN client and data models support multiple sports/leagues for future expan
 
 ## API Endpoints
 
-### GET /api/games/cfb/[conf]
+### POST /api/games/[sport]/[conf]
 
-Query stored games with filters for a specific conference.
+Fetches game data from ESPN, upserts to database, and returns reshaped data.
 
 **Path Parameters:**
+- `sport` - Sport slug (e.g., "cfb")
 - `conf` - Conference slug (e.g., "sec")
 
-**Query Parameters:**
+**Example**: `POST /api/games/cfb/sec`
 
+**Request Body:**
+```json
+{
+  "season": 2025,
+  "week": 11,
+  "state": "in",
+  "update": "live",
+  "force": true
+}
+```
+
+**Body Parameters:**
 - `season` - Year (e.g., 2025)
 - `week` - Week number
 - `state` - Game state: "pre", "in", "post"
-- `from` / `to` - Date range filters
+- `from` / `to` - Date range filters (ISO format)
+- `update` - "live" (scores/status only), "spreads" (odds only), or undefined (full update)
+- `force` - `true` to bypass season check
 
 **Response:**
 
@@ -244,39 +259,41 @@ Query stored games with filters for a specific conference.
 }
 ```
 
-### POST /api/pull-games/cfb/[conf]
+**Notes**: Automatically fetches from ESPN and upserts reshaped data. Returns existing data during off-season.
 
-Fetch game data from ESPN and store in database for a specific conference.
+### POST /api/teams/[sport]/[conf]
+
+Fetches team data from ESPN, upserts to database, and returns reshaped data.
 
 **Path Parameters:**
+- `sport` - Sport slug (e.g., "cfb")
 - `conf` - Conference slug (e.g., "sec")
 
-**Request Body:**
+**Example**: `POST /api/teams/cfb/sec`
 
+**Request Body:**
 ```json
 {
-  "season": 2025,
-  "week": 12
+  "update": "rankings",
+  "force": true
 }
 ```
 
-### POST /api/pull-teams/cfb/[conf]
+**Body Parameters:**
+- `update` - "rankings" (rankings/stats only), "stats" (team averages only), or undefined (full update)
+- `force` - `true` to bypass season check
 
-Fetch team data from ESPN and store in database for a specific conference.
-
-**Path Parameters:**
-- `conf` - Conference slug (e.g., "sec")
-
-**Request Body:**
+**Response:**
 
 ```json
-{}
 {
-  "teams": ["ALA", "UGA", "LSU"],
-  "sport": "football",
-  "league": "college-football"
+  "teams": [...],
+  "teamsMetadata": [...],
+  "lastUpdated": "2024-11-10T..."
 }
 ```
+
+**Notes**: Automatically fetches from ESPN and upserts reshaped data. Teams must be seeded first (via games endpoint).
 
 ## Database Schema
 
