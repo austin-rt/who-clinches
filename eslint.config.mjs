@@ -45,9 +45,10 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ['scripts/**/*.ts'],
+    files: ['scripts/**/*.ts', '__tests__/**/*.ts', '__tests__/**/*.tsx', 'app/api/cron/run-reshape-tests/**/*.ts'],
     rules: {
       'func-style': 'off', // Allow function declarations in TypeScript scripts
+      'no-console': 'off', // Allow console in test files and scripts
     },
   },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**']),
