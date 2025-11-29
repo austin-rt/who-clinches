@@ -1,4 +1,4 @@
-import { GameLean, GameState } from './types';
+import { GameLean, GameState, TeamLean } from './types';
 
 export interface BaseError {
   error: string;
@@ -59,15 +59,24 @@ export interface GamesQueryParams {
 export interface TeamMetadata {
   id: string;
   abbrev: string;
+  name: string;
   displayName: string;
   logo: string;
   color: string;
   alternateColor: string;
+  conferenceStanding: string;
+  conferenceRecord: string;
 }
 
 export interface GamesResponse {
   events: GameLean[];
   teams: TeamMetadata[];
+  lastUpdated: string;
+}
+
+export interface TeamsResponse {
+  teams: TeamLean[];
+  teamsMetadata: TeamMetadata[];
   lastUpdated: string;
 }
 

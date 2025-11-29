@@ -25,8 +25,8 @@ export const calculatePredictedScoreFromOdds = (
 
   const spreadAbs = Math.abs(spread);
 
-  const favoredScore = Math.round(overUnder / 2 + spreadAbs);
-  const underdogScore = Math.round(overUnder / 2 - spreadAbs);
+  const favoredScore = Math.round((overUnder + spreadAbs) / 2);
+  const underdogScore = Math.round((overUnder - spreadAbs) / 2);
 
   if (favoredScore === underdogScore) {
     if (isFavoriteHome) {

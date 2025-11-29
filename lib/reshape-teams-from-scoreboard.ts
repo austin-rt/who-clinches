@@ -34,7 +34,7 @@ export const extractTeamsFromScoreboard = (
 
         teamsMap.set(team.id, {
           _id: team.id,
-          name: team.name,
+          name: team.location,
           displayName: team.displayName,
           abbreviation: team.abbreviation,
           logo: team.logo,
