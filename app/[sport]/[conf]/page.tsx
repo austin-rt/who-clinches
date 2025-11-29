@@ -7,6 +7,7 @@ import ViewModeButton from '@/app/components/ViewModeButton';
 import HideCompletedButton from '@/app/components/HideCompletedButton';
 import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
+import CurrentStandings from '@/app/components/CurrentStandings';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 
@@ -37,34 +38,38 @@ const ConferencePage = () => {
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
-      <div className="flex w-full items-center justify-between">
-        <div className="flex flex-col gap-2">
-          <h1
-            className={`text-4xl font-bold transition-colors ${
-              mode === 'dark' ? 'text-accent' : 'text-primary'
-            }`}
-          >
-            {conferenceName} Tiebreaker Calculator
-          </h1>
-          <p className="text-base-content/70 text-lg">
-            Predict game outcomes and see how they affect {conferenceName} conference standings
-          </p>
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col gap-2">
+            <h1
+              className={`text-3xl font-bold transition-colors ${
+                mode === 'dark' ? 'text-accent' : 'text-primary'
+              }`}
+            >
+              {conferenceName} Tiebreaker Calculator
+            </h1>
+            <p className="text-base-content/70 text-base">
+              Predict game outcomes and see how they affect {conferenceName} conference standings
+            </p>
+          </div>
+          <ViewModeButton />
         </div>
-        <ViewModeButton />
       </div>
 
-      <div className="flex w-full items-center justify-between">
-        <div className="flex items-center gap-4">
-          <HideCompletedButton />
-          <ResetButton />
-        </div>
-        <SimulateButton season={currentSeason} />
+      <CurrentStandings season={currentSeason} />
+
+      <div className="flex items-center justify-between gap-4">
+        <HideCompletedButton />
+        <ResetButton />
       </div>
 
       <GamesList season={currentSeason} />
+
+      <div className="flex flex-row justify-end gap-4">
+        <SimulateButton season={currentSeason} />
+      </div>
     </div>
   );
 };
 
 export default ConferencePage;
-
