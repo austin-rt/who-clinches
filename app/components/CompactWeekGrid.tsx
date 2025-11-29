@@ -5,57 +5,21 @@ import { GameLean } from '@/lib/types';
 import CompactGameButton from './CompactGameButton';
 import { useUIState } from '@/app/store/useUI';
 
-type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
-
 interface CompactWeekGridProps {
-  finalWeekDays: WeekDay[];
-  remainingWeekDays: WeekDay[];
+  finalWeeks: GameLean[][];
+  remainingWeeks: GameLean[][];
 }
 
-const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridProps) => {
+const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) => {
   const { hideCompletedGames } = useUIState();
 
   const weeksData = useMemo(() => {
-    const weeksMap = new Map<
-      number,
-      { weekNumber: number; dateRange: string;       games: GameLean[] }
-    >();
+    const allWeeks = hideCompletedGames ? remainingWeeks : [...finalWeeks, ...remainingWeeks];
 
-    remainingWeekDays.forEach((weekDay) => {
-      const week = weekDay.weekNumber;
-      if (!weeksMap.has(week)) {
-        weeksMap.set(week, {
-          weekNumber: week,
-          dateRange: '',
-          games: [],
-        });
-      }
-      weeksMap.get(week)!.games.push(...weekDay.games);
-    });
-
-    if (!hideCompletedGames) {
-      finalWeekDays.forEach((weekDay) => {
-        const week = weekDay.weekNumber;
-        if (!weeksMap.has(week)) {
-          weeksMap.set(week, {
-            weekNumber: week,
-            dateRange: '',
-            games: [],
-          });
-        }
-        weeksMap.get(week)!.games.push(...weekDay.games);
-      });
-    }
-
-    weeksMap.forEach((weekData) => {
-      if (weekData.games.length === 0) return;
-
-      const dates = weekData.games
-        .map((game) => new Date(game.date))
-        .sort((a, b) => a.getTime() - b.getTime());
-
-      const firstDate = dates[0];
-      const lastDate = dates[dates.length - 1];
+    return allWeeks.map((weekGames) => {
+      const weekNumber = weekGames[0].week ?? 0;
+      const firstDate = new Date(weekGames[0].date);
+      const lastDate = new Date(weekGames[weekGames.length - 1].date);
 
       const firstFormatted = firstDate.toLocaleDateString('en-US', {
         month: 'short',
@@ -66,32 +30,27 @@ const CompactWeekGrid = ({ finalWeekDays, remainingWeekDays }: CompactWeekGridPr
         day: 'numeric',
       });
 
-      if (firstFormatted === lastFormatted) {
-        weekData.dateRange = firstFormatted;
-      } else {
-        weekData.dateRange = `${firstFormatted} - ${lastFormatted}`;
-      }
-    });
+      const dateRange =
+        firstFormatted === lastFormatted ? firstFormatted : `${firstFormatted} - ${lastFormatted}`;
 
-    return Array.from(weeksMap.values()).sort((a, b) => a.weekNumber - b.weekNumber);
-  }, [finalWeekDays, remainingWeekDays, hideCompletedGames]);
+      return { weekNumber, dateRange, games: weekGames };
+    });
+  }, [finalWeeks, remainingWeeks, hideCompletedGames]);
 
   if (weeksData.length === 0) {
     return null;
   }
 
   return (
-    <div
-      className="grid gap-6"
-      style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(230px, max-content))' }}
-    >
+    <div className="flex flex-col gap-6">
       {weeksData.map((week) => (
         <div key={week.weekNumber} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <h3 className="text-base font-semibold">Week {week.weekNumber}</h3>
-            <p className="text-base-content/60 text-sm">{week.dateRange}</p>
+            <h3 className="text-base font-semibold">
+              Week {week.weekNumber} - <span className="font-normal">{week.dateRange}</span>
+            </h3>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-wrap gap-2">
             {week.games.map((game) => (
               <CompactGameButton key={game._id} game={game} />
             ))}

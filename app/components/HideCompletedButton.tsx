@@ -18,9 +18,14 @@ const HideCompletedButton = () => {
       size="sm"
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleClick}
-      className="w-fit"
+      className="w-fit text-xs"
     >
-      {hideCompletedGames ? 'Show Completed Games' : 'Hide Completed Games'}
+      <span>
+        <span>
+          {hideCompletedGames ? 'Show Completed' : 'Hide Completed'}{' '}
+          <span className="hidden sm:inline"> Games</span>
+        </span>
+      </span>
     </Button.Stroked>
   );
 };

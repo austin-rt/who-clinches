@@ -4,7 +4,7 @@ import { GameLean } from '@/lib/types';
 import Team from './Team';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setGamePick } from '../store/gamePicksSlice';
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useCallback } from 'react';
 
 interface CompactGameButtonProps {
   game: GameLean;
@@ -14,45 +14,48 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const dispatch = useAppDispatch();
   const gamePick = useAppSelector((state) => state.gamePicks.picks[game.espnId]);
 
-  const calculateScoresForPick = (pickedTeamEspnId: string) => {
-    const isPickingHome = pickedTeamEspnId === game.home.teamEspnId;
+  const calculateScoresForPick = useCallback(
+    (pickedTeamEspnId: string) => {
+      const isPickingHome = pickedTeamEspnId === game.home.teamEspnId;
 
-    if (game.completed) {
-      const actualHomeScore = game.home.score ?? 0;
-      const actualAwayScore = game.away.score ?? 0;
+      if (game.completed) {
+        const actualHomeScore = game.home.score ?? 0;
+        const actualAwayScore = game.away.score ?? 0;
+
+        if (isPickingHome) {
+          return {
+            homeScore: actualAwayScore >= actualHomeScore ? actualAwayScore + 1 : actualHomeScore,
+            awayScore: actualAwayScore,
+          };
+        } else {
+          return {
+            homeScore: actualHomeScore,
+            awayScore: actualHomeScore >= actualAwayScore ? actualHomeScore + 1 : actualAwayScore,
+          };
+        }
+      }
+
+      if (!game.predictedScore) {
+        return { homeScore: 28, awayScore: 21 };
+      }
+
+      const baseHomeScore = game.predictedScore.home;
+      const baseAwayScore = game.predictedScore.away;
 
       if (isPickingHome) {
         return {
-          homeScore: actualAwayScore >= actualHomeScore ? actualAwayScore + 1 : actualHomeScore,
-          awayScore: actualAwayScore,
+          homeScore: baseAwayScore >= baseHomeScore ? baseAwayScore + 1 : baseHomeScore,
+          awayScore: baseAwayScore,
         };
       } else {
         return {
-          homeScore: actualHomeScore,
-          awayScore: actualHomeScore >= actualAwayScore ? actualHomeScore + 1 : actualAwayScore,
+          homeScore: baseHomeScore,
+          awayScore: baseHomeScore >= baseAwayScore ? baseHomeScore + 1 : baseAwayScore,
         };
       }
-    }
-
-    if (!game.predictedScore) {
-      return { homeScore: 28, awayScore: 21 };
-    }
-
-    const baseHomeScore = game.predictedScore.home;
-    const baseAwayScore = game.predictedScore.away;
-
-    if (isPickingHome) {
-      return {
-        homeScore: baseAwayScore >= baseHomeScore ? baseAwayScore + 1 : baseHomeScore,
-        awayScore: baseAwayScore,
-      };
-    } else {
-      return {
-        homeScore: baseHomeScore,
-        awayScore: baseHomeScore >= baseAwayScore ? baseHomeScore + 1 : baseAwayScore,
-      };
-    }
-  };
+    },
+    [game.completed, game.home.teamEspnId, game.home.score, game.away.score, game.predictedScore]
+  );
 
   const defaultSelectedTeam = useMemo(() => {
     if (game.completed) {
@@ -90,7 +93,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
       const scores = calculateScoresForPick(defaultSelectedTeam);
       dispatch(setGamePick({ gameId: game.espnId, pick: scores }));
     }
-  }, [gamePick, defaultSelectedTeam, game.espnId, dispatch]);
+  }, [gamePick, defaultSelectedTeam, game.espnId, dispatch, calculateScoresForPick]);
 
   const selectedTeam = useMemo(() => {
     if (!gamePick) {
@@ -119,8 +122,8 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const homeWon = isHomeSelected;
 
   return (
-    <div className="flex h-[110px] w-[230px] items-center justify-center gap-2 rounded-lg border border-base-300 bg-base-200 p-2">
-      <div className="flex flex-col items-center gap-1">
+    <div className="flex h-20 w-40 items-center justify-center gap-1 rounded-lg border border-base-300 bg-base-200 p-1 dark:bg-base-100">
+      <div className="flex flex-col items-center gap-0.5">
         <button
           type="button"
           onClick={(e) => {
@@ -128,22 +131,25 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
             e.stopPropagation();
             handleTeamClick(game.away.teamEspnId);
           }}
-          className={`cursor-pointer rounded-lg p-1 transition-all ${
+          className={`cursor-pointer rounded-lg p-0.5 transition-all ${
             isAwaySelected ? 'bg-primary/20' : ''
           } ${isAwaySelected ? 'opacity-100' : isSelected ? 'opacity-30' : 'opacity-100 hover:opacity-80'}`}
         >
           <Team team={game.away} showLogoOnly />
         </button>
+        <span className="text-center text-[10px] font-semibold leading-none">
+          {game.away.abbrev}
+        </span>
         {isSelected && (
           <span
-            className={`text-base-content/70 text-xs ${awayWon ? 'font-extrabold' : 'font-semibold'}`}
+            className={`text-base-content/70 w-full text-center text-[10px] leading-none ${awayWon ? 'font-extrabold' : 'font-semibold'}`}
           >
-            {awayWon ? 'WIN' : 'LOSS'}
+            {awayWon ? 'W' : 'L'}
           </span>
         )}
       </div>
-      <span className="text-base-content/60 text-sm">vs</span>
-      <div className="flex flex-col items-center gap-1">
+      <span className="text-base-content/60 text-[10px] leading-none">vs</span>
+      <div className="flex flex-col items-center gap-0.5">
         <button
           type="button"
           onClick={(e) => {
@@ -151,17 +157,20 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
             e.stopPropagation();
             handleTeamClick(game.home.teamEspnId);
           }}
-          className={`cursor-pointer rounded-lg p-1 transition-all ${
+          className={`cursor-pointer rounded-lg p-0.5 transition-all ${
             isHomeSelected ? 'bg-primary/20' : ''
           } ${isHomeSelected ? 'opacity-100' : isSelected ? 'opacity-30' : 'opacity-100 hover:opacity-80'}`}
         >
           <Team team={game.home} showLogoOnly />
         </button>
+        <span className="text-center text-[10px] font-semibold leading-none">
+          {game.home.abbrev}
+        </span>
         {isSelected && (
           <span
-            className={`text-base-content/70 text-xs ${homeWon ? 'font-extrabold' : 'font-semibold'}`}
+            className={`text-base-content/70 w-full text-center text-[10px] leading-none ${homeWon ? 'font-extrabold' : 'font-semibold'}`}
           >
-            {homeWon ? 'WIN' : 'LOSS'}
+            {homeWon ? 'W' : 'L'}
           </span>
         )}
       </div>

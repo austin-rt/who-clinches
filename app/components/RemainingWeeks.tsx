@@ -1,20 +1,22 @@
 'use client';
 
+import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
+import { groupGamesByDay } from '@/lib/utils/gameGrouping';
 import DaySection from './DaySection';
 
-type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
-
 interface RemainingWeeksProps {
-  weekDays: WeekDay[];
+  weeks: GameLean[][];
 }
 
-const RemainingWeeks = ({ weekDays }: RemainingWeeksProps) => {
+const RemainingWeeks = ({ weeks }: RemainingWeeksProps) => {
+  const weekDays = useMemo(() => groupGamesByDay(weeks), [weeks]);
+
   if (weekDays.length === 0) {
     return null;
   }
 
-  const totalGames = weekDays.reduce((sum, weekDay) => sum + weekDay.games.length, 0);
+  const totalGames = weeks.reduce((sum, week) => sum + week.length, 0);
 
   return (
     <div className="collapse collapse-open bg-base-200">
@@ -23,16 +25,14 @@ const RemainingWeeks = ({ weekDays }: RemainingWeeksProps) => {
       </div>
       <div className="collapse-content">
         <div className="space-y-6 pt-2">
-          {weekDays
-            .filter((weekDay) => weekDay.games.length > 0)
-            .map((weekDay, index) => (
-              <DaySection
-                key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}-${index}`}
-                weekNumber={weekDay.weekNumber}
-                games={weekDay.games}
-                dayLabel={weekDay.dayLabel}
-              />
-            ))}
+          {weekDays.map((weekDay) => (
+            <DaySection
+              key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}`}
+              weekNumber={weekDay.weekNumber}
+              games={weekDay.games}
+              dayLabel={weekDay.dayLabel}
+            />
+          ))}
         </div>
       </div>
     </div>

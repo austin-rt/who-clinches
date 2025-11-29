@@ -18,15 +18,17 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
 
   if (showLogoOnly) {
     return (
-      <div className="flex items-center">
-        {rank && <sup className="text-xxs mt-4 self-start font-semibold">{rank}</sup>}
+      <div className="relative flex items-center">
+        {rank && (
+          <sup className="absolute -left-4 top-1 text-[8px] font-semibold leading-none">{rank}</sup>
+        )}
         {team.logo && (
           <Image
             src={team.logo}
             alt={team.abbrev}
-            width={64}
-            height={64}
-            className="pointer-events-none h-20 w-auto object-contain md:h-14"
+            width={40}
+            height={40}
+            className="pointer-events-none h-10 w-auto object-contain"
             unoptimized
           />
         )}
@@ -36,9 +38,8 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
 
   if (showNameOnly) {
     return (
-      <div className="relative flex items-center">
-        {rank && <sup className="text-xxs absolute -left-5 top-2 font-semibold">{rank}</sup>}
-        <span className="text-center text-base font-semibold md:text-lg">{team.abbrev}</span>
+      <div className="flex items-center justify-center">
+        <span className="text-center text-xs font-semibold md:text-sm">{team.abbrev}</span>
       </div>
     );
   }
@@ -51,13 +52,12 @@ const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) =
           alt={team.abbrev}
           width={64}
           height={64}
-          className="h-20 w-auto object-contain"
+          className="h-20 w-auto object-contain drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
           unoptimized
         />
       )}
-      <div className="flex items-center gap-1">
-        {rank && <sup className="text-xxs font-semibold">{rank}</sup>}
-        <span className="text-center text-base font-semibold md:text-lg">{team.abbrev}</span>
+      <div className="flex items-center justify-center">
+        <span className="text-center text-xs font-semibold md:text-sm">{team.abbrev}</span>
       </div>
     </div>
   );

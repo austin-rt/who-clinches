@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="grid grid-flow-col gap-4">
           <div>
-            <p className="text-sm">© {currentYear} SEC Tiebreaker Calculator</p>
+            <p className="text-sm">© {currentYear} Who Clinches</p>
           </div>
         </div>
       </div>

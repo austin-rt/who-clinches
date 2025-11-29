@@ -1,27 +1,29 @@
 'use client';
 
+import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
 import { useUIState } from '@/app/store/useUI';
 import { useAppDispatch } from '@/app/store/hooks';
 import { setHideCompletedGames } from '@/app/store/uiSlice';
+import { groupGamesByDay } from '@/lib/utils/gameGrouping';
 import DaySection from './DaySection';
 
-type WeekDay = { weekNumber: number; dayOfWeek: number; dayLabel: string; games: GameLean[] };
-
 interface FinalWeeksProps {
-  weekDays: WeekDay[];
+  weeks: GameLean[][];
 }
 
-const FinalWeeks = ({ weekDays }: FinalWeeksProps) => {
+const FinalWeeks = ({ weeks }: FinalWeeksProps) => {
   const dispatch = useAppDispatch();
   const { hideCompletedGames } = useUIState();
   const isOpen = !hideCompletedGames;
+
+  const weekDays = useMemo(() => groupGamesByDay(weeks), [weeks]);
 
   if (weekDays.length === 0) {
     return null;
   }
 
-  const totalGames = weekDays.reduce((sum, weekDay) => sum + weekDay.games.length, 0);
+  const totalGames = weeks.reduce((sum, week) => sum + week.length, 0);
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(setHideCompletedGames(!e.target.checked));
@@ -35,16 +37,14 @@ const FinalWeeks = ({ weekDays }: FinalWeeksProps) => {
       </div>
       <div className="collapse-content">
         <div className="space-y-6 pt-2">
-          {weekDays
-            .filter((weekDay) => weekDay.games.length > 0)
-            .map((weekDay, index) => (
-              <DaySection
-                key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}-${index}`}
-                weekNumber={weekDay.weekNumber}
-                games={weekDay.games}
-                dayLabel={weekDay.dayLabel}
-              />
-            ))}
+          {weekDays.map((weekDay) => (
+            <DaySection
+              key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}`}
+              weekNumber={weekDay.weekNumber}
+              games={weekDay.games}
+              dayLabel={weekDay.dayLabel}
+            />
+          ))}
         </div>
       </div>
     </div>

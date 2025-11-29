@@ -87,8 +87,9 @@ const SimulateButton = ({ season }: SimulateButtonProps) => {
       onClick={handleSimulate}
       disabled={!hasPicks || isLoading}
       loading={isLoading}
+      className="text-xs"
     >
-      Simulate Standings
+      Calculate Standings
     </Button.Stroked>
   );
 };

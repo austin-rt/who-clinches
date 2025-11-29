@@ -7,25 +7,22 @@ import { Button } from './Button';
 
 const ResetButton = () => {
   const dispatch = useAppDispatch();
-  const { view, mode } = useUIState();
+  const { mode } = useUIState();
 
   const handleClick = () => {
     dispatch(clearAllPicks());
   };
-
-  const buttonText = view === 'picks' ? 'Reset Picks' : 'Reset Scores';
 
   return (
     <Button.Stroked
       size="sm"
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleClick}
-      className="w-fit"
+      className="w-fit text-xs"
     >
-      {buttonText}
+      Reset
     </Button.Stroked>
   );
 };
 
 export default ResetButton;
-

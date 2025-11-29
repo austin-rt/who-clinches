@@ -25,14 +25,14 @@ const ViewModeButton = () => {
       <div
         className={`flex items-center gap-2 transition-colors ${view === 'scores' ? 'opacity-100' : 'absolute opacity-0'}`}
       >
-        <BsTrophy className="h-7 w-7 fill-current" />
-        <span className="text-sm font-semibold">Pick Winners</span>
+        <BsTrophy className="h-5 w-5 fill-current" />
+        <span className="text-xs font-semibold">Picks</span>
       </div>
       <div
         className={`flex items-center gap-2 transition-colors ${view === 'picks' ? 'opacity-100' : 'absolute opacity-0'}`}
       >
-        <MdOutlineScoreboard className="h-8 w-8 fill-current" />
-        <span className="text-sm font-semibold">Enter Scores</span>
+        <MdOutlineScoreboard className="h-6 w-6 fill-current" />
+        <span className="text-xs font-semibold">Scores</span>
       </div>
     </Button.Stroked>
   );

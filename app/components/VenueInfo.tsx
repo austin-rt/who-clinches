@@ -8,10 +8,10 @@ interface VenueInfoProps {
 
 const VenueInfo = ({ venue }: VenueInfoProps) => {
   return (
-    <div className="text-base-content/60 text-sm md:text-base">
+    <div className="text-base-content/60 text-xs md:text-sm">
       {venue.fullName}
       {venue.city && venue.state && (
-        <span className="text-base-content/50 text-sm md:text-base">
+        <span className="text-base-content/50 text-xs md:text-sm">
           {' '}
           • {venue.city}, {venue.state}
         </span>

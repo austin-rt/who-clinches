@@ -14,23 +14,22 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   return (
-    <div className="card card-sm relative bg-base-200 shadow-md">
-      <div className="card-body flex flex-col gap-4">
+    <div className="card card-sm relative bg-base-200 shadow-md dark:bg-base-300">
+      <div className="card-body flex flex-col gap-4 px-2">
         <div className="flex items-center justify-between">
           <TimeDisplay date={game.date} timezone={game.venue.timezone} />
           {game.state === 'in' && <LiveBadge />}
         </div>
 
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-around">
+        <div className="flex items-center justify-evenly">
+          <div className="flex flex-col items-center gap-1">
             <Team team={game.away} showLogoOnly />
-            <Score game={game} />
-            <Team team={game.home} showLogoOnly />
+            <span className="text-center text-xs font-semibold md:text-sm">{game.away.abbrev}</span>
           </div>
-          <div className="flex items-center justify-around">
-            <Team team={game.away} showNameOnly />
-            <div className="text-base-content/40 text-base">@</div>
-            <Team team={game.home} showNameOnly />
+          <Score game={game} separate />
+          <div className="flex flex-col items-center gap-1">
+            <Team team={game.home} showLogoOnly />
+            <span className="text-center text-xs font-semibold md:text-sm">{game.home.abbrev}</span>
           </div>
         </div>
 

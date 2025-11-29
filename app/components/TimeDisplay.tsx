@@ -25,7 +25,7 @@ const TimeDisplay = ({ date, timezone }: TimeDisplayProps) => {
   };
 
   return (
-    <div className="text-base-content/60 text-sm md:text-base">{formatDate(date, timezone)}</div>
+    <div className="text-base-content/60 text-xs md:text-sm">{formatDate(date, timezone)}</div>
   );
 };
 
