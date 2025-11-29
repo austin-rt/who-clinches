@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import expireReducer from 'redux-persist-expire';
 import uiReducer from './uiSlice';
 import gamePicksReducer from './gamePicksSlice';
 import { apiSlice } from './apiSlice';
@@ -14,6 +15,13 @@ const uiPersistConfig = {
 const gamePicksPersistConfig = {
   key: 'gamePicks',
   storage,
+  transforms: [
+    expireReducer('gamePicks', {
+      expireSeconds: 3600, // 1 hour
+      expiredState: { picks: {} }, // Clear all picks when expired
+      autoExpire: true,
+    }),
+  ],
 };
 
 const persistedUiReducer = persistReducer(uiPersistConfig, uiReducer);

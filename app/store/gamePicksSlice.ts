@@ -5,7 +5,7 @@ export interface GamePick {
   awayScore: number;
 }
 
-interface GamePicksState {
+export interface GamePicksState {
   picks: {
     [gameId: string]: GamePick;
   };
