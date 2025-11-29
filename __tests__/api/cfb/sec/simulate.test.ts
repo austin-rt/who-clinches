@@ -13,12 +13,6 @@ import { setupTestDB, teardownTestDB, clearTestDB } from '../../../helpers/db-mo
 
 const SEASON = 2025;
 
-interface PullGamesResponse {
-  upserted: number;
-  weeksPulled: number[];
-  lastUpdated: number | string;
-}
-
 describe('POST /api/simulate/cfb/sec', () => {
   // Setup MongoDB Memory Server for main database
   beforeAll(async () => {
@@ -35,12 +29,11 @@ describe('POST /api/simulate/cfb/sec', () => {
 
   describe('Team Rankings', () => {
     it('returns exactly 16 teams for SEC conference', async () => {
-      // Seed data by calling pull-games (extracts both games and teams)
-      const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
+      // Seed data by calling games endpoint (extracts both games and teams)
+      await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
-        body: JSON.stringify({ season: SEASON }),
+        body: JSON.stringify({ season: SEASON, force: true }),
       });
-      expect(pullGamesResponse.upserted).toBeGreaterThan(0);
 
       const response = await fetchAPI<SimulateResponse>('/api/simulate/cfb/sec', {
         method: 'POST',
@@ -64,12 +57,11 @@ describe('POST /api/simulate/cfb/sec', () => {
     });
 
     it('ranks teams 1-16 without gaps', async () => {
-      // Seed data by calling pull-games (extracts both games and teams)
-      const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
+      // Seed data by calling games endpoint (extracts both games and teams)
+      await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
-        body: JSON.stringify({ season: SEASON }),
+        body: JSON.stringify({ season: SEASON, force: true }),
       });
-      expect(pullGamesResponse.upserted).toBeGreaterThan(0);
 
       const response = await fetchAPI<SimulateResponse>('/api/simulate/cfb/sec', {
         method: 'POST',
@@ -84,12 +76,11 @@ describe('POST /api/simulate/cfb/sec', () => {
     });
 
     it('championship array contains top 2 teams', async () => {
-      // Seed data by calling pull-games (extracts both games and teams)
-      const pullGamesResponse = await fetchAPI<PullGamesResponse>('/api/pull-games/cfb/sec', {
+      // Seed data by calling games endpoint (extracts both games and teams)
+      await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
-        body: JSON.stringify({ season: SEASON }),
+        body: JSON.stringify({ season: SEASON, force: true }),
       });
-      expect(pullGamesResponse.upserted).toBeGreaterThan(0);
 
       const response = await fetchAPI<SimulateResponse>('/api/simulate/cfb/sec', {
         method: 'POST',

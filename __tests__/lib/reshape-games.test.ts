@@ -622,9 +622,7 @@ describe('reshapeScoreboardData', () => {
           {
             ...firstComp,
             id: 'comp-999',
-            competitors: [
-              firstComp.competitors[0],
-            ],
+            competitors: [firstComp.competitors[0]],
           },
         ],
       } as Event;
