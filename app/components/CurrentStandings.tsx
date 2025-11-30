@@ -1,25 +1,11 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
 import { useParams } from 'next/navigation';
 import { SimulateResponse } from '@/lib/api-types';
 import SimulatedStandings from './SimulatedStandings';
 import LoadingSpinner from './LoadingSpinner';
-
-const parseRankFromStanding = (standing: string): number | null => {
-  const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
-  if (match) {
-    return parseInt(match[1], 10);
-  }
-
-  // If it's "Tied for 1st" or similar, return 1
-  if (standing.toLowerCase().includes('tied for 1st')) {
-    return 1;
-  }
-
-  return null;
-};
 
 interface CurrentStandingsProps {
   season: number;
@@ -33,7 +19,7 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
   const sport = params.sport as string;
   const conf = params.conf as string;
 
-  const { data, isLoading } = useGetSeasonGameDataQuery(
+  const { data, isLoading, refetch } = useGetSeasonGameDataQuery(
     {
       sport,
       conf,
@@ -45,17 +31,22 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
     }
   );
 
+  useEffect(() => {
+    if (currentStandingsOpen) {
+      void refetch();
+    }
+  }, [currentStandingsOpen, refetch]);
+
   const sortedStandings = useMemo(() => {
     if (!data?.teams) return [];
 
-    const teamsWithRank = data.teams
+    return data.teams
       .map((team) => ({
         team,
-        rank: parseRankFromStanding(team.conferenceStanding),
+        rank: team.rank ?? Infinity,
       }))
-      .sort((a, b) => (a.rank ?? Infinity) - (b.rank ?? Infinity));
-
-    return teamsWithRank.map((item) => item.team);
+      .sort((a, b) => a.rank - b.rank)
+      .map((item) => item.team);
   }, [data]);
 
   if (simulateResponse) {
@@ -80,15 +71,14 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
         ) : (
           <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
             {sortedStandings.map((team) => {
-              const rank = parseRankFromStanding(team.conferenceStanding);
-              const isTopTwo = rank === 1 || rank === 2;
+              const isTopTwo = team.rank === 1 || team.rank === 2;
               return (
                 <div
                   key={team.id}
                   className={`flex items-center gap-1 whitespace-nowrap text-left ${isTopTwo ? 'font-semibold' : ''}`}
                 >
-                  <span>{rank !== null ? `${rank}.` : team.conferenceStanding}</span>
-                  <span>{team.name}</span>
+                  <span>{team.rank !== null ? `${team.rank}.` : team.conferenceStanding}</span>
+                  <span>{team.shortDisplayName}</span>
                   <span className="text-base-content/70">({team.conferenceRecord})</span>
                 </div>
               );
