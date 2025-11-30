@@ -18,36 +18,11 @@ Credentials in `.env.local`:
 
 ## API Endpoints
 
-### POST /api/pull-teams/[sport]/[conf]
+### POST /api/games/[sport]/[conf]
 
-**Example**: `/api/pull-teams/cfb/sec`
+**Example**: `POST /api/games/cfb/sec`
 
-Fetches team data from ESPN (site + core APIs) and stores in MongoDB for a specific conference.
-
-**Pre-check**: Verify teams exist before seeding (skip if 16 teams present).
-
-**Command**:
-```bash
-BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
-curl -X POST "{BASE_URL}/api/pull-teams/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
-  -H "Content-Type: application/json" -d '{}'
-```
-
-**⚠️ IMPORTANT**: Seed all teams before seeding games (required for accurate `predictedScore` calculations).
-
-**Expected Response**: Status 200, `upserted: 16`, `lastUpdated` timestamp
-
-**Checks**: Status 200, `upserted = 16`, conference records populated, data in correct database
-
----
-
-### POST /api/pull-games/[sport]/[conf]
-
-**Example**: `/api/pull-games/cfb/sec`
-
-Fetches game data from ESPN scoreboard API and stores in MongoDB for a specific conference.
-
-**Prerequisites**: Teams must be seeded first for accurate `predictedScore` calculations.
+Fetches game data from ESPN scoreboard API, upserts to database, and returns reshaped data. Teams are automatically extracted from scoreboard data.
 
 **Pre-check**: Verify games exist for target season/week (skip if data exists).
 
@@ -55,17 +30,18 @@ Fetches game data from ESPN scoreboard API and stores in MongoDB for a specific 
 
 **Command**:
 ```bash
-curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+curl -X POST "{BASE_URL}/api/games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" -d '{"season": 2025}'
 ```
 
 **Single Week** (optional):
 ```bash
-curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+curl -X POST "{BASE_URL}/api/games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
   -H "Content-Type: application/json" -d '{"season": 2025, "week": 11}'
 ```
 
-**Expected Response**: Status 200, `upserted` count, `weeksPulled` array, `lastUpdated` timestamp, `errors` array (optional)
+**Expected Response**: Status 200, `events` array (GameLean[]), `teams` array (TeamMetadata[]), `lastUpdated` timestamp
 
 **Checks**: Status 200, `upserted` matches games for week, `displayName` present (format: "{away abbrev} @ {home abbrev}"), `predictedScore` present for conference games, data in correct database
 
@@ -74,6 +50,8 @@ curl -X POST "{BASE_URL}/api/pull-games/cfb/sec?x-vercel-protection-bypass=${BYP
 ### GET /api/games/[sport]/[conf]
 
 **Example**: `/api/games/cfb/sec`
+
+Read-only query from database (does not fetch from ESPN).
 
 **Command**:
 ```bash
@@ -91,7 +69,7 @@ curl "{BASE_URL}/api/games/cfb/sec?season=2025&week=11&x-vercel-protection-bypas
 **Setup variables** (see [Quick Reference](./espn-data-pipeline-quick-ref.md) for full commands): Extract MongoDB credentials from `.env.local`, construct `MONGODB_URI`
 
 **Expected Results**:
-- Teams: 16 teams in database
+- Teams: 16 teams in database (extracted from games)
 - Games: ~128 games for 2025 season (weeks 1-14)
 - Conference records: Not null (verify with `db.teams.find({'record.conference': null}).count()` - should return 0)
 - Database connection: Vercel logs show `[MongoDB] Connecting to database: {DATABASE}` (preview/production)
@@ -101,10 +79,8 @@ curl "{BASE_URL}/api/games/cfb/sec?season=2025&week=11&x-vercel-protection-bypas
 ## Testing Checklist
 
 **For each environment (Preview/Production)**:
-- [ ] Pre-check: Teams count (skip if 16 teams exist)
 - [ ] Pre-check: Games count for target season (skip if data exists)
-- [ ] POST /api/pull-teams/cfb/sec returns 200 (16 teams) if needed
-- [ ] POST /api/pull-games/cfb/sec returns 200 (includes `weeksPulled` array) if needed
+- [ ] POST /api/games/cfb/sec returns 200 (includes `events` array with games) if needed
 - [ ] GET /api/games/cfb/sec returns 200
 - [ ] Database verification: 16 teams, ~128 games (2025, weeks 1-14)
 - [ ] Games include team display fields (displayName, logo, color)

@@ -8,6 +8,30 @@ Complete reference for data query and ingestion endpoints.
 
 ---
 
+## GET /api/games/[sport]/[conf]
+
+Queries game data from database (read-only, does not fetch from ESPN).
+
+**Authentication:** None required
+
+**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
+**Example**: `GET /api/games/cfb/sec?season=2025&week=11&state=in`
+
+**Query Parameters**: 
+- `season` (string, optional) - Season year
+- `week` (string, optional) - Week number
+- `state` (string, optional) - "pre", "in", or "post"
+- `from`/`to` (string, optional) - Date range (ISO format)
+
+**Response**: Same as POST endpoint (see below)
+
+**Notes**: 
+- Read-only operation - does not fetch from ESPN or update database
+- Returns existing data from database only
+- Use POST endpoint to fetch fresh data from ESPN
+
+---
+
 ## POST /api/games/[sport]/[conf]
 
 Fetches game data from ESPN API, upserts to database, and returns reshaped data.
@@ -40,6 +64,10 @@ Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 
 **Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
 
+**GameLean** (in `events` array): Game object with `home` and `away` objects containing `teamEspnId`, `abbrev`, `score`, `rank`. Note: `displayName`, `shortDisplayName`, `logo`, `color`, and `alternateColor` are NOT included in `home`/`away` objects - use the `teams` array (TeamMetadata[]) to look up team display information by `teamEspnId`.
+
+**TeamMetadata** (in `teams` array): Team metadata with `id` (matches `teamEspnId`), `abbrev`, `name`, `displayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord`
+
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
 **Notes**: 
@@ -49,38 +77,6 @@ Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 - During off-season, returns existing data from database without fetching from ESPN
 
 ---
-
-## POST /api/teams/[sport]/[conf]
-
-Fetches team data from ESPN API, upserts to database, and returns reshaped data.
-
-**Authentication:** None required
-
-**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")  
-**Example**: `POST /api/teams/cfb/sec`
-
-**Request Body**: 
-```json
-{
-  "update": "rankings",
-  "force": true
-}
-```
-
-**Body Parameters**:
-- `update` (string, optional) - "rankings" (rankings/stats only), "stats" (team averages only), or undefined (full update)
-- `force` (boolean, optional) - `true` to bypass season check
-
-**Response**: `{ "teams": [TeamLean[]], "teamsMetadata": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
-
-**Error Responses**: `400` - No teams found (must seed teams first), `500` - ESPN API or database error
-
-**Notes**: 
-- Automatically fetches from ESPN and upserts reshaped data to database
-- Returns reshaped team data (not raw ESPN responses)
-- Uses ESPN Site API and Core Records API
-- During off-season, returns existing data from database without fetching from ESPN
-- Teams must be seeded first (via games endpoint which extracts teams from scoreboard)
 
 ---
 
@@ -103,15 +99,15 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 
 **Response Fields**: `standings` (StandingEntry[] - sorted by rank), `championship` ([string, string] - top 2 team IDs), `tieLogs` (TieLog[] - tiebreaker explanations)
 
-**StandingEntry**: `rank` (1-16), `teamId`, `abbrev`, `displayName`, `logo`, `color` (hex without #), `record` ({wins, losses}), `confRecord` ({wins, losses}), `explainPosition` (string)
+**StandingEntry**: `rank` (number, 1-16), `teamId` (string, ESPN team ID), `abbrev` (string), `displayName` (string), `logo` (string, URL), `color` (string, hex without #), `record` ({wins: number, losses: number}), `confRecord` ({wins: number, losses: number}), `explainPosition` (string)
 
 **TieLog**: `teams` (string[]), `steps` (TieStep[])
 
-**TieStep**: `rule` (A-E), `detail` (string), `survivors` (string[])
+**TieStep**: `rule` (string, e.g., "Head-to-Head", "Opponent Win Percentage"), `detail` (string), `survivors` (string[]), `tieBroken` (boolean), `label` ("Advances" | "Remaining")
 
 **Error Responses**: `400` - Missing required fields or invalid score (negative/non-integer), `500` - Database or tiebreaker calculation error
 
-**Tiebreaker Rules**: A (head-to-head, min 2 games), B (common opponents, min 4), C (highest-placed common opponent), D (conference win %), E (scoring margin - relative %-based, offensive cap 200%, defensive min 0%)
+**Tiebreaker Rules**: A (head-to-head, min 2 games), B (common opponents, min 4), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin - relative %-based, offensive cap 200%, defensive min 0%)
 
 **Notes**: Uses `predictedScore` for games without overrides, validates scores, handles ties recursively, returns all 16 teams
 

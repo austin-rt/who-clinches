@@ -6,7 +6,7 @@
 
 **Approach:** Dynamic team themes from database
 
-- Fetch teams from `/api/teams` endpoint (created in this phase)
+- Fetch teams from `/api/teams` endpoint (to be created in this phase - team data is currently available via `/api/games` endpoint's `teams` array)
 - Dynamically inject CSS for each team theme
 - Build custom dropdown (DaisyUI's theme controller won't work with dynamic themes)
 - Full scalability for future conferences
@@ -14,7 +14,7 @@
 
 **Files to Create/Modify:**
 
-- `app/api/teams/route.ts` (new - GET endpoint to fetch all teams from DB)
+- `app/api/teams/route.ts` (new - GET endpoint to fetch all teams from DB, or use teams array from `/api/games` response)
 - `app/components/TeamThemeSelector.tsx` (new)
 - `app/components/Header.tsx` (update to include theme selector)
 - `app/hooks/useTeams.ts` (new - fetch teams and inject themes)

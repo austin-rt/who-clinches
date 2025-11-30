@@ -15,13 +15,22 @@
 
 ## Key Endpoints to Test
 
+### GET /api/games/[sport]/[conf]
+
+**Example**: `GET /api/games/cfb/sec?season=2025&week=11`
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "sec")
+- Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`
+- Read-only: Queries database only, does not fetch from ESPN
+- Response: Same format as POST endpoint
+
 ### POST /api/games/[sport]/[conf]
 
-**Example**: `/api/games/cfb/sec`
+**Example**: `POST /api/games/cfb/sec`
 - Path: `sport` (e.g., "cfb"), `conf` (e.g., "sec")
 - Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`
 - Fetches from ESPN, upserts to database, returns reshaped data
-- Verify: `TeamMetadata` fields (id, abbrev, displayName, logo, color, alternateColor)
+- Verify: `TeamMetadata` fields (id, abbrev, name, displayName, logo, color, alternateColor, conferenceStanding, conferenceRecord)
+- Verify: `GameLean` events with `home`/`away` containing `teamEspnId`, `abbrev`, `score`, `rank` (note: `displayName`, `logo`, `color` are NOT in game objects - use `teams` array to look up by `teamEspnId`)
 - Response: `{ events: [...], teams: [...], lastUpdated: "..." }`
 
 ### POST /api/games/[sport]/[conf]/live

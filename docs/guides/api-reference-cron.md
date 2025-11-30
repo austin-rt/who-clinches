@@ -11,7 +11,6 @@ All scheduled cron jobs have been replaced with on-demand API endpoints:
 - **POST /api/games/[sport]/[conf]** - Fetches from ESPN, upserts games, returns data (replaces update-games cron)
 - **POST /api/games/[sport]/[conf]/live** - Lightweight live game updates (scores/status only)
 - **POST /api/games/[sport]/[conf]/spreads** - Spread/odds updates only
-- **POST /api/teams/[sport]/[conf]** - Fetches from ESPN, upserts teams, returns data (replaces update-rankings, update-team-averages crons)
 - Frontend polling drives all updates using RTK Query with conditional polling (every 5 min when games are active)
 
 **Remaining Scheduled Workflow:**

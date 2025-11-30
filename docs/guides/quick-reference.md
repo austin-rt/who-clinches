@@ -6,17 +6,17 @@ Domain-specific content locations for common tasks.
 
 - **Quick commands**: `docs/guides/testing-quick-reference.md`
 - **API testing procedures**: `docs/tests/comprehensive-api-testing.md`
-- **Cron job testing**: `docs/tests/cron-jobs-testing.md` (historical - cron endpoints removed)
 - **ESPN API testing**: `docs/tests/espn-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
 - **Test data management**: Implemented - see `__tests__/helpers/test-data-loader.ts` and `app/api/cron/update-test-data/route.ts` (test data endpoint only)
 - **Unit tests plan**: `docs/plans/unit-tests.md`
+- **Integration tests plan**: `docs/plans/integration-tests-plan.md`
 
 ## API Development
 
 - **Endpoint reference**: `docs/guides/api-reference.md`
-- **API architecture**: `docs/plans/api-foundation.md` (historical reference)
+- **API architecture**: `docs/plans/api-foundation.md`
 - **Request/response types**: `lib/api-types.ts`
 
 ## ESPN Integration
@@ -32,7 +32,7 @@ Domain-specific content locations for common tasks.
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
 - **Implementation**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
-- **Planning doc**: `docs/plans/tiebreaker-logic.md` (historical)
+- **Planning doc**: `docs/plans/tiebreaker-logic.md`
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (e.g., `app/api/simulate/cfb/sec/route.ts`)
 
@@ -62,7 +62,7 @@ Domain-specific content locations for common tasks.
 - **AI loading manifest**: `docs/ai-loading-manifest.md`
 - **Changelog guide**: `docs/guides/changelog-guide.md`
 - **Pre-commit testing**: `docs/guides/pre-commit-testing.md`
-- **Tech spec**: `docs/plans/tech-spec.md` (historical)
+- **Tech spec**: `docs/plans/tech-spec.md`
 
 ## Common Commands
 

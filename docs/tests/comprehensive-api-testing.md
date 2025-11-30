@@ -12,7 +12,7 @@ Complete testing procedures for all Conference Tiebreaker API endpoints.
 
 **Environment Files**: `.env.local` (local, default), `.env.preview` (staging), `.env.production` (production). Database verification uses read-only credentials from `.env.local`.
 
-**Required Credentials**: `VERCEL_AUTOMATION_BYPASS_SECRET` (auto-handled by scripts/tests), `CRON_SECRET`, `MONGODB_USER_READONLY`, `MONGODB_PASSWORD_READONLY`
+**Required Credentials**: `VERCEL_AUTOMATION_BYPASS_SECRET` (auto-handled by scripts/tests, only needed for protected Vercel deployments)
 
 **Setup**: Environment variables `BASE_URL`, `DATABASE`, dev server running, appropriate `.env.*` file
 
@@ -27,13 +27,15 @@ Complete testing procedures for all Conference Tiebreaker API endpoints.
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 ```
 
-**POST /api/games/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`. Expected: Status 200, `events` array, `teams` array (TeamMetadata: `id`, `abbrev`, `displayName`, `logo`, `color`, `alternateColor`), `lastUpdated`. Example: `/api/games/cfb/sec`
+**GET /api/games/[sport]/[conf]**: Queries database only (read-only, no ESPN fetch). Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`. Expected: Status 200, same response format as POST. Example: `GET /api/games/cfb/sec?season=2025&week=11`
+
+**POST /api/games/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`. Expected: Status 200, `events` array (GameLean[] with `home`/`away` containing `teamEspnId`, `abbrev`, `score`, `rank` - note: `displayName`, `logo`, `color` are NOT in game objects, use `teams` array instead), `teams` array (TeamMetadata: `id`, `abbrev`, `name`, `displayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord`), `lastUpdated`. Example: `POST /api/games/cfb/sec`
 
 **POST /api/games/[sport]/[conf]/live**: Lightweight live game updates (scores/status only). Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated scores. Example: `/api/games/cfb/sec/live`
 
 **POST /api/games/[sport]/[conf]/spreads**: Spread/odds updates only. Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated odds. Example: `/api/games/cfb/sec/spreads`
 
-**POST /api/teams/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `update` (rankings/stats/full), `force`. Expected: Status 200, `teams` array, `teamsMetadata` array, `lastUpdated`. Example: `/api/teams/cfb/sec`
+**POST /api/teams/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `update` (rankings/stats/full), `force`. Expected: Status 200, `teams` array (TeamLean[] with `_id`, `name`, `displayName`, `shortDisplayName`, `abbreviation`, `logo`, `color`, `alternateColor`, `conferenceId`, `record?`, etc.), `teamsMetadata` array (TeamMetadata[]), `lastUpdated`. Example: `/api/teams/cfb/sec`
 
 **POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Example: `/api/simulate/cfb/sec`
 

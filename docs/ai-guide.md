@@ -109,8 +109,13 @@ This is a specialized college football application built for simulating conferen
   4. Ranking-based via `calculatePredictedScoreFromRanking()` (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
   5. Home field advantage via `calculatePredictedScoreFromHomeFieldAdvantage()` (fallback: home team average, away team average - 3)
 - `displayName`: Format must be "{away} @ {home}" with team abbreviations
+- `shortDisplayName`: Team short name from ESPN (e.g., "Georgia" from "Georgia Bulldogs"), used in tiebreaker explanations. Available in `TeamLean`, `ReshapedTeam`, `ITeam`. In `GameLean.home`/`away` objects, only available in `/api/simulate` responses (not in `/api/games` responses)
 - Team IDs: ESPN team IDs used as MongoDB `_id` (no separate mapping table)
 - `favoriteTeamEspnId`: Determined from ESPN's `odds.awayTeamOdds.favorite` or `odds.homeTeamOdds.favorite` boolean fields
+- **GameLean vs ReshapedGame**: `GameLean` (database/API format) has optional `shortDisplayName` and `alternateColor` in `home`/`away` objects in the type definition, but actual API responses vary by endpoint:
+  - `/api/games/[sport]/[conf]`: `home`/`away` only include `teamEspnId`, `abbrev`, `score`, `rank` (team display info is in separate `teams` array)
+  - `/api/simulate/[sport]/[conf]`: `home`/`away` include `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor` (populated from team map)
+  - `ReshapedGame` (initial reshape format) does not include `shortDisplayName` or `alternateColor`
 
 ---
 

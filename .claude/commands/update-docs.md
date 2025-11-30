@@ -38,7 +38,6 @@ Follow structure defined in `docs/navigation-hub.md`:
 - **How-to guides** → `/docs/guides/` (e.g., `api-reference.md`)
 - **Testing docs** → `/docs/tests/` (e.g., `comprehensive-api-testing.md`)
 - **Planning docs** → `/docs/plans/` (e.g., `tech-spec.md`)
-- **Archive** → `/docs/plans/archive/` (completed work records)
 - **Project-level** → Root (only `README.md`, `CHANGELOG.md`)
 
 ### Content Accuracy
@@ -69,7 +68,7 @@ Follow structure defined in `docs/navigation-hub.md`:
 
 ### Plans Directory Restrictions
 
-**CRITICAL:** Files in `/docs/plans/` and `/docs/plans/archive/` are historical planning documents and completed work records. These documents preserve the state of planning and implementation at specific points in time.
+**CRITICAL:** Files in `/docs/plans/` are planning documents. Some may be historical references.
 
 **Allowed updates to plans directory:**
 
@@ -77,14 +76,13 @@ Follow structure defined in `docs/navigation-hub.md`:
 - Update completion statuses (mark tasks as complete, update status indicators)
 - Fix naming convention violations (rename files to kebab-case if needed)
 
-**NOT allowed:**
+**For historical planning documents:**
 
-- Updating content to match current code implementation
-- Correcting outdated information about features or APIs
-- Modifying historical records to reflect current state
-- Changing planning decisions or implementation details
+- Do NOT update content to match current code implementation
+- Do NOT correct outdated information about features or APIs
+- Do NOT modify historical records to reflect current state
 
-**Rationale:** Planning documents serve as historical records. They document what was planned and when, not what the current implementation is. For current implementation details, refer to active documentation in `/docs/guides/`, `/docs/tests/`, and the codebase itself.
+**Rationale:** Historical planning documents preserve what was planned and when. For current implementation details, refer to active documentation in `/docs/guides/`, `/docs/tests/`, and the codebase itself.
 
 ## Execution Protocol
 
@@ -160,7 +158,7 @@ Fix any discrepancies found:
 **IMPORTANT - Directory Exceptions:**
 
 - **Tiebreaker Rules Directory (`/docs/tiebreaker-rules/`)**: READ-ONLY - NEVER edit these files. They are the singular source of truth for tiebreaker procedures.
-- **Plans Directory (`/docs/plans/` and `/docs/plans/archive/`)**: ONLY fix broken links and update completion statuses. Do NOT update content to match current code implementation. Planning documents are historical records and should preserve their original state.
+- **Plans Directory (`/docs/plans/`)**: For historical planning documents, ONLY fix broken links and update completion statuses. Do NOT update content to match current code implementation.
 
 ### Step 5: Check Naming Conventions
 
@@ -180,7 +178,7 @@ Ensure all documentation links are accurate:
 - Verify navigation hub links point to correct files
 - Check that examples reference correct file paths
 
-**Plans Directory:** Fix broken links in planning documents, but preserve historical content even if it references outdated implementations.
+**Plans Directory:** Fix broken links in planning documents. For historical documents, preserve historical content even if it references outdated implementations.
 
 ### Step 7: Verify Structure Compliance
 
@@ -232,7 +230,7 @@ Confirm documentation follows structure in `docs/navigation-hub.md`:
 - References to non-existent files
 - Outdated navigation hub entries
 
-**Note:** In plans directory, fix broken links but preserve historical content. Do not update links to reflect current implementation if the original reference was to a historical state.
+**Note:** For historical planning documents, fix broken links but preserve historical content. Do not update links to reflect current implementation if the original reference was to a historical state.
 
 ## Verification Checklist
 

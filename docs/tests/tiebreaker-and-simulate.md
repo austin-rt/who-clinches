@@ -8,7 +8,7 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 
 ## Prerequisites
 
-**Database Setup**: Fresh database with updated Game model, all conference teams pulled via `/api/pull-teams/cfb/sec`, full 2025 regular season games (weeks 1-14) pulled via `/api/pull-games/cfb/sec`
+**Database Setup**: Fresh database with updated Game model, all conference teams pulled via `POST /api/teams/cfb/sec`, full 2025 regular season games (weeks 1-14) pulled via `POST /api/games/cfb/sec`
 
 **Note**: Routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is "sec" for SEC conference.
 
@@ -29,7 +29,7 @@ BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3
 
 **Invalid Score Validation**: Tie score → Status 400 (tie not allowed), Negative score → Status 400 (negative not allowed), Non-integer → Status 400 (whole numbers only), Missing `season` → Status 400
 
-**Tiebreaker Rules**: Check `tieLogs` - Rules applied in order A, B, C, D, E, each step has `rule`, `detail`, `survivors` fields, survivors array decreases or stays same
+**Tiebreaker Rules**: Check `tieLogs` - Rules applied in order A, B, C, D, E, each step has `rule` (formatted name, e.g., "Head-to-Head", "Opponent Win Percentage"), `detail`, `survivors`, `tieBroken` (boolean), `label` ("Advances" or "Remaining"), survivors array decreases or stays same
 
 **Championship Matchup**: Verify `championship[0] == standings[0].teamId`, `championship[1] == standings[1].teamId`, top 2 teams have highest win percentages
 

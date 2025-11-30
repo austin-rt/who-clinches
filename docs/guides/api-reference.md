@@ -6,7 +6,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - POST /api/games/[sport]/[conf], POST /api/teams/[sport]/[conf], POST /api/simulate/[sport]/[conf]
+- **[Data Endpoints](./api-reference-data.md)** - POST /api/games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
 - **[Cron Jobs](./api-reference-cron.md)** - Migration notes
 
 ---

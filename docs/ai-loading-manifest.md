@@ -6,14 +6,14 @@
 
 ## Essential (Always Load)
 
-**~15K tokens** - Load these files for every task:
+**~5.5K tokens** - Load these files for every task:
 
-- `docs/ai-guide.md` - Core AI development guidelines
-- `docs/guides/quick-reference.md` - Domain-specific content locations
-- `docs/guides/api-reference.md` - API reference overview
-- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference
+- `docs/ai-guide.md` - Core AI development guidelines (~2.8K tokens, 123 lines)
+- `docs/guides/quick-reference.md` - Domain-specific content locations (~1.1K tokens, 103 lines)
+- `docs/guides/api-reference.md` - API reference overview (~0.7K tokens, 87 lines)
+- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.0K tokens, 107 lines)
 
-**Total Essential:** ~15K tokens
+**Total Essential:** ~5.5K tokens (420 lines)
 
 ---
 
@@ -56,36 +56,21 @@ Load additional docs based on your specific task:
 
 ---
 
-## Never Load for AI
-
-**Explicitly excluded from AI doc loading:**
-
-- `docs/plans/HISTORICAL/` - All historical planning documents
-  - `docs/plans/HISTORICAL/archive/` - Historical archive files
-  - `docs/plans/HISTORICAL/archived-phases/` - Completed phase documents
-- `docs/plans/archive/` - Old archive path (should not exist after reorganization)
-
-**Why exclude:** 
-- HISTORICAL docs are historical reference only. They reflect outdated designs and should not be consulted for current implementation.
-
----
-
 ## Loading Strategy
 
-1. **Always start with Essential docs** (~15K tokens)
+1. **Always start with Essential docs** (~5.5K tokens)
 2. **Add task-specific docs** based on scenario (~5-8K tokens)
 3. **Load full detailed guides** only when needed during execution (e.g., `comprehensive-api-testing.md` when writing tests)
-4. **Never load HISTORICAL/** directory files
 
 ---
 
 ## Token Budget
 
-- **Total for typical task:** 20-23K tokens (Essential + Task-Specific)
-- **Remaining for execution:** 177-180K tokens (out of 200K context window)
-- **Before optimization:** ~55K tokens loaded
-- **After optimization:** ~20-23K tokens loaded
-- **Savings:** ~60% reduction in loaded documentation
+- **Total for typical task:** ~10-13K tokens (Essential + Task-Specific)
+- **Remaining for execution:** ~187-190K tokens (out of 200K context window)
+- **Essential docs:** ~5.5K tokens (420 lines)
+- **Task-specific docs:** ~5-8K tokens per scenario
+- **Savings:** Significant reduction in loaded documentation
 
 ---
 
@@ -93,11 +78,11 @@ Load additional docs based on your specific task:
 
 | Task Type | Essential | Task-Specific | Total |
 |-----------|-----------|---------------|-------|
-| General Development | ✅ | None | ~15K |
-| API Endpoint | ✅ | api-foundation.md, api-testing-quick-ref.md | ~20-23K |
-| Testing | ✅ | api-testing-quick-ref.md, testing-strategy-summary.md | ~20-23K |
-| ESPN Work | ✅ | espn-testing-quick-ref.md | ~20-23K |
-| Frontend | ✅ | frontend.md, frontend/index.md | ~20-23K |
+| General Development | ✅ | None | ~5.5K |
+| API Endpoint | ✅ | api-foundation.md, api-testing-quick-ref.md | ~10-13K |
+| Testing | ✅ | api-testing-quick-ref.md, testing-strategy-summary.md | ~10-13K |
+| ESPN Work | ✅ | espn-testing-quick-ref.md | ~10-13K |
+| Frontend | ✅ | frontend.md, frontend/index.md | ~10-13K |
 
 ---
 
