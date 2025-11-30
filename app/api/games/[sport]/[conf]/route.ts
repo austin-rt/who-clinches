@@ -283,7 +283,7 @@ export const POST = async (
     const bypassSeasonCheck = force || process.env.NODE_ENV === 'test';
     const shouldFetchFromESPN = bypassSeasonCheck || (await isInSeasonFromESPN(sport, conf));
 
-    if (shouldFetchFromESPN) {
+    const fetchFromESPN = async () => {
       try {
         const client = createESPNClient(espnRoute);
 
@@ -432,6 +432,10 @@ export const POST = async (
           stackTrace: error instanceof Error ? error.stack || '' : '',
         });
       }
+    };
+
+    if (shouldFetchFromESPN) {
+      await fetchFromESPN();
     }
 
     return await queryGamesFromDatabase(sport, conf, query, from || undefined, to || undefined);
