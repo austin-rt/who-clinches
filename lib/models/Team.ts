@@ -4,6 +4,7 @@ export interface ITeam extends Document {
   _id: string;
   name: string;
   displayName: string;
+  shortDisplayName: string;
   abbreviation: string;
   logo: string;
   color: string;
@@ -45,6 +46,13 @@ const TeamSchema = new Schema<ITeam>(
     displayName: {
       type: String,
       required: true,
+    },
+    shortDisplayName: {
+      type: String,
+      required: false,
+      default: function(this: ITeam) {
+        return this.displayName || this.abbreviation || '';
+      },
     },
     abbreviation: {
       type: String,

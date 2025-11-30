@@ -142,4 +142,6 @@ export interface TieStep {
   rule: string;
   detail: string;
   survivors: string[];
+  tieBroken: boolean;
+  label: 'Advances' | 'Remaining';
 }

@@ -71,6 +71,7 @@ export interface ReshapedTeam {
   _id: string;
   name: string;
   displayName: string;
+  shortDisplayName: string;
   abbreviation: string;
   logo: string;
   color: string;
@@ -133,6 +134,7 @@ export interface GameLean {
     teamEspnId: string;
     abbrev: string;
     displayName?: string;
+    shortDisplayName?: string;
     logo?: string;
     color?: string;
     alternateColor?: string;
@@ -143,6 +145,7 @@ export interface GameLean {
     teamEspnId: string;
     abbrev: string;
     displayName?: string;
+    shortDisplayName?: string;
     logo?: string;
     color?: string;
     alternateColor?: string;
@@ -164,6 +167,7 @@ export interface TeamLean {
   _id: string;
   name: string;
   displayName: string;
+  shortDisplayName: string;
   abbreviation: string;
   logo: string;
   color: string;

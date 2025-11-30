@@ -36,6 +36,7 @@ export const extractTeamsFromScoreboard = (
           _id: team.id,
           name: team.location,
           displayName: team.displayName,
+          shortDisplayName: team.shortDisplayName || team.displayName || team.abbreviation,
           abbreviation: team.abbreviation,
           logo: team.logo,
           color: team.color || '000000',

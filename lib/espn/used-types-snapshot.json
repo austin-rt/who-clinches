@@ -29,6 +29,7 @@
     "Odd.spread": "number",
     "Odd.awayTeamOdds.favorite": "boolean",
     "Odd.homeTeamOdds.favorite": "boolean",
+    "Team.shortDisplayName": "string",
     "EspnScoreboardGenerated.leagues": "League[]",
     "League.calendar": "Calendar[]",
     "Calendar.label": "string",
@@ -56,9 +57,9 @@
     "Stat.value": "number",
     "Item.name": "string"
   },
-  "extractedAt": "2025-11-26T21:45:45.291Z",
+  "extractedAt": "2025-11-29T21:43:40.343Z",
   "fieldCount": {
-    "scoreboard": 41,
+    "scoreboard": 42,
     "team": 20,
     "teamRecords": 7
   }

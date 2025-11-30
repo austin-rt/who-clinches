@@ -79,6 +79,7 @@ export const reshapeTeamData = (
     _id: team.id,
     name: team.location,
     displayName: team.displayName,
+    shortDisplayName: team.shortDisplayName,
     abbreviation: team.abbreviation,
     logo: logo?.href || '',
     color: team.color,
