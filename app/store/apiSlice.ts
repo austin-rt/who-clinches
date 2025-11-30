@@ -7,6 +7,41 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   tagTypes: ['Games', 'Standings', 'Teams'],
   endpoints: (builder) => ({
+    getSeasonGameDataFromCache: builder.query<
+      GamesResponse,
+      {
+        sport: string;
+        conf: string;
+        season?: string | number;
+        week?: string | number;
+        state?: string;
+        from?: string;
+        to?: string;
+      }
+    >({
+      query: ({ sport, conf, season, week, state, from, to }) => {
+        const params = new URLSearchParams();
+        if (season) params.set('season', season.toString());
+        if (week) params.set('week', week.toString());
+        if (state) params.set('state', state);
+        if (from) params.set('from', from);
+        if (to) params.set('to', to);
+        const queryString = params.toString();
+        return {
+          url: `games/${sport}/${conf}${queryString ? `?${queryString}` : ''}`,
+          method: 'GET',
+        };
+      },
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.lastUpdated) {
+            dispatch(setLastUpdated(data.lastUpdated));
+          }
+        } catch {}
+      },
+      providesTags: ['Games'],
+    }),
     getSeasonGameData: builder.query<
       GamesResponse,
       {
@@ -124,6 +159,7 @@ export const apiSlice = createApi({
 });
 
 export const {
+  useGetSeasonGameDataFromCacheQuery,
   useGetSeasonGameDataQuery,
   useGetLiveGameDataQuery,
   useGetSpreadDataQuery,
