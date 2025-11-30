@@ -105,28 +105,24 @@ export const applyRuleAHeadToHead = (
     .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
     .map((r) => r.teamId);
 
-  // Build detail showing which teams beat which teams (only for winners)
+  // Only include games where the winning team is in the winners array
   const getTeamAbbrev = (teamId: string): string => {
-    const game = games.find(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    );
+    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
     return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
   };
 
-  // Only include games where the winning team is in the winners array
   const winnersSet = new Set(winners);
   const beatMap = new Map<string, string[]>();
-  
+
   for (const game of h2hGames) {
     if (game.home.score === null || game.away.score === null) continue;
-    
+
     const homeId = game.home.teamEspnId;
     const awayId = game.away.teamEspnId;
     const homeAbbrev = getTeamAbbrev(homeId);
     const awayAbbrev = getTeamAbbrev(awayId);
-    
+
     if (game.home.score > game.away.score) {
-      // Home team won - only include if home team is a winner
       if (winnersSet.has(homeId)) {
         if (!beatMap.has(homeId)) {
           beatMap.set(homeId, []);
@@ -134,7 +130,6 @@ export const applyRuleAHeadToHead = (
         beatMap.get(homeId)!.push(awayAbbrev);
       }
     } else {
-      // Away team won - only include if away team is a winner
       if (winnersSet.has(awayId)) {
         if (!beatMap.has(awayId)) {
           beatMap.set(awayId, []);
@@ -144,14 +139,14 @@ export const applyRuleAHeadToHead = (
     }
   }
 
-  // Build detail string: "TEX Beat VAN and OU"
   const detailParts: string[] = [];
   for (const [winnerId, beatenTeams] of beatMap.entries()) {
     if (beatenTeams.length > 0) {
       const winnerAbbrev = getTeamAbbrev(winnerId);
-      const beatenStr = beatenTeams.length === 1 
-        ? beatenTeams[0]
-        : beatenTeams.slice(0, -1).join(', ') + ' and ' + beatenTeams[beatenTeams.length - 1];
+      const beatenStr =
+        beatenTeams.length === 1
+          ? beatenTeams[0]
+          : beatenTeams.slice(0, -1).join(', ') + ' and ' + beatenTeams[beatenTeams.length - 1];
       detailParts.push(`${winnerAbbrev} Beat ${beatenStr}`);
     }
   }
@@ -400,7 +395,8 @@ export const applyRuleDOpponentWinPercentage = (
     for (const oppId of opponents) {
       const oppRecord = getTeamRecord(oppId, games);
       const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
-      const oppAbbrev = oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+      const oppAbbrev =
+        oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
       totalWins += oppRecord.wins;
       totalGames += oppRecord.wins + oppRecord.losses;
       opponentDetails.push(`${oppAbbrev}(${oppRecord.wins}-${oppRecord.losses})`);
@@ -415,7 +411,7 @@ export const applyRuleDOpponentWinPercentage = (
   const winners = records
     .filter((r) => Math.abs(r.oppWinPct - maxOppWinPct) < EPSILON)
     .map((r) => r.teamId);
-  
+
   const detail = `${(maxOppWinPct * 100).toFixed(1)}%`;
 
   return { winners, detail };
@@ -843,7 +839,6 @@ export const calculateStandings = (
       const tieResult = breakTie(tiedTeams, games, allTeams, explanations);
       orderedTeams.push(...tieResult.ranked);
 
-      // Sort teams by their final rank order (from tieResult.ranked)
       const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {
         const game = games.find(
           (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
@@ -895,18 +890,21 @@ export const calculateStandings = (
         if (!g) {
           return tid;
         }
-        
-        const shortDisplayName = g.home.teamEspnId === tid 
-          ? (g.home.shortDisplayName || g.home.displayName || g.home.abbrev)
-          : (g.away.shortDisplayName || g.away.displayName || g.away.abbrev || tid);
-        
+
+        const shortDisplayName =
+          g.home.teamEspnId === tid
+            ? g.home.shortDisplayName || g.home.displayName || g.home.abbrev
+            : g.away.shortDisplayName || g.away.displayName || g.away.abbrev || tid;
+
         return shortDisplayName || tid;
       };
 
       const findTieLog = () => {
         return tieLogs.find((log) => {
           const teamAbbrevs = teamsWithSameRecord.map((t) => {
-            const g = games.find((g) => g.home.teamEspnId === t.teamId || g.away.teamEspnId === t.teamId);
+            const g = games.find(
+              (g) => g.home.teamEspnId === t.teamId || g.away.teamEspnId === t.teamId
+            );
             return g?.home.teamEspnId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
           });
           return teamAbbrevs.every((abbrev) => log.teams.includes(abbrev));
@@ -915,57 +913,49 @@ export const calculateStandings = (
 
       const tieLog = findTieLog();
 
-      // Helper function to find which step separated two teams
       const findSeparatingStep = (team1Id: string, team2Id: string): number | null => {
         if (!tieLog) return null;
-        
+
         const getAbbrev = (tid: string) => {
           const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
           return g?.home.teamEspnId === tid ? g.home.abbrev : g?.away.abbrev || tid;
         };
-        
+
         const team1Abbrev = getAbbrev(team1Id);
         const team2Abbrev = getAbbrev(team2Id);
-        
-        // Track which teams are still active (in the tie) at each step
+
         let activeTeams = new Set(tieLog.teams);
-        
+
         for (let i = 0; i < tieLog.steps.length; i++) {
           const step = tieLog.steps[i];
           const survivors = new Set(step.survivors);
-          
-          // Check if both teams were active before this step
+
           const bothActive = activeTeams.has(team1Abbrev) && activeTeams.has(team2Abbrev);
-          
+
           if (bothActive) {
-            // Check if only one team survived this step
             const team1Survived = survivors.has(team1Abbrev);
             const team2Survived = survivors.has(team2Abbrev);
-            
+
             if (team1Survived !== team2Survived) {
-              // Teams were separated at this step
               return i;
             }
           }
-          
-          // Update active teams to only include survivors
+
           activeTeams = survivors;
         }
-        
+
         return null;
       };
 
-      // Helper function to get reason text from a step
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const getReasonFromStep = (stepIndex: number, _isAbove: boolean): { reason: string; reasonValue: string } => {
+      const getReasonFromStep = (stepIndex: number): { reason: string; reasonValue: string } => {
         if (!tieLog || stepIndex < 0 || stepIndex >= tieLog.steps.length) {
           return { reason: '', reasonValue: '' };
         }
-        
+
         const step = tieLog.steps[stepIndex];
         let reason = '';
         let reasonValue = '';
-        
+
         if (step.rule.includes('Head-to-Head')) {
           reason = 'head-to-head record';
         } else if (step.rule.includes('Common Opponents')) {
@@ -999,16 +989,15 @@ export const calculateStandings = (
         } else {
           reason = step.detail.toLowerCase();
         }
-        
+
         return { reason, reasonValue };
       };
 
       const parts: string[] = [];
 
-      // Group teams above by the step that separated them
       if (teamsAbove.length > 0) {
         const teamsByStep = new Map<number, string[]>();
-        
+
         for (const otherTeam of teamsAbove) {
           const stepIndex = findSeparatingStep(teamId, otherTeam.teamId);
           if (stepIndex !== null) {
@@ -1018,12 +1007,11 @@ export const calculateStandings = (
             teamsByStep.get(stepIndex)!.push(otherTeam.teamId);
           }
         }
-        
-        // Sort steps by index (A-F order)
+
         const sortedSteps = Array.from(teamsByStep.entries()).sort((a, b) => a[0] - b[0]);
-        
+
         for (const [stepIndex, teamIds] of sortedSteps) {
-          const { reason, reasonValue } = getReasonFromStep(stepIndex, true);
+          const { reason, reasonValue } = getReasonFromStep(stepIndex);
           if (reason) {
             const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
             parts.push(`Behind ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
@@ -1031,10 +1019,9 @@ export const calculateStandings = (
         }
       }
 
-      // Group teams below by the step that separated them
       if (teamsBelow.length > 0) {
         const teamsByStep = new Map<number, string[]>();
-        
+
         for (const otherTeam of teamsBelow) {
           const stepIndex = findSeparatingStep(teamId, otherTeam.teamId);
           if (stepIndex !== null) {
@@ -1044,12 +1031,11 @@ export const calculateStandings = (
             teamsByStep.get(stepIndex)!.push(otherTeam.teamId);
           }
         }
-        
-        // Sort steps by index (A-F order)
+
         const sortedSteps = Array.from(teamsByStep.entries()).sort((a, b) => a[0] - b[0]);
-        
+
         for (const [stepIndex, teamIds] of sortedSteps) {
-          const { reason, reasonValue } = getReasonFromStep(stepIndex, false);
+          const { reason, reasonValue } = getReasonFromStep(stepIndex);
           if (reason) {
             const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
             parts.push(`Ahead of ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
@@ -1075,4 +1061,3 @@ export const calculateStandings = (
 
   return { standings, tieLogs };
 };
-

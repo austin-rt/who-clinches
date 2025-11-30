@@ -46,7 +46,6 @@ export const groupGamesByDay = (weeks: GameLean[][]): WeekDay[] => {
       });
   });
 
-  // Sort by week number, then by day of week
   return result.sort((a, b) => {
     if (a.weekNumber !== b.weekNumber) {
       return a.weekNumber - b.weekNumber;

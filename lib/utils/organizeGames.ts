@@ -6,7 +6,6 @@ export const organizeGames = (
   finalWeeks: GameLean[][];
   remainingWeeks: GameLean[][];
 } => {
-  // Group games by week
   const gamesByWeek = new Map<number, GameLean[]>();
   games.forEach((game) => {
     const week = game.week ?? 0;
@@ -16,7 +15,6 @@ export const organizeGames = (
     gamesByWeek.get(week)!.push(game);
   });
 
-  // Determine final vs remaining weeks (week is final if ALL games in that week are completed)
   const finalWeeks: GameLean[][] = [];
   const remainingWeeks: GameLean[][] = [];
 
