@@ -15,13 +15,13 @@ import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-async function queryGamesFromDatabase(
+const queryGamesFromDatabase = async (
   sport: SportSlug,
   conf: ConferenceSlug,
   query: MongoQuery,
   from?: string,
   to?: string
-): Promise<NextResponse<GamesResponse | ApiErrorResponse>> {
+): Promise<NextResponse<GamesResponse | ApiErrorResponse>> => {
   const { conferences, espnRoute } = sports[sport];
   const conferenceMeta = conferences[conf];
 
@@ -118,9 +118,7 @@ async function queryGamesFromDatabase(
 
   const teamsRaw = await Team.find({ _id: { $in: Array.from(teamIds) } })
     .lean()
-    .select(
-      '_id name abbreviation displayName logo color alternateColor conferenceStanding record'
-    )
+    .select('_id name abbreviation displayName logo color alternateColor conferenceStanding record')
     .exec();
 
   const teams: Pick<
@@ -169,9 +167,7 @@ async function queryGamesFromDatabase(
       logo: team.logo,
       color: team.color,
       alternateColor:
-        team.alternateColor && team.alternateColor !== 'undefined'
-          ? team.alternateColor
-          : '000000',
+        team.alternateColor && team.alternateColor !== 'undefined' ? team.alternateColor : '000000',
       conferenceStanding: team.conferenceStanding || 'Tied for 1st',
       conferenceRecord: teamRaw?.record?.conference || '0-0',
     };
@@ -194,7 +190,7 @@ async function queryGamesFromDatabase(
       },
     }
   );
-}
+};
 
 export const GET = async (
   request: NextRequest,

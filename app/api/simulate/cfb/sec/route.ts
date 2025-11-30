@@ -7,7 +7,7 @@ import {
   calculateStandings,
 } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
-import { GameLean } from '@/lib/types';
+import { GameLean, GameState } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 
 export const runtime = 'nodejs';
@@ -48,33 +48,100 @@ export const POST = async (
 
     const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
 
-    const allConferenceGames = await Game.find({
+    // Create a team map for quick lookup
+    const teamMap = new Map<string, (typeof conferenceTeams)[0]>();
+    for (const team of conferenceTeams) {
+      teamMap.set(String(team._id), team);
+    }
+
+    const allConferenceGamesRaw = await Game.find({
       season,
       conferenceGame: true,
       league: 'college-football',
-    }).lean<GameLean[]>();
+    })
+      .lean()
+      .exec();
 
-    const games = allConferenceGames.filter(
+    const gamesRaw = allConferenceGamesRaw.filter(
       (game) =>
         conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
     );
 
-    if (games.length === 0) {
+    if (gamesRaw.length === 0) {
       return NextResponse.json(
         { error: `No SEC conference games found for season ${season}` },
         { status: 404 }
       );
     }
 
+    const games: GameLean[] = gamesRaw.map((game): GameLean => {
+      const homeTeam = teamMap.get(String(game.home?.teamEspnId || ''));
+      const awayTeam = teamMap.get(String(game.away?.teamEspnId || ''));
+
+      return {
+        _id: String(game._id),
+        espnId: String(game.espnId),
+        displayName: String(game.displayName),
+        date: String(game.date),
+        week: typeof game.week === 'number' ? game.week : null,
+        season: Number(game.season),
+        sport: String(game.sport),
+        league: String(game.league),
+        state: game.state as GameState,
+        completed: Boolean(game.completed),
+        conferenceGame: Boolean(game.conferenceGame),
+        neutralSite: Boolean(game.neutralSite),
+        venue: {
+          fullName: String(game.venue?.fullName || ''),
+          city: String(game.venue?.city || ''),
+          state: String(game.venue?.state || ''),
+          timezone: String(game.venue?.timezone || 'America/New_York'),
+        },
+        home: {
+          teamEspnId: String(game.home?.teamEspnId || ''),
+          abbrev: String(game.home?.abbrev || ''),
+          displayName: homeTeam?.displayName || game.home?.abbrev || '',
+          shortDisplayName: homeTeam?.shortDisplayName || game.home?.abbrev || '',
+          logo: homeTeam?.logo || '',
+          color: homeTeam?.color || '000000',
+          score: typeof game.home?.score === 'number' ? game.home.score : null,
+          rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
+        },
+        away: {
+          teamEspnId: String(game.away?.teamEspnId || ''),
+          abbrev: String(game.away?.abbrev || ''),
+          displayName: awayTeam?.displayName || game.away?.abbrev || '',
+          shortDisplayName: awayTeam?.shortDisplayName || game.away?.abbrev || '',
+          logo: awayTeam?.logo || '',
+          color: awayTeam?.color || '000000',
+          score: typeof game.away?.score === 'number' ? game.away.score : null,
+          rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
+        },
+        odds: {
+          favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
+            ? String(game.odds.favoriteTeamEspnId)
+            : null,
+          spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
+          overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
+        },
+        predictedScore: game.predictedScore
+          ? {
+              home: Number(game.predictedScore?.home || 0),
+              away: Number(game.predictedScore?.away || 0),
+            }
+          : undefined,
+      };
+    });
+
     const finalGames = applyOverrides(games, overrides);
 
     const teamSet = new Set<string>();
     for (const game of finalGames) {
       if (conferenceTeamIds.has(game.home.teamEspnId)) {
-      teamSet.add(game.home.teamEspnId);
+        teamSet.add(game.home.teamEspnId);
       }
       if (conferenceTeamIds.has(game.away.teamEspnId)) {
-      teamSet.add(game.away.teamEspnId);
+        teamSet.add(game.away.teamEspnId);
       }
     }
     const allTeams = Array.from(teamSet);
