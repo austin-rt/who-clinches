@@ -11,6 +11,17 @@ import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 
+const parseRankFromStanding = (standing: string): number | null => {
+  const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  if (standing.toLowerCase().includes('tied for 1st')) {
+    return 1;
+  }
+  return null;
+};
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -144,7 +155,7 @@ export const POST = async (
     })
       .lean()
       .select(
-        '_id name abbreviation displayName logo color alternateColor conferenceStanding record'
+        '_id name abbreviation displayName shortDisplayName logo color alternateColor conferenceStanding record'
       )
       .exec();
 
@@ -207,19 +218,24 @@ export const POST = async (
       return gameLean;
     });
 
-    const teamMetadata: TeamMetadata[] = conferenceTeams.map((team) => ({
-      id: String(team._id),
-      abbrev: String(team.abbreviation),
-      name: String(team.name),
-      displayName: String(team.displayName),
-      logo: String(team.logo),
-      color: String(team.color),
-      alternateColor: String(team.alternateColor),
-      conferenceStanding: team.conferenceStanding
+    const teamMetadata: TeamMetadata[] = conferenceTeams.map((team) => {
+      const conferenceStanding = team.conferenceStanding
         ? String(team.conferenceStanding)
-        : 'Tied for 1st',
-      conferenceRecord: team.record?.conference || '0-0',
-    }));
+        : 'Tied for 1st';
+      return {
+        id: String(team._id),
+        abbrev: String(team.abbreviation),
+        name: String(team.name),
+        displayName: String(team.displayName),
+        shortDisplayName: String(team.shortDisplayName || team.displayName || team.abbreviation),
+        logo: String(team.logo),
+        color: String(team.color),
+        alternateColor: String(team.alternateColor),
+        conferenceStanding,
+        conferenceRecord: team.record?.conference || '0-0',
+        rank: parseRankFromStanding(conferenceStanding),
+      };
+    });
 
     return NextResponse.json<GamesResponse>(
       {
