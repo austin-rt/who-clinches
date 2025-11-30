@@ -8,15 +8,15 @@ const config = {
   ],
   darkMode: ['selector', '[data-mode="dark"]'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'base-400': 'var(--color-base-400)',
+      },
+    },
   },
   plugins: [daisyui],
   daisyui: {
-    themes: [
-      'light',
-      'dark',
-      'sec',
-    ],
+    themes: ['light', 'dark', 'sec'],
   },
 };
 

@@ -9,7 +9,7 @@ import { apiSlice } from './apiSlice';
 const uiPersistConfig = {
   key: 'ui',
   storage,
-  blacklist: ['lastUpdated'],
+  blacklist: ['lastUpdated', 'standingsOpen'],
 };
 
 const gamePicksPersistConfig = {
