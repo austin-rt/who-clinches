@@ -58,7 +58,7 @@ This is a specialized college football application built for simulating conferen
 - ESPN: `lib/cfb/espn-client.ts` (CFB-specific), `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic), `lib/constants.ts` (sports and conference configuration)
 - Tiebreaker: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - SEC tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
 - Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
-- Polling: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query (polls every 5 min when games are live or pre-game)
+- Polling: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query (polls every 5 min when games are live or starting within 5 minutes of kickoff)
 
 **Tiebreaker Rules (SINGULAR SOURCE OF TRUTH):**
 - Location: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
@@ -87,7 +87,7 @@ This is a specialized college football application built for simulating conferen
   - `useGetSpreadDataQuery({ sport, conf, season?, week?, force? })` - Spread/odds updates
   - `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
   - All hooks from `app/store/apiSlice.ts`
-- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Conditional polling based on game states (live games poll every 5 min, pre-game games poll spreads in production)
+- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Conditional polling based on game states and start times (live polling starts 5 min before kickoff and continues until games are post, works in dev and production; spreads polling for pre-game games in production only)
 
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 

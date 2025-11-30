@@ -38,14 +38,14 @@
 **Example**: `/api/games/cfb/sec/live`
 - Lightweight live game updates (scores/status only)
 - Body params: `season`, `week`, `force`
-- Used by frontend polling when games are in progress
+- Used by frontend polling when games are in progress or starting within 5 minutes of kickoff
 
 ### POST /api/games/[sport]/[conf]/spreads
 
 **Example**: `/api/games/cfb/sec/spreads`
 - Spread/odds updates only
 - Body params: `season`, `week`, `force`
-- Used by frontend polling for pre-game games
+- Used by frontend polling for pre-game games (only in production, only when not starting within 5 minutes)
 
 ### POST /api/teams/[sport]/[conf]
 

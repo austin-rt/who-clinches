@@ -40,7 +40,7 @@ Domain-specific content locations for common tasks.
 
 - **Architecture**: On-demand API endpoints with frontend polling
 - **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
-- **Frontend polling**: `app/hooks/useGamesData.ts` - Conditional polling based on game states
+- **Frontend polling**: `app/hooks/useGamesData.ts` - Conditional polling based on game states and start times (starts 5 min before kickoff, works in dev and production)
 - **Migration notes**: `docs/guides/api-reference-cron.md`
 
 ## Data Models

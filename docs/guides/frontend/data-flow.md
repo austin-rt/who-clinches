@@ -19,21 +19,24 @@ How data flows through the application: fetching, user interactions, and state u
 
 ### Polling Strategy
 
-The `useGamesData` hook implements conditional polling based on game states:
+The `useGamesData` hook implements conditional polling based on game states and start times:
 
 1. **Initial Load**: Fetches full season data via `useGetSeasonGameDataQuery`
-2. **Live Games Polling**: When games are in progress (`state: 'in'`):
+2. **Live Games Polling**: Starts when:
+   - Games are in progress (`state: 'in'`), OR
+   - Games are starting within 5 minutes of kickoff (`state: 'pre'` and game date is within 5 minutes)
    - Polls `/api/games/[sport]/[conf]/live` every 5 minutes
    - Updates scores and game status only (lightweight)
-   - Stops when all games are completed
-3. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`):
+   - Works in both development and production environments
+   - Continues until all games are post (`state: 'post'`)
+3. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`) and NOT starting within 5 minutes:
    - Only in production/preview environments (not localhost)
    - Only when viewing in "scores" mode
    - Polls `/api/games/[sport]/[conf]/spreads` every 5 minutes
    - Updates betting odds and spreads only
-4. **No Polling**: When all games are completed (`state: 'post'` and `completed: true`)
+4. **No Polling**: When all games are post (`state: 'post'`)
 
-This strategy minimizes API calls while ensuring fresh data when users are actively viewing games.
+This strategy minimizes API calls while ensuring fresh data when users are actively viewing games. Polling starts 5 minutes before kickoff to ensure scores update immediately when games begin.
 
 ---
 
