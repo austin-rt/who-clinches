@@ -84,10 +84,7 @@ npm run test
 4. Tests run against isolated in-memory database
 5. Global teardown stops memory server and dev server
 
-**Benefits:**
-- Complete isolation (no side effects on real databases)
-- Fast execution (in-memory operations)
-- No cleanup required (memory server is destroyed after tests)
+**Benefits:** Complete isolation, fast execution, no cleanup required.
 
 ---
 
@@ -99,8 +96,3 @@ npm run test
 - **Memory server errors**: Check Atlas `/test` database accessibility
 - **Empty coverage**: Run `npm run test:coverage`, open `coverage/index.html`
 - **Port conflicts**: Global teardown should free port 3000
-
-## CI/CD
-
-Command: `npm run test:api`  
-Expected: Test suites covering API endpoints, business logic, and edge cases

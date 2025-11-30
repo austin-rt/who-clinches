@@ -13,7 +13,7 @@ This is a specialized college football application built for simulating conferen
 - **NEVER Disable ESLint Rules**: ESLint rules are intentionally configured and must be followed. NEVER use `eslint-disable` comments. If code violates lint rules, fix the code to comply with the rules instead. This includes `no-console` - use proper logging or remove console statements entirely.
 - **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
 - **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
-- **Pre-Commit Hooks**: When using commit command, validation runs upfront. Use `--no-verify` flag after validation passes to skip redundant hook checks. If validation fails, fix errors before committing.
+- **Pre-Commit Hooks**: Use `--no-verify` flag after validation passes to skip redundant hook checks.
 - **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
 - **No Code Comments**: Do not add comments to code files, including JSDoc comments. Write self-documenting code instead. Existing comments should remain, but do not add new ones.
 - **NEVER Edit Tiebreaker Rules Files**: The official conference tiebreaker rules are stored in `docs/tiebreaker-rules/*.txt`. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents MUST NEVER edit, modify, or delete these files. The code in `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` must enforce these rules exactly as specified in the rules files. If tiebreaker logic needs to be updated, the rules files are updated by running extraction scripts (e.g., `scripts/extract-sec-rules.py`) to fetch the latest official PDFs from conference sources.
@@ -27,7 +27,8 @@ This is a specialized college football application built for simulating conferen
 
 **Key Endpoints:**
 - `/api/simulate/[sport]/[conf]` - Accepts game score overrides and returns full standings (e.g., `/api/simulate/cfb/sec`)
-- `/api/games/[sport]/[conf]` - Fetches from ESPN, upserts to database, and returns reshaped data (e.g., `/api/games/cfb/sec`)
+- `GET /api/games/[sport]/[conf]` - Queries MongoDB only (read-only, fast, ~50-200ms)
+- `POST /api/games/[sport]/[conf]` - Fetches from ESPN, upserts to database, and returns reshaped data (e.g., `/api/games/cfb/sec`)
 - `/api/games/[sport]/[conf]/live` - Lightweight live game updates (scores/status only)
 - `/api/games/[sport]/[conf]/spreads` - Spread/odds updates only
 - `/api/teams/[sport]/[conf]` - Fetches team data from ESPN, upserts to database, and returns reshaped data
@@ -62,7 +63,7 @@ This is a specialized college football application built for simulating conferen
 - Location: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
 - Code must enforce rules exactly as specified in `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`
 
-**Constraints:** Vercel timeouts (60s Pro, 10s Hobby), ESPN API (500ms delays), Frontend polling (conditional based on game states). Note: Type generation workflow (`.github/workflows/update-espn-types.yml`) runs via GitHub Actions cron schedule, but Vercel cron limitations no longer affect the data refresh strategy since we use frontend polling instead of Vercel crons.
+**Constraints:** Vercel timeouts (60s Pro, 10s Hobby), ESPN API (500ms delays), Frontend polling (conditional based on game states).
 
 ## Essential Pattern Recognition
 
@@ -80,12 +81,13 @@ This is a specialized college football application built for simulating conferen
 - **UI State**: `useUIState()` hook from `app/store/useUI.ts`
 - **State Persistence**: redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
 - **RTK Query**: 
-  - `useGetSeasonGameDataQuery({ sport, conf, season?, week?, state?, from?, to?, force? })` - Full season data
+  - `useGetSeasonGameDataFromCacheQuery({ sport, conf, season?, week?, state?, from?, to? })` - Fast MongoDB query (GET request, ~50-200ms)
+  - `useGetSeasonGameDataQuery({ sport, conf, season?, week?, state?, from?, to?, force? })` - Full season data with ESPN fetch (POST request, ~500-2000ms)
   - `useGetLiveGameDataQuery({ sport, conf, season?, force? })` - Live game updates (no week parameter - always queries current week)
   - `useGetSpreadDataQuery({ sport, conf, season?, week?, force? })` - Spread/odds updates
   - `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
   - All hooks from `app/store/apiSlice.ts`
-- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Conditional polling based on game states and start times (live polling starts 5 min before kickoff and continues until games are post, polls every 60 seconds, disabled in development; spreads polling for pre-game games in production only)
+- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Two-phase loading: GET for fast initial load, then POST for background refresh. Conditional polling based on game states and start times (live polling starts 5 min before kickoff and continues until games are post, polls every 60 seconds, disabled in development; spreads polling for pre-game games in production only)
 
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 
@@ -112,7 +114,3 @@ This is a specialized college football application built for simulating conferen
   - `/api/games/[sport]/[conf]`: `home`/`away` only include `teamEspnId`, `abbrev`, `score`, `rank` (team display info is in separate `teams` array)
   - `/api/simulate/[sport]/[conf]`: `home`/`away` include `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor` (populated from team map)
   - `ReshapedGame` (initial reshape format) does not include `shortDisplayName` or `alternateColor`
-
----
-
-**This guide provides the essential foundation for AI assistants to work effectively with the Conference Tiebreaker application while respecting technical constraints and ensuring accurate implementation of conference tiebreaker rules.**

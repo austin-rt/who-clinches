@@ -27,7 +27,7 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 sec-tiebreaker/
 ├── app/
 │   ├── api/
-│   │   ├── games/[sport]/[conf]/route.ts       # Query/fetch games from ESPN, upsert to database
+│   │   ├── games/[sport]/[conf]/route.ts       # GET: Query from database (fast), POST: Fetch from ESPN, upsert to database
 │   │   ├── games/[sport]/[conf]/live/route.ts  # Lightweight live game updates
 │   │   ├── games/[sport]/[conf]/spreads/route.ts # Spread/odds updates
 │   │   ├── teams/[sport]/[conf]/route.ts      # Fetch teams from ESPN, upsert to database
@@ -160,8 +160,13 @@ MongoDB → lean queries → strongly typed transformations → API response
 
 **Endpoints:**
 
-- `GET /api/games/[sport]/[conf]` - Query games from database (read-only, no ESPN fetch)
-- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert to database, return data
+- `GET /api/games/[sport]/[conf]` - Query games from database (read-only, no ESPN fetch, ~50-200ms for fast initial loads)
+- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert to database, return data (~500-2000ms)
+
+**Frontend Loading Strategy:**
+- Initial load uses GET endpoint for fast MongoDB query (~50-200ms)
+- Background refresh automatically triggers POST endpoint to fetch fresh data from ESPN (~500-2000ms)
+- Loading spinner only shows during GET request; POST refresh happens silently
 
 ### 3. Simulation Engine
 

@@ -10,7 +10,7 @@ Complete reference for data query and ingestion endpoints.
 
 ## GET /api/games/[sport]/[conf]
 
-Queries game data from database (read-only, does not fetch from ESPN).
+Queries game data from database (read-only, does not fetch from ESPN). Used for fast initial loads.
 
 **Authentication:** None required
 
@@ -27,8 +27,9 @@ Queries game data from database (read-only, does not fetch from ESPN).
 
 **Notes**: 
 - Read-only operation - does not fetch from ESPN or update database
-- Returns existing data from database only
-- Use POST endpoint to fetch fresh data from ESPN
+- Returns existing data from database only (~50-200ms response time)
+- Used by frontend for fast initial loads via `useGetSeasonGameDataFromCacheQuery`
+- Use POST endpoint to fetch fresh data from ESPN and update database
 
 ---
 

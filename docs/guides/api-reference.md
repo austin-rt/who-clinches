@@ -6,7 +6,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - POST /api/games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (fast MongoDB query), POST /api/games/[sport]/[conf] (ESPN fetch), POST /api/simulate/[sport]/[conf]
 - **[Cron Jobs](./api-reference-cron.md)** - Migration notes
 
 ---
@@ -75,11 +75,12 @@ db.errors.find({ endpoint: '/api/games/cfb/sec' }).sort({ timestamp: -1 });
 ## Notes
 
 - All timestamps in ISO 8601 format (UTC)
-- All endpoints fetch from ESPN, reshape data, upsert to database, and return reshaped data
+- GET /api/games/[sport]/[conf] queries MongoDB only (read-only, fast, ~50-200ms)
+- POST /api/games/[sport]/[conf] fetches from ESPN, reshapes data, upserts to database, and returns reshaped data
 - Dev/prod/preview databases store reshaped data (Game, Team models), not raw ESPN responses
 - Conference IDs vary by conference (e.g., 8 for SEC)
 - Team IDs are ESPN team IDs (e.g., "333" = Alabama)
-- Frontend uses RTK Query with conditional polling for live updates
+- Frontend uses RTK Query with two-phase loading (GET for fast initial load, POST for background refresh) and conditional polling for live updates
 
 ---
 

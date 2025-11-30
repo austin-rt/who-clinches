@@ -17,24 +17,30 @@ How data flows through the application: fetching, user interactions, and state u
 - Automatic refetch on window focus
 - `lastUpdated` synced to Redux on successful fetch
 
+### Initial Load Strategy
+
+The `useGamesData` hook implements a two-phase loading strategy for fast initial loads:
+
+1. **Fast Initial Load**: Uses `useGetSeasonGameDataFromCacheQuery` (GET request) to fetch from MongoDB immediately (~50-200ms)
+2. **Background Refresh**: Automatically triggers `useGetSeasonGameDataQuery` (POST request) after initial load completes to fetch fresh data from ESPN (~500-2000ms)
+3. **UI Updates**: Loading spinner only shows during GET request; POST refresh happens silently in background
+
 ### Polling Strategy
 
-The `useGamesData` hook implements conditional polling based on game states and start times:
-
-1. **Initial Load**: Fetches full season data via `useGetSeasonGameDataQuery`
-2. **Live Games Polling**: Starts when:
+After initial load, the `useGamesData` hook implements conditional polling based on game states and start times:
+1. **Live Games Polling**: Starts when:
    - Games are in progress (`state: 'in'`), OR
    - Games are starting within 5 minutes of kickoff (`state: 'pre'` and game date is within 5 minutes)
    - Polls `/api/games/[sport]/[conf]/live` every 60 seconds
    - Updates scores and game status only (lightweight)
    - Only works in production/preview environments (disabled in development)
    - Continues until all games are post (`state: 'post'`)
-3. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`) and NOT starting within 5 minutes:
+2. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`) and NOT starting within 5 minutes:
    - Only in production/preview environments (not localhost)
    - Only when viewing in "scores" mode
    - Polls `/api/games/[sport]/[conf]/spreads` every 5 minutes
    - Updates betting odds and spreads only
-4. **No Polling**: When all games are post (`state: 'post'`)
+3. **No Polling**: When all games are post (`state: 'post'`)
 
 This strategy minimizes API calls while ensuring fresh data when users are actively viewing games. Polling starts 5 minutes before kickoff to ensure scores update immediately when games begin. Live polling is disabled in development to reduce unnecessary API calls during local development.
 
