@@ -61,11 +61,13 @@ export interface TeamMetadata {
   abbrev: string;
   name: string;
   displayName: string;
+  shortDisplayName: string;
   logo: string;
   color: string;
   alternateColor: string;
   conferenceStanding: string;
   conferenceRecord: string;
+  rank: number | null;
 }
 
 export interface GamesResponse {
