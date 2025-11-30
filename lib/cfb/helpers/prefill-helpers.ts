@@ -25,8 +25,36 @@ export const calculatePredictedScoreFromOdds = (
 
   const spreadAbs = Math.abs(spread);
 
-  const favoredScore = Math.round((overUnder + spreadAbs) / 2);
-  const underdogScore = Math.round((overUnder - spreadAbs) / 2);
+  // Calculate scores: total = overUnder, difference = spread
+  // favoredScore + underdogScore = overUnder
+  // favoredScore - underdogScore = spreadAbs
+  // Solving: favoredScore = (overUnder + spreadAbs) / 2
+  //          underdogScore = (overUnder - spreadAbs) / 2
+  let favoredScore = Math.round((overUnder + spreadAbs) / 2);
+  let underdogScore = Math.round((overUnder - spreadAbs) / 2);
+  
+  // Adjust to ensure total matches overUnder when rounded
+  const total = favoredScore + underdogScore;
+  const expectedTotal = Math.round(overUnder);
+  const diff = expectedTotal - total;
+  
+  // Distribute the difference to maintain the spread
+  if (diff !== 0) {
+    // Add/subtract points to maintain spread while matching total
+    if (diff > 0) {
+      // Add points to both teams equally, then add remainder to favored
+      const baseAdd = Math.floor(diff / 2);
+      const remainder = diff % 2;
+      favoredScore += baseAdd + remainder;
+      underdogScore += baseAdd;
+    } else {
+      // Subtract points from both teams equally, then subtract remainder from underdog
+      const baseSub = Math.floor(Math.abs(diff) / 2);
+      const remainder = Math.abs(diff) % 2;
+      favoredScore -= baseSub;
+      underdogScore -= baseSub + remainder;
+    }
+  }
 
   if (favoredScore === underdogScore) {
     if (isFavoriteHome) {
