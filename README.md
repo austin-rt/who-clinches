@@ -27,20 +27,20 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 sec-tiebreaker/
 ├── app/
 │   ├── api/
-│   │   ├── games/cfb/[conf]/route.ts       # Query games from database
-│   │   ├── pull-games/cfb/[conf]/route.ts  # Ingest game data from ESPN
-│   │   ├── pull-teams/cfb/[conf]/route.ts  # Ingest team data from ESPN
-│   │   ├── simulate/cfb/sec/route.ts       # Tiebreaker simulation endpoint
-│   │   └── cron/cfb/[conf]/                # Automated update endpoints
+│   │   ├── games/[sport]/[conf]/route.ts       # Query/fetch games from ESPN, upsert to database
+│   │   ├── games/[sport]/[conf]/live/route.ts  # Lightweight live game updates
+│   │   ├── games/[sport]/[conf]/spreads/route.ts # Spread/odds updates
+│   │   ├── teams/[sport]/[conf]/route.ts      # Fetch teams from ESPN, upsert to database
+│   │   └── simulate/[sport]/[conf]/route.ts   # Tiebreaker simulation endpoint
 │   ├── page.tsx                 # Main UI
 │   └── layout.tsx
 ├── lib/
 │   ├── mongodb.ts               # MongoDB connection singleton
-│   ├── espn-client.ts           # ESPN API client
+│   ├── cfb/espn-client.ts       # ESPN API client (CFB-specific)
 │   ├── reshape-games.ts         # Game data transformation
 │   ├── reshape-teams.ts         # Team data transformation
-│   ├── tiebreaker-helpers.ts    # SEC tiebreaker rules implementation
-│   ├── prefill-helpers.ts       # Predicted score calculation
+│   ├── cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts # SEC tiebreaker rules implementation
+│   ├── cfb/helpers/prefill-helpers.ts # Predicted score calculation
 │   ├── api-types.ts             # API request/response types
 │   ├── types.ts                 # Internal application types
 │   └── models/
@@ -149,8 +149,8 @@ ESPN API → reshape functions → MongoDB
 
 **Endpoints:**
 
-- `GET /api/games/cfb/[conf]` - Fetch from ESPN, upsert games, return data
-- `GET /api/teams/cfb/[conf]` - Fetch from ESPN, upsert teams, return data
+- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert games, return data
+- `POST /api/teams/[sport]/[conf]` - Fetch from ESPN, upsert teams, return data
 
 ### 2. Data Retrieval (MongoDB → Frontend)
 
@@ -160,7 +160,8 @@ MongoDB → lean queries → strongly typed transformations → API response
 
 **Endpoints:**
 
-- `GET /api/games/cfb/[conf]` - Query games with filters (season, week, state, etc.)
+- `GET /api/games/[sport]/[conf]` - Query games from database (read-only, no ESPN fetch)
+- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert to database, return data
 
 ### 3. Simulation Engine
 
@@ -394,9 +395,9 @@ npm run lint
 ✅ **Phase 2 Complete**: Tiebreaker Engine
 
 - SEC rules implementation (Rules A-E)
-- Simulation endpoint (`/api/simulate/cfb/sec`)
+- Simulation endpoint (`/api/simulate/[sport]/[conf]`)
 - User score overrides
-- Automated cron jobs for data updates
+- Frontend polling for live data updates
 
 📋 **Phase 3 Planned**: Frontend UI
 
