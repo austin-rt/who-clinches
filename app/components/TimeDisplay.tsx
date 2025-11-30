@@ -21,6 +21,10 @@ const TimeDisplay = ({ date, timezone }: TimeDisplayProps) => {
       timeZone: gameTimezone,
     });
 
+    if (browserTime === stadiumTimeOnly) {
+      return browserTime;
+    }
+
     return `${browserTime} (${stadiumTimeOnly} local)`;
   };
 
