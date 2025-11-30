@@ -193,7 +193,11 @@ const Score = ({ game, separate = false }: ScoreProps) => {
   );
 
   if (separate) {
-    return [awayScoreElement, dashElement, homeScoreElement];
+    return [
+      <div key="away-score-wrapper">{awayScoreElement}</div>,
+      <div key="dash-wrapper">{dashElement}</div>,
+      <div key="home-score-wrapper">{homeScoreElement}</div>,
+    ];
   }
 
   return (
