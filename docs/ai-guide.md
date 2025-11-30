@@ -1,4 +1,4 @@
-# AI Assistant Guide for Conference Tiebreaker
+# AI Assistant Guide for Who Clinches
 
 **The definitive entry point for AI assistants working with this Next.js-based conference tiebreaker application.**
 

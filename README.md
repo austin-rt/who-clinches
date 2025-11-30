@@ -1,4 +1,4 @@
-# SEC Tiebreaker
+# Who Clinches
 
 A web application for simulating SEC Football standings and exploring tiebreaker scenarios. Built with Next.js 16, TypeScript, MongoDB, and the ESPN public API.
 

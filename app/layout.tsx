@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SEC Tiebreaker',
+  title: 'Who Clinches',
   description: 'SEC Football Tiebreaker Calculator',
 };
 
