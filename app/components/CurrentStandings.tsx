@@ -7,7 +7,6 @@ import { SimulateResponse } from '@/lib/api-types';
 import SimulatedStandings from './SimulatedStandings';
 
 const parseRankFromStanding = (standing: string): number | null => {
-  // Match patterns like "1st in SEC", "2nd in SEC", "3rd in SEC", "4th in SEC", etc.
   const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
   if (match) {
     return parseInt(match[1], 10);
