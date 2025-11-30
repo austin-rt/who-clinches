@@ -12,6 +12,17 @@ import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
 
+const parseRankFromStanding = (standing: string): number | null => {
+  const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
+  if (match) {
+    return parseInt(match[1], 10);
+  }
+  if (standing.toLowerCase().includes('tied for 1st')) {
+    return 1;
+  }
+  return null;
+};
+
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -118,7 +129,9 @@ const queryGamesFromDatabase = async (
 
   const teamsRaw = await Team.find({ _id: { $in: Array.from(teamIds) } })
     .lean()
-    .select('_id name abbreviation displayName logo color alternateColor conferenceStanding record')
+    .select(
+      '_id name abbreviation displayName shortDisplayName logo color alternateColor conferenceStanding record'
+    )
     .exec();
 
   const teams: Pick<
@@ -127,6 +140,7 @@ const queryGamesFromDatabase = async (
     | 'name'
     | 'abbreviation'
     | 'displayName'
+    | 'shortDisplayName'
     | 'logo'
     | 'color'
     | 'alternateColor'
@@ -140,6 +154,7 @@ const queryGamesFromDatabase = async (
       | 'name'
       | 'abbreviation'
       | 'displayName'
+      | 'shortDisplayName'
       | 'logo'
       | 'color'
       | 'alternateColor'
@@ -149,6 +164,7 @@ const queryGamesFromDatabase = async (
       name: String(team.name),
       abbreviation: String(team.abbreviation),
       displayName: String(team.displayName),
+      shortDisplayName: String(team.shortDisplayName || team.displayName || team.abbreviation),
       logo: String(team.logo),
       color: String(team.color || '000000'),
       alternateColor: String(team.alternateColor || '000000'),
@@ -159,17 +175,20 @@ const queryGamesFromDatabase = async (
   const teamMap: Record<string, TeamMetadata> = {};
   for (const team of teams) {
     const teamRaw = teamsRaw.find((t) => String(t._id) === team._id);
+    const conferenceStanding = team.conferenceStanding || 'Tied for 1st';
     teamMap[team._id] = {
       id: team._id,
       abbrev: team.abbreviation,
       name: team.name,
       displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
       logo: team.logo,
       color: team.color,
       alternateColor:
         team.alternateColor && team.alternateColor !== 'undefined' ? team.alternateColor : '000000',
-      conferenceStanding: team.conferenceStanding || 'Tied for 1st',
+      conferenceStanding,
       conferenceRecord: teamRaw?.record?.conference || '0-0',
+      rank: parseRankFromStanding(conferenceStanding),
     };
   }
 
@@ -315,14 +334,36 @@ export const POST = async (
         }
 
         const extractedTeams = extractTeamsFromScoreboard(scoreboardResponse, conferenceMeta);
-        if (extractedTeams.length > 0) {
-          for (const team of extractedTeams) {
+        const allConferenceTeams = await Team.find({
+          conferenceId: conferenceMeta.espnId,
+        })
+          .lean()
+          .exec();
+
+        const teamsToUpdate = new Map<string, (typeof extractedTeams)[0]>();
+        for (const team of extractedTeams) {
+          teamsToUpdate.set(team._id, team);
+        }
+
+        for (const dbTeam of allConferenceTeams) {
+          const teamId = String(dbTeam._id);
+          const extractedTeam = teamsToUpdate.get(teamId);
+
+          try {
+            const existingTeam = await Team.findOne({ _id: teamId }).lean().exec();
+            const existingStanding =
+              existingTeam && !Array.isArray(existingTeam) && existingTeam.conferenceStanding
+                ? existingTeam.conferenceStanding
+                : undefined;
+
+            let conferenceRecord: string | undefined;
             try {
-              const existingTeam = await Team.findOne({ _id: team._id }).lean().exec();
-              const existingStanding =
-                existingTeam && !Array.isArray(existingTeam) && existingTeam.conferenceStanding
-                  ? existingTeam.conferenceStanding
-                  : undefined;
+              const recordsResponse = await client.getTeamRecords(teamId, seasonYear, 2);
+              const confRecord = recordsResponse.items?.find((item) => item.type === 'vsconf');
+              if (confRecord?.summary) {
+                conferenceRecord = confRecord.summary;
+              }
+            } catch {
               const existingRecord =
                 existingTeam &&
                 !Array.isArray(existingTeam) &&
@@ -331,35 +372,53 @@ export const POST = async (
                 'conference' in existingTeam.record
                   ? (existingTeam.record as { conference?: string }).conference
                   : undefined;
-
-              const updateData: Record<string, unknown> = {
-                ...team,
-                lastUpdated: new Date(),
-              };
-
-              if (existingStanding) {
-                updateData.conferenceStanding = existingStanding;
-              } else {
-                updateData.conferenceStanding = 'Tied for 1st';
-              }
-
               if (existingRecord) {
-                updateData['record.conference'] = existingRecord;
+                conferenceRecord = existingRecord;
               }
-
-              await Team.findOneAndUpdate({ _id: team._id }, updateData, {
-                upsert: true,
-                new: true,
-              });
-            } catch (error) {
-              await ErrorModel.create({
-                timestamp: new Date(),
-                endpoint: `/api/games/${sport}/${conf}`,
-                payload: { teamId: team._id },
-                error: error instanceof Error ? error.message : 'Unknown error',
-                stackTrace: error instanceof Error ? error.stack || '' : '',
-              });
             }
+
+            const updateData: Record<string, unknown> = {
+              $set: {
+                lastUpdated: new Date(),
+              },
+            };
+
+            if (extractedTeam) {
+              updateData.$set = {
+                ...(updateData.$set as Record<string, unknown>),
+                name: extractedTeam.name,
+                displayName: extractedTeam.displayName,
+                shortDisplayName: extractedTeam.shortDisplayName,
+                abbreviation: extractedTeam.abbreviation,
+                logo: extractedTeam.logo,
+                color: extractedTeam.color,
+                alternateColor: extractedTeam.alternateColor,
+                conferenceId: extractedTeam.conferenceId,
+              };
+            }
+
+            if (existingStanding) {
+              (updateData.$set as Record<string, unknown>).conferenceStanding = existingStanding;
+            } else {
+              (updateData.$set as Record<string, unknown>).conferenceStanding = 'Tied for 1st';
+            }
+
+            if (conferenceRecord) {
+              (updateData.$set as Record<string, unknown>)['record.conference'] = conferenceRecord;
+            }
+
+            await Team.findOneAndUpdate({ _id: teamId }, updateData, {
+              upsert: true,
+              new: true,
+            });
+          } catch (error) {
+            await ErrorModel.create({
+              timestamp: new Date(),
+              endpoint: `/api/games/${sport}/${conf}`,
+              payload: { teamId },
+              error: error instanceof Error ? error.message : 'Unknown error',
+              stackTrace: error instanceof Error ? error.stack || '' : '',
+            });
           }
         }
 
