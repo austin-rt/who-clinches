@@ -82,6 +82,51 @@ export const reshapeScoreboardData = (
         }
       }
 
+      if (timezone === 'America/New_York' && venueState && venueCity) {
+        const stateNameMap: Record<string, string> = {
+          AL: 'Alabama',
+          AR: 'Arkansas',
+          LA: 'Louisiana',
+          MS: 'Mississippi',
+          MO: 'Missouri',
+          TN: 'Tennessee',
+          TX: 'Texas',
+          FL: 'Florida',
+          GA: 'Georgia',
+          KY: 'Kentucky',
+          SC: 'South Carolina',
+        };
+        const stateName = stateNameMap[venueState] || venueState;
+        const stateMatches = cityTimezones.findFromCityStateProvince(stateName);
+        if (stateMatches && stateMatches.length > 0) {
+          const usStateMatches = stateMatches.filter(
+            (match) =>
+              match.country === 'United States of America' &&
+              (match.state_ansi === venueState || match.province === stateName)
+          );
+          if (usStateMatches.length > 0) {
+            const cityLower = venueCity.toLowerCase();
+            const cityMatch = usStateMatches.find(
+              (match) =>
+                match.city.toLowerCase().includes(cityLower) ||
+                cityLower.includes(match.city.toLowerCase())
+            );
+            if (cityMatch) {
+              timezone = cityMatch.timezone;
+            } else {
+              const timezoneCounts = new Map<string, number>();
+              usStateMatches.forEach((match) => {
+                timezoneCounts.set(match.timezone, (timezoneCounts.get(match.timezone) || 0) + 1);
+              });
+              const mostCommonTimezone = Array.from(timezoneCounts.entries()).sort(
+                (a, b) => b[1] - a[1]
+              )[0]?.[0];
+              timezone = mostCommonTimezone || usStateMatches[0].timezone;
+            }
+          }
+        }
+      }
+
       const predictedScore = calculatePredictedScoreFromOdds(
         overUnder,
         spread,
@@ -95,7 +140,8 @@ export const reshapeScoreboardData = (
         date: competition.startDate || competition.date,
         attendance: competition.attendance,
         week: event.week?.number || espnResponse.week?.number || null,
-        season: season || event.season?.year || espnResponse.season?.year || new Date().getFullYear(),
+        season:
+          season || event.season?.year || espnResponse.season?.year || new Date().getFullYear(),
         sport,
         league,
         state: competition.status.type.state,
