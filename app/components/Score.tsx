@@ -21,6 +21,9 @@ const Score = ({ game, separate = false }: ScoreProps) => {
     if (game.completed) {
       return { away: game.away.score ?? 0, home: game.home.score ?? 0 };
     }
+    if (view === 'scores' && game.state === 'in') {
+      return { away: game.away.score ?? 0, home: game.home.score ?? 0 };
+    }
     if (gamePick && game.predictedScore) {
       const pickMatchesPredicted =
         gamePick.awayScore === game.predictedScore.away &&
@@ -36,7 +39,7 @@ const Score = ({ game, separate = false }: ScoreProps) => {
       return { away: gamePick.awayScore, home: gamePick.homeScore };
     }
     return { away: 0, home: 0 };
-  }, [gamePick, game.completed, game.away.score, game.home.score, game.predictedScore]);
+  }, [gamePick, game.completed, game.state, game.away.score, game.home.score, game.predictedScore, view]);
 
   const [editingAway, setEditingAway] = useState<string | null>(null);
   const [editingHome, setEditingHome] = useState<string | null>(null);
@@ -71,7 +74,8 @@ const Score = ({ game, separate = false }: ScoreProps) => {
   };
 
   const getScoreDisplay = (score: number | null) => {
-    return score !== null ? score.toString() : '—';
+    if (score === null) return '—';
+    return score.toString();
   };
 
   const awayScoreNum = parseInt(awayScore, 10) || 0;
@@ -150,12 +154,16 @@ const Score = ({ game, separate = false }: ScoreProps) => {
     ? gamePick.awayScore
     : game.completed
       ? game.away.score
-      : (game.predictedScore?.away ?? game.away.score);
+      : view === 'scores' && game.state === 'in'
+        ? (game.away.score ?? 0)
+        : (game.predictedScore?.away ?? game.away.score);
   const displayHome = gamePick
     ? gamePick.homeScore
     : game.completed
       ? game.home.score
-      : (game.predictedScore?.home ?? game.home.score);
+      : view === 'scores' && game.state === 'in'
+        ? (game.home.score ?? 0)
+        : (game.predictedScore?.home ?? game.home.score);
   const displayAwayIsHigher = (displayAway ?? -1) > (displayHome ?? -1);
   const displayHomeIsHigher = (displayHome ?? -1) > (displayAway ?? -1);
   const displayIsTie = displayAway === displayHome && displayAway !== null && displayAway !== 0;
