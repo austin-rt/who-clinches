@@ -500,7 +500,7 @@ describe('reshapeScoreboardData', () => {
         ],
         competitors: firstEvent.competitions[0].competitors.map((c) => ({
           ...c,
-          score: null,
+          score: '',
         })),
       });
 
@@ -532,7 +532,7 @@ describe('reshapeScoreboardData', () => {
         odds: undefined,
         competitors: firstEvent.competitions[0].competitors.map((c) => ({
           ...c,
-          score: null,
+          score: '',
         })),
       });
 
