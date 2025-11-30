@@ -88,23 +88,18 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
 
     if (hasLiveGames || hasGamesStartingSoon) {
       return {
-        pollingInterval: 300000,
+        pollingInterval: 60000, // 60 seconds
         useLive: true,
         useSpreads: false,
       };
     }
 
-    const isProdOrPreview =
-      typeof window !== 'undefined'
-        ? window.location.hostname !== 'localhost' &&
-          !window.location.hostname.includes('127.0.0.1') &&
-          !window.location.hostname.includes('192.168.')
-        : false;
+    const isDev = process.env.NODE_ENV === 'development';
 
     const hasPreGameGames = seasonData.events.some((game: GameLean) => game.state === 'pre');
-    if (hasPreGameGames && view === 'scores' && isProdOrPreview) {
+    if (hasPreGameGames && view === 'scores' && !isDev) {
       return {
-        pollingInterval: 300000,
+        pollingInterval: 120000,
         useLive: false,
         useSpreads: true,
       };
@@ -113,9 +108,11 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     return { pollingInterval: 0, useLive: false, useSpreads: false };
   }, [seasonData, view]);
 
+  const isDev = process.env.NODE_ENV === 'development';
   const { data: liveData } = useGetLiveGameDataQuery(liveQueryArgs, {
-    pollingInterval: initialPollingConfig.useLive ? initialPollingConfig.pollingInterval : 0,
-    skip: !initialPollingConfig.useLive || isLoading || isUninitialized,
+    pollingInterval:
+      initialPollingConfig.useLive && !isDev ? initialPollingConfig.pollingInterval : 0,
+    skip: !initialPollingConfig.useLive || isLoading || isUninitialized || isDev,
   });
 
   const pollingConfig = useMemo(() => {
@@ -144,7 +141,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
 
     if (hasLiveGames || hasGamesStartingSoon) {
       return {
-        pollingInterval: 300000,
+        pollingInterval: 60000, // 60 seconds
         useLive: true,
         useSpreads: false,
       };

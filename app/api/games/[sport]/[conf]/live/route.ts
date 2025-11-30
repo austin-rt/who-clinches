@@ -9,6 +9,7 @@ import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { GameLean } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
+import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -18,13 +19,12 @@ export const POST = async (
   { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
 ) => {
   const { sport, conf } = await params;
-  
+
   try {
     await dbConnect();
     const body = await request.json().catch(() => ({}));
 
     const season = body.season?.toString();
-    const week = body.week?.toString();
     const force = body.force === true;
 
     const { conferences, espnRoute } = sports[sport];
@@ -60,39 +60,59 @@ export const POST = async (
           seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
         }
 
-        let scoreboardResponse;
-        if (week) {
-          scoreboardResponse = await client.getScoreboard({
-            groups: conferenceMeta.espnId,
-            season: seasonYear,
-            week: parseInt(week, 10),
-          });
-        } else {
-          scoreboardResponse = await client.getScoreboard({
-            groups: conferenceMeta.espnId,
-            dates: seasonYear,
-          });
-        }
+        const scoreboardResponse = await client.getScoreboard({
+          groups: conferenceMeta.espnId,
+          season: seasonYear,
+        });
 
         const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear);
-        const conferenceGamesOnly = reshaped.games?.filter((game) => game.conferenceGame === true) || [];
+        const conferenceGamesOnly =
+          reshaped.games?.filter((game) => game.conferenceGame === true) || [];
 
         if (conferenceGamesOnly.length > 0) {
+          const teamIds = [
+            ...new Set([
+              ...conferenceGamesOnly.map((g) => g.home.teamEspnId),
+              ...conferenceGamesOnly.map((g) => g.away.teamEspnId),
+            ]),
+          ];
+          const teams = await Team.find({ _id: { $in: teamIds } }).lean();
+          const teamMap = new Map(teams.map((t) => [String(t._id), t]));
+
           for (const game of conferenceGamesOnly) {
             try {
-              await Game.updateOne(
+              const homeTeam = teamMap.get(game.home.teamEspnId) || {};
+              const awayTeam = teamMap.get(game.away.teamEspnId) || {};
+
+              const predictedScore = calculatePredictedScore(
+                game,
+                homeTeam as {
+                  record?: {
+                    stats?: {
+                      avgPointsFor?: number;
+                      avgPointsAgainst?: number;
+                    };
+                  };
+                },
+                awayTeam as {
+                  record?: {
+                    stats?: {
+                      avgPointsFor?: number;
+                      avgPointsAgainst?: number;
+                    };
+                  };
+                }
+              );
+
+              await Game.findOneAndUpdate(
                 { espnId: game.espnId },
                 {
-                  $set: {
-                    state: game.state,
-                    completed: game.completed,
-                    'home.score': game.home.score,
-                    'home.rank': game.home.rank,
-                    'away.score': game.away.score,
-                    'away.rank': game.away.rank,
-                    lastUpdated: new Date(),
-                  },
-                }
+                  ...game,
+                  season: seasonYear,
+                  predictedScore,
+                  lastUpdated: new Date(),
+                },
+                { upsert: true, new: true }
               );
             } catch (error) {
               await ErrorModel.create({
@@ -118,13 +138,14 @@ export const POST = async (
 
     const query: Record<string, unknown> = { conferenceGame: true };
     if (season) query.season = parseInt(season, 10);
-    if (week) query.week = parseInt(week, 10);
 
     const conferenceTeams = await Team.find({
       conferenceId: conferenceMeta.espnId,
     })
       .lean()
-      .select('_id name abbreviation displayName logo color alternateColor conferenceStanding record')
+      .select(
+        '_id name abbreviation displayName logo color alternateColor conferenceStanding record'
+      )
       .exec();
 
     const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
@@ -136,51 +157,55 @@ export const POST = async (
         conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
     );
 
-    const games = gamesRaw.map((game): GameLean => ({
-      _id: String(game._id),
-      espnId: String(game.espnId),
-      displayName: String(game.displayName),
-      date: String(game.date),
-      week: typeof game.week === 'number' ? game.week : null,
-      season: Number(game.season),
-      sport: String(game.sport),
-      league: String(game.league),
-      state: game.state,
-      completed: Boolean(game.completed),
-      conferenceGame: Boolean(game.conferenceGame),
-      neutralSite: Boolean(game.neutralSite),
-      venue: {
-        fullName: String(game.venue?.fullName || ''),
-        city: String(game.venue?.city || ''),
-        state: String(game.venue?.state || ''),
-        timezone: String(game.venue?.timezone || 'America/New_York'),
-      },
-      home: {
-        teamEspnId: String(game.home.teamEspnId),
-        abbrev: String(game.home.abbrev),
-        score: game.home.score ?? null,
-        rank: game.home.rank ?? null,
-      },
-      away: {
-        teamEspnId: String(game.away.teamEspnId),
-        abbrev: String(game.away.abbrev),
-        score: game.away.score ?? null,
-        rank: game.away.rank ?? null,
-      },
-      odds: {
-        favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
-          ? String(game.odds.favoriteTeamEspnId)
-          : null,
-        spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
-        overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
-      },
-      predictedScore: game.predictedScore
-        ? {
-            home: Number(game.predictedScore.home),
-            away: Number(game.predictedScore.away),
-          }
-        : undefined,
-    }));
+    const games = gamesRaw.map((game): GameLean => {
+      const gameLean: GameLean = {
+        _id: String(game._id),
+        espnId: String(game.espnId),
+        displayName: String(game.displayName),
+        date: String(game.date),
+        week: typeof game.week === 'number' ? game.week : null,
+        season: Number(game.season),
+        sport: String(game.sport),
+        league: String(game.league),
+        state: game.state,
+        completed: Boolean(game.completed),
+        conferenceGame: Boolean(game.conferenceGame),
+        neutralSite: Boolean(game.neutralSite),
+        venue: {
+          fullName: String(game.venue?.fullName || ''),
+          city: String(game.venue?.city || ''),
+          state: String(game.venue?.state || ''),
+          timezone: String(game.venue?.timezone || 'America/New_York'),
+        },
+        home: {
+          teamEspnId: String(game.home.teamEspnId),
+          abbrev: String(game.home.abbrev),
+          score: game.home.score ?? null,
+          rank: game.home.rank ?? null,
+        },
+        away: {
+          teamEspnId: String(game.away.teamEspnId),
+          abbrev: String(game.away.abbrev),
+          score: game.away.score ?? null,
+          rank: game.away.rank ?? null,
+        },
+        odds: {
+          favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
+            ? String(game.odds.favoriteTeamEspnId)
+            : null,
+          spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
+          overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
+        },
+        predictedScore: game.predictedScore
+          ? {
+              home: Number(game.predictedScore.home),
+              away: Number(game.predictedScore.away),
+            }
+          : undefined,
+      };
+
+      return gameLean;
+    });
 
     const teamMetadata: TeamMetadata[] = conferenceTeams.map((team) => ({
       id: String(team._id),
@@ -190,7 +215,9 @@ export const POST = async (
       logo: String(team.logo),
       color: String(team.color),
       alternateColor: String(team.alternateColor),
-      conferenceStanding: team.conferenceStanding ? String(team.conferenceStanding) : 'Tied for 1st',
+      conferenceStanding: team.conferenceStanding
+        ? String(team.conferenceStanding)
+        : 'Tied for 1st',
       conferenceRecord: team.record?.conference || '0-0',
     }));
 
@@ -202,7 +229,9 @@ export const POST = async (
       },
       {
         headers: {
-          'Cache-Control': 'public, s-maxage=10',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+          Pragma: 'no-cache',
+          Expires: '0',
         },
       }
     );
@@ -224,4 +253,3 @@ export const POST = async (
     );
   }
 };
-

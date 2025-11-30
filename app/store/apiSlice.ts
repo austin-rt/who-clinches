@@ -51,18 +51,16 @@ export const apiSlice = createApi({
         sport: string;
         conf: string;
         season?: string | number;
-        week?: string | number;
         force?: boolean;
       }
     >({
-      query: ({ sport, conf, season, week, force }) => {
+      query: ({ sport, conf, season, force }) => {
         return {
           url: `games/${sport}/${conf}/live`,
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: {
             season,
-            week,
             force,
           },
         };
