@@ -122,7 +122,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const homeWon = isHomeSelected;
 
   return (
-    <div className="flex h-20 w-40 items-center justify-center gap-1 rounded-lg border border-base-300 bg-base-200 p-1 dark:bg-base-100">
+    <div className="dark:bg-base-400 flex h-20 w-40 items-center justify-center gap-1 rounded-lg border border-base-300 bg-base-200 p-1">
       <div className="flex flex-col items-center gap-0.5">
         <button
           type="button"

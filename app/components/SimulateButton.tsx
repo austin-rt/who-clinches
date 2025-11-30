@@ -1,7 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
-import { SimulateRequest } from '@/lib/api-types';
+import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
 import { xLog } from '@/lib/xLog';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
@@ -11,9 +11,10 @@ import { type SportSlug, type ConferenceSlug } from '@/lib/constants';
 
 interface SimulateButtonProps {
   season: number;
+  onSimulateComplete?: (response: SimulateResponse) => void;
 }
 
-const SimulateButton = ({ season }: SimulateButtonProps) => {
+const SimulateButton = ({ season, onSimulateComplete }: SimulateButtonProps) => {
   const params = useParams();
   const sport = params.sport as SportSlug;
   const conf = params.conf as ConferenceSlug;
@@ -69,6 +70,10 @@ const SimulateButton = ({ season }: SimulateButtonProps) => {
       xLog('');
       xLog('Full Response JSON:', JSON.stringify(response, null, 2));
       xLog('=== END SIMULATE RESPONSE ===');
+
+      if (onSimulateComplete) {
+        onSimulateComplete(response);
+      }
     } catch (err) {
       xLog('=== SIMULATE ERROR ===');
       xLog('Error:', err);

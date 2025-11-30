@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import GamesList from '@/app/components/GamesList';
 import ViewModeButton from '@/app/components/ViewModeButton';
@@ -10,6 +10,9 @@ import SimulateButton from '@/app/components/SimulateButton';
 import CurrentStandings from '@/app/components/CurrentStandings';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
+import { SimulateResponse } from '@/lib/api-types';
+import { useAppDispatch } from '@/app/store/hooks';
+import { clearAllPicks } from '@/app/store/gamePicksSlice';
 
 const ConferencePage = () => {
   const params = useParams();
@@ -17,6 +20,21 @@ const ConferencePage = () => {
   const conf = params.conf as ConferenceSlug;
   const currentSeason = useMemo(() => new Date().getFullYear(), []);
   const { mode } = useUIState();
+  const dispatch = useAppDispatch();
+
+  const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
+  const [hasSimulated, setHasSimulated] = useState<boolean>(false);
+
+  const handleSimulateComplete = (response: SimulateResponse) => {
+    setSimulateResponse(response);
+    setHasSimulated(true);
+  };
+
+  const handleReset = () => {
+    setSimulateResponse(null);
+    setHasSimulated(false);
+    dispatch(clearAllPicks());
+  };
 
   const { conferences } = sports[sport];
   const conferenceMeta = conferences[conf];
@@ -56,17 +74,21 @@ const ConferencePage = () => {
         </div>
       </div>
 
-      <CurrentStandings season={currentSeason} />
+      <CurrentStandings
+        season={currentSeason}
+        simulateResponse={simulateResponse}
+        hasSimulated={hasSimulated}
+      />
 
       <div className="flex items-center justify-between gap-4">
         <HideCompletedButton />
-        <ResetButton />
+        <ResetButton onReset={handleReset} />
       </div>
 
       <GamesList season={currentSeason} />
 
       <div className="flex flex-row justify-end gap-4">
-        <SimulateButton season={currentSeason} />
+        <SimulateButton season={currentSeason} onSimulateComplete={handleSimulateComplete} />
       </div>
     </div>
   );

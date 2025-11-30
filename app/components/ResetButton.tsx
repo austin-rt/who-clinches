@@ -5,12 +5,19 @@ import { clearAllPicks } from '../store/gamePicksSlice';
 import { useUIState } from '@/app/store/useUI';
 import { Button } from './Button';
 
-const ResetButton = () => {
+interface ResetButtonProps {
+  onReset?: () => void;
+}
+
+const ResetButton = ({ onReset }: ResetButtonProps) => {
   const dispatch = useAppDispatch();
   const { mode } = useUIState();
 
   const handleClick = () => {
     dispatch(clearAllPicks());
+    if (onReset) {
+      onReset();
+    }
   };
 
   return (
