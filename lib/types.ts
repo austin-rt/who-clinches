@@ -44,7 +44,7 @@ export interface ReshapedGame {
     spread: number | null;
     overUnder: number | null;
   };
-  predictedScore?: {
+  predictedScore: {
     home: number;
     away: number;
   };

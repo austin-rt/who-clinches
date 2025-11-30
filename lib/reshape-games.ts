@@ -127,13 +127,6 @@ export const reshapeScoreboardData = (
         }
       }
 
-      const predictedScore = calculatePredictedScoreFromOdds(
-        overUnder,
-        spread,
-        favoriteTeamEspnId,
-        homeTeam.team.id
-      );
-
       return {
         espnId: event.id,
         displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
@@ -177,7 +170,18 @@ export const reshapeScoreboardData = (
           spread,
           overUnder,
         },
-        predictedScore,
+        predictedScore: (() => {
+          if (homeScore !== null && awayScore !== null) {
+            return { home: homeScore, away: awayScore };
+          }
+          const oddsScore = calculatePredictedScoreFromOdds(
+            overUnder,
+            spread,
+            favoriteTeamEspnId,
+            homeTeam.team.id
+          );
+          return oddsScore || { home: 28, away: 21 };
+        })(),
       };
     })
     .filter((game) => game !== null);
