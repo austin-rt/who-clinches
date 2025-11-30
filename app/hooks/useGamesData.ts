@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import {
+  useGetSeasonGameDataFromCacheQuery,
   useGetSeasonGameDataQuery,
   useGetLiveGameDataQuery,
   useGetSpreadDataQuery,
@@ -23,7 +24,17 @@ interface UseGamesDataReturn {
 
 export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGamesDataReturn => {
   const { view } = useUIState();
-  const seasonQueryArgs = useMemo(
+
+  const cacheQueryArgs = useMemo(
+    () => ({
+      sport,
+      conf,
+      season: season.toString(),
+    }),
+    [sport, conf, season]
+  );
+
+  const refreshQueryArgs = useMemo(
     () => ({
       sport,
       conf,
@@ -34,13 +45,30 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
   );
 
   const {
-    data: seasonData,
-    isLoading,
-    isError,
-    isUninitialized,
-  } = useGetSeasonGameDataQuery(seasonQueryArgs, {
+    data: initialData,
+    isLoading: isInitialLoading,
+    isError: isInitialError,
+    isUninitialized: isInitialUninitialized,
+    isSuccess: isInitialSuccess,
+  } = useGetSeasonGameDataFromCacheQuery(cacheQueryArgs, {
     refetchOnMountOrArgChange: true,
   });
+
+  const shouldRefresh = useMemo(() => {
+    return isInitialSuccess && !!initialData;
+  }, [isInitialSuccess, initialData]);
+
+  const { data: refreshData, isError: isRefreshError } = useGetSeasonGameDataQuery(
+    refreshQueryArgs,
+    {
+      skip: !shouldRefresh,
+    }
+  );
+
+  const seasonData = refreshData || initialData;
+  const isLoading = isInitialLoading;
+  const isError = isInitialError || isRefreshError;
+  const isUninitialized = isInitialUninitialized;
 
   const liveQueryArgs = useMemo(
     () => ({
@@ -88,7 +116,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
 
     if (hasLiveGames || hasGamesStartingSoon) {
       return {
-        pollingInterval: 60000, // 60 seconds
+        pollingInterval: 60000,
         useLive: true,
         useSpreads: false,
       };
@@ -141,7 +169,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
 
     if (hasLiveGames || hasGamesStartingSoon) {
       return {
-        pollingInterval: 60000, // 60 seconds
+        pollingInterval: 60000,
         useLive: true,
         useSpreads: false,
       };

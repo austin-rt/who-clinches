@@ -17,8 +17,8 @@ const gamePicksPersistConfig = {
   storage,
   transforms: [
     expireReducer('gamePicks', {
-      expireSeconds: 3600, // 1 hour
-      expiredState: { picks: {} }, // Clear all picks when expired
+      expireSeconds: 3600,
+      expiredState: { picks: {} },
       autoExpire: true,
     }),
   ],
