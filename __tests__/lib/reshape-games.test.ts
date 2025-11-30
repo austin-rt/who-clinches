@@ -461,7 +461,7 @@ describe('reshapeScoreboardData', () => {
       expect(game.odds.spread).toBe(0);
     });
 
-    it('calculates predictedScore from odds when all odds are available', () => {
+    it('calculates predictedScore from odds when all odds are available and no real scores', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
         throw new Error(
           'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
@@ -498,6 +498,10 @@ describe('reshapeScoreboardData', () => {
             },
           }),
         ],
+        competitors: firstEvent.competitions[0].competitors.map((c) => ({
+          ...c,
+          score: null,
+        })),
       });
 
       const response: EspnScoreboardGenerated = {
@@ -516,7 +520,7 @@ describe('reshapeScoreboardData', () => {
       expect(game.predictedScore?.away).toBe(24);
     });
 
-    it('sets predictedScore to undefined when odds are not available', () => {
+    it('sets predictedScore to default when odds are not available and no real scores', () => {
       if (!scoreboardResponse.events || scoreboardResponse.events.length === 0) {
         throw new Error(
           'TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:invalid_structure | FIELD:events | EXPECTED:at_least_one_event | ACTUAL:empty_events_array | IMPLICATION:ESPN_API_format_may_have_changed_requiring_reshape_function_updates'
@@ -526,6 +530,10 @@ describe('reshapeScoreboardData', () => {
       const firstEvent = scoreboardResponse.events[0];
       const noOddsEvent = createTestEvent(firstEvent, {
         odds: undefined,
+        competitors: firstEvent.competitions[0].competitors.map((c) => ({
+          ...c,
+          score: null,
+        })),
       });
 
       const response: EspnScoreboardGenerated = {
@@ -536,7 +544,8 @@ describe('reshapeScoreboardData', () => {
       const result = reshapeScoreboardData(response);
       const game = result.games![0];
 
-      expect(game.predictedScore).toBeUndefined();
+      expect(game.predictedScore).toBeDefined();
+      expect(game.predictedScore).toEqual({ home: 28, away: 21 });
     });
   });
 
