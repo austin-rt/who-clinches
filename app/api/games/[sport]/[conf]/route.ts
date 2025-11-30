@@ -280,7 +280,6 @@ export const POST = async (
       );
     }
 
-    // Fetch from ESPN and upsert to database (always, since POST implies mutation)
     const bypassSeasonCheck = force || process.env.NODE_ENV === 'test';
     const shouldFetchFromESPN = bypassSeasonCheck || (await isInSeasonFromESPN(sport, conf));
 
@@ -288,7 +287,6 @@ export const POST = async (
       try {
         const client = createESPNClient(espnRoute);
 
-        // Determine season year
         let seasonYear: number;
         try {
           const calendarResponse = await client.getScoreboard({
@@ -316,7 +314,6 @@ export const POST = async (
           });
         }
 
-        // Extract teams from scoreboard and upsert them (always update to get latest data)
         const extractedTeams = extractTeamsFromScoreboard(scoreboardResponse, conferenceMeta);
         if (extractedTeams.length > 0) {
           for (const team of extractedTeams) {
@@ -340,18 +337,15 @@ export const POST = async (
                 lastUpdated: new Date(),
               };
 
-              // Only set conferenceStanding if we have existing data, otherwise use default for new teams
               if (existingStanding) {
                 updateData.conferenceStanding = existingStanding;
               } else {
                 updateData.conferenceStanding = 'Tied for 1st';
               }
 
-              // Only set record.conference if it exists - don't overwrite with default
               if (existingRecord) {
                 updateData['record.conference'] = existingRecord;
               }
-              // If no existing record, don't set it at all (let it remain undefined/null)
 
               await Team.findOneAndUpdate({ _id: team._id }, updateData, {
                 upsert: true,
@@ -369,7 +363,6 @@ export const POST = async (
           }
         }
 
-        // Reshape and upsert games
         const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear);
         const conferenceGamesOnly =
           reshaped.games?.filter((game) => game.conferenceGame === true) || [];

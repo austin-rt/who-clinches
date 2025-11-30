@@ -48,7 +48,6 @@ export const POST = async (
 
     const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
 
-    // Create a team map for quick lookup
     const teamMap = new Map<string, (typeof conferenceTeams)[0]>();
     for (const team of conferenceTeams) {
       teamMap.set(String(team._id), team);
