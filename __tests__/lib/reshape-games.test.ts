@@ -150,7 +150,7 @@ describe('reshapeScoreboardData', () => {
       const available = await checkTestDataAvailable();
       if (!available.available) {
         throw new Error(
-          `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_data | MISSING_TYPES:${available.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+          `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_data | MISSING_TYPES:${available.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Test data must be populated in the test database, then update reshape functions if API format changed`
         );
       }
 
@@ -158,7 +158,7 @@ describe('reshapeScoreboardData', () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(
-        `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated by running /api/cron/update-test-data, then update reshape functions if API format changed`
+        `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Ensure test database is populated, then update reshape functions if API format changed`
       );
     }
   });
@@ -509,8 +509,11 @@ describe('reshapeScoreboardData', () => {
       const game = result.games![0];
 
       expect(game.predictedScore).toBeDefined();
-      expect(game.predictedScore?.home).toBe(34);
-      expect(game.predictedScore?.away).toBe(20);
+      // With overUnder=54.5 and spread=-7 (home favored by 7):
+      // home = (54.5 + 7) / 2 = 30.75 ≈ 31
+      // away = (54.5 - 7) / 2 = 23.75 ≈ 24
+      expect(game.predictedScore?.home).toBe(31);
+      expect(game.predictedScore?.away).toBe(24);
     });
 
     it('sets predictedScore to undefined when odds are not available', () => {

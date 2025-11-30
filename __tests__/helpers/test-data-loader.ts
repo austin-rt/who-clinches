@@ -20,7 +20,7 @@ export const loadScoreboardTestData = async (): Promise<EspnScoreboardGenerated>
   if (!data) {
     console.error('[Test Data Loader] ERROR: Scoreboard test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Test data must be populated in the test database, then update reshape functions if API format changed`
     );
   }
 
@@ -40,7 +40,7 @@ export const loadTeamTestData = async (): Promise<EspnTeamGenerated> => {
   if (!data) {
     console.error('[Test Data Loader] ERROR: Team test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:TeamTestData | ISSUE:missing_data | TYPE:team | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:TeamTestData | ISSUE:missing_data | TYPE:team | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Test data must be populated in the test database, then update reshape functions if API format changed`
     );
   }
 
@@ -60,7 +60,7 @@ export const loadGameSummaryTestData = async (): Promise<EspnGameSummaryGenerate
   if (!data) {
     console.error('[Test Data Loader] ERROR: Game summary test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:GameSummaryTestData | ISSUE:missing_data | TYPE:gameSummary | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:GameSummaryTestData | ISSUE:missing_data | TYPE:gameSummary | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Test data must be populated in the test database, then update reshape functions if API format changed`
     );
   }
 
@@ -80,7 +80,7 @@ export const loadTeamRecordsTestData = async (): Promise<EspnTeamRecordsGenerate
   if (!data) {
     console.error('[Test Data Loader] ERROR: Team records test data not found');
     throw new Error(
-      `TEST_DATA_ERROR | ENTITY:TeamRecordsTestData | ISSUE:missing_data | TYPE:teamRecords | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Run /api/cron/update-test-data to populate test data, then update reshape functions if API format changed`
+      `TEST_DATA_ERROR | ENTITY:TeamRecordsTestData | ISSUE:missing_data | TYPE:teamRecords | EXPECTED:test_data_exists | ACTUAL:not_found | IMPLICATION:ESPN_API_may_have_changed_requiring_reshape_function_updates | NOTE:Test data must be populated in the test database, then update reshape functions if API format changed`
     );
   }
 

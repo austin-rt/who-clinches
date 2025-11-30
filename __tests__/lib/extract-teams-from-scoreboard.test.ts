@@ -15,7 +15,7 @@ describe('extractTeamsFromScoreboard', () => {
       const available = await checkTestDataAvailable();
       if (!available.available) {
         throw new Error(
-          `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_data | MISSING_TYPES:${available.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | NOTE:Run /api/cron/update-test-data to populate test data`
+          `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:missing_data | MISSING_TYPES:${available.missing.join(',')} | EXPECTED:all_test_data_available | ACTUAL:missing_types | NOTE:Test data must be populated in the test database`
         );
       }
 
@@ -23,7 +23,7 @@ describe('extractTeamsFromScoreboard', () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       throw new Error(
-        `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | NOTE:Ensure test database is populated by running /api/cron/update-test-data`
+        `TEST_DATA_ERROR | ENTITY:TestData | ISSUE:load_failed | EXPECTED:test_data_loaded | ACTUAL:${errorMessage} | NOTE:Ensure test database is populated`
       );
     }
   });

@@ -36,7 +36,7 @@ export class MockESPNClient {
       const data = await Model.findOne({ season: SEASON }).sort({ week: 1 });
       if (!data) {
         throw new Error(
-          `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | NOTE:Run /api/cron/update-test-data to populate test data`
+          `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | NOTE:Test data must be populated in the test database`
         );
       }
       return data.response;
@@ -59,7 +59,7 @@ export class MockESPNClient {
         const fallback = await Model.findOne({ season: SEASON }).sort({ week: 1 });
         if (!fallback) {
           throw new Error(
-            `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | NOTE:Run /api/cron/update-test-data to populate test data`
+            `TEST_DATA_ERROR | ENTITY:ScoreboardTestData | ISSUE:missing_data | TYPE:scoreboard | SEASON:${SEASON} | EXPECTED:test_data_exists | ACTUAL:not_found | NOTE:Test data must be populated in the test database`
           );
         }
         return fallback.response;

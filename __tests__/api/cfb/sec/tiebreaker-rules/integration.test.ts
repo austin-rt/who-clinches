@@ -616,9 +616,9 @@ describe('SEC Tiebreaker Rules - Integration Tests', () => {
         explanations
       );
 
-      const hasRuleD = result.steps.some((step) => step.rule.includes('Opponent Win %'));
+      const hasRuleD = result.steps.some((step) => step.rule.includes('Opponent Win Percentage'));
       if (hasRuleD) {
-        const ruleDStep = result.steps.find((step) => step.rule.includes('Opponent Win %'));
+        const ruleDStep = result.steps.find((step) => step.rule.includes('Opponent Win Percentage'));
         if (ruleDStep) {
           expect(ruleDStep.survivors.length).toBeGreaterThan(0);
         }
@@ -919,10 +919,10 @@ describe('SEC Tiebreaker Rules - Integration Tests', () => {
       );
 
       const ruleNames = result.steps.map((step) => step.rule);
-      expect(ruleNames).toContain('A: Head-to-Head');
-      expect(ruleNames).toContain('B: Common Opponents');
+      expect(ruleNames).toContain('Head-to-Head');
+      expect(ruleNames).toContain('Common Opponents');
       const hasRuleC = ruleNames.some((rule) => rule.includes('Highest Placed Common Opponent'));
-      const hasRuleD = ruleNames.some((rule) => rule.includes('Opponent Win %'));
+      const hasRuleD = ruleNames.some((rule) => rule.includes('Opponent Win Percentage'));
       expect(hasRuleC || hasRuleD).toBe(true);
       if (hasRuleD) {
         expect(result.steps.length).toBeGreaterThan(3);
@@ -1492,10 +1492,10 @@ describe('SEC Tiebreaker Rules - Integration Tests', () => {
       );
 
       const ruleNames = result.steps.map((step) => step.rule);
-      expect(ruleNames).toContain('A: Head-to-Head');
-      expect(ruleNames).toContain('B: Common Opponents');
+      expect(ruleNames).toContain('Head-to-Head');
+      expect(ruleNames).toContain('Common Opponents');
       expect(ruleNames.some((rule) => rule.includes('Highest Placed Common Opponent'))).toBe(true);
-      expect(ruleNames.some((rule) => rule.includes('Opponent Win %'))).toBe(true);
+      expect(ruleNames.some((rule) => rule.includes('Opponent Win Percentage'))).toBe(true);
       expect(ruleNames.some((rule) => rule.includes('Scoring Margin'))).toBe(true);
       expect(result.steps.length).toBeGreaterThan(4);
     });
