@@ -11,7 +11,7 @@ All scheduled cron jobs have been replaced with on-demand API endpoints:
 - **POST /api/games/[sport]/[conf]** - Fetches from ESPN, upserts games, returns data (replaces update-games cron)
 - **POST /api/games/[sport]/[conf]/live** - Lightweight live game updates (scores/status only)
 - **POST /api/games/[sport]/[conf]/spreads** - Spread/odds updates only
-- Frontend polling drives all updates using RTK Query with conditional polling (starts 5 min before kickoff, polls every 5 min until games are post)
+- Frontend polling drives all updates using RTK Query with conditional polling (starts 5 min before kickoff, polls every 60 seconds until games are post, disabled in development)
 
 **Remaining Scheduled Workflow:**
 - **GitHub Actions**: `.github/workflows/update-espn-types.yml` - Type generation (runs daily at 10 PM ET)

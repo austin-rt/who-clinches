@@ -30,7 +30,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 **Our APIs:**
 - Data endpoints: No rate limit
-- Frontend polling: Conditional (every 5 min when games are active)
+- Frontend polling: Conditional (every 60 seconds for live games, every 2 minutes for spreads, disabled in development)
 
 ---
 

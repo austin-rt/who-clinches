@@ -25,9 +25,9 @@ The `useGamesData` hook implements conditional polling based on game states and 
 2. **Live Games Polling**: Starts when:
    - Games are in progress (`state: 'in'`), OR
    - Games are starting within 5 minutes of kickoff (`state: 'pre'` and game date is within 5 minutes)
-   - Polls `/api/games/[sport]/[conf]/live` every 5 minutes
+   - Polls `/api/games/[sport]/[conf]/live` every 60 seconds
    - Updates scores and game status only (lightweight)
-   - Works in both development and production environments
+   - Only works in production/preview environments (disabled in development)
    - Continues until all games are post (`state: 'post'`)
 3. **Pre-Game Spreads Polling**: When games are scheduled (`state: 'pre'`) and NOT starting within 5 minutes:
    - Only in production/preview environments (not localhost)
@@ -36,7 +36,7 @@ The `useGamesData` hook implements conditional polling based on game states and 
    - Updates betting odds and spreads only
 4. **No Polling**: When all games are post (`state: 'post'`)
 
-This strategy minimizes API calls while ensuring fresh data when users are actively viewing games. Polling starts 5 minutes before kickoff to ensure scores update immediately when games begin.
+This strategy minimizes API calls while ensuring fresh data when users are actively viewing games. Polling starts 5 minutes before kickoff to ensure scores update immediately when games begin. Live polling is disabled in development to reduce unnecessary API calls during local development.
 
 ---
 

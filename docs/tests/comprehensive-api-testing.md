@@ -31,7 +31,7 @@ BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
 **POST /api/games/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`. Expected: Status 200, `events` array (GameLean[] with `home`/`away` containing `teamEspnId`, `abbrev`, `score`, `rank` - note: `displayName`, `logo`, `color` are NOT in game objects, use `teams` array instead), `teams` array (TeamMetadata: `id`, `abbrev`, `name`, `displayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord`), `lastUpdated`. Example: `POST /api/games/cfb/sec`
 
-**POST /api/games/[sport]/[conf]/live**: Lightweight live game updates (scores/status only). Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated scores. Example: `/api/games/cfb/sec/live`
+**POST /api/games/[sport]/[conf]/live**: Lightweight live game updates (scores/status only). Body params: `season`, `force` (no `week` parameter - always queries current week). Expected: Status 200, `events` array with updated scores. Upserts games (creates if they don't exist). Recalculates predicted scores. Example: `/api/games/cfb/sec/live`
 
 **POST /api/games/[sport]/[conf]/spreads**: Spread/odds updates only. Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated odds. Example: `/api/games/cfb/sec/spreads`
 

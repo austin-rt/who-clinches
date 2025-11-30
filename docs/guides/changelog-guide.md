@@ -49,7 +49,7 @@ Before 1.0.0: Use `0.x.x` versions, breaking changes OK in MINOR versions (0.1.0
 - WebSocket Support: Real-time score updates
 ### Changed
 - API Response Format: `simulate` returns `standingsV2`
-- Cron Schedule: Live games update every 3 minutes (was 5)
+- Frontend Polling: Live games poll every 60 seconds (was 2 minutes)
 ### Fixed
 - Rule E Calculation: Fixed scoring margin bug
 ## [0.1.0] - 2025-11-12

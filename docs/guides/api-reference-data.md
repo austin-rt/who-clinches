@@ -78,8 +78,6 @@ Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 
 ---
 
----
-
 ## POST /api/simulate/[sport]/[conf]
 
 Simulates conference tiebreaker standings with optional user-provided game outcomes.

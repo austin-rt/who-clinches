@@ -11,7 +11,7 @@
 - `docs/ai-guide.md` - Core AI development guidelines (~2.8K tokens, 123 lines)
 - `docs/guides/quick-reference.md` - Domain-specific content locations (~1.1K tokens, 103 lines)
 - `docs/guides/api-reference.md` - API reference overview (~0.7K tokens, 87 lines)
-- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.0K tokens, 107 lines)
+- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.0K tokens, 106 lines)
 
 **Total Essential:** ~5.5K tokens (420 lines)
 

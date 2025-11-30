@@ -37,8 +37,11 @@
 
 **Example**: `/api/games/cfb/sec/live`
 - Lightweight live game updates (scores/status only)
-- Body params: `season`, `week`, `force`
+- Body params: `season`, `force` (no `week` parameter - always queries current week)
 - Used by frontend polling when games are in progress or starting within 5 minutes of kickoff
+- Polls every 60 seconds (disabled in development)
+- Upserts games (creates if they don't exist, updates if they do)
+- Recalculates predicted scores using full method (team stats, rankings, odds)
 
 ### POST /api/games/[sport]/[conf]/spreads
 
