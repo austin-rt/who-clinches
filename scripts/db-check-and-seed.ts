@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
@@ -279,7 +277,7 @@ async function main() {
 async function seedGames() {
   console.log('  Seeding games (this will also extract teams)...');
   try {
-    await fetchAPI(`${BASE_URL}/api/pull-games/${sportSlug}/${confSlug}`, {
+    await fetchAPI(`${BASE_URL}/api/games/${sportSlug}/${confSlug}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

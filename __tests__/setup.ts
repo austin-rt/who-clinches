@@ -1,4 +1,4 @@
-/* eslint-disable no-console, @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-require-imports */
 import 'dotenv/config';
 import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 

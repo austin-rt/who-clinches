@@ -105,16 +105,58 @@ export const applyRuleAHeadToHead = (
     .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
     .map((r) => r.teamId);
 
-  const teamAbbrevs = records.map((r) => {
+  // Build detail showing which teams beat which teams (only for winners)
+  const getTeamAbbrev = (teamId: string): string => {
     const game = games.find(
-      (g) => g.home.teamEspnId === r.teamId || g.away.teamEspnId === r.teamId
+      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
     );
-    return game?.home.teamEspnId === r.teamId ? game.home.abbrev : game?.away.abbrev || r.teamId;
-  });
+    return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+  };
 
-  const detail = teamAbbrevs
-    .map((abbrev, i) => `${abbrev}: ${records[i].wins}-${records[i].losses}`)
-    .join(', ');
+  // Only include games where the winning team is in the winners array
+  const winnersSet = new Set(winners);
+  const beatMap = new Map<string, string[]>();
+  
+  for (const game of h2hGames) {
+    if (game.home.score === null || game.away.score === null) continue;
+    
+    const homeId = game.home.teamEspnId;
+    const awayId = game.away.teamEspnId;
+    const homeAbbrev = getTeamAbbrev(homeId);
+    const awayAbbrev = getTeamAbbrev(awayId);
+    
+    if (game.home.score > game.away.score) {
+      // Home team won - only include if home team is a winner
+      if (winnersSet.has(homeId)) {
+        if (!beatMap.has(homeId)) {
+          beatMap.set(homeId, []);
+        }
+        beatMap.get(homeId)!.push(awayAbbrev);
+      }
+    } else {
+      // Away team won - only include if away team is a winner
+      if (winnersSet.has(awayId)) {
+        if (!beatMap.has(awayId)) {
+          beatMap.set(awayId, []);
+        }
+        beatMap.get(awayId)!.push(homeAbbrev);
+      }
+    }
+  }
+
+  // Build detail string: "TEX Beat VAN and OU"
+  const detailParts: string[] = [];
+  for (const [winnerId, beatenTeams] of beatMap.entries()) {
+    if (beatenTeams.length > 0) {
+      const winnerAbbrev = getTeamAbbrev(winnerId);
+      const beatenStr = beatenTeams.length === 1 
+        ? beatenTeams[0]
+        : beatenTeams.slice(0, -1).join(', ') + ' and ' + beatenTeams[beatenTeams.length - 1];
+      detailParts.push(`${winnerAbbrev} Beat ${beatenStr}`);
+    }
+  }
+
+  const detail = detailParts.length > 0 ? detailParts.join(', ') : 'No head-to-head games played';
 
   return { winners, detail };
 };
@@ -353,11 +395,15 @@ export const applyRuleDOpponentWinPercentage = (
 
     let totalWins = 0;
     let totalGames = 0;
+    const opponentDetails: string[] = [];
 
     for (const oppId of opponents) {
       const oppRecord = getTeamRecord(oppId, games);
+      const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
+      const oppAbbrev = oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
       totalWins += oppRecord.wins;
       totalGames += oppRecord.wins + oppRecord.losses;
+      opponentDetails.push(`${oppAbbrev}(${oppRecord.wins}-${oppRecord.losses})`);
     }
 
     const oppWinPct = totalGames === 0 ? 0 : totalWins / totalGames;
@@ -369,8 +415,8 @@ export const applyRuleDOpponentWinPercentage = (
   const winners = records
     .filter((r) => Math.abs(r.oppWinPct - maxOppWinPct) < EPSILON)
     .map((r) => r.teamId);
-
-  const detail = `Opponent win%: ${(maxOppWinPct * 100).toFixed(1)}%`;
+  
+  const detail = `${(maxOppWinPct * 100).toFixed(1)}%`;
 
   return { winners, detail };
 };
@@ -486,10 +532,13 @@ export const breakTie = (
     }
 
     const ruleA = applyRuleAHeadToHead(remaining, games);
+    const ruleATieBroken = ruleA.winners.length < remaining.length;
     steps.push({
-      rule: 'A: Head-to-Head',
+      rule: 'Head-to-Head',
       detail: ruleA.detail,
       survivors: ruleA.winners,
+      tieBroken: ruleATieBroken,
+      label: ruleATieBroken ? 'Advances' : 'Remaining',
     });
 
     if (ruleA.winners.length < remaining.length) {
@@ -528,23 +577,34 @@ export const breakTie = (
         });
       }
 
+      if (ruleA.winners.length === 1) {
+        ranked.push(ruleA.winners[0]);
+      }
+
       if (eliminated.length > 1) {
         const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
-      } else {
-        ranked.push(...eliminated);
+      } else if (eliminated.length === 1) {
+        ranked.push(eliminated[0]);
       }
 
-      remaining = ruleA.winners;
-      continue;
+      if (ruleA.winners.length > 1) {
+        remaining = ruleA.winners;
+        continue;
+      } else {
+        break;
+      }
     }
 
     const ruleB = applyRuleBCommonOpponents(remaining, games);
+    const ruleBTieBroken = ruleB.winners.length < remaining.length;
     steps.push({
-      rule: 'B: Common Opponents',
+      rule: 'Common Opponents',
       detail: ruleB.detail,
       survivors: ruleB.winners,
+      tieBroken: ruleBTieBroken,
+      label: ruleBTieBroken ? 'Advances' : 'Remaining',
     });
 
     if (ruleB.winners.length < remaining.length) {
@@ -592,10 +652,13 @@ export const breakTie = (
     }
 
     const ruleC = applyRuleCHighestPlacedOpponent(remaining, games, allTeams);
+    const ruleCTieBroken = ruleC.winners.length < remaining.length;
     steps.push({
-      rule: 'C: Highest Placed Common Opponent',
+      rule: 'Highest Placed Common Opponent',
       detail: ruleC.detail,
       survivors: ruleC.winners,
+      tieBroken: ruleCTieBroken,
+      label: ruleCTieBroken ? 'Advances' : 'Remaining',
     });
 
     if (ruleC.winners.length < remaining.length) {
@@ -624,10 +687,13 @@ export const breakTie = (
     }
 
     const ruleD = applyRuleDOpponentWinPercentage(remaining, games);
+    const ruleDTieBroken = ruleD.winners.length < remaining.length;
     steps.push({
-      rule: 'D: Opponent Win %',
+      rule: 'Opponent Win Percentage',
       detail: ruleD.detail,
       survivors: ruleD.winners,
+      tieBroken: ruleDTieBroken,
+      label: ruleDTieBroken ? 'Advances' : 'Remaining',
     });
 
     if (ruleD.winners.length < remaining.length) {
@@ -655,23 +721,34 @@ export const breakTie = (
         });
       }
 
+      if (ruleD.winners.length === 1) {
+        ranked.push(ruleD.winners[0]);
+      }
+
       if (eliminated.length > 1) {
         const eliminatedResult = breakTie(eliminated, games, allTeams, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
-      } else {
-        ranked.push(...eliminated);
+      } else if (eliminated.length === 1) {
+        ranked.push(eliminated[0]);
       }
 
-      remaining = ruleD.winners;
-      continue;
+      if (ruleD.winners.length > 1) {
+        remaining = ruleD.winners;
+        continue;
+      } else {
+        break;
+      }
     }
 
     const ruleE = applyRuleEScoringMargin(remaining, games);
+    const ruleETieBroken = ruleE.winners.length < remaining.length;
     steps.push({
-      rule: 'E: Scoring Margin',
+      rule: 'Scoring Margin',
       detail: ruleE.detail,
       survivors: ruleE.winners,
+      tieBroken: ruleETieBroken,
+      label: ruleETieBroken ? 'Advances' : 'Remaining',
     });
 
     if (ruleE.winners.length < remaining.length) {
@@ -720,9 +797,11 @@ export const breakTie = (
     }
 
     steps.push({
-      rule: 'F: Unresolved',
+      rule: 'Unresolved',
       detail: 'Tie unresolved by rules A-E',
       survivors: remaining,
+      tieBroken: false,
+      label: 'Remaining',
     });
     ranked.push(...remaining);
     break;
@@ -756,14 +835,16 @@ export const calculateStandings = (
 
   const orderedTeams: string[] = [];
 
-  for (const [, tiedTeams] of sortedGroups) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  for (const [_winPct, tiedTeams] of sortedGroups) {
     if (tiedTeams.length === 1) {
       orderedTeams.push(tiedTeams[0]);
     } else {
       const tieResult = breakTie(tiedTeams, games, allTeams, explanations);
       orderedTeams.push(...tieResult.ranked);
 
-      const teamAbbrevs = tiedTeams.map((teamId) => {
+      // Sort teams by their final rank order (from tieResult.ranked)
+      const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {
         const game = games.find(
           (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
         );
@@ -781,7 +862,7 @@ export const calculateStandings = (
       }));
 
       tieLogs.push({
-        teams: teamAbbrevs,
+        teams: tiedTeamAbbrevs,
         steps: stepsWithAbbrevs,
       });
     }
@@ -793,10 +874,190 @@ export const calculateStandings = (
 
     const team = game.home.teamEspnId === teamId ? game.home : game.away;
 
-    let explainPosition = `Conference record: ${record.wins}-${record.losses}`;
-    const teamExplanations = explanations.get(teamId);
-    if (teamExplanations && teamExplanations.length > 0) {
-      explainPosition += `. ${teamExplanations.join('. ')}`;
+    const recordKey = `${record.wins}-${record.losses}`;
+    const teamsWithSameRecord = orderedTeams
+      .map((tid, idx) => ({
+        teamId: tid,
+        rank: idx + 1,
+        record: teamRecords.find((r) => r.teamId === tid)!,
+      }))
+      .filter((t) => `${t.record.wins}-${t.record.losses}` === recordKey);
+
+    let explainPosition = '';
+
+    if (teamsWithSameRecord.length > 1) {
+      const currentIndex = teamsWithSameRecord.findIndex((t) => t.teamId === teamId);
+      const teamsAbove = teamsWithSameRecord.slice(0, currentIndex);
+      const teamsBelow = teamsWithSameRecord.slice(currentIndex + 1);
+
+      const getTeamShortNameFromId = (tid: string) => {
+        const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
+        if (!g) {
+          return tid;
+        }
+        
+        const shortDisplayName = g.home.teamEspnId === tid 
+          ? (g.home.shortDisplayName || g.home.displayName || g.home.abbrev)
+          : (g.away.shortDisplayName || g.away.displayName || g.away.abbrev || tid);
+        
+        return shortDisplayName || tid;
+      };
+
+      const findTieLog = () => {
+        return tieLogs.find((log) => {
+          const teamAbbrevs = teamsWithSameRecord.map((t) => {
+            const g = games.find((g) => g.home.teamEspnId === t.teamId || g.away.teamEspnId === t.teamId);
+            return g?.home.teamEspnId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
+          });
+          return teamAbbrevs.every((abbrev) => log.teams.includes(abbrev));
+        });
+      };
+
+      const tieLog = findTieLog();
+
+      // Helper function to find which step separated two teams
+      const findSeparatingStep = (team1Id: string, team2Id: string): number | null => {
+        if (!tieLog) return null;
+        
+        const getAbbrev = (tid: string) => {
+          const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
+          return g?.home.teamEspnId === tid ? g.home.abbrev : g?.away.abbrev || tid;
+        };
+        
+        const team1Abbrev = getAbbrev(team1Id);
+        const team2Abbrev = getAbbrev(team2Id);
+        
+        // Track which teams are still active (in the tie) at each step
+        let activeTeams = new Set(tieLog.teams);
+        
+        for (let i = 0; i < tieLog.steps.length; i++) {
+          const step = tieLog.steps[i];
+          const survivors = new Set(step.survivors);
+          
+          // Check if both teams were active before this step
+          const bothActive = activeTeams.has(team1Abbrev) && activeTeams.has(team2Abbrev);
+          
+          if (bothActive) {
+            // Check if only one team survived this step
+            const team1Survived = survivors.has(team1Abbrev);
+            const team2Survived = survivors.has(team2Abbrev);
+            
+            if (team1Survived !== team2Survived) {
+              // Teams were separated at this step
+              return i;
+            }
+          }
+          
+          // Update active teams to only include survivors
+          activeTeams = survivors;
+        }
+        
+        return null;
+      };
+
+      // Helper function to get reason text from a step
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const getReasonFromStep = (stepIndex: number, _isAbove: boolean): { reason: string; reasonValue: string } => {
+        if (!tieLog || stepIndex < 0 || stepIndex >= tieLog.steps.length) {
+          return { reason: '', reasonValue: '' };
+        }
+        
+        const step = tieLog.steps[stepIndex];
+        let reason = '';
+        let reasonValue = '';
+        
+        if (step.rule.includes('Head-to-Head')) {
+          reason = 'head-to-head record';
+        } else if (step.rule.includes('Common Opponents')) {
+          reason = 'record vs common opponents';
+        } else if (step.rule.includes('Highest Placed')) {
+          const oppMatch = step.detail.match(/Record vs (.+)/);
+          if (oppMatch) {
+            reason = `record against highest-placed common opponent (${oppMatch[1]})`;
+          } else {
+            reason = 'record against highest-placed common opponent';
+          }
+        } else if (step.rule.includes('Opponent Win Percentage')) {
+          const teamGames = games.filter(
+            (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+          );
+          const opponents = teamGames.map((g) =>
+            g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+          );
+          let totalWins = 0;
+          let totalGames = 0;
+          for (const oppId of opponents) {
+            const oppRecord = getTeamRecord(oppId, games);
+            totalWins += oppRecord.wins;
+            totalGames += oppRecord.wins + oppRecord.losses;
+          }
+          const teamOppWinPct = totalGames === 0 ? 0 : totalWins / totalGames;
+          reason = 'conference opponent win percentage';
+          reasonValue = ` (${teamOppWinPct.toFixed(4)})`;
+        } else if (step.rule.includes('Scoring Margin')) {
+          reason = 'scoring margin';
+        } else {
+          reason = step.detail.toLowerCase();
+        }
+        
+        return { reason, reasonValue };
+      };
+
+      const parts: string[] = [];
+
+      // Group teams above by the step that separated them
+      if (teamsAbove.length > 0) {
+        const teamsByStep = new Map<number, string[]>();
+        
+        for (const otherTeam of teamsAbove) {
+          const stepIndex = findSeparatingStep(teamId, otherTeam.teamId);
+          if (stepIndex !== null) {
+            if (!teamsByStep.has(stepIndex)) {
+              teamsByStep.set(stepIndex, []);
+            }
+            teamsByStep.get(stepIndex)!.push(otherTeam.teamId);
+          }
+        }
+        
+        // Sort steps by index (A-F order)
+        const sortedSteps = Array.from(teamsByStep.entries()).sort((a, b) => a[0] - b[0]);
+        
+        for (const [stepIndex, teamIds] of sortedSteps) {
+          const { reason, reasonValue } = getReasonFromStep(stepIndex, true);
+          if (reason) {
+            const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
+            parts.push(`Behind ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
+          }
+        }
+      }
+
+      // Group teams below by the step that separated them
+      if (teamsBelow.length > 0) {
+        const teamsByStep = new Map<number, string[]>();
+        
+        for (const otherTeam of teamsBelow) {
+          const stepIndex = findSeparatingStep(teamId, otherTeam.teamId);
+          if (stepIndex !== null) {
+            if (!teamsByStep.has(stepIndex)) {
+              teamsByStep.set(stepIndex, []);
+            }
+            teamsByStep.get(stepIndex)!.push(otherTeam.teamId);
+          }
+        }
+        
+        // Sort steps by index (A-F order)
+        const sortedSteps = Array.from(teamsByStep.entries()).sort((a, b) => a[0] - b[0]);
+        
+        for (const [stepIndex, teamIds] of sortedSteps) {
+          const { reason, reasonValue } = getReasonFromStep(stepIndex, false);
+          if (reason) {
+            const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
+            parts.push(`Ahead of ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
+          }
+        }
+      }
+
+      explainPosition = parts.join(' ');
     }
 
     return {

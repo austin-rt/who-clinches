@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-
 import { stopMongoMemoryServer } from '../mocks/mongodb-memory-server.mock';
 import { checkTestDataAvailable } from './test-data-loader';
 import dbConnect from '@/lib/mongodb';
