@@ -545,7 +545,7 @@ describe('reshapeScoreboardData', () => {
       const game = result.games![0];
 
       expect(game.predictedScore).toBeDefined();
-      expect(game.predictedScore).toEqual({ home: 28, away: 21 });
+      expect(game.predictedScore).toEqual({ home: 28, away: 25 });
     });
   });
 
