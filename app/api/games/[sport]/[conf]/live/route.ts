@@ -6,10 +6,13 @@ import ErrorModel from '@/lib/models/Error';
 import { createESPNClient } from '@/lib/cfb/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
-import { GameLean } from '@/lib/types';
+import { GameLean, TeamLean } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
-import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
+import {
+  calculatePredictedScore,
+  getDefaultPredictedScore,
+} from '@/lib/cfb/helpers/prefill-helpers';
 
 const parseRankFromStanding = (standing: string): number | null => {
   const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
@@ -76,20 +79,50 @@ export const POST = async (
           season: seasonYear,
         });
 
-        const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear);
-        const conferenceGamesOnly =
-          reshaped.games?.filter((game) => game.conferenceGame === true) || [];
+        const teamIdsFromScoreboard = new Set<string>();
+        if (scoreboardResponse.events) {
+          for (const event of scoreboardResponse.events) {
+            const competition = event.competitions?.[0];
+            if (competition?.competitors) {
+              for (const competitor of competition.competitors) {
+                if (competitor.team?.id) {
+                  teamIdsFromScoreboard.add(competitor.team.id);
+                }
+              }
+            }
+          }
+        }
+
+        const teams = await Team.find({ _id: { $in: Array.from(teamIdsFromScoreboard) } })
+          .lean()
+          .exec();
+        const teamMap = new Map<string, TeamLean>(
+          teams.map((t) => {
+            const team = t as unknown as TeamLean;
+            return [
+              String(t._id),
+              {
+                ...team,
+                record: team.record || {
+                  overall: '0-0',
+                  conference: '0-0',
+                  home: '0-0',
+                  away: '0-0',
+                  stats: {},
+                },
+                conferenceStanding: team.conferenceStanding || '',
+                nationalRanking: team.nationalRanking ?? null,
+                playoffSeed: team.playoffSeed ?? null,
+                nextGameId: team.nextGameId ?? null,
+              },
+            ];
+          })
+        );
+
+        const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear, teamMap);
+        const conferenceGamesOnly = reshaped.games.filter((game) => game.conferenceGame === true);
 
         if (conferenceGamesOnly.length > 0) {
-          const teamIds = [
-            ...new Set([
-              ...conferenceGamesOnly.map((g) => g.home.teamEspnId),
-              ...conferenceGamesOnly.map((g) => g.away.teamEspnId),
-            ]),
-          ];
-          const teams = await Team.find({ _id: { $in: teamIds } }).lean();
-          const teamMap = new Map(teams.map((t) => [String(t._id), t]));
-
           for (const game of conferenceGamesOnly) {
             try {
               const homeTeam = teamMap.get(game.home.teamEspnId) || {};
@@ -191,12 +224,24 @@ export const POST = async (
         home: {
           teamEspnId: String(game.home.teamEspnId),
           abbrev: String(game.home.abbrev),
+          displayName: game.home.displayName || game.home.abbrev || '',
+          shortDisplayName:
+            game.home.shortDisplayName || game.home.displayName || game.home.abbrev || '',
+          logo: game.home.logo || '',
+          color: game.home.color || '',
+          alternateColor: game.home.alternateColor || '000000',
           score: game.home.score ?? null,
           rank: game.home.rank ?? null,
         },
         away: {
           teamEspnId: String(game.away.teamEspnId),
           abbrev: String(game.away.abbrev),
+          displayName: game.away.displayName || game.away.abbrev || '',
+          shortDisplayName:
+            game.away.shortDisplayName || game.away.displayName || game.away.abbrev || '',
+          logo: game.away.logo || '',
+          color: game.away.color || '',
+          alternateColor: game.away.alternateColor || '000000',
           score: game.away.score ?? null,
           rank: game.away.rank ?? null,
         },
@@ -212,7 +257,7 @@ export const POST = async (
               home: Number(game.predictedScore.home),
               away: Number(game.predictedScore.away),
             }
-          : undefined,
+          : getDefaultPredictedScore(),
       };
 
       return gameLean;

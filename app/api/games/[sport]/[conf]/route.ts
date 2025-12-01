@@ -5,23 +5,16 @@ import Team from '@/lib/models/Team';
 import ErrorModel from '@/lib/models/Error';
 import { createESPNClient } from '@/lib/cfb/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
-import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
+import {
+  calculatePredictedScore,
+  getDefaultPredictedScore,
+} from '@/lib/cfb/helpers/prefill-helpers';
 import { extractTeamsFromScoreboard } from '@/lib/reshape-teams-from-scoreboard';
+import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { MongoQuery, GameLean, TeamLean, GameState } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { isInSeasonFromESPN } from '@/lib/cfb/helpers/season-check-espn';
-
-const parseRankFromStanding = (standing: string): number | null => {
-  const match = standing.match(/^(\d+)(?:st|nd|rd|th)/i);
-  if (match) {
-    return parseInt(match[1], 10);
-  }
-  if (standing.toLowerCase().includes('tied for 1st')) {
-    return 1;
-  }
-  return null;
-};
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -51,9 +44,10 @@ const queryGamesFromDatabase = async (
   query.league = espnLeague;
 
   if (from || to) {
-    query.date = {};
-    if (from) query.date.$gte = from;
-    if (to) query.date.$lte = to;
+    query.date = {
+      ...(from && { $gte: from }),
+      ...(to && { $lte: to }),
+    };
   }
 
   query.conferenceGame = true;
@@ -96,12 +90,24 @@ const queryGamesFromDatabase = async (
       home: {
         teamEspnId: String(game.home?.teamEspnId || ''),
         abbrev: String(game.home?.abbrev || ''),
+        displayName: game.home?.displayName || game.home?.abbrev || '',
+        shortDisplayName:
+          game.home?.shortDisplayName || game.home?.displayName || game.home?.abbrev || '',
+        logo: game.home?.logo || '',
+        color: game.home?.color || '',
+        alternateColor: game.home?.alternateColor || '000000',
         score: typeof game.home?.score === 'number' ? game.home.score : null,
         rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
       },
       away: {
         teamEspnId: String(game.away?.teamEspnId || ''),
         abbrev: String(game.away?.abbrev || ''),
+        displayName: game.away?.displayName || game.away?.abbrev || '',
+        shortDisplayName:
+          game.away?.shortDisplayName || game.away?.displayName || game.away?.abbrev || '',
+        logo: game.away?.logo || '',
+        color: game.away?.color || '',
+        alternateColor: game.away?.alternateColor || '000000',
         score: typeof game.away?.score === 'number' ? game.away.score : null,
         rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
       },
@@ -114,10 +120,10 @@ const queryGamesFromDatabase = async (
       },
       predictedScore: game.predictedScore
         ? {
-            home: Number(game.predictedScore?.home || 0),
-            away: Number(game.predictedScore?.away || 0),
+            home: Number(game.predictedScore.home || 0),
+            away: Number(game.predictedScore.away || 0),
           }
-        : undefined,
+        : getDefaultPredictedScore(),
     })
   );
 
@@ -168,13 +174,37 @@ const queryGamesFromDatabase = async (
       logo: String(team.logo),
       color: String(team.color || '000000'),
       alternateColor: String(team.alternateColor || '000000'),
-      conferenceStanding: team.conferenceStanding ? String(team.conferenceStanding) : undefined,
+      conferenceStanding: team.conferenceStanding ? String(team.conferenceStanding) : '',
     })
   );
 
+  const completedConferenceGames = games.filter(
+    (game) =>
+      game.completed && game.conferenceGame && game.home.score !== null && game.away.score !== null
+  );
+
+  const allConferenceTeamIds = conferenceTeams.map((team) => String(team._id));
+  const standingsMap = new Map<
+    string,
+    { rank: number; confRecord: { wins: number; losses: number } }
+  >();
+
+  if (completedConferenceGames.length > 0) {
+    const { standings } = calculateStandingsFromCompletedGames(
+      completedConferenceGames,
+      allConferenceTeamIds
+    );
+    for (const standing of standings) {
+      standingsMap.set(standing.teamId, {
+        rank: standing.rank,
+        confRecord: standing.confRecord,
+      });
+    }
+  }
+
   const teamMap: Record<string, TeamMetadata> = {};
   for (const team of teams) {
-    const teamRaw = teamsRaw.find((t) => String(t._id) === team._id);
+    const standing = standingsMap.get(team._id);
     const conferenceStanding = team.conferenceStanding || 'Tied for 1st';
     teamMap[team._id] = {
       id: team._id,
@@ -187,8 +217,10 @@ const queryGamesFromDatabase = async (
       alternateColor:
         team.alternateColor && team.alternateColor !== 'undefined' ? team.alternateColor : '000000',
       conferenceStanding,
-      conferenceRecord: teamRaw?.record?.conference || '0-0',
-      rank: parseRankFromStanding(conferenceStanding),
+      conferenceRecord: standing
+        ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
+        : teamsRaw.find((t) => String(t._id) === team._id)?.record?.conference || '0-0',
+      rank: standing ? standing.rank : null,
     };
   }
 
@@ -299,6 +331,10 @@ export const POST = async (
       );
     }
 
+    const [espnSport, espnLeague] = espnRoute.split('/');
+    query.sport = espnSport;
+    query.league = espnLeague;
+
     const bypassSeasonCheck = force || process.env.NODE_ENV === 'test';
     const shouldFetchFromESPN = bypassSeasonCheck || (await isInSeasonFromESPN(sport, conf));
 
@@ -356,27 +392,6 @@ export const POST = async (
                 ? existingTeam.conferenceStanding
                 : undefined;
 
-            let conferenceRecord: string | undefined;
-            try {
-              const recordsResponse = await client.getTeamRecords(teamId, seasonYear, 2);
-              const confRecord = recordsResponse.items?.find((item) => item.type === 'vsconf');
-              if (confRecord?.summary) {
-                conferenceRecord = confRecord.summary;
-              }
-            } catch {
-              const existingRecord =
-                existingTeam &&
-                !Array.isArray(existingTeam) &&
-                existingTeam.record &&
-                typeof existingTeam.record === 'object' &&
-                'conference' in existingTeam.record
-                  ? (existingTeam.record as { conference?: string }).conference
-                  : undefined;
-              if (existingRecord) {
-                conferenceRecord = existingRecord;
-              }
-            }
-
             const updateData: Record<string, unknown> = {
               $set: {
                 lastUpdated: new Date(),
@@ -403,10 +418,6 @@ export const POST = async (
               (updateData.$set as Record<string, unknown>).conferenceStanding = 'Tied for 1st';
             }
 
-            if (conferenceRecord) {
-              (updateData.$set as Record<string, unknown>)['record.conference'] = conferenceRecord;
-            }
-
             await Team.findOneAndUpdate({ _id: teamId }, updateData, {
               upsert: true,
               new: true,
@@ -422,20 +433,50 @@ export const POST = async (
           }
         }
 
-        const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear);
-        const conferenceGamesOnly =
-          reshaped.games?.filter((game) => game.conferenceGame === true) || [];
+        const teamIdsFromScoreboard = new Set<string>();
+        if (scoreboardResponse.events) {
+          for (const event of scoreboardResponse.events) {
+            const competition = event.competitions?.[0];
+            if (competition?.competitors) {
+              for (const competitor of competition.competitors) {
+                if (competitor.team?.id) {
+                  teamIdsFromScoreboard.add(competitor.team.id);
+                }
+              }
+            }
+          }
+        }
+
+        const teams = await Team.find({ _id: { $in: Array.from(teamIdsFromScoreboard) } })
+          .lean()
+          .exec();
+        const teamMap = new Map<string, TeamLean>(
+          teams.map((t) => {
+            const team = t as unknown as TeamLean;
+            return [
+              String(t._id),
+              {
+                ...team,
+                record: team.record || {
+                  overall: '0-0',
+                  conference: '0-0',
+                  home: '0-0',
+                  away: '0-0',
+                  stats: {},
+                },
+                conferenceStanding: team.conferenceStanding || '',
+                nationalRanking: team.nationalRanking ?? null,
+                playoffSeed: team.playoffSeed ?? null,
+                nextGameId: team.nextGameId ?? null,
+              },
+            ];
+          })
+        );
+
+        const reshaped = reshapeScoreboardData(scoreboardResponse, espnRoute, seasonYear, teamMap);
+        const conferenceGamesOnly = reshaped.games.filter((game) => game.conferenceGame === true);
 
         if (conferenceGamesOnly.length > 0) {
-          const teamIds = [
-            ...new Set([
-              ...conferenceGamesOnly.map((g) => g.home.teamEspnId),
-              ...conferenceGamesOnly.map((g) => g.away.teamEspnId),
-            ]),
-          ];
-          const teams = await Team.find({ _id: { $in: teamIds } }).lean();
-          const teamMap = new Map(teams.map((t) => [String(t._id), t]));
-
           for (const game of conferenceGamesOnly) {
             try {
               const homeTeam = teamMap.get(game.home.teamEspnId) || {};

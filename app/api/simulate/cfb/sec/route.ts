@@ -9,6 +9,7 @@ import {
 import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
 import { GameLean, GameState } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
+import { getDefaultPredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -48,11 +49,6 @@ export const POST = async (
 
     const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
 
-    const teamMap = new Map<string, (typeof conferenceTeams)[0]>();
-    for (const team of conferenceTeams) {
-      teamMap.set(String(team._id), team);
-    }
-
     const allConferenceGamesRaw = await Game.find({
       season,
       conferenceGame: true,
@@ -74,9 +70,6 @@ export const POST = async (
     }
 
     const games: GameLean[] = gamesRaw.map((game): GameLean => {
-      const homeTeam = teamMap.get(String(game.home?.teamEspnId || ''));
-      const awayTeam = teamMap.get(String(game.away?.teamEspnId || ''));
-
       return {
         _id: String(game._id),
         espnId: String(game.espnId),
@@ -99,20 +92,22 @@ export const POST = async (
         home: {
           teamEspnId: String(game.home?.teamEspnId || ''),
           abbrev: String(game.home?.abbrev || ''),
-          displayName: homeTeam?.displayName || game.home?.abbrev || '',
-          shortDisplayName: homeTeam?.shortDisplayName || game.home?.abbrev || '',
-          logo: homeTeam?.logo || '',
-          color: homeTeam?.color || '000000',
+          displayName: game.home?.displayName || game.home?.abbrev || '',
+          shortDisplayName: game.home?.shortDisplayName || game.home?.abbrev || '',
+          logo: game.home?.logo || '',
+          color: game.home?.color || '000000',
+          alternateColor: game.home?.alternateColor || '000000',
           score: typeof game.home?.score === 'number' ? game.home.score : null,
           rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
         },
         away: {
           teamEspnId: String(game.away?.teamEspnId || ''),
           abbrev: String(game.away?.abbrev || ''),
-          displayName: awayTeam?.displayName || game.away?.abbrev || '',
-          shortDisplayName: awayTeam?.shortDisplayName || game.away?.abbrev || '',
-          logo: awayTeam?.logo || '',
-          color: awayTeam?.color || '000000',
+          displayName: game.away?.displayName || game.away?.abbrev || '',
+          shortDisplayName: game.away?.shortDisplayName || game.away?.abbrev || '',
+          logo: game.away?.logo || '',
+          color: game.away?.color || '000000',
+          alternateColor: game.away?.alternateColor || '000000',
           score: typeof game.away?.score === 'number' ? game.away.score : null,
           rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
         },
@@ -125,10 +120,10 @@ export const POST = async (
         },
         predictedScore: game.predictedScore
           ? {
-              home: Number(game.predictedScore?.home || 0),
-              away: Number(game.predictedScore?.away || 0),
+              home: Number(game.predictedScore.home || 0),
+              away: Number(game.predictedScore.away || 0),
             }
-          : undefined,
+          : getDefaultPredictedScore(),
       };
     });
 
