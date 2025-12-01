@@ -48,19 +48,9 @@
     "Stat.value": "number",
     "NextEvent.id": "string"
   },
-  "teamRecords": {
-    "EspnTeamRecordsGenerated.items": "Item[]",
-    "Item.type": "string",
-    "Item.summary": "string",
-    "Item.stats": "Stat[]",
-    "Stat.name": "string",
-    "Stat.value": "number",
-    "Item.name": "string"
-  },
   "extractedAt": "2025-11-29T21:43:40.343Z",
   "fieldCount": {
     "scoreboard": 42,
-    "team": 20,
-    "teamRecords": 7
+    "team": 20
   }
 }
