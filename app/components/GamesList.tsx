@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
+import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
 import { organizeGames } from '@/lib/utils/organizeGames';
 import FinalWeeks from './FinalWeeks';
 import RemainingWeeks from './RemainingWeeks';
@@ -24,6 +25,8 @@ const GamesList = ({ season }: GamesListProps) => {
     conf,
     season,
   });
+
+  useSyncGamePicksWithView({ games: enrichedGames, view });
 
   const { finalWeeks, remainingWeeks } = organizeGames(enrichedGames);
 
