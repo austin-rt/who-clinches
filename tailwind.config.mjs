@@ -12,6 +12,10 @@ const config = {
       colors: {
         'base-400': 'var(--color-base-400)',
       },
+      fontSize: {
+        'xxs': '10px',
+        'xxxs': '8px',
+      },
     },
   },
   plugins: [daisyui],
