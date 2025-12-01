@@ -2,6 +2,7 @@
 
 import { GameLean } from '@/lib/types';
 import Team from './Team';
+import TeamRankAbbrev from './TeamRankAbbrev';
 import Score from './Score';
 import SpreadBadge from './SpreadBadge';
 import LiveBadge from './LiveBadge';
@@ -14,8 +15,8 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   return (
-    <div className="card card-sm relative bg-base-200 shadow-md dark:bg-base-300">
-      <div className="card-body flex flex-col gap-4 px-2">
+    <div className="boarder-base:300 card card-sm relative border-2 bg-base-200 shadow-md dark:border-base-400 dark:bg-base-300">
+      <div className="card-body flex flex-col gap-2 px-2">
         <div className="flex items-center justify-between">
           <TimeDisplay date={game.date} timezone={game.venue.timezone} />
           {game.state === 'in' && <LiveBadge />}
@@ -24,12 +25,12 @@ const GameCard = ({ game }: GameCardProps) => {
         <div className="flex items-center justify-evenly">
           <div className="flex flex-col items-center gap-1">
             <Team team={game.away} showLogoOnly />
-            <span className="text-center text-xs font-semibold md:text-sm">{game.away.abbrev}</span>
+            <TeamRankAbbrev team={game.away} />
           </div>
-          <Score game={game} separate />
+          <Score game={game} />
           <div className="flex flex-col items-center gap-1">
             <Team team={game.home} showLogoOnly />
-            <span className="text-center text-xs font-semibold md:text-sm">{game.home.abbrev}</span>
+            <TeamRankAbbrev team={game.home} />
           </div>
         </div>
 
