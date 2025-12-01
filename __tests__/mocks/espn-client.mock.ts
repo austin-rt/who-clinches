@@ -1,10 +1,8 @@
 import type { EspnScoreboardGenerated } from '@/lib/espn/espn-scoreboard-generated';
 import type { EspnTeamGenerated } from '@/lib/espn/espn-team-generated';
-import type { EspnTeamRecordsGenerated } from '@/lib/espn/espn-team-records-generated';
 import type { EspnGameSummaryGenerated } from '@/lib/espn/espn-game-summary-generated';
 import {
   loadTeamTestData,
-  loadTeamRecordsTestData,
   loadGameSummaryTestData,
 } from '../helpers/test-data-loader';
 import dbConnect from '@/lib/mongodb';
@@ -79,17 +77,6 @@ export class MockESPNClient {
   async getTeam(teamAbbrev: string): Promise<EspnTeamGenerated> {
     void teamAbbrev;
     return await loadTeamTestData();
-  }
-
-  async getTeamRecords(
-    teamId: string,
-    season: number = SEASON,
-    seasonType: number = 2
-  ): Promise<EspnTeamRecordsGenerated> {
-    void teamId;
-    void season;
-    void seasonType;
-    return await loadTeamRecordsTestData();
   }
 
   async getGameSummary(gameId: string): Promise<EspnGameSummaryGenerated> {

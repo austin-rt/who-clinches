@@ -41,6 +41,8 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     rank: null,
     logo: '',
     color: '000000',
+    shortDisplayName: game.home.abbrev,
+    alternateColor: '000000',
   },
   away: {
     teamEspnId: game.away.teamEspnId,
@@ -50,6 +52,8 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     rank: null,
     logo: '',
     color: '000000',
+    shortDisplayName: game.away.abbrev,
+    alternateColor: '000000',
   },
   predictedScore: { home: 28, away: 24 },
   odds: {

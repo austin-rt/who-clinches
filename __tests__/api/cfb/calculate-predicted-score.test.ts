@@ -43,6 +43,8 @@ const createReshapedGame = (
     rank: null,
     logo: '',
     color: 'ba0c2f',
+    shortDisplayName: 'Alabama',
+    alternateColor: '000000',
   },
   away: {
     teamEspnId: '2335',
@@ -52,6 +54,8 @@ const createReshapedGame = (
     rank: null,
     logo: '',
     color: '4d1d4d',
+    shortDisplayName: 'LSU',
+    alternateColor: '000000',
   },
   predictedScore,
   odds: {
