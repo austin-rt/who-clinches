@@ -180,7 +180,12 @@ export const POST = async (
       }
     }
 
-    const query: Record<string, unknown> = { conferenceGame: true };
+    const [espnSport, espnLeague] = espnRoute.split('/');
+    const query: Record<string, unknown> = {
+      conferenceGame: true,
+      sport: espnSport,
+      league: espnLeague,
+    };
     if (season) query.season = parseInt(season, 10);
 
     const conferenceTeams = await Team.find({
