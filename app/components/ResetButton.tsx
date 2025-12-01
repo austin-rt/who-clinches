@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@/lib/utils';
 import { useAppDispatch } from '../store/hooks';
 import { clearAllPicks } from '../store/gamePicksSlice';
 import { useUIState } from '@/app/store/useUI';
@@ -7,11 +8,12 @@ import { Button } from './Button';
 
 interface ResetButtonProps {
   onReset?: () => void;
+  className?: string;
 }
 
-const ResetButton = ({ onReset }: ResetButtonProps) => {
+const ResetButton = ({ onReset, className }: ResetButtonProps) => {
   const dispatch = useAppDispatch();
-  const { mode } = useUIState();
+  const { mode, view } = useUIState();
 
   const handleClick = () => {
     dispatch(clearAllPicks());
@@ -22,12 +24,12 @@ const ResetButton = ({ onReset }: ResetButtonProps) => {
 
   return (
     <Button.Stroked
-      size="sm"
+      size="md"
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleClick}
-      className="w-fit text-xs"
+      className={cn('text-xs', className)}
     >
-      Reset
+      {view === 'picks' ? 'Reset Picks' : 'Reset Scores'}
     </Button.Stroked>
   );
 };

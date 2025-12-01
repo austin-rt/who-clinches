@@ -87,15 +87,16 @@ const SimulateButton = ({ season, onSimulateComplete }: SimulateButtonProps) => 
   const hasPicks = Object.keys(gamePicks).length > 0;
 
   return (
-    <Button.Stroked
+    <Button
+      size="md"
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleSimulate}
       disabled={!hasPicks || isLoading}
       loading={isLoading}
-      className="text-xs"
+      className="w-1/2 text-xs sm:w-fit"
     >
       Calculate Standings
-    </Button.Stroked>
+    </Button>
   );
 };
 
