@@ -1,6 +1,6 @@
 # Who Clinches
 
-A web application for simulating SEC Football standings and exploring tiebreaker scenarios. Built with Next.js 16, TypeScript, MongoDB, and the ESPN public API.
+A web application that simulates game outcomes to show who clinches playoff spots and conference championships. Built with Next.js 16, TypeScript, MongoDB, and the ESPN public API.
 
 ## Overview
 

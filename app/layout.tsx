@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Who Clinches',
-  description: 'SEC Football Tiebreaker Calculator',
+  description: 'Simulate game outcomes to see who clinches playoff spots and conference championships',
 };
 
 export default function RootLayout({
