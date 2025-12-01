@@ -47,7 +47,7 @@ const SpreadBadge = ({ game }: SpreadBadgeProps) => {
 
   return (
     <div
-      className={cn('badge badge-soft badge-sm border-0 text-center text-[10px] dark:bg-gray-500', {
+      className={cn('text-xxs badge badge-soft badge-sm border-0 text-center dark:bg-gray-500', {
         'self-end': isHomeFavorite,
         'self-start': isAwayFavorite,
       })}

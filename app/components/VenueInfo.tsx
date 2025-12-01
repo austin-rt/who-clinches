@@ -8,13 +8,15 @@ interface VenueInfoProps {
 
 const VenueInfo = ({ venue }: VenueInfoProps) => {
   return (
-    <div className="text-base-content/60 text-xs md:text-sm">
-      {venue.fullName}
+    <div className="flex w-full items-center gap-1">
+      <div>{venue.fullName}</div>
       {venue.city && venue.state && (
-        <span className="text-base-content/50 text-xs md:text-sm">
-          {' '}
-          • {venue.city}, {venue.state}
-        </span>
+        <>
+          <div>•</div>
+          <div>
+            {venue.city}, {venue.state}
+          </div>
+        </>
       )}
     </div>
   );

@@ -28,9 +28,7 @@ const TimeDisplay = ({ date, timezone }: TimeDisplayProps) => {
     return `${browserTime} (${stadiumTimeOnly} local)`;
   };
 
-  return (
-    <div className="text-base-content/60 text-xs md:text-sm">{formatDate(date, timezone)}</div>
-  );
+  return <div>{formatDate(date, timezone)}</div>;
 };
 
 export default TimeDisplay;
