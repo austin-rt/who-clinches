@@ -19,7 +19,7 @@ export interface GameFromResponse {
     score?: number;
     rank?: number;
   };
-  predictedScore?: {
+  predictedScore: {
     home: number;
     away: number;
   };
