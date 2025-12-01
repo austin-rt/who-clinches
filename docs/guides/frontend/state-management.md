@@ -37,6 +37,7 @@ interface UIState {
   view: ViewMode;                   // 'picks' | 'scores'
   hideCompletedGames: boolean;       // Hide completed games in picks mode
   lastUpdated: string | null;       // ISO timestamp from API
+  standingsOpen: boolean;            // Whether standings panel is open
 }
 ```
 
@@ -46,6 +47,7 @@ interface UIState {
 - `setView(view: ViewMode)`
 - `setHideCompletedGames(hide: boolean)`
 - `setLastUpdated(timestamp: string)`
+- `setStandingsOpen(open: boolean)`
 
 **Usage:** `useUIState()` hook provides state and actions.
 
@@ -83,12 +85,18 @@ interface GamePicksState {
 **Configuration:**
 
 **Persistence Config** (`app/store/store.ts`):
-- `uiPersistConfig`: key `'ui'`, blacklist `['lastUpdated']` (server data)
-- `gamePicksPersistConfig`: key `'gamePicks'`
+- `uiPersistConfig`: key `'ui'`, blacklist `['lastUpdated', 'standingsOpen']` (server data)
+- `gamePicksPersistConfig`: key `'gamePicks'`, includes `redux-persist-expire` transform
+  - Expires after 1 hour (3600 seconds) of inactivity
+  - Automatically clears picks when expired
+  - Expiration timer resets on each state update
 - localStorage keys: `persist:ui`, `persist:gamePicks`
 - Middleware: redux-persist actions ignored in serializableCheck
 
 **Usage:** Components dispatch Redux actions normally - persistence is automatic.
+
+**Game Picks Expiration:**
+Game picks are automatically cleared from localStorage after 1 hour of inactivity. The expiration timer resets whenever picks are updated, ensuring active users retain their selections. This prevents stale simulation data from persisting across sessions.
 
 **Notes:** API slice (RTK Query) is NOT persisted. State restored on app load via `PersistGate`.
 
