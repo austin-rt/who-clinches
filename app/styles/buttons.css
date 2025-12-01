@@ -2,7 +2,35 @@
 @tailwind utilities;
 
 @layer components {
-  .btn-stroke {
+  .btn-primary {
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      @apply bg-primary text-white;
+
+      &:hover {
+        background-color: hsl(var(--p) / 0.9);
+      }
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      @apply bg-base-content text-base-100;
+
+      &:hover {
+        background-color: hsl(var(--bc) / 0.9);
+      }
+    }
+  }
+
+  .btn-accent {
+    @apply bg-accent text-base-100;
+
+    &:hover {
+      background-color: hsl(var(--a) / 0.9);
+    }
+  }
+
+  .btn.btn-stroke {
     @apply border-2 bg-transparent;
 
     &.btn-primary {
