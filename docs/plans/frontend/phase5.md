@@ -29,7 +29,7 @@
 // Fetches teams from /api/teams
 // Dynamically injects CSS for each team theme
 // Renders: dropdown with all teams from database + "[Conference] Default"
-// On selection: sets data-theme attribute and saves to localStorage
+// On selection: sets data-theme attribute and dispatches Redux action (persisted via redux-persist)
 
 // app/hooks/useTeams.ts
 // Fetches teams from /api/teams
@@ -45,12 +45,12 @@
 - [ ] Create TeamThemeSelector component with custom dropdown
 - [ ] Handle loading state (themes not available until API loads)
 - [ ] Populate dropdown with teams from API
-- [ ] Save selection to localStorage on change
+- [ ] Dispatch Redux action on selection change (persisted automatically via redux-persist)
 - [ ] Update Header to include TeamThemeSelector
 - [ ] Add visual indicator of current theme
 - [ ] Test theme persistence across page refreshes
 - [ ] Ensure all components update colors when theme changes
-- [ ] Handle error cases (API failure, localStorage corruption)
+- [ ] Handle error cases (API failure, Redux state corruption)
 
 **Technical Discussion:**
 
@@ -65,7 +65,7 @@
 3. Click selector - should show dropdown with all teams from database + "[Conference] Default"
 4. Select a team - page colors change to team theme
 5. Select different team - colors change immediately
-6. Check localStorage - key should show selected team
+6. Check Redux state (or redux-persist localStorage key `persist:ui`) - should show selected team
 7. Refresh page - selected theme should persist
 8. Test all teams - each should have distinct colors
 9. Verify championship highlighting works with each theme

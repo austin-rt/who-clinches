@@ -37,7 +37,7 @@ export class ESPNClient {
         url,
         {
           headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+            'User-Agent': 'Who-Clinches/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -62,7 +62,7 @@ export class ESPNClient {
         url,
         {
           headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+            'User-Agent': 'Who-Clinches/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -87,7 +87,7 @@ export class ESPNClient {
         url,
         {
           headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
+            'User-Agent': 'Who-Clinches/1.0',
           },
         },
         REQUEST_TIMEOUT_MS
@@ -103,7 +103,6 @@ export class ESPNClient {
       throw error;
     }
   }
-
 }
 
 export const espnClient = new ESPNClient('football', 'college-football');

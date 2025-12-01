@@ -46,7 +46,7 @@ Better reflects product purpose (determining who clinches playoff spots), more s
    - AI guide already says "Who Clinches" in title
 
 6. **Potential Data Migration**
-   - localStorage keys: docs mention `"sec-tiebreaker-overrides-{season}"` but may not be implemented yet
+   - Redux-persist keys: If game overrides are implemented, they would use redux-persist (key: `persist:gamePicks` or similar)
    - If implemented, users would lose saved overrides (one-time impact)
 
 ## Step-by-Step Process
@@ -93,7 +93,7 @@ Git history preserved automatically. Vercel auto-updates deployments. MongoDB `a
 
 **Status**: Pending user decision
 
-**Recommendation**: 
+**Recommendation**:
+
 - ✅ **Proceed** if expanding beyond SEC or want better branding
 - ⚠️ **Defer** if close to launch or want to avoid URL disruption
-

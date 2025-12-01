@@ -204,7 +204,7 @@ def clean_extracted_text(input_path):
 
 def main():
     """Main execution function."""
-    print("SEC Tiebreaker Rules Extraction Script")
+    print("Who Clinches - SEC Tiebreaker Rules Extraction Script")
     print("=" * 50)
     
     # Check pdftotext availability

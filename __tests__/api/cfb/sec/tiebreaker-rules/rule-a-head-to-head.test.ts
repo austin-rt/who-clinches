@@ -1,7 +1,7 @@
 import { applyRuleAHeadToHead } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { createGameLean } from './test-helpers';
 
-describe('SEC Tiebreaker Rules - Rule A: Head-to-Head', () => {
+describe('Who Clinches - SEC Tiebreaker Rules - Rule A: Head-to-Head', () => {
   describe('Two-Team Tie for Second Place', () => {
     it('Example: Team A defeats Team B, Team A advances', () => {
       const games = [

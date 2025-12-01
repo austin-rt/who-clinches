@@ -31,7 +31,7 @@ try {
 const MONGODB_USER = process.env.MONGODB_USER;
 const MONGODB_PASSWORD = process.env.MONGODB_PASSWORD;
 const MONGODB_HOST = process.env.MONGODB_HOST || 'cluster0.rr6gggn.mongodb.net';
-const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME || 'SEC-Tiebreaker';
+const MONGODB_APP_NAME = process.env.MONGODB_APP_NAME || 'Who-Clinches';
 
 if (!MONGODB_USER || !MONGODB_PASSWORD) {
   console.error(`[ERROR] MongoDB write credentials not found in .env.local`);
@@ -43,7 +43,7 @@ if (!MONGODB_USER || !MONGODB_PASSWORD) {
 const mongoUri = `mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${dbName}?appName=${MONGODB_APP_NAME}`;
 
 console.log('================================================');
-console.log('SEC Tiebreaker Database Drop');
+console.log('Who Clinches Database Drop');
 console.log('================================================');
 console.log(`Database: ${dbName}`);
 console.log('');

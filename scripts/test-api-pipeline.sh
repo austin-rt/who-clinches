@@ -9,7 +9,7 @@ CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
 DATABASE="${DATABASE:-dev}"
 
 echo "================================================"
-echo "SEC Tiebreaker API Testing Suite"
+echo "Who Clinches API Testing Suite"
 echo "================================================"
 echo "Base URL: $BASE_URL"
 echo "Database: $DATABASE"
@@ -17,7 +17,7 @@ echo ""
 
 # Step 1: Check if teams exist
 echo "Step 1: Checking if teams are seeded..."
-TEAM_COUNT=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=SEC-Tiebreaker" \
+TEAM_COUNT=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=Who-Clinches" \
   --eval "db.teams.countDocuments()" \
   --quiet 2>/dev/null || echo "0")
 
@@ -35,7 +35,7 @@ fi
 # Step 2: Verify teams have color fields
 echo ""
 echo "Step 2: Verifying team color fields..."
-SAMPLE_TEAM=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=SEC-Tiebreaker" \
+SAMPLE_TEAM=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=Who-Clinches" \
   --eval 'db.teams.findOne({}, {abbreviation:1, displayName:1, color:1, alternateColor:1})' \
   --quiet 2>/dev/null)
 echo "Sample team: $SAMPLE_TEAM"
@@ -44,7 +44,7 @@ echo "[OK] Team color fields verified"
 # Step 3: Check if games exist
 echo ""
 echo "Step 3: Checking if games are seeded..."
-GAME_COUNT=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=SEC-Tiebreaker" \
+GAME_COUNT=$(mongosh "mongodb+srv://readonly:${READONLY_PW}@cluster0.rr6gggn.mongodb.net/${DATABASE}?appName=Who-Clinches" \
   --eval "db.games.countDocuments({season: 2025})" \
   --quiet 2>/dev/null || echo "0")
 

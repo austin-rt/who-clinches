@@ -24,7 +24,7 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 ## Project Structure
 
 ```
-sec-tiebreaker/
+who-clinches/
 ├── app/
 │   ├── api/
 │   │   ├── games/[sport]/[conf]/route.ts       # GET: Query from database (fast), POST: Fetch from ESPN, upsert to database
@@ -82,7 +82,7 @@ The MongoDB connection is dynamically constructed and **automatically selects th
 MONGODB_USER=your_username
 MONGODB_PASSWORD=your_password
 MONGODB_HOST=cluster0.rr6gggn.mongodb.net
-MONGODB_APP_NAME=SEC-Tiebreaker
+MONGODB_APP_NAME=Who-Clinches
 ```
 
 **Database Selection (Fail-Safe):**
@@ -118,9 +118,9 @@ VERCEL_ENV=production  # Vercel sets this automatically per branch
 ### Branch Strategy
 
 - **`develop`**: Development and staging work
-  - Auto-deploys to: https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/
+  - Auto-deploys to: https://who-clinches-git-develop-austinrts-projects.vercel.app/
 - **`main`**: Production releases
-  - Auto-deploys to: https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/
+  - Auto-deploys to: https://who-clinches-git-main-austinrts-projects.vercel.app/
 
 ### Workflow
 
@@ -164,6 +164,7 @@ MongoDB → lean queries → strongly typed transformations → API response
 - `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert to database, return data (~500-2000ms)
 
 **Frontend Loading Strategy:**
+
 - Initial load uses GET endpoint for fast MongoDB query (~50-200ms)
 - Background refresh automatically triggers POST endpoint to fetch fresh data from ESPN (~500-2000ms)
 - Loading spinner only shows during GET request; POST refresh happens silently
@@ -231,12 +232,14 @@ The ESPN client and data models support multiple sports/leagues for future expan
 Fetches game data from ESPN, upserts to database, and returns reshaped data.
 
 **Path Parameters:**
+
 - `sport` - Sport slug (e.g., "cfb")
 - `conf` - Conference slug (e.g., "sec")
 
 **Example**: `POST /api/games/cfb/sec`
 
 **Request Body:**
+
 ```json
 {
   "season": 2025,
@@ -248,6 +251,7 @@ Fetches game data from ESPN, upserts to database, and returns reshaped data.
 ```
 
 **Body Parameters:**
+
 - `season` - Year (e.g., 2025)
 - `week` - Week number
 - `state` - Game state: "pre", "in", "post"
@@ -272,12 +276,14 @@ Fetches game data from ESPN, upserts to database, and returns reshaped data.
 Fetches team data from ESPN, upserts to database, and returns reshaped data.
 
 **Path Parameters:**
+
 - `sport` - Sport slug (e.g., "cfb")
 - `conf` - Conference slug (e.g., "sec")
 
 **Example**: `POST /api/teams/cfb/sec`
 
 **Request Body:**
+
 ```json
 {
   "update": "rankings",
@@ -286,6 +292,7 @@ Fetches team data from ESPN, upserts to database, and returns reshaped data.
 ```
 
 **Body Parameters:**
+
 - `update` - "rankings" (rankings/stats only), "stats" (team averages only), or undefined (full update)
 - `force` - `true` to bypass season check
 

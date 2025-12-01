@@ -8,17 +8,18 @@ Quick reference for testing ESPN data ingestion and transformation.
 
 ## Environments
 
-| Environment | URL | Database | Branch |
-|------------|-----|----------|--------|
-| Local | http://localhost:3000 | `dev` | `develop` |
-| Preview | https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app/ | `preview` | `develop` |
-| Production | https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/ | `production` | `main` |
+| Environment | URL                                                             | Database     | Branch    |
+| ----------- | --------------------------------------------------------------- | ------------ | --------- |
+| Local       | http://localhost:3000                                           | `dev`        | `develop` |
+| Preview     | https://who-clinches-git-develop-austinrts-projects.vercel.app/ | `preview`    | `develop` |
+| Production  | https://who-clinches-git-main-austinrts-projects.vercel.app/    | `production` | `main`    |
 
 ---
 
 ## Quick Commands
 
 ### Setup Database Variables
+
 ```bash
 READONLY_USER=$(grep MONGODB_USER_READONLY .env.local | cut -d '=' -f2)
 READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
@@ -29,6 +30,7 @@ MONGODB_URI="mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MON
 ```
 
 ### Seed Teams
+
 ```bash
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 # Dynamic route structure: /api/[operation]/[sport]/[conf]
@@ -37,6 +39,7 @@ curl -X POST "{BASE_URL}/api/teams/cfb/sec?x-vercel-protection-bypass=${BYPASS_T
 ```
 
 ### Seed Games (Full Season)
+
 ```bash
 # Dynamic route structure: /api/[operation]/[sport]/[conf]
 curl -X POST "{BASE_URL}/api/games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
@@ -44,6 +47,7 @@ curl -X POST "{BASE_URL}/api/games/cfb/sec?x-vercel-protection-bypass=${BYPASS_T
 ```
 
 ### Verify Data
+
 ```bash
 # Teams count
 mongosh "${MONGODB_URI}" --eval "db.teams.countDocuments()" --quiet
@@ -67,4 +71,3 @@ mongosh "${MONGODB_URI}" --eval "db.games.aggregate([{\$group: {_id: '\$week', c
 - **Games**: ~128 games for 2025 season (weeks 1-14)
 - **Fields**: `displayName`, `predictedScore`, team display fields (logo, color) present
 - **Conference records**: Not null
-

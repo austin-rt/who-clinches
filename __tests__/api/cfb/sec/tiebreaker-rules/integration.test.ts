@@ -1,7 +1,7 @@
 import { breakTie } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { createGameLean } from './test-helpers';
 
-describe('SEC Tiebreaker Rules - Integration Tests', () => {
+describe('Who Clinches - SEC Tiebreaker Rules - Integration Tests', () => {
   describe('Rule A: Head-to-Head - Recursion Scenarios', () => {
     it('Three-team tie for first place Example #2: Team A eliminated, B/C revert to two-team tiebreaker', () => {
       // From rule-a-head-to-head.txt lines 94-103
@@ -618,7 +618,9 @@ describe('SEC Tiebreaker Rules - Integration Tests', () => {
 
       const hasRuleD = result.steps.some((step) => step.rule.includes('Opponent Win Percentage'));
       if (hasRuleD) {
-        const ruleDStep = result.steps.find((step) => step.rule.includes('Opponent Win Percentage'));
+        const ruleDStep = result.steps.find((step) =>
+          step.rule.includes('Opponent Win Percentage')
+        );
         if (ruleDStep) {
           expect(ruleDStep.survivors.length).toBeGreaterThan(0);
         }

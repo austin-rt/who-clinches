@@ -3,6 +3,7 @@
 Redux store structure, slices, and persistence patterns.
 
 **Related Documentation:**
+
 - [Frontend Index](./index.md) - Frontend documentation overview
 - [Data Flow](./data-flow.md) - How state updates flow through the application
 
@@ -17,6 +18,7 @@ Redux store structure, slices, and persistence patterns.
 ## Redux Store Structure
 
 **Store Configuration** (`app/store/store.ts`):
+
 ```typescript
 {
   ui: UIState,              // Theme, mode, view, hideCompletedGames, lastUpdated
@@ -30,18 +32,20 @@ Redux store structure, slices, and persistence patterns.
 ## UI State (`app/store/uiSlice.ts`)
 
 **State Interface:**
+
 ```typescript
 interface UIState {
-  theme: string;                    // Team theme (e.g., 'sec', 'alabama')
-  mode: ThemeMode;                  // 'light' | 'dark'
-  view: ViewMode;                   // 'picks' | 'scores'
-  hideCompletedGames: boolean;       // Hide completed games in picks mode
-  lastUpdated: string | null;       // ISO timestamp from API
-  standingsOpen: boolean;            // Whether standings panel is open
+  theme: string; // Team theme (e.g., 'sec', 'alabama')
+  mode: ThemeMode; // 'light' | 'dark'
+  view: ViewMode; // 'picks' | 'scores'
+  hideCompletedGames: boolean; // Hide completed games in picks mode
+  lastUpdated: string | null; // ISO timestamp from API
+  standingsOpen: boolean; // Whether standings panel is open
 }
 ```
 
 **Actions:**
+
 - `setTheme(theme: string)`
 - `setMode(mode: ThemeMode)`
 - `setView(view: ViewMode)`
@@ -56,6 +60,7 @@ interface UIState {
 ## Game Picks State (`app/store/gamePicksSlice.ts`)
 
 **State Interface:**
+
 ```typescript
 interface GamePicksState {
   picks: Record<string, { homeScore: number; awayScore: number }>;
@@ -63,6 +68,7 @@ interface GamePicksState {
 ```
 
 **Actions:**
+
 - `setGamePick({ gameId, pick })`
 - `clearGamePick(gameId)`
 - `clearAllPicks()`
@@ -75,7 +81,10 @@ interface GamePicksState {
 
 **Pattern**: redux-persist automatically syncs Redux state with localStorage
 
+**Important**: All localStorage access in this codebase is through redux-persist. There is no direct `localStorage.getItem()` or `localStorage.setItem()` usage. Components interact with Redux state only; persistence is handled automatically by redux-persist.
+
 **Implementation** (`app/store/store.ts`):
+
 - Uses `persistReducer` to wrap ui and gamePicks slices
 - Automatically reads from localStorage on app load
 - Automatically writes to localStorage on state changes
@@ -85,6 +94,7 @@ interface GamePicksState {
 **Configuration:**
 
 **Persistence Config** (`app/store/store.ts`):
+
 - `uiPersistConfig`: key `'ui'`, blacklist `['lastUpdated', 'standingsOpen']` (server data)
 - `gamePicksPersistConfig`: key `'gamePicks'`, includes `redux-persist-expire` transform
   - Expires after 1 hour (3600 seconds) of inactivity
@@ -99,4 +109,3 @@ interface GamePicksState {
 Game picks are automatically cleared from localStorage after 1 hour of inactivity. The expiration timer resets whenever picks are updated, ensuring active users retain their selections. This prevents stale simulation data from persisting across sessions.
 
 **Notes:** API slice (RTK Query) is NOT persisted. State restored on app load via `PersistGate`.
-

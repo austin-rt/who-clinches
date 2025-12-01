@@ -54,9 +54,9 @@ try {
 
 let BASE_URL: string;
 if (envName === 'preview') {
-  BASE_URL = 'https://sec-tiebreaker-git-develop-austinrts-projects.vercel.app';
+  BASE_URL = 'https://who-clinches-git-develop-austinrts-projects.vercel.app';
 } else if (envName === 'production') {
-  BASE_URL = 'https://sec-tiebreaker-git-main-austinrts-projects.vercel.app';
+  BASE_URL = 'https://who-clinches-git-main-austinrts-projects.vercel.app';
 } else {
   BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 }
@@ -112,7 +112,7 @@ if (!conferenceMeta) {
 const expectedGames = (conferenceMeta.teams * conferenceMeta.confGames) / 2;
 
 console.log('================================================');
-console.log('SEC Tiebreaker Database Check & Seed');
+console.log('Who Clinches Database Check & Seed');
 console.log('================================================');
 console.log(`Base URL: ${BASE_URL}`);
 console.log(`Database: ${DATABASE}`);

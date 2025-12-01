@@ -1,7 +1,7 @@
 import { applyRuleBCommonOpponents } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { createGameLean } from './test-helpers';
 
-describe('SEC Tiebreaker Rules - Rule B: Common Opponents', () => {
+describe('Who Clinches - SEC Tiebreaker Rules - Rule B: Common Opponents', () => {
   describe('Two-Team Tie for Second Place', () => {
     it('Example: Team A 2-0 vs common, Team B 1-1, Team A advances', () => {
       const games = [

@@ -1,7 +1,7 @@
 import { applyRuleCHighestPlacedOpponent } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { createGameLean } from './test-helpers';
 
-describe('SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => {
+describe('Who Clinches - SEC Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () => {
   describe('Two-Team Tie for Second Place', () => {
     it('Example #1: Team B beats Team D, Team C loses to Team D, Team B advances', () => {
       const games = [

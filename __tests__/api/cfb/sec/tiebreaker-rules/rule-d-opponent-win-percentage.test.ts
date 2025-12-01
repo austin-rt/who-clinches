@@ -1,7 +1,7 @@
 import { applyRuleDOpponentWinPercentage } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { createGameLean } from './test-helpers';
 
-describe('SEC Tiebreaker Rules - Rule D: Cumulative Conference Winning Percentage', () => {
+describe('Who Clinches - SEC Tiebreaker Rules - Rule D: Cumulative Conference Winning Percentage', () => {
   describe('Two-Team Tie for Second Place', () => {
     it('Example: Team A 52.5%, Team B 50.0%, Team A advances', () => {
       // Team A: 6-2 (wins vs C,D,E,F,G,H; loses vs I,J)
