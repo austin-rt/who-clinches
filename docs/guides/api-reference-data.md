@@ -65,23 +65,13 @@ Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 
 **Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "lastUpdated": "ISO timestamp" }`
 
-**GameLean** (in `events` array): Game object with `home` and `away` objects containing `teamEspnId`, `abbrev`, `score`, `rank`. Note: `displayName`, `shortDisplayName`, `logo`, `color`, and `alternateColor` are NOT included in `home`/`away` objects - use the `teams` array (TeamMetadata[]) to look up team display information by `teamEspnId`.
+**GameLean** (in `events` array): Game object with `home` and `away` objects containing `teamEspnId`, `abbrev`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `score`, `rank`. All team metadata is included in game objects.
 
 **TeamMetadata** (in `teams` array): Team metadata with `id` (matches `teamEspnId`), `abbrev`, `name`, `displayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord` (string, e.g., "7-1" - calculated from completed conference games in the database)
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
-**Notes**: 
-- Automatically fetches from ESPN and upserts reshaped data to database
-- **Conference Records**: Calculated locally from completed conference games in the database (not from ESPN API). Updated automatically when games are fetched/updated. See [ESPN API Testing](../tests/espn-api-testing.md) for details.
-- Returns reshaped games data (not raw ESPN responses)
-- Results sorted by date/week, only conference games, team metadata included
-- During off-season, returns existing data from database without fetching from ESPN
-
-**Data Transformation Functions:**
-- `reshapeScoreboardData()` (from `lib/reshape-games.ts`) → Game format
-- `reshapeTeamData()` (from `lib/reshape-teams.ts`) → Team format
-- `extractTeamsFromScoreboard()` (from `lib/reshape-teams-from-scoreboard.ts`) → Extract teams from scoreboard
+**Notes**: Automatically fetches from ESPN, upserts to database, returns reshaped data. Conference records calculated from completed conference games. During off-season, returns existing data without ESPN fetch.
 
 ---
 
@@ -102,13 +92,7 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 
 **Response**: `{ "standings": [StandingEntry[]], "championship": [string, string], "tieLogs": [TieLog[]] }`
 
-**Response Fields**: `standings` (StandingEntry[] - sorted by rank), `championship` ([string, string] - top 2 team IDs), `tieLogs` (TieLog[] - tiebreaker explanations)
-
-**StandingEntry**: `rank` (number, 1-16), `teamId` (string, ESPN team ID), `abbrev` (string), `displayName` (string), `logo` (string, URL), `color` (string, hex without #), `record` ({wins: number, losses: number}), `confRecord` ({wins: number, losses: number}), `explainPosition` (string)
-
-**TieLog**: `teams` (string[]), `steps` (TieStep[])
-
-**TieStep**: `rule` (string, e.g., "Head-to-Head", "Opponent Win Percentage"), `detail` (string), `survivors` (string[]), `tieBroken` (boolean), `label` ("Advances" | "Remaining")
+**Response Fields**: `standings` (StandingEntry[] sorted by rank), `championship` ([string, string] top 2 team IDs), `tieLogs` (TieLog[] tiebreaker explanations). See `lib/api-types.ts` for full type definitions.
 
 **Error Responses**: `400` - Missing required fields or invalid score (negative/non-integer), `500` - Database or tiebreaker calculation error
 
@@ -116,28 +100,11 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 
 **Notes**: Uses `predictedScore` for games without overrides, validates scores, handles ties recursively, returns all 16 teams
 
-## Data Integrity Notes
+## Data Model Notes
 
-**predictedScore**: Calculated by `calculatePredictedScore()` from `lib/cfb/helpers/prefill-helpers.ts` using priority order:
-1. Real scores (if game completed or in progress with scores)
-2. ESPN odds (overUnder + spread + favorite) via `calculatePredictedScoreFromOdds()`
-3. Team averages + spread via `calculatePredictedScoreFromTeamAverages()`
-4. Ranking-based via `calculatePredictedScoreFromRanking()` (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
-5. Home field advantage via `calculatePredictedScoreFromHomeFieldAdvantage()` (fallback: home team average, away team average - 3)
+**predictedScore**: Calculated by `calculatePredictedScore()` (priority: real scores → ESPN odds → team averages → ranking → home field advantage). See `lib/cfb/helpers/prefill-helpers.ts`.
 
-**displayName**: Format must be "{away} @ {home}" with team abbreviations
-
-**shortDisplayName**: Team short name from ESPN (e.g., "Georgia" from "Georgia Bulldogs"), used in tiebreaker explanations. Available in `TeamLean`, `ReshapedTeam`, `ITeam`, and stored in `Game` model.
-
-**Team IDs**: ESPN team IDs used as MongoDB `_id` (no separate mapping table)
-
-**favoriteTeamEspnId**: Determined from ESPN's `odds.awayTeamOdds.favorite` or `odds.homeTeamOdds.favorite` boolean fields
-
-**Team Enrichment**: Team metadata (`displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`) is enriched at the reshape level before database upsert. This ensures all team name variations are stored in the `Game` model and available everywhere without needing multiple enrichment steps.
-
-**GameLean vs ReshapedGame**: 
-- `ReshapedGame` (initial reshape format): Includes `displayName`, `logo`, `color` from ESPN API. Optionally enriched with `shortDisplayName` and `alternateColor` from Team model if `teamMap` is provided to `reshapeScoreboardData()`.
-- `GameLean` (database/API format): All team metadata (`displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`) is stored in the `Game` model and available in all API responses. No additional enrichment needed.
+**Team Enrichment**: Team metadata is enriched at reshape level before database upsert. All team name variations stored in `Game` model and available in API responses.
 
 ---
 
