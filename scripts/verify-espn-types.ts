@@ -6,7 +6,6 @@ function verifyTypes() {
   const files = {
     scoreboard: path.join(generatedTypesDir, 'espn-scoreboard-generated.ts'),
     team: path.join(generatedTypesDir, 'espn-team-generated.ts'),
-    teamRecords: path.join(generatedTypesDir, 'espn-team-records-generated.ts'),
   };
 
   const issues: string[] = [];
@@ -105,35 +104,6 @@ function verifyTypes() {
       content.includes('record:')
     ) {
       verified.push('Team has all fields we use');
-    }
-  }
-
-  if (fs.existsSync(files.teamRecords)) {
-    const content = fs.readFileSync(files.teamRecords, 'utf-8');
-
-    if (content.includes('items:') && content.includes('Item[]')) {
-      verified.push('TeamRecords has items array');
-      const itemMatch = content.match(/export interface Item\s*\{[\s\S]*?\n\}/);
-      if (itemMatch) {
-        if (
-          itemMatch[0].includes('name:') &&
-          itemMatch[0].includes('type:') &&
-          itemMatch[0].includes('summary:') &&
-          itemMatch[0].includes('stats:')
-        ) {
-          verified.push('TeamRecords Item has all fields we use (name, type, summary, stats)');
-        } else {
-          issues.push('TeamRecords Item missing required fields');
-        }
-      }
-      const statMatch = content.match(/export interface Stat\s*\{[\s\S]*?\n\}/);
-      if (statMatch && statMatch[0].includes('name:') && statMatch[0].includes('value:')) {
-        verified.push('TeamRecords Stat has all fields we use (name, value)');
-      } else {
-        issues.push('TeamRecords Stat missing required fields');
-      }
-    } else {
-      issues.push('TeamRecords missing items array');
     }
   }
 

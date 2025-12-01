@@ -10,6 +10,7 @@ import {
 } from '../lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { sports } from '../lib/constants';
 import { GameLean, GameState } from '../lib/types';
+import { getDefaultPredictedScore } from '../lib/cfb/helpers/prefill-helpers';
 
 const localEnvFile = path.join(process.cwd(), '.env.local');
 if (fs.existsSync(localEnvFile)) {
@@ -103,12 +104,22 @@ async function testSimulate() {
         home: {
           teamEspnId: String(game.home?.teamEspnId || ''),
           abbrev: String(game.home?.abbrev || ''),
+          displayName: game.home?.displayName || game.home?.abbrev || '',
+          shortDisplayName: game.home?.shortDisplayName || game.home?.displayName || game.home?.abbrev || '',
+          logo: game.home?.logo || '',
+          color: game.home?.color || '000000',
+          alternateColor: game.home?.alternateColor || '000000',
           score: typeof game.home?.score === 'number' ? game.home.score : null,
           rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
         },
         away: {
           teamEspnId: String(game.away?.teamEspnId || ''),
           abbrev: String(game.away?.abbrev || ''),
+          displayName: game.away?.displayName || game.away?.abbrev || '',
+          shortDisplayName: game.away?.shortDisplayName || game.away?.displayName || game.away?.abbrev || '',
+          logo: game.away?.logo || '',
+          color: game.away?.color || '000000',
+          alternateColor: game.away?.alternateColor || '000000',
           score: typeof game.away?.score === 'number' ? game.away.score : null,
           rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
         },
@@ -124,7 +135,7 @@ async function testSimulate() {
               home: Number(game.predictedScore?.home || 0),
               away: Number(game.predictedScore?.away || 0),
             }
-          : undefined,
+          : getDefaultPredictedScore(),
       })
     );
 

@@ -8,19 +8,16 @@ interface TypeSnapshot {
 interface SnapshotData {
   scoreboard: TypeSnapshot;
   team: TypeSnapshot;
-  teamRecords: TypeSnapshot;
   extractedAt: string;
   fieldCount: {
     scoreboard: number;
     team: number;
-    teamRecords: number;
   };
 }
 
 function extractFieldPathsFromReshapeFunctions(): {
   scoreboard: string[];
   team: string[];
-  teamRecords: string[];
 } {
   const reshapeGamesPath = path.join(process.cwd(), 'lib/reshape-games.ts');
   const reshapeTeamsPath = path.join(process.cwd(), 'lib/reshape-teams.ts');
@@ -33,7 +30,6 @@ function extractFieldPathsFromReshapeFunctions(): {
   const fields = {
     scoreboard: [] as string[],
     team: [] as string[],
-    teamRecords: [] as string[],
   };
 
   if (fs.existsSync(reshapeGamesPath)) {
@@ -174,21 +170,6 @@ function extractFieldPathsFromReshapeFunctions(): {
       }
     }
 
-    const teamRecordsPatterns = [
-      { pattern: /coreRecordResponse\?\.items/g, path: 'EspnTeamRecordsGenerated.items' },
-      { pattern: /items\.find\(.*item\.name/g, path: 'Item.name' },
-      { pattern: /items\.find\(.*item\.type/g, path: 'Item.type' },
-      { pattern: /overallRecord\?\.summary/g, path: 'Item.summary' },
-      { pattern: /overallRecord\?\.stats/g, path: 'Item.stats' },
-      { pattern: /stats\.find\(.*s\.name/g, path: 'Stat.name' },
-      { pattern: /stats\.find\(.*\.value/g, path: 'Stat.value' },
-    ];
-
-    for (const { pattern, path: fieldPath } of teamRecordsPatterns) {
-      if (pattern.test(content) && !fields.teamRecords.includes(fieldPath)) {
-        fields.teamRecords.push(fieldPath);
-      }
-    }
   }
 
   return fields;
@@ -196,7 +177,7 @@ function extractFieldPathsFromReshapeFunctions(): {
 
 function extractTypeFromGeneratedTypes(
   generatedTypesDir: string,
-  typeSet: 'scoreboard' | 'team' | 'teamRecords',
+  typeSet: 'scoreboard' | 'team',
   fieldPaths: string[]
 ): TypeSnapshot {
   const snapshot: TypeSnapshot = {};
@@ -321,16 +302,10 @@ function createTypeSnapshot(): SnapshotData {
       fieldPaths.scoreboard
     ),
     team: extractTypeFromGeneratedTypes(generatedTypesDir, 'team', fieldPaths.team),
-    teamRecords: extractTypeFromGeneratedTypes(
-      generatedTypesDir,
-      'teamRecords',
-      fieldPaths.teamRecords
-    ),
     extractedAt: new Date().toISOString(),
     fieldCount: {
       scoreboard: fieldPaths.scoreboard.length,
       team: fieldPaths.team.length,
-      teamRecords: fieldPaths.teamRecords.length,
     },
   };
 
@@ -339,7 +314,7 @@ function createTypeSnapshot(): SnapshotData {
 
   process.stdout.write(`Type snapshot saved to ${snapshotPath}\n`);
   process.stdout.write(
-    `Fields tracked: ${fieldPaths.scoreboard.length + fieldPaths.team.length + fieldPaths.teamRecords.length}\n`
+    `Fields tracked: ${fieldPaths.scoreboard.length + fieldPaths.team.length}\n`
   );
 
   return snapshots;
@@ -363,7 +338,7 @@ function compareSnapshots(
   const espnTypeChanges: string[] = [];
   const usageChanges: string[] = [];
 
-  for (const typeSet of ['scoreboard', 'team', 'teamRecords'] as const) {
+  for (const typeSet of ['scoreboard', 'team'] as const) {
     const old = oldSnapshot[typeSet] || {};
     const new_ = newSnapshot[typeSet] || {};
 

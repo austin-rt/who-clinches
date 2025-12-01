@@ -17,9 +17,6 @@ async function analyzeTestData() {
     const { default: getESPNGameSummaryTestData } = await import(
       '../lib/models/test/ESPNGameSummaryTestData'
     );
-    const { default: getESPNTeamRecordsTestData } = await import(
-      '../lib/models/test/ESPNTeamRecordsTestData'
-    );
 
     await dbConnectTest();
 
@@ -49,14 +46,6 @@ async function analyzeTestData() {
       teamAbbrev: (doc as { teamAbbrev?: string }).teamAbbrev,
     }));
 
-    const TeamRecordsModel = await getESPNTeamRecordsTestData();
-    const teamRecordsDocs = await TeamRecordsModel.find().lean();
-
-    const teamRecordsSeasons = teamRecordsDocs.map((doc) => ({
-      season: (doc as { season?: number }).season,
-      teamId: (doc as { teamId?: string }).teamId,
-      teamAbbrev: (doc as { teamAbbrev?: string }).teamAbbrev,
-    }));
 
     const allStates: string[] = [];
     const dateFormats: Array<{ date: string; startDate: string; venue: string }> = [];
@@ -121,13 +110,6 @@ async function analyzeTestData() {
       }
     });
 
-    process.stdout.write('\n=== Team Records Test Data ===\n');
-    process.stdout.write(`Total documents: ${teamRecordsDocs.length}\n`);
-    const uniqueRecordsSeasons = [...new Set(teamRecordsSeasons.map((t) => t.season))];
-    uniqueRecordsSeasons.forEach((season) => {
-      const count = teamRecordsSeasons.filter((t) => t.season === season).length;
-      process.stdout.write(`  Season ${season}: ${count} team record(s)\n`);
-    });
 
     process.stdout.write('\n=== Game States Found ===\n');
     const uniqueStates = [...new Set(allStates)];

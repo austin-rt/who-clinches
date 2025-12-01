@@ -271,9 +271,6 @@ async function generateESPNTypes() {
     const { default: getESPNGameSummaryTestData } = await import(
       '../lib/models/test/ESPNGameSummaryTestData'
     );
-    const { default: getESPNTeamRecordsTestData } = await import(
-      '../lib/models/test/ESPNTeamRecordsTestData'
-    );
 
     await dbConnectTest();
 
@@ -331,21 +328,6 @@ async function generateESPNTypes() {
       });
     }
 
-    const TeamRecordsModel = await getESPNTeamRecordsTestData();
-    const teamRecordsDocs = await TeamRecordsModel.find().lean();
-    const teamRecordsSamples = teamRecordsDocs
-      .map((doc) => (doc as { response?: unknown }).response)
-      .filter((response): response is unknown => response !== undefined);
-
-    if (teamRecordsSamples.length > 0) {
-      const result = generateTypesWithQuicktype(teamRecordsSamples, 'espn-team-records');
-      results.push({ type: 'teamRecords', result });
-    } else {
-      results.push({
-        type: 'teamRecords',
-        result: { success: false, error: 'No team records data found' },
-      });
-    }
 
     const successCount = results.filter((r) => r.result.success).length;
     const failureCount = results.length - successCount;
