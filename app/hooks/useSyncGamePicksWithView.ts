@@ -1,0 +1,74 @@
+import { useEffect, useRef } from 'react';
+import { GameLean } from '@/lib/types';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { setGamePick } from '../store/gamePicksSlice';
+import { ViewMode } from '@/types/frontend';
+
+interface UseSyncGamePicksWithViewProps {
+  games: GameLean[] | undefined;
+  view: ViewMode;
+}
+
+/**
+ * Syncs game picks with view mode for live games that haven't scored yet.
+ * - When switching to 'scores' mode: resets picks to 0-0 for live tie games
+ * - When switching to 'picks' mode: sets picks to predicted scores for live tie games
+ */
+export const useSyncGamePicksWithView = ({ games, view }: UseSyncGamePicksWithViewProps) => {
+  const dispatch = useAppDispatch();
+  const gamePicks = useAppSelector((state) => state.gamePicks.picks);
+  const prevViewRef = useRef<ViewMode>(view);
+
+  useEffect(() => {
+    if (!games || prevViewRef.current === view) {
+      prevViewRef.current = view;
+      return;
+    }
+
+    prevViewRef.current = view;
+
+    const isLiveTieGame = (game: GameLean): boolean => {
+      return game.state === 'in' && !game.completed && (game.away.score ?? 0) === 0 && (game.home.score ?? 0) === 0;
+    };
+
+    const resetLiveGamePickToZero = (game: GameLean) => {
+      const currentPick = gamePicks[game.espnId];
+      if (currentPick && (currentPick.awayScore !== 0 || currentPick.homeScore !== 0)) {
+        dispatch(
+          setGamePick({
+            gameId: game.espnId,
+            pick: { awayScore: 0, homeScore: 0 },
+          })
+        );
+      }
+    };
+
+    const setLiveGamePickToPredicted = (game: GameLean) => {
+      if (!game.predictedScore) return;
+
+      const currentPick = gamePicks[game.espnId];
+      if (!currentPick || (currentPick.awayScore === 0 && currentPick.homeScore === 0)) {
+        dispatch(
+          setGamePick({
+            gameId: game.espnId,
+            pick: {
+              awayScore: game.predictedScore.away,
+              homeScore: game.predictedScore.home,
+            },
+          })
+        );
+      }
+    };
+
+    games.forEach((game) => {
+      if (!isLiveTieGame(game)) return;
+
+      if (view === 'scores') {
+        resetLiveGamePickToZero(game);
+      } else if (view === 'picks') {
+        setLiveGamePickToPredicted(game);
+      }
+    });
+  }, [view, games, gamePicks, dispatch]);
+};
+
