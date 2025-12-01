@@ -10,12 +10,12 @@ export interface ITeam extends Document {
   color: string;
   alternateColor: string;
   conferenceId: string;
-  record?: {
-    overall?: string;
-    conference?: string;
-    home?: string;
-    away?: string;
-    stats?: {
+  record: {
+    overall: string;
+    conference: string;
+    home: string;
+    away: string;
+    stats: {
       wins?: number;
       losses?: number;
       winPercent?: number;
@@ -26,7 +26,7 @@ export interface ITeam extends Document {
       avgPointsAgainst?: number;
     };
   };
-  conferenceStanding?: string;
+  conferenceStanding: string;
   nationalRanking?: number;
   playoffSeed?: number;
   nextGameId?: string;
@@ -50,7 +50,7 @@ const TeamSchema = new Schema<ITeam>(
     shortDisplayName: {
       type: String,
       required: false,
-      default: function(this: ITeam) {
+      default: function (this: ITeam) {
         return this.displayName || this.abbreviation || '';
       },
     },
@@ -76,10 +76,10 @@ const TeamSchema = new Schema<ITeam>(
       index: true,
     },
     record: {
-      overall: { type: String },
-      conference: { type: String },
-      home: { type: String },
-      away: { type: String },
+      overall: { type: String, required: true },
+      conference: { type: String, required: true },
+      home: { type: String, required: true },
+      away: { type: String, required: true },
       stats: {
         wins: { type: Number },
         losses: { type: Number },
@@ -91,7 +91,7 @@ const TeamSchema = new Schema<ITeam>(
         avgPointsAgainst: { type: Number },
       },
     },
-    conferenceStanding: { type: String },
+    conferenceStanding: { type: String, required: true },
     nationalRanking: { type: Number },
     playoffSeed: { type: Number },
     nextGameId: { type: String },

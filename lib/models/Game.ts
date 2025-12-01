@@ -25,6 +25,8 @@ export interface IGame extends Document {
     displayName: string;
     logo: string;
     color: string;
+    shortDisplayName: string;
+    alternateColor: string;
     score: number | null;
     rank: number | null;
   };
@@ -34,6 +36,8 @@ export interface IGame extends Document {
     displayName: string;
     logo: string;
     color: string;
+    shortDisplayName: string;
+    alternateColor: string;
     score: number | null;
     rank: number | null;
   };
@@ -42,7 +46,7 @@ export interface IGame extends Document {
     spread: number | null;
     overUnder: number | null;
   };
-  predictedScore?: {
+  predictedScore: {
     home: number;
     away: number;
   };
@@ -131,15 +135,23 @@ const GameSchema = new Schema<IGame>(
       },
       displayName: {
         type: String,
-        required: false,
+        required: true,
       },
       logo: {
         type: String,
-        required: false,
+        required: true,
       },
       color: {
         type: String,
-        required: false,
+        required: true,
+      },
+      shortDisplayName: {
+        type: String,
+        required: true,
+      },
+      alternateColor: {
+        type: String,
+        required: true,
       },
       score: {
         type: Number,
@@ -162,15 +174,23 @@ const GameSchema = new Schema<IGame>(
       },
       displayName: {
         type: String,
-        required: false,
+        required: true,
       },
       logo: {
         type: String,
-        required: false,
+        required: true,
       },
       color: {
         type: String,
-        required: false,
+        required: true,
+      },
+      shortDisplayName: {
+        type: String,
+        required: true,
+      },
+      alternateColor: {
+        type: String,
+        required: true,
       },
       score: {
         type: Number,
@@ -198,9 +218,11 @@ const GameSchema = new Schema<IGame>(
     predictedScore: {
       home: {
         type: Number,
+        required: true,
       },
       away: {
         type: Number,
+        required: true,
       },
     },
   },
