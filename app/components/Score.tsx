@@ -2,17 +2,16 @@
 
 import { useState, useMemo } from 'react';
 import { GameLean } from '@/lib/types';
-import { cn } from '@/lib/utils';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setGamePick } from '../store/gamePicksSlice';
 import { useUIState } from '../store/useUI';
+import ScoreInput from './ScoreInput';
 
 interface ScoreProps {
   game: GameLean;
-  separate?: boolean;
 }
 
-const Score = ({ game, separate = false }: ScoreProps) => {
+const Score = ({ game }: ScoreProps) => {
   const dispatch = useAppDispatch();
   const { view } = useUIState();
   const gamePick = useAppSelector((state) => state.gamePicks.picks[game.espnId]);
@@ -39,7 +38,15 @@ const Score = ({ game, separate = false }: ScoreProps) => {
       return { away: gamePick.awayScore, home: gamePick.homeScore };
     }
     return { away: 0, home: 0 };
-  }, [gamePick, game.completed, game.state, game.away.score, game.home.score, game.predictedScore, view]);
+  }, [
+    gamePick,
+    game.completed,
+    game.state,
+    game.away.score,
+    game.home.score,
+    game.predictedScore,
+    view,
+  ]);
 
   const [editingAway, setEditingAway] = useState<string | null>(null);
   const [editingHome, setEditingHome] = useState<string | null>(null);
@@ -73,140 +80,37 @@ const Score = ({ game, separate = false }: ScoreProps) => {
     dispatch(setGamePick({ gameId: game.espnId, pick: { homeScore: home, awayScore: away } }));
   };
 
-  const getScoreDisplay = (score: number | null) => {
-    if (score === null) return '—';
-    return score.toString();
-  };
-
   const awayScoreNum = parseInt(awayScore, 10) || 0;
   const homeScoreNum = parseInt(homeScore, 10) || 0;
   const awayIsHigher = awayScoreNum > homeScoreNum;
   const homeIsHigher = homeScoreNum > awayScoreNum;
   const isTie = awayScoreNum === homeScoreNum && awayScoreNum !== 0;
 
-  const isEditable = view === 'scores' && !game.completed;
+  const dash = <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>;
 
-  if (isEditable) {
-    const awayInput = (
-      <input
-        type="text"
-        inputMode="numeric"
+  return [
+    <div key="away-score" className="flex h-10 items-center">
+      <ScoreInput
         value={awayScore}
-        onChange={(e) => handleScoreChange('away', e.target.value)}
+        onChange={(value) => handleScoreChange('away', value)}
         onBlur={handleScoreBlur}
-        className={cn(
-          'h-8 w-10 flex-shrink-0 text-center text-3xl leading-none',
-          'bg-transparent focus:border-primary focus:outline-none',
-          {
-            'font-extrabold': awayIsHigher && !isTie,
-            'font-normal': !awayIsHigher || isTie,
-          }
-        )}
+        isHigher={awayIsHigher}
+        isTie={isTie}
       />
-    );
-
-    const editableDash = (
-      <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>
-    );
-
-    const homeInput = (
-      <input
-        type="text"
-        inputMode="numeric"
+    </div>,
+    <div key="dash" className="flex h-10 items-center">
+      {dash}
+    </div>,
+    <div key="home-score" className="flex h-10 items-center">
+      <ScoreInput
         value={homeScore}
-        onChange={(e) => handleScoreChange('home', e.target.value)}
+        onChange={(value) => handleScoreChange('home', value)}
         onBlur={handleScoreBlur}
-        className={cn(
-          'h-8 w-10 flex-shrink-0 text-center text-3xl leading-none',
-          'bg-transparent focus:border-primary focus:outline-none',
-          {
-            'font-extrabold': homeIsHigher && !isTie,
-            'font-normal': !homeIsHigher || isTie,
-          }
-        )}
+        isHigher={homeIsHigher}
+        isTie={isTie}
       />
-    );
-
-    if (separate) {
-      return [
-        <div key="away-score" className="flex h-10 items-center">
-          {awayInput}
-        </div>,
-        <div key="dash" className="flex h-10 items-center">
-          {editableDash}
-        </div>,
-        <div key="home-score" className="flex h-10 items-center">
-          {homeInput}
-        </div>,
-      ];
-    }
-
-    return (
-      <div className="flex h-10 items-center gap-1">
-        {awayInput}
-        {editableDash}
-        {homeInput}
-      </div>
-    );
-  }
-
-  const displayAway = gamePick
-    ? gamePick.awayScore
-    : game.completed
-      ? game.away.score
-      : view === 'scores' && game.state === 'in'
-        ? (game.away.score ?? 0)
-        : (game.predictedScore?.away ?? game.away.score);
-  const displayHome = gamePick
-    ? gamePick.homeScore
-    : game.completed
-      ? game.home.score
-      : view === 'scores' && game.state === 'in'
-        ? (game.home.score ?? 0)
-        : (game.predictedScore?.home ?? game.home.score);
-  const displayAwayIsHigher = (displayAway ?? -1) > (displayHome ?? -1);
-  const displayHomeIsHigher = (displayHome ?? -1) > (displayAway ?? -1);
-  const displayIsTie = displayAway === displayHome && displayAway !== null && displayAway !== 0;
-
-  const awayScoreElement = (
-    <div
-      className={cn('h-10 min-w-[2.5rem] whitespace-nowrap text-4xl leading-none', {
-        'font-extrabold': displayAwayIsHigher && !displayIsTie,
-        'font-normal': !displayAwayIsHigher || displayIsTie,
-      })}
-    >
-      {getScoreDisplay(displayAway)}
-    </div>
-  );
-
-  const dashElement = <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>;
-
-  const homeScoreElement = (
-    <div
-      className={cn('h-10 min-w-[2.5rem] whitespace-nowrap text-4xl leading-none', {
-        'font-extrabold': displayHomeIsHigher && !displayIsTie,
-        'font-normal': !displayHomeIsHigher || displayIsTie,
-      })}
-    >
-      {getScoreDisplay(displayHome)}
-    </div>
-  );
-
-  if (separate) {
-    return [
-      <div key="away-score-wrapper">{awayScoreElement}</div>,
-      <div key="dash-wrapper">{dashElement}</div>,
-      <div key="home-score-wrapper">{homeScoreElement}</div>,
-    ];
-  }
-
-  return (
-    <div className="flex h-10 items-center gap-1">
-      {awayScoreElement}
-      {dashElement}
-      {homeScoreElement}
-    </div>
-  );
+    </div>,
+  ];
 };
 
 export default Score;
