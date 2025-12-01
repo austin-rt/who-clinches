@@ -1,7 +1,7 @@
 'use client';
 
 import { GameLean } from '@/lib/types';
-import Team from './Team';
+import CompactTeamSelector from './CompactTeamSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setGamePick } from '../store/gamePicksSlice';
 import { useMemo, useEffect, useCallback } from 'react';
@@ -116,64 +116,24 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
 
   const isHomeSelected = selectedTeam === game.home.teamEspnId;
   const isAwaySelected = selectedTeam === game.away.teamEspnId;
-  const isSelected = isHomeSelected || isAwaySelected;
-
-  const awayWon = isAwaySelected;
-  const homeWon = isHomeSelected;
 
   return (
-    <div className="flex h-20 w-40 items-center justify-center gap-1 rounded-lg border border-base-300 bg-base-200 p-1 dark:bg-base-300">
-      <div className="flex flex-col items-center gap-0.5">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleTeamClick(game.away.teamEspnId);
-          }}
-          className={`cursor-pointer rounded-lg p-0.5 transition-all ${
-            isAwaySelected ? 'bg-primary/20' : ''
-          } ${isAwaySelected ? 'opacity-100' : isSelected ? 'opacity-30' : 'opacity-100 hover:opacity-80'}`}
-        >
-          <Team team={game.away} showLogoOnly />
-        </button>
-        <span className="text-center text-[10px] font-semibold leading-none">
-          {game.away.abbrev}
-        </span>
-        {isSelected && (
-          <span
-            className={`text-base-content/70 w-full text-center text-[10px] leading-none ${awayWon ? 'font-extrabold' : 'font-semibold'}`}
-          >
-            {awayWon ? 'W' : 'L'}
-          </span>
-        )}
-      </div>
-      <span className="text-base-content/60 text-[10px] leading-none">vs</span>
-      <div className="flex flex-col items-center gap-0.5">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            handleTeamClick(game.home.teamEspnId);
-          }}
-          className={`cursor-pointer rounded-lg p-0.5 transition-all ${
-            isHomeSelected ? 'bg-primary/20' : ''
-          } ${isHomeSelected ? 'opacity-100' : isSelected ? 'opacity-30' : 'opacity-100 hover:opacity-80'}`}
-        >
-          <Team team={game.home} showLogoOnly />
-        </button>
-        <span className="text-center text-[10px] font-semibold leading-none">
-          {game.home.abbrev}
-        </span>
-        {isSelected && (
-          <span
-            className={`text-base-content/70 w-full text-center text-[10px] leading-none ${homeWon ? 'font-extrabold' : 'font-semibold'}`}
-          >
-            {homeWon ? 'W' : 'L'}
-          </span>
-        )}
-      </div>
+    <div className="flex w-40 items-center justify-center gap-3 rounded-lg border border-base-300 bg-base-200 p-2 dark:border-base-400 dark:bg-base-300">
+      <CompactTeamSelector
+        team={game.away}
+        teamEspnId={game.away.teamEspnId}
+        isSelected={isAwaySelected}
+        isWon={isAwaySelected}
+        onTeamClick={handleTeamClick}
+      />
+      <span className="text-base-content/60 text-xxs leading-none">vs</span>
+      <CompactTeamSelector
+        team={game.home}
+        teamEspnId={game.home.teamEspnId}
+        isSelected={isHomeSelected}
+        isWon={isHomeSelected}
+        onTeamClick={handleTeamClick}
+      />
     </div>
   );
 };
