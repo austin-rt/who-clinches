@@ -75,7 +75,7 @@ npm run test
 - Atlas `/test` database stores ESPN API snapshots
 - Data is copied to MongoDB Memory Server at test startup (via `jest.server-setup.js`)
 - Populated via `/api/cron/update-test-data` endpoint
-- Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+- Models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`
 
 **Setup Process:**
 1. Global setup starts MongoDB Memory Server

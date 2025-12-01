@@ -25,7 +25,6 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 **ESPN API:**
 - Site API: ~500ms between requests
-- Core API: ~500ms between requests
 - Scoreboard API: No rate limit (batched by week)
 
 **Our APIs:**
@@ -81,6 +80,14 @@ db.errors.find({ endpoint: '/api/games/cfb/sec' }).sort({ timestamp: -1 });
 - Conference IDs vary by conference (e.g., 8 for SEC)
 - Team IDs are ESPN team IDs (e.g., "333" = Alabama)
 - Frontend uses RTK Query with two-phase loading (GET for fast initial load, POST for background refresh) and conditional polling for live updates
+
+**API Route Pattern**: `export const POST/GET = async (request: NextRequest) => { ... }`
+
+**Database Pattern**: `await dbConnect()` before any DB operation
+
+**Error Logging Pattern**: `ErrorModel.create({ timestamp, endpoint, payload, error, stackTrace })`
+
+**Type Casting Pattern**: `.lean<GameLean[]>()` for MongoDB queries
 
 ---
 

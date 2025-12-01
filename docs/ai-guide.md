@@ -25,14 +25,6 @@ This is a specialized college football application built for simulating conferen
 - **Standings Calculation**: Generates complete conference standings with explanations
 - **Real-Time Data**: Automatically updates from ESPN API via frontend polling with conditional logic
 
-**Key Endpoints:**
-- `/api/simulate/[sport]/[conf]` - Accepts game score overrides and returns full standings (e.g., `/api/simulate/cfb/sec`)
-- `GET /api/games/[sport]/[conf]` - Queries MongoDB only (read-only, fast, ~50-200ms)
-- `POST /api/games/[sport]/[conf]` - Fetches from ESPN, upserts to database, and returns reshaped data (e.g., `/api/games/cfb/sec`)
-- `/api/games/[sport]/[conf]/live` - Lightweight live game updates (scores/status only)
-- `/api/games/[sport]/[conf]/spreads` - Spread/odds updates only
-- `/api/teams/[sport]/[conf]` - Fetches team data from ESPN, upserts to database, and returns reshaped data
-
 ## Repository Structure
 
 **Key Directories:**
@@ -45,72 +37,56 @@ This is a specialized college football application built for simulating conferen
 - `lib/` - Core utilities (espn-client, reshape-*, tiebreaker-helpers)
 - `scripts/` - Database and type generation scripts
 
+## Documentation Navigation
+
+**Start Here:**
+- **[AI Loading Manifest](./ai-loading-manifest.md)** - Efficient doc loading strategy
+
+**API Documentation:**
+- **[API Reference](./guides/api-reference.md)** - Complete API endpoint reference
+- **[API Data Endpoints](./guides/api-reference-data.md)** - Detailed data endpoint documentation
+- **[ESPN API Testing](./tests/espn-api-testing.md)** - ESPN API quirks, types, and testing procedures
+
+**Frontend Documentation:**
+- **[Frontend Index](./guides/frontend/index.md)** - Frontend architecture overview
+- **[Data Flow](./guides/frontend/data-flow.md)** - How data flows through the application
+- **[State Management](./guides/frontend/state-management.md)** - Redux store and persistence
+
+**Testing Documentation:**
+- **[Testing Quick Reference](./guides/testing-quick-reference.md)** - Quick testing commands and procedures
+- **[Comprehensive API Testing](./tests/comprehensive-api-testing.md)** - Complete API testing guide
+- **[ESPN Data Pipeline](./tests/espn-data-pipeline.md)** - ESPN data ingestion and transformation
+
+**Tiebreaker Rules:**
+- **Location**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
+- **Code**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - Must enforce rules exactly as specified
+
+## Key Files Reference
+
+**Models**: `lib/models/Game.ts`, `lib/models/Team.ts`, `lib/types.ts`
+
+**ESPN Integration**: `lib/cfb/espn-client.ts` (CFB-specific), `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic), `lib/constants.ts` (sports and conference configuration)
+
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) before database upsert. This ensures all team name variations are stored in the `Game` model and available everywhere without needing multiple enrichment steps in different endpoints.
+
+**Tiebreaker Logic**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - SEC tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
+
+**Frontend State**: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
+
+**Frontend Data Hook**: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query
 
 ## Quick Start
 
-- **Documentation**: See [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading
-- **After Code**: Run `npm run build` to catch build errors
+1. **Read Documentation**: Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading
+2. **After Code Changes**: Run `npm run build` to catch build errors
+3. **Navigate**: Use the documentation structure above to find specific information
 
-## Key Files
+## Constraints
 
-- Models: `lib/models/Game.ts`, `lib/models/Team.ts`, `lib/types.ts`
-- ESPN: `lib/cfb/espn-client.ts` (CFB-specific), `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic), `lib/constants.ts` (sports and conference configuration)
-- Tiebreaker: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - SEC tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
-- Frontend: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
-- Polling: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query (polls every 60 seconds when games are live or starting within 5 minutes of kickoff, disabled in development)
+- **Vercel Timeouts**: 60s Pro, 10s Hobby
+- **ESPN API**: 500ms delays between requests
+- **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
 
-**Tiebreaker Rules (SINGULAR SOURCE OF TRUTH):**
-- Location: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
-- Code must enforce rules exactly as specified in `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`
+---
 
-**Constraints:** Vercel timeouts (60s Pro, 10s Hobby), ESPN API (500ms delays), Frontend polling (conditional based on game states).
-
-## Essential Pattern Recognition
-
-**Key Patterns:**
-- **API Route**: `export const POST/GET = async (request: NextRequest) => { ... }`
-- **Database**: `await dbConnect()` before any DB operation
-- **ESPN API**: `espnClient.getScoreboard()` / `getTeam()` / `getTeamRecords()`
-- **Data Transformation**: 
-  - `reshapeScoreboardData()` (from `lib/reshape-games.ts`) → Game format
-  - `reshapeTeamData()` (from `lib/reshape-teams.ts`) → Team format
-  - `extractTeamsFromScoreboard()` (from `lib/reshape-teams-from-scoreboard.ts`) → Extract teams from scoreboard
-- **Error Logging**: `ErrorModel.create({ timestamp, endpoint, payload, error, stackTrace })`
-- **Type Casting**: `.lean<GameLean[]>()` for MongoDB queries
-- **Redux**: `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
-- **UI State**: `useUIState()` hook from `app/store/useUI.ts`
-- **State Persistence**: redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
-- **RTK Query**: 
-  - `useGetSeasonGameDataFromCacheQuery({ sport, conf, season?, week?, state?, from?, to? })` - Fast MongoDB query (GET request, ~50-200ms)
-  - `useGetSeasonGameDataQuery({ sport, conf, season?, week?, state?, from?, to?, force? })` - Full season data with ESPN fetch (POST request, ~500-2000ms)
-  - `useGetLiveGameDataQuery({ sport, conf, season?, force? })` - Live game updates (no week parameter - always queries current week)
-  - `useGetSpreadDataQuery({ sport, conf, season?, week?, force? })` - Spread/odds updates
-  - `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
-  - All hooks from `app/store/apiSlice.ts`
-- **Frontend Polling**: `useGamesData({ sport, conf, season })` hook from `app/hooks/useGamesData.ts` - Two-phase loading: GET for fast initial load, then POST for background refresh. Conditional polling based on game states and start times (live polling starts 5 min before kickoff and continues until games are post, polls every 60 seconds, disabled in development; spreads polling for pre-game games in production only)
-
-**Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
-
-## Critical Accuracy Notes
-
-**ESPN API Quirks:**
-- Conference ID: Scoreboard API uses "8", Team API may return "80"
-- Record Types: Use `name` for overall ("overall"), `type` for others ("homerecord", "awayrecord", "vsconf")
-- Ranking Values: 99 or null means unranked
-- Future Seasons: Core API may return null for upcoming seasons (fall back to Site API)
-
-**Data Integrity:**
-- `predictedScore`: Calculated by `calculatePredictedScore()` from `lib/cfb/helpers/prefill-helpers.ts` using priority order:
-  1. Real scores (if game completed or in progress with scores)
-  2. ESPN odds (overUnder + spread + favorite) via `calculatePredictedScoreFromOdds()`
-  3. Team averages + spread via `calculatePredictedScoreFromTeamAverages()`
-  4. Ranking-based via `calculatePredictedScoreFromRanking()` (if no odds: higher ranked team uses season average, lower ranked team uses higher ranked score minus rank difference, or minus 17 if unranked)
-  5. Home field advantage via `calculatePredictedScoreFromHomeFieldAdvantage()` (fallback: home team average, away team average - 3)
-- `displayName`: Format must be "{away} @ {home}" with team abbreviations
-- `shortDisplayName`: Team short name from ESPN (e.g., "Georgia" from "Georgia Bulldogs"), used in tiebreaker explanations. Available in `TeamLean`, `ReshapedTeam`, `ITeam`. In `GameLean.home`/`away` objects, only available in `/api/simulate` responses (not in `/api/games` responses)
-- Team IDs: ESPN team IDs used as MongoDB `_id` (no separate mapping table)
-- `favoriteTeamEspnId`: Determined from ESPN's `odds.awayTeamOdds.favorite` or `odds.homeTeamOdds.favorite` boolean fields
-- **GameLean vs ReshapedGame**: `GameLean` (database/API format) has optional `shortDisplayName` and `alternateColor` in `home`/`away` objects in the type definition, but actual API responses vary by endpoint:
-  - `/api/games/[sport]/[conf]`: `home`/`away` only include `teamEspnId`, `abbrev`, `score`, `rank` (team display info is in separate `teams` array)
-  - `/api/simulate/[sport]/[conf]`: `home`/`away` include `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor` (populated from team map)
-  - `ReshapedGame` (initial reshape format) does not include `shortDisplayName` or `alternateColor`
+**For specific implementation details, see the documentation files referenced above.**

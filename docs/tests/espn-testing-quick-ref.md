@@ -11,19 +11,10 @@
 - **Team API:** Returns `"80"` in `team.groups.parent.id`
 - **Impact:** Use `SEC_CONFERENCE_ID = 8` for scoreboard queries
 
-### 2. Record Types
-- **Overall Record:** Use `name: "overall"`
-- **Other Records:** Use `type: "homerecord"`, `"awayrecord"`, `"vsconf"`
-- **Conference Record:** `type: "vsconf"` (not `name`)
-
-### 3. Ranking Values
+### 2. Ranking Values
 - **99 or null** = Unranked
 - **1-25** = Ranked (AP/Coaches poll)
 - **Check:** `rankings[0].current` or `rankings[0].value`
-
-### 4. Future Seasons
-- **Core API:** May return null for upcoming seasons
-- **Fallback:** Use Site API if Core API fails
 
 ---
 
@@ -34,7 +25,7 @@
 | `conferenceId` | Scoreboard: `competitor.team.conferenceId` | Conference ID (e.g., `"8"` for SEC) |
 | `displayName` | Scoreboard: `name` | Format: "{away} @ {home}" |
 | `teamId` | Scoreboard: `competitor.team.id` | ESPN team ID (string) |
-| `record` | Team API: `record.items[]` | Use `type: "vsconf"` for conference |
+| `record` | Calculated from games | Conference records calculated from completed conference games |
 | `ranking` | Team API: `rankings[0].current` | 99 or null = unranked |
 
 ---

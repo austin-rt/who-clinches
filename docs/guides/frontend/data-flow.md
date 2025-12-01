@@ -17,6 +17,17 @@ How data flows through the application: fetching, user interactions, and state u
 - Automatic refetch on window focus
 - `lastUpdated` synced to Redux on successful fetch
 
+**Data Pipeline**: ESPN API → Reshape (with team enrichment) → Database Upsert → API Response
+- Team metadata (`displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`) is enriched at the reshape level before upsert
+- All team name variations are stored in the `Game` model, eliminating the need for multiple enrichment steps
+
+**RTK Query Hooks** (from `app/store/apiSlice.ts`):
+- `useGetSeasonGameDataFromCacheQuery({ sport, conf, season?, week?, state?, from?, to? })` - Fast MongoDB query (GET request, ~50-200ms)
+- `useGetSeasonGameDataQuery({ sport, conf, season?, week?, state?, from?, to?, force? })` - Full season data with ESPN fetch (POST request, ~500-2000ms)
+- `useGetLiveGameDataQuery({ sport, conf, season?, force? })` - Live game updates (no week parameter - always queries current week)
+- `useGetSpreadDataQuery({ sport, conf, season?, week?, force? })` - Spread/odds updates
+- `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
+
 ### Initial Load Strategy
 
 The `useGamesData` hook implements a two-phase loading strategy for fast initial loads:
@@ -66,6 +77,15 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 5. Component re-renders with new score
 
 ---
+
+## Redux Patterns
+
+**State Management:**
+- `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
+- `useUIState()` hook from `app/store/useUI.ts`
+- redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
+
+**Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 
 **Last Updated**: January 2025
 

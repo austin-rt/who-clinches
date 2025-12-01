@@ -12,7 +12,7 @@
 
 **Test Database**: MongoDB Memory Server (in-memory) - All tests run against isolated in-memory database. Test data is seeded from Atlas `/test` database at test startup.
 
-**Test Data Strategy**: Real ESPN API data from Atlas `/test` database is copied to MongoDB Memory Server at startup. Data is populated via `/api/cron/update-test-data`, models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+**Test Data Strategy**: Real ESPN API data from Atlas `/test` database is copied to MongoDB Memory Server at startup. Data is populated via `/api/cron/update-test-data`, models: `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`
 
 **Jest Configuration**:
 - `forceExit: true` - Prevents Jest from hanging on open handles

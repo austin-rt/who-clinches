@@ -71,7 +71,7 @@ curl "{BASE_URL}/api/games/cfb/sec?season=2025&week=11&x-vercel-protection-bypas
 **Expected Results**:
 - Teams: 16 teams in database (extracted from games)
 - Games: ~128 games for 2025 season (weeks 1-14)
-- Conference records: Not null (verify with `db.teams.find({'record.conference': null}).count()` - should return 0)
+- Conference records: Calculated from completed conference games (format: "W-L", e.g., "7-1"). Verify with `db.teams.find({'record.conference': null}).count()` - should return 0 after games are completed. Records are updated automatically when games are fetched/updated.
 - Database connection: Vercel logs show `[MongoDB] Connecting to database: {DATABASE}` (preview/production)
 
 ---
@@ -97,4 +97,4 @@ curl "{BASE_URL}/api/games/cfb/sec?season=2025&week=11&x-vercel-protection-bypas
 
 **Rate limiting**: Wait 1-2 minutes between requests (500ms delay between calls)
 
-**Null conference records**: Check ESPN Core API accessibility and logs
+**Null conference records**: Verify completed conference games exist in database (`db.games.find({conferenceGame: true, completed: true, 'home.score': {$ne: null}, 'away.score': {$ne: null}})`). Records are calculated from games, not from ESPN API. If games are completed but records are null, check error logs for calculation errors.

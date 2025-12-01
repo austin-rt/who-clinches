@@ -36,15 +36,17 @@ Testing results from ESPN API calls to verify type definitions and usage.
 
 ---
 
-## Core Records API
+## Conference Records
 
-**Endpoint**: `http://sports.core.api.espn.com/v2/sports/football/leagues/college-football/seasons/{year}/types/2/teams/{teamId}/records`
+**Implementation**: Conference records are **calculated locally** from completed conference games stored in the database, not fetched from ESPN API.
 
-**Record Types**: Overall (`name: "overall"`), Home (`type: "homerecord"`), Away (`type: "awayrecord"`), Conference (`type: "vsconf"`)
+**Calculation**: When games are fetched/updated via `POST /api/games/[sport]/[conf]`, the system:
+1. Queries all completed conference games for the season (`conferenceGame: true`, `completed: true`, scores not null)
+2. Calculates wins/losses for each team based on game results
+3. Updates team records in the database with format `"W-L"` (e.g., "7-1")
 
-**Stats**: Flat array, search by stat name (`avgPointsFor`, `avgPointsAgainst`, `wins`, `losses`, `gamesPlayed`, `differential`)
 
-**Types**: ✅ Correct (`ESPNCoreRecordResponse`, `ESPNRecordItem`)
+**Note**: This replaces the previous ESPN Core Records API integration for improved reliability and consistency.
 
 ---
 
@@ -52,15 +54,11 @@ Testing results from ESPN API calls to verify type definitions and usage.
 
 **Conference IDs**: `SEC_CONFERENCE_ID = 8` (scoreboard), `SEC_CONFERENCE_ID_ALT = 80` (team API)
 
-**Record Types**: `RECORD_TYPE_OVERALL = 'overall'`, `RECORD_TYPE_HOME = 'homerecord'`, `RECORD_TYPE_AWAY = 'awayrecord'`, `RECORD_TYPE_CONFERENCE = 'vsconf'`
-
-**Stat Names**: `STAT_AVG_POINTS_FOR`, `STAT_AVG_POINTS_AGAINST`, `STAT_WINS`, `STAT_LOSSES`, `STAT_GAMES_PLAYED`, `STAT_DIFFERENTIAL`
-
 ---
 
 ## Type Verification
 
-All ESPN API types are **CORRECT** ✅: `ESPNScoreboardResponse`, `ESPNEvent`, `ESPNCompetition`, `ESPNCompetitor`, `ESPNTeamResponse`, `ESPNTeamRecord`, `ESPNCoreRecordResponse`, `ESPNRecordItem`
+All ESPN API types are **CORRECT** ✅: `ESPNScoreboardResponse`, `ESPNEvent`, `ESPNCompetition`, `ESPNCompetitor`, `ESPNTeamResponse`, `ESPNTeamRecord`
 
 **Note**: TypeScript errors were caused by incorrect USAGE, not incorrect type definitions.
 
@@ -68,7 +66,7 @@ All ESPN API types are **CORRECT** ✅: `ESPNScoreboardResponse`, `ESPNEvent`, `
 
 ## Testing Recommendations
 
-**Before Each Season**: Test scoreboard (`?groups=8&week=1&year=YYYY`), team API (`/teams/61`), Core Records API (`/seasons/YYYY/types/2/teams/61/records`), verify conference IDs and stat names unchanged
+**Before Each Season**: Test scoreboard (`?groups=8&week=1&year=YYYY`), team API (`/teams/61`), verify conference IDs unchanged, verify conference record calculation from games
 
 **During Season**: Monitor for API structure changes, new stat fields, odds data availability, test with pre-game and live games
 
@@ -76,11 +74,14 @@ All ESPN API types are **CORRECT** ✅: `ESPNScoreboardResponse`, `ESPNEvent`, `
 
 ## Known Issues & Workarounds
 
-**Future Season Returns Null**: Core API returns null stats for future seasons → Fall back to Site API stats from `team.record.items[0].stats` (implemented in cron jobs)
-
 **Conference ID Mismatch**: Scoreboard uses "8", Team API uses "80" → Use `conferenceCompetition` boolean flag instead of comparing IDs (we check `conferenceGame` field)
 
-**No Conference Record**: Core API type "vsconf" may not exist for current/future seasons → Allow null, don't fail if missing (`conferenceRecord?.summary || null`)
+**Conference Records**: Calculated from completed games in database, not from ESPN API → Records update automatically when games are completed and fetched
+
+**ESPN API Quirks:**
+- Conference ID: Scoreboard API uses "8", Team API may return "80"
+- Record Types: Use `name` for overall ("overall"), `type` for others ("homerecord", "awayrecord", "vsconf")
+- Ranking Values: 99 or null means unranked
 
 ---
 

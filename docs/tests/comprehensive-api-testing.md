@@ -55,4 +55,4 @@ BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
 **Success Criteria**: Valid requests return 2xx, invalid return 4xx, response schemas match `lib/api-types.ts`, database state reflects changes, no unhandled errors, logs confirm correct database
 
-**Troubleshooting**: Wrong database → Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`. Bypass token → Verify `VERCEL_AUTOMATION_BYPASS_SECRET` matches Vercel setting. Rate limiting → Wait 1-2 minutes (500ms delay). Null conference records → Check ESPN Core API accessibility
+**Troubleshooting**: Wrong database → Check Vercel logs for `[MongoDB] Connecting to database: {DATABASE}`. Bypass token → Verify `VERCEL_AUTOMATION_BYPASS_SECRET` matches Vercel setting. Rate limiting → Wait 1-2 minutes (500ms delay). Null conference records → Verify completed conference games exist in database (records are calculated from games, not from ESPN API)

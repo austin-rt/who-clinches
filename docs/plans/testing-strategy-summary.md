@@ -61,7 +61,7 @@ npm run test:coverage     # Generate coverage report
 - **Data Seeding:** Test data is copied from Atlas `/test` to memory server at test startup
 - **Isolation:** Each test run gets a fresh in-memory database, no cleanup needed
 - **Auto-Populated:** Via `/api/cron/update-test-data` endpoint
-- **Models:** `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`, `ESPNTeamRecordsTestData`
+- **Models:** `ESPNScoreboardTestData`, `ESPNGameSummaryTestData`, `ESPNTeamTestData`
 
 ---
 

@@ -13,7 +13,7 @@
 
 ## Overview
 
-Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score overrides and returns resolved standings.
+Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score overrides and returns resolved standings. Current standings endpoints (`/api/standings/[sport]/[conf]` and `/api/games/[sport]/[conf]`) also use tiebreaker logic to properly rank teams based on completed games, working correctly with incomplete seasons.
 
 ---
 
@@ -41,14 +41,20 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 - `ruleEScoringMargin()` - Rule E implementation
 - `resolveTies()` - Cascading tiebreaker engine
 - `calculateStandings()` - Full standings calculation
+- `calculateStandingsFromCompletedGames()` - Reusable function for current standings (works with incomplete seasons)
 
-**API Endpoint** (`app/api/simulate/[sport]/[conf]/route.ts`, e.g., `app/api/simulate/cfb/sec/route.ts`):
-- Input: `{ season, conferenceId, overrides }`
-- Output: `{ standings, championship, tieLogs }`
-- Validates: Non-negative integers, no ties
-- Uses `predictedScore` when no override provided
+**API Endpoints**:
+- `/api/simulate/[sport]/[conf]` (e.g., `/app/api/simulate/cfb/sec/route.ts`):
+  - Input: `{ season, overrides }`
+  - Output: `{ standings, championship, tieLogs }`
+  - Validates: Non-negative integers, no ties
+  - Uses `predictedScore` when no override provided
+- `/api/standings/[sport]/[conf]`: Returns current standings using tiebreaker logic (completed games only)
+- `/api/games/[sport]/[conf]`: Returns games with team rankings calculated using tiebreaker logic
 
-**Data Flow:** Overrides → Records → Standings → Tie Resolution (A-E) → Explanations → Output
+**Data Flow:** 
+- Simulate: Overrides → Records → Standings → Tie Resolution (A-E) → Explanations → Output
+- Current Standings: Completed Games → Records → Standings → Tie Resolution (A-E) → Rankings (no explanations needed)
 
 ---
 
@@ -59,6 +65,8 @@ Conference tiebreaker engine (rules A-E). `/api/simulate` accepts score override
 - **Scoring Caps**: Rule E uses relative percentage-based calculation (offensive cap: 200%, defensive minimum: 0%)
 - **Championship**: Top 2 teams = Conference Championship matchup
 - **Full Standings**: Always returns all 16 teams
+- **Incomplete Seasons**: All tiebreaker rules work correctly with incomplete seasons (games without scores are automatically skipped)
+- **Team Enrichment**: Team metadata is enriched at reshape level before database upsert, ensuring all team name variations are available in Game model
 
 **Testing:** See [Tiebreaker Testing](../tests/tiebreaker-and-simulate.md)
 
