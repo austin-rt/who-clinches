@@ -9,7 +9,6 @@ import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
 import CurrentStandings from '@/app/components/CurrentStandings';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
-import { useUIState } from '@/app/store/useUI';
 import { SimulateResponse } from '@/lib/api-types';
 import { useAppDispatch } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
@@ -19,7 +18,6 @@ const ConferencePage = () => {
   const sport = params.sport as SportSlug;
   const conf = params.conf as ConferenceSlug;
   const currentSeason = useMemo(() => new Date().getFullYear(), []);
-  const { mode } = useUIState();
   const dispatch = useAppDispatch();
 
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
@@ -59,19 +57,16 @@ const ConferencePage = () => {
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-2">
-            <h1
-              className={`text-3xl font-bold transition-colors ${
-                mode === 'dark' ? 'text-accent' : 'text-primary'
-              }`}
-            >
-              {conferenceName} Tiebreaker Calculator
-            </h1>
-            <p className="text-base-content/70 text-base">
-              Predict game outcomes and see how they affect {conferenceName} conference standings
+            <h1 className="text-2xl font-bold transition-colors">{conferenceName} Championship</h1>
+            <p className="text-base-content/70 text-sm">
+              Predict outcomes to see who clinches the {conferenceName} title bids
             </p>
           </div>
-          <ViewModeButton />
         </div>
+      </div>
+
+      <div className="flex w-full sm:justify-end">
+        <ViewModeButton />
       </div>
 
       <CurrentStandings
@@ -82,12 +77,13 @@ const ConferencePage = () => {
 
       <div className="flex items-center justify-between gap-4">
         <HideCompletedButton />
-        <ResetButton onReset={handleReset} />
+        <ResetButton onReset={handleReset} className="w-fit" />
       </div>
 
       <GamesList season={currentSeason} />
 
-      <div className="flex flex-row justify-end gap-4">
+      <div className="flex w-full flex-row justify-between gap-4 sm:w-auto">
+        <ResetButton onReset={handleReset} className="w-1/2 sm:w-fit" />
         <SimulateButton season={currentSeason} onSimulateComplete={handleSimulateComplete} />
       </div>
     </div>
