@@ -10,17 +10,11 @@ interface TeamProps {
 }
 
 const Team = ({ team, showLogoOnly = false, showNameOnly = false }: TeamProps) => {
-  const getRankDisplay = (rank: number | null) => {
-    return rank !== null && rank < 99 ? `#${rank}` : null;
-  };
-
-  const rank = getRankDisplay(team.rank);
-
   if (showLogoOnly) {
     return (
-      <div className="relative flex items-center">
-        {rank && (
-          <sup className="absolute -left-4 top-1 text-[8px] font-semibold leading-none">{rank}</sup>
+      <div className="flex items-center">
+        {team.rank !== null && (
+          <span className="text-xxxs self-start font-semibold leading-none">#{team.rank}</span>
         )}
         {team.logo && (
           <Image
