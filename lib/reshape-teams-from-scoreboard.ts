@@ -42,11 +42,17 @@ export const extractTeamsFromScoreboard = (
           color: team.color || '000000',
           alternateColor: team.alternateColor || '000000',
           conferenceId: conferenceMeta.espnId,
-          record: undefined,
-          conferenceStanding: undefined,
-          nationalRanking: undefined,
-          playoffSeed: undefined,
-          nextGameId: undefined,
+          record: {
+            overall: '0-0',
+            conference: '0-0',
+            home: '0-0',
+            away: '0-0',
+            stats: {},
+          },
+          conferenceStanding: '',
+          nationalRanking: null,
+          playoffSeed: null,
+          nextGameId: null,
           lastUpdated: new Date(),
         });
       }

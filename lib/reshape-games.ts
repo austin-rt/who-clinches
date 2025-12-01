@@ -1,16 +1,17 @@
 import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
-import { ReshapedGame, ReshapeResult } from './types';
+import { ReshapedGame, ReshapeResult, TeamLean } from './types';
 import cityTimezones from 'city-timezones';
-import { calculatePredictedScoreFromOdds } from './cfb/helpers/prefill-helpers';
+import { calculatePredictedScoreFromOdds, getDefaultPredictedScore } from './cfb/helpers/prefill-helpers';
 
 export const reshapeScoreboardData = (
   espnResponse: EspnScoreboardGenerated,
   espnRoute: string = 'football/college-football',
-  season?: number
+  season?: number,
+  teamMap?: Map<string, TeamLean>
 ): ReshapeResult<ReshapedGame> => {
   const [sport, league] = espnRoute.split('/');
   if (!espnResponse.events || espnResponse.events.length === 0) {
-    return { games: [] };
+    return { games: [], teams: [] };
   }
 
   const reshapedGames = espnResponse.events
@@ -155,6 +156,8 @@ export const reshapeScoreboardData = (
           rank: homeRank,
           logo: homeTeam.team.logo,
           color: homeTeam.team.color || '',
+          shortDisplayName: teamMap?.get(homeTeam.team.id)?.shortDisplayName || homeTeam.team.shortDisplayName || homeTeam.team.displayName || homeTeam.team.abbreviation,
+          alternateColor: teamMap?.get(homeTeam.team.id)?.alternateColor || homeTeam.team.alternateColor || '000000',
         },
         away: {
           teamEspnId: awayTeam.team.id,
@@ -164,6 +167,8 @@ export const reshapeScoreboardData = (
           rank: awayRank,
           logo: awayTeam.team.logo,
           color: awayTeam.team.color || '',
+          shortDisplayName: teamMap?.get(awayTeam.team.id)?.shortDisplayName || awayTeam.team.shortDisplayName || awayTeam.team.displayName || awayTeam.team.abbreviation,
+          alternateColor: teamMap?.get(awayTeam.team.id)?.alternateColor || awayTeam.team.alternateColor || '000000',
         },
         odds: {
           favoriteTeamEspnId,
@@ -180,11 +185,11 @@ export const reshapeScoreboardData = (
             favoriteTeamEspnId,
             homeTeam.team.id
           );
-          return oddsScore || { home: 28, away: 21 };
+          return oddsScore || getDefaultPredictedScore();
         })(),
       };
     })
     .filter((game) => game !== null);
 
-  return { games: reshapedGames };
+  return { games: reshapedGames, teams: [] };
 };

@@ -1,6 +1,5 @@
 import type { EspnScoreboardGenerated } from '../espn/espn-scoreboard-generated';
 import type { EspnTeamGenerated } from '../espn/espn-team-generated';
-import type { EspnTeamRecordsGenerated } from '../espn/espn-team-records-generated';
 import type { EspnGameSummaryGenerated } from '../espn/espn-game-summary-generated';
 import { fetchWithTimeout } from '../fetch-with-timeout';
 
@@ -105,34 +104,6 @@ export class ESPNClient {
     }
   }
 
-  async getTeamRecords(
-    teamId: string,
-    season: number = 2025,
-    seasonType: number = 2
-  ): Promise<EspnTeamRecordsGenerated> {
-    const url = `http://sports.core.api.espn.com/v2/sports/${this.sport}/leagues/${this.league}/seasons/${season}/types/${seasonType}/teams/${teamId}/record?lang=en&region=us`;
-
-    try {
-      const response = await fetchWithTimeout(
-        url,
-        {
-          headers: {
-            'User-Agent': 'SEC-Tiebreaker/1.0',
-          },
-        },
-        REQUEST_TIMEOUT_MS
-      );
-
-      if (!response.ok) {
-        throw new Error(`ESPN Core API error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
 }
 
 export const espnClient = new ESPNClient('football', 'college-football');

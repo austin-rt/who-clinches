@@ -1,10 +1,8 @@
 import type { EspnTeamGenerated, Logo } from './espn/espn-team-generated';
-import type { EspnTeamRecordsGenerated } from './espn/espn-team-records-generated';
 import { ReshapedTeam, ReshapedTeamRecord, TeamDataResponse } from './types';
 
 export const reshapeTeamData = (
-  espnTeamResponse: EspnTeamGenerated,
-  coreRecordResponse?: EspnTeamRecordsGenerated
+  espnTeamResponse: EspnTeamGenerated
 ): ReshapedTeam | null => {
   const team = espnTeamResponse.team;
   if (!team) {
@@ -13,35 +11,8 @@ export const reshapeTeamData = (
 
   const logo: Logo | undefined = team.logos?.find((l: Logo) => l.width >= 500) || team.logos?.[0];
 
-  let record: ReshapedTeamRecord = {};
-  if (coreRecordResponse?.items) {
-    const items = coreRecordResponse.items;
-
-    const overallRecord = items.find((item) => item.type === 'total');
-    const homeRecord = items.find((item) => item.type === 'homerecord');
-    const awayRecord = items.find((item) => item.type === 'awayrecord');
-    const confRecord = items.find((item) => item.type === 'vsconf');
-
-    const stats = overallRecord?.stats || [];
-    const getStatValue = (name: string) => stats.find((s) => s.name === name)?.value;
-
-    record = {
-      overall: overallRecord?.summary,
-      conference: confRecord?.summary || null,
-      home: homeRecord?.summary || null,
-      away: awayRecord?.summary || null,
-      stats: {
-        wins: getStatValue('wins'),
-        losses: getStatValue('losses'),
-        winPercent: getStatValue('winPercent'),
-        pointsFor: getStatValue('pointsFor'),
-        pointsAgainst: getStatValue('pointsAgainst'),
-        pointDifferential: getStatValue('pointDifferential'),
-        avgPointsFor: getStatValue('avgPointsFor'),
-        avgPointsAgainst: getStatValue('avgPointsAgainst'),
-      },
-    };
-  } else if (espnTeamResponse.team.record?.items) {
+  let record: ReshapedTeamRecord;
+  if (espnTeamResponse.team.record?.items) {
     const recordItem = espnTeamResponse.team.record.items[0];
     if (recordItem) {
       const stats = recordItem.stats || [];
@@ -49,10 +20,10 @@ export const reshapeTeamData = (
         stats.find((s: { name: string; value: number }) => s.name === name)?.value;
 
       record = {
-        overall: recordItem.summary,
-        conference: null,
-        home: null,
-        away: null,
+        overall: recordItem.summary || '0-0',
+        conference: '0-0',
+        home: '0-0',
+        away: '0-0',
         stats: {
           wins: getStatValue('wins'),
           losses: getStatValue('losses'),
@@ -64,16 +35,32 @@ export const reshapeTeamData = (
           avgPointsAgainst: getStatValue('avgPointsAgainst'),
         },
       };
+    } else {
+      record = {
+        overall: '0-0',
+        conference: '0-0',
+        home: '0-0',
+        away: '0-0',
+        stats: {},
+      };
     }
+  } else {
+    record = {
+      overall: '0-0',
+      conference: '0-0',
+      home: '0-0',
+      away: '0-0',
+      stats: {},
+    };
   }
 
   const rawRank = espnTeamResponse.team.rank;
   const nationalRanking = rawRank && rawRank !== 99 ? rawRank : null;
   const playoffSeed = null;
 
-  const conferenceStanding = espnTeamResponse.team.standingSummary;
+  const conferenceStanding = espnTeamResponse.team.standingSummary || '';
 
-  const nextGameId = espnTeamResponse.team.nextEvent?.[0]?.id;
+  const nextGameId = espnTeamResponse.team.nextEvent?.[0]?.id || null;
 
   return {
     _id: team.id,
@@ -97,12 +84,12 @@ export const reshapeTeamData = (
 export const reshapeTeamsData = (teamResponses: TeamDataResponse[]): ReshapedTeam[] => {
   const teams: ReshapedTeam[] = [];
 
-  teamResponses.forEach(({ data, recordData }) => {
+  teamResponses.forEach(({ data }) => {
     if (!data) {
       return;
     }
 
-    const team = reshapeTeamData(data, recordData || undefined);
+    const team = reshapeTeamData(data);
     if (team) {
       teams.push(team);
     }

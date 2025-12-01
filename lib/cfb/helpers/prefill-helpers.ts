@@ -9,7 +9,7 @@ interface TeamForPrediction {
   };
 }
 
-const DEFAULT_AVG = 28;
+export const DEFAULT_AVG = 28;
 
 export const calculatePredictedScoreFromOdds = (
   overUnder: number | null,
@@ -149,6 +149,17 @@ export const calculatePredictedScoreFromRanking = (
   }
 
   return undefined;
+};
+
+export const getDefaultPredictedScore = (): { home: number; away: number } => {
+  const homeScore = Math.round(DEFAULT_AVG);
+  const awayScore = Math.round(DEFAULT_AVG - 3);
+
+  if (homeScore === awayScore) {
+    return { home: homeScore + 1, away: awayScore };
+  }
+
+  return { home: homeScore, away: awayScore };
 };
 
 export const calculatePredictedScoreFromHomeFieldAdvantage = (

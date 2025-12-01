@@ -806,6 +806,13 @@ export const breakTie = (
   return { ranked, steps };
 };
 
+export const calculateStandingsFromCompletedGames = (
+  games: GameLean[],
+  allTeams: string[]
+): { standings: StandingEntry[]; tieLogs: TieLog[] } => {
+  return calculateStandings(games, allTeams);
+};
+
 export const calculateStandings = (
   games: GameLean[],
   allTeams: string[]
