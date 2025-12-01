@@ -37,7 +37,6 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 | Variable              | Required | Description                          |
 | --------------------- | -------- | ------------------------------------ |
-| `CRON_SECRET`         | No       | Not used (on-demand architecture, no cron endpoints) |
 | `MONGODB_USER`        | Yes      | MongoDB username                     |
 | `MONGODB_PASSWORD`    | Yes      | MongoDB password                     |
 | `MONGODB_HOST`        | Yes      | MongoDB cluster host                 |
