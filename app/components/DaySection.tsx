@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
 import GameCard from './GameCard';
+import Divider from './Divider';
 
 interface DaySectionProps {
   weekNumber: number;
@@ -45,7 +46,10 @@ const DaySection = ({ weekNumber, games, dayLabel }: DaySectionProps) => {
 
   return (
     <div className="space-y-3 rounded-lg bg-base-100 p-6">
-      <h3 className="text-sm font-semibold">{headerText}</h3>
+      <div className="flex flex-col gap-1">
+        <h3 className="text-sm font-semibold">{headerText}</h3>
+        <Divider />
+      </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
         {games.map((game) => (
           <GameCard key={game._id} game={game} />

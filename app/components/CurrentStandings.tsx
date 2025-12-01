@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation';
 import { SimulateResponse } from '@/lib/api-types';
 import SimulatedStandings from './SimulatedStandings';
 import LoadingSpinner from './LoadingSpinner';
+import Divider from './Divider';
+import { cn } from '@/lib/utils';
 
 interface CurrentStandingsProps {
   season: number;
@@ -54,7 +56,7 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
   }
 
   return (
-    <div className="collapse collapse-arrow bg-base-200 shadow-md">
+    <div className="collapse collapse-arrow border-2 border-base-300 bg-base-200 shadow-md dark:border-base-400">
       <input
         type="checkbox"
         checked={currentStandingsOpen}
@@ -69,21 +71,36 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
             <LoadingSpinner size="h-6 w-6" />
           </div>
         ) : (
-          <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
-            {sortedStandings.map((team) => {
-              const isTopTwo = team.rank === 1 || team.rank === 2;
-              return (
-                <div
-                  key={team.id}
-                  className={`flex items-center gap-1 whitespace-nowrap text-left ${isTopTwo ? 'font-semibold' : ''}`}
-                >
-                  <span>{team.rank !== null ? `${team.rank}.` : team.conferenceStanding}</span>
-                  <span>{team.shortDisplayName}</span>
-                  <span className="text-base-content/70">({team.conferenceRecord})</span>
-                </div>
-              );
-            })}
-          </div>
+          <>
+            <Divider className="-mt-4 pb-4" />
+            <div className="flex flex-col gap-4">
+              <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
+                {sortedStandings.map((team) => {
+                  const isTopTwo = team.rank === 1 || team.rank === 2;
+                  return (
+                    <div
+                      key={team.id}
+                      className={cn(
+                        'flex items-center gap-1 whitespace-nowrap text-left',
+                        isTopTwo ? 'font-bold' : ''
+                      )}
+                    >
+                      <span>{team.rank}.</span>
+                      <span>{team.shortDisplayName}</span>
+                      <span className="text-base-content/70">
+                        ({team.conferenceRecord})
+                        {isTopTwo && <span className="text-base-content/70">*</span>}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+              <Divider />
+              <div className="text-base-content/60 text-xxs w-full text-right font-bold">
+                * - in Title Game
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@
 import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
 import CompactGameButton from './CompactGameButton';
+import Divider from './Divider';
 import { useUIState } from '@/app/store/useUI';
 
 interface CompactWeekGridProps {
@@ -44,13 +45,17 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) =
   return (
     <div className="flex flex-col gap-6">
       {weeksData.map((week) => (
-        <div key={week.weekNumber} className="flex flex-col gap-3">
+        <div
+          key={week.weekNumber}
+          className="flex flex-col gap-3 rounded-lg border border-base-300 p-2"
+        >
           <div className="flex flex-col gap-1">
             <h3 className="text-base font-semibold">
               Week {week.weekNumber} - <span className="font-normal">{week.dateRange}</span>
             </h3>
+            <Divider />
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex w-fit flex-wrap justify-center gap-2 bg-transparent p-2 sm:justify-start dark:bg-base-200">
             {week.games.map((game) => (
               <CompactGameButton key={game._id} game={game} />
             ))}
