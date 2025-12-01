@@ -56,7 +56,7 @@ let BASE_URL: string;
 if (envName === 'preview') {
   BASE_URL = 'https://who-clinches-git-develop-austinrts-projects.vercel.app';
 } else if (envName === 'production') {
-  BASE_URL = 'https://who-clinches-git-main-austinrts-projects.vercel.app';
+  BASE_URL = 'https://whoclinches.com';
 } else {
   BASE_URL = process.env.BASE_URL || 'http://localhost:3000';
 }

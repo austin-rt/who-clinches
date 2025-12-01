@@ -12,7 +12,7 @@ Quick reference for testing ESPN data ingestion and transformation.
 | ----------- | --------------------------------------------------------------- | ------------ | --------- |
 | Local       | http://localhost:3000                                           | `dev`        | `develop` |
 | Preview     | https://who-clinches-git-develop-austinrts-projects.vercel.app/ | `preview`    | `develop` |
-| Production  | https://who-clinches-git-main-austinrts-projects.vercel.app/    | `production` | `main`    |
+| Production  | https://whoclinches.com/                                        | `production` | `main`    |
 
 ---
 

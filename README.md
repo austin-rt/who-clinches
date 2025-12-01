@@ -120,7 +120,7 @@ VERCEL_ENV=production  # Vercel sets this automatically per branch
 - **`develop`**: Development and staging work
   - Auto-deploys to: https://who-clinches-git-develop-austinrts-projects.vercel.app/
 - **`main`**: Production releases
-  - Auto-deploys to: https://who-clinches-git-main-austinrts-projects.vercel.app/
+  - Auto-deploys to: https://whoclinches.com/
 
 ### Workflow
 
