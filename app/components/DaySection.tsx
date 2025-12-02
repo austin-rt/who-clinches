@@ -47,7 +47,7 @@ const DaySection = ({ weekNumber, games, dayLabel }: DaySectionProps) => {
   return (
     <div className="space-y-3 rounded-lg bg-base-100 p-6">
       <div className="flex flex-col gap-1">
-        <h3 className="text-sm font-semibold">{headerText}</h3>
+      <h3 className="text-sm font-semibold">{headerText}</h3>
         <Divider />
       </div>
       <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">

@@ -109,8 +109,8 @@ const Score = ({ game }: ScoreProps) => {
         isHigher={homeIsHigher}
         isTie={isTie}
       />
-    </div>,
-  ];
+        </div>,
+      ];
 };
 
 export default Score;
