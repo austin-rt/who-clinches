@@ -50,9 +50,6 @@ const TeamSchema = new Schema<ITeam>(
     shortDisplayName: {
       type: String,
       required: false,
-      default: function (this: ITeam) {
-        return this.displayName || this.abbreviation || '';
-      },
     },
     abbreviation: {
       type: String,

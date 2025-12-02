@@ -391,7 +391,6 @@ export const POST = async (
           }
         }
 
-        // Create/update all extracted teams (not just existing ones)
         for (const extractedTeam of extractedTeams) {
           const teamId = extractedTeam._id;
           const existingTeam = existingTeamsMap.get(teamId);
@@ -407,6 +406,7 @@ export const POST = async (
                 color: extractedTeam.color,
                 alternateColor: extractedTeam.alternateColor,
                 conferenceId: extractedTeam.conferenceId,
+                record: extractedTeam.record,
                 lastUpdated: new Date(),
                 conferenceStanding: existingTeam?.conferenceStanding || 'Tied for 1st',
               },
