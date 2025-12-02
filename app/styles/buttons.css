@@ -23,7 +23,7 @@
   }
 
   .btn-accent {
-    @apply bg-accent text-base-100;
+    @apply bg-accent-80 text-base-100;
 
     &:hover {
       background-color: hsl(var(--a) / 0.9);
@@ -71,7 +71,7 @@
     }
 
     &.btn-accent {
-      @apply border-accent bg-transparent text-accent;
+      @apply border-accent-80 text-accent-80 bg-transparent;
 
       &:hover {
         background-color: hsl(var(--a) / 0.1);
@@ -130,7 +130,7 @@
     }
 
     &.btn-accent {
-      @apply bg-transparent text-accent;
+      @apply text-accent-80 bg-transparent;
 
       &:hover {
         background-color: hsl(var(--a) / 0.1);
