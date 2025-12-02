@@ -161,6 +161,7 @@ export const apiSlice = createApi({
 export const {
   useGetSeasonGameDataFromCacheQuery,
   useGetSeasonGameDataQuery,
+  useLazyGetSeasonGameDataQuery,
   useGetLiveGameDataQuery,
   useGetSpreadDataQuery,
   useSimulateMutation,

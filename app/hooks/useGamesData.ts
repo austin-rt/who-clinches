@@ -1,7 +1,8 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useRef } from 'react';
 import {
   useGetSeasonGameDataFromCacheQuery,
   useGetSeasonGameDataQuery,
+  useLazyGetSeasonGameDataQuery,
   useGetLiveGameDataQuery,
   useGetSpreadDataQuery,
 } from '@/app/store/apiSlice';
@@ -54,8 +55,39 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     refetchOnMountOrArgChange: true,
   });
 
+  const hasSeededRef = useRef<string>('');
+
+  const [triggerSeed, { data: seededData, isLoading: isSeeding }] = useLazyGetSeasonGameDataQuery();
+
+  const cacheKey = `${sport}/${conf}/${season}`;
+
+  useEffect(() => {
+    if (hasSeededRef.current !== cacheKey) {
+      hasSeededRef.current = '';
+    }
+  }, [cacheKey]);
+
+  useEffect(() => {
+    if (
+      isInitialSuccess &&
+      initialData?.needsSeeding &&
+      hasSeededRef.current !== cacheKey &&
+      !isSeeding
+    ) {
+      hasSeededRef.current = cacheKey;
+      void triggerSeed(refreshQueryArgs);
+    }
+  }, [
+    isInitialSuccess,
+    initialData?.needsSeeding,
+    triggerSeed,
+    refreshQueryArgs,
+    isSeeding,
+    cacheKey,
+  ]);
+
   const shouldRefresh = useMemo(() => {
-    return isInitialSuccess && !!initialData;
+    return isInitialSuccess && !!initialData && !initialData.needsSeeding;
   }, [isInitialSuccess, initialData]);
 
   const { data: refreshData, isError: isRefreshError } = useGetSeasonGameDataQuery(
@@ -65,10 +97,10 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     }
   );
 
-  const seasonData = refreshData || initialData;
-  const isLoading = isInitialLoading;
+  const seasonData = seededData || refreshData || initialData;
+  const isLoading = isInitialLoading || isSeeding;
   const isError = isInitialError || isRefreshError;
-  const isUninitialized = isInitialUninitialized;
+  const isUninitialized = isInitialUninitialized && !isSeeding;
 
   const liveQueryArgs = useMemo(
     () => ({

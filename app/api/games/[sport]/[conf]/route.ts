@@ -229,11 +229,14 @@ const queryGamesFromDatabase = async (
   const hasLiveGames = games.some((game) => game.state === 'in');
   const cacheMaxAge = hasLiveGames ? 10 : 60;
 
+  const needsSeeding = games.length === 0 && Object.values(teamMap).length === 0;
+
   return NextResponse.json<GamesResponse>(
     {
       events: games,
       teams: Object.values(teamMap),
       lastUpdated,
+      needsSeeding,
     },
     {
       headers: {

@@ -74,6 +74,7 @@ export interface GamesResponse {
   events: GameLean[];
   teams: TeamMetadata[];
   lastUpdated: string;
+  needsSeeding?: boolean;
 }
 
 export interface TeamsResponse {
