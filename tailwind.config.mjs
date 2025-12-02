@@ -11,10 +11,12 @@ const config = {
     extend: {
       colors: {
         'base-400': 'var(--color-base-400)',
+        'accent-50': 'hsl(var(--a) / 0.5)',
+        'accent-80': 'hsl(var(--a) / 0.8)',
       },
       fontSize: {
-        'xxs': '10px',
-        'xxxs': '8px',
+        xxs: '10px',
+        xxxs: '8px',
       },
     },
   },
