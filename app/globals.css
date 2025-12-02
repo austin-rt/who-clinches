@@ -52,7 +52,7 @@ html:not([data-mode]) {
   --color-base-200: #151a25; /* Secondary background (SEC Blue tint, lower opacity) */
   --color-base-300: #1a2d4a; /* Tertiary background - more visible blue */
   --color-base-400: #2d4470; /* Fourth background - lighter blue for contrast */
-  --color-base-content: #f5f5f5; /* Main text color (light) */
+  --color-base-content: rgba(245, 245, 245, 0.8); /* Main text color (light) */
   --toggle-border-color: var(--color-accent); /* SEC Gold for toggle border/circle in dark mode */
 }
 
