@@ -56,7 +56,7 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
   }
 
   return (
-    <div className="collapse collapse-arrow border-2 border-base-300 bg-base-200 shadow-md dark:border-base-400">
+    <div className="dark:border-accent-50 collapse collapse-arrow border border-base-400 bg-base-200 shadow-md">
       <input
         type="checkbox"
         checked={currentStandingsOpen}
@@ -96,7 +96,7 @@ const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) =
                 })}
               </div>
               <Divider />
-              <div className="text-base-content/60 text-xxs w-full text-right font-bold">
+              <div className="text-base-content/60 w-full text-right text-xxs font-bold">
                 * - in Title Game
               </div>
             </div>
