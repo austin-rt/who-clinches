@@ -54,18 +54,19 @@ const ConferencePage = () => {
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-4">
-          <div className="flex flex-col gap-2">
-            <h1 className="text-2xl font-bold transition-colors">{conferenceName} Championship</h1>
-            <p className="text-base-content/70 text-sm">
-              Predict outcomes to see who clinches the {conferenceName} title bids
-            </p>
-          </div>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-2xl font-bold transition-colors">{conferenceName} Championship</h1>
+          <p className="text-base-content/70 text-sm">
+            Predict outcomes to see who clinches the {conferenceName} title bids
+          </p>
+        </div>
+        <div className="hidden sm:flex sm:justify-end">
+          <ViewModeButton />
         </div>
       </div>
 
-      <div className="flex w-full sm:justify-end">
+      <div className="flex w-full sm:hidden">
         <ViewModeButton />
       </div>
 
