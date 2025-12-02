@@ -376,31 +376,26 @@ export const POST = async (
           .lean()
           .exec();
 
-        const teamsToUpdate = new Map<string, (typeof extractedTeams)[0]>();
-        for (const team of extractedTeams) {
-          teamsToUpdate.set(team._id, team);
-        }
-
+        const existingTeamsMap = new Map<string, { conferenceStanding?: string }>();
         for (const dbTeam of allConferenceTeams) {
           const teamId = String(dbTeam._id);
-          const extractedTeam = teamsToUpdate.get(teamId);
+          const existingStanding =
+            dbTeam && !Array.isArray(dbTeam) && dbTeam.conferenceStanding
+              ? dbTeam.conferenceStanding
+              : undefined;
+          if (existingStanding) {
+            existingTeamsMap.set(teamId, { conferenceStanding: existingStanding });
+          }
+        }
+
+        // Create/update all extracted teams (not just existing ones)
+        for (const extractedTeam of extractedTeams) {
+          const teamId = extractedTeam._id;
+          const existingTeam = existingTeamsMap.get(teamId);
 
           try {
-            const existingTeam = await Team.findOne({ _id: teamId }).lean().exec();
-            const existingStanding =
-              existingTeam && !Array.isArray(existingTeam) && existingTeam.conferenceStanding
-                ? existingTeam.conferenceStanding
-                : undefined;
-
             const updateData: Record<string, unknown> = {
               $set: {
-                lastUpdated: new Date(),
-              },
-            };
-
-            if (extractedTeam) {
-              updateData.$set = {
-                ...(updateData.$set as Record<string, unknown>),
                 name: extractedTeam.name,
                 displayName: extractedTeam.displayName,
                 shortDisplayName: extractedTeam.shortDisplayName,
@@ -409,14 +404,10 @@ export const POST = async (
                 color: extractedTeam.color,
                 alternateColor: extractedTeam.alternateColor,
                 conferenceId: extractedTeam.conferenceId,
-              };
-            }
-
-            if (existingStanding) {
-              (updateData.$set as Record<string, unknown>).conferenceStanding = existingStanding;
-            } else {
-              (updateData.$set as Record<string, unknown>).conferenceStanding = 'Tied for 1st';
-            }
+                lastUpdated: new Date(),
+                conferenceStanding: existingTeam?.conferenceStanding || 'Tied for 1st',
+              },
+            };
 
             await Team.findOneAndUpdate({ _id: teamId }, updateData, {
               upsert: true,
@@ -523,7 +514,6 @@ export const POST = async (
           }
         }
       } catch (error) {
-        // Log error but continue to return data from DB
         await ErrorModel.create({
           timestamp: new Date(),
           endpoint: `/api/games/${sport}/${conf}`,
