@@ -5,10 +5,7 @@ import Team from '@/lib/models/Team';
 import ErrorModel from '@/lib/models/Error';
 import { createESPNClient } from '@/lib/cfb/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
-import {
-  calculatePredictedScore,
-  getDefaultPredictedScore,
-} from '@/lib/cfb/helpers/prefill-helpers';
+import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 import { extractTeamsFromScoreboard } from '@/lib/reshape-teams-from-scoreboard';
 import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { MongoQuery, GameLean, TeamLean, GameState } from '@/lib/types';
@@ -71,66 +68,58 @@ const queryGamesFromDatabase = async (
   const games: GameLean[] = gamesRaw.map(
     (game): GameLean => ({
       _id: String(game._id),
-      espnId: String(game.espnId),
-      displayName: String(game.displayName),
-      date: String(game.date),
-      week: typeof game.week === 'number' ? game.week : null,
-      season: Number(game.season),
-      sport: String(game.sport),
-      league: String(game.league),
+      espnId: game.espnId,
+      displayName: game.displayName,
+      date: game.date,
+      week: game.week ?? null,
+      season: game.season,
+      sport: game.sport,
+      league: game.league,
       state: game.state as GameState,
-      completed: Boolean(game.completed),
-      conferenceGame: Boolean(game.conferenceGame),
-      neutralSite: Boolean(game.neutralSite),
+      completed: game.completed,
+      conferenceGame: game.conferenceGame,
+      neutralSite: game.neutralSite,
       venue: {
-        fullName: String(game.venue?.fullName || ''),
-        city: String(game.venue?.city || ''),
-        state: String(game.venue?.state || ''),
-        timezone: String(game.venue?.timezone || 'America/New_York'),
+        fullName: game.venue.fullName,
+        city: game.venue.city,
+        state: game.venue.state,
+        timezone: game.venue.timezone,
       },
       home: {
-        teamEspnId: String(game.home?.teamEspnId || ''),
-        abbrev: String(game.home?.abbrev || ''),
-        displayName: game.home?.displayName || game.home?.abbrev || '',
-        shortDisplayName:
-          game.home?.shortDisplayName || game.home?.displayName || game.home?.abbrev || '',
-        logo: game.home?.logo || '',
-        color: game.home?.color || '',
-        alternateColor: game.home?.alternateColor || '000000',
-        score: typeof game.home?.score === 'number' ? game.home.score : null,
-        rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
+        teamEspnId: game.home.teamEspnId,
+        abbrev: game.home.abbrev,
+        displayName: game.home.displayName,
+        shortDisplayName: game.home.shortDisplayName,
+        logo: game.home.logo,
+        color: game.home.color,
+        alternateColor: game.home.alternateColor,
+        score: game.home.score ?? null,
+        rank: game.home.rank ?? null,
       },
       away: {
-        teamEspnId: String(game.away?.teamEspnId || ''),
-        abbrev: String(game.away?.abbrev || ''),
-        displayName: game.away?.displayName || game.away?.abbrev || '',
-        shortDisplayName:
-          game.away?.shortDisplayName || game.away?.displayName || game.away?.abbrev || '',
-        logo: game.away?.logo || '',
-        color: game.away?.color || '',
-        alternateColor: game.away?.alternateColor || '000000',
-        score: typeof game.away?.score === 'number' ? game.away.score : null,
-        rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
+        teamEspnId: game.away.teamEspnId,
+        abbrev: game.away.abbrev,
+        displayName: game.away.displayName,
+        shortDisplayName: game.away.shortDisplayName,
+        logo: game.away.logo,
+        color: game.away.color,
+        alternateColor: game.away.alternateColor,
+        score: game.away.score ?? null,
+        rank: game.away.rank ?? null,
       },
       odds: {
-        favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
-          ? String(game.odds.favoriteTeamEspnId)
-          : null,
-        spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
-        overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
+        favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
+        spread: game.odds.spread ?? null,
+        overUnder: game.odds.overUnder ?? null,
       },
-      predictedScore: game.predictedScore
-        ? {
-            home: Number(game.predictedScore.home || 0),
-            away: Number(game.predictedScore.away || 0),
-          }
-        : getDefaultPredictedScore(),
-      gameType: game.gameType
-        ? {
-            name: String(game.gameType.name),
-            abbreviation: String(game.gameType.abbreviation),
-          }
-        : { name: 'Regular Season', abbreviation: 'reg' },
+      predictedScore: {
+        home: game.predictedScore.home,
+        away: game.predictedScore.away,
+      },
+      gameType: game.gameType && {
+        name: game.gameType.name,
+        abbreviation: game.gameType.abbreviation,
+      },
     })
   );
 
@@ -174,14 +163,14 @@ const queryGamesFromDatabase = async (
       | 'conferenceStanding'
     > => ({
       _id: String(team._id),
-      name: String(team.name),
-      abbreviation: String(team.abbreviation),
-      displayName: String(team.displayName),
-      shortDisplayName: String(team.shortDisplayName || team.displayName || team.abbreviation),
-      logo: String(team.logo),
-      color: String(team.color || '000000'),
-      alternateColor: String(team.alternateColor || '000000'),
-      conferenceStanding: team.conferenceStanding ? String(team.conferenceStanding) : '',
+      name: team.name,
+      abbreviation: team.abbreviation,
+      displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
+      logo: team.logo,
+      color: team.color,
+      alternateColor: team.alternateColor,
+      conferenceStanding: team.conferenceStanding ?? '',
     })
   );
 
@@ -375,29 +364,43 @@ export const POST = async (
         const client = createESPNClient(espnRoute);
 
         let seasonYear: number;
-        try {
-          const calendarResponse = await client.getScoreboard({
-            groups: conferenceMeta.espnId,
-          });
-          seasonYear =
-            calendarResponse.season?.year ||
-            calendarResponse.leagues?.[0]?.season?.year ||
-            (season ? parseInt(season, 10) : new Date().getFullYear());
-        } catch {
-          seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
+        if (force && season) {
+          // When force is true, use the season from the request body
+          seasonYear = parseInt(season, 10);
+        } else {
+          try {
+            const calendarResponse = await client.getScoreboard({
+              groups: conferenceMeta.espnId,
+            });
+            seasonYear =
+              calendarResponse.season?.year ||
+              calendarResponse.leagues?.[0]?.season?.year ||
+              (season ? parseInt(season, 10) : new Date().getFullYear());
+          } catch {
+            seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
+          }
         }
+
+        // Convert season to date range: Aug 1 of season year to Feb 1 of next year
+        const startDate = new Date(seasonYear, 7, 1); // August 1 (month 7 = August, 0-indexed)
+        const endDate = new Date(seasonYear + 1, 1, 1); // February 1 of next year (month 1 = February)
+        const startStr = `${startDate.getFullYear()}${String(startDate.getMonth() + 1).padStart(2, '0')}${String(startDate.getDate()).padStart(2, '0')}`;
+        const endStr = `${endDate.getFullYear()}${String(endDate.getMonth() + 1).padStart(2, '0')}${String(endDate.getDate()).padStart(2, '0')}`;
+        const dateRange = `${startStr}-${endStr}`;
 
         let scoreboardResponse;
         if (week) {
+          // For specific week, still use season parameter
           scoreboardResponse = await client.getScoreboard({
             groups: conferenceMeta.espnId,
             season: seasonYear,
             week: parseInt(week, 10),
           });
         } else {
+          // Always use dates parameter for full season queries
           scoreboardResponse = await client.getScoreboard({
             groups: conferenceMeta.espnId,
-            season: seasonYear,
+            dates: dateRange,
           });
         }
 
@@ -525,15 +528,19 @@ export const POST = async (
                 }
               );
 
+              const updateData: Record<string, unknown> = {
+                ...game,
+                season: seasonYear,
+                predictedScore,
+              };
+              if (game.gameType) {
+                updateData.gameType = game.gameType;
+              }
+
               await Game.findOneAndUpdate(
                 { espnId: game.espnId },
-                {
-                  ...game,
-                  season: seasonYear,
-                  predictedScore,
-                  gameType: game.gameType,
-                },
-                { upsert: true, new: true }
+                { $set: updateData },
+                { upsert: true, new: true, setDefaultsOnInsert: true }
               );
             } catch (error) {
               await ErrorModel.create({

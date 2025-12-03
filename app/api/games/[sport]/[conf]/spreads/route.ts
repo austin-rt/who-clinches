@@ -5,10 +5,7 @@ import Team from '@/lib/models/Team';
 import ErrorModel from '@/lib/models/Error';
 import { createESPNClient } from '@/lib/cfb/espn-client';
 import { reshapeScoreboardData } from '@/lib/reshape-games';
-import {
-  calculatePredictedScore,
-  getDefaultPredictedScore,
-} from '@/lib/cfb/helpers/prefill-helpers';
+import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { GameLean } from '@/lib/types';
@@ -141,9 +138,9 @@ export const POST = async (
                 { espnId: game.espnId },
                 {
                   $set: {
-                    'odds.spread': game.odds?.spread ?? null,
-                    'odds.favoriteTeamEspnId': game.odds?.favoriteTeamEspnId ?? null,
-                    'odds.overUnder': game.odds?.overUnder ?? null,
+                    'odds.spread': game.odds.spread ?? null,
+                    'odds.favoriteTeamEspnId': game.odds.favoriteTeamEspnId ?? null,
+                    'odds.overUnder': game.odds.overUnder ?? null,
                     'predictedScore.home': predictedScore.home,
                     'predictedScore.away': predictedScore.away,
                     lastUpdated: new Date(),
@@ -197,87 +194,74 @@ export const POST = async (
     const games = gamesRaw.map(
       (game): GameLean => ({
         _id: String(game._id),
-        espnId: String(game.espnId),
-        displayName: String(game.displayName),
-        date: String(game.date),
-        week: typeof game.week === 'number' ? game.week : null,
-        season: Number(game.season),
-        sport: String(game.sport),
-        league: String(game.league),
+        espnId: game.espnId,
+        displayName: game.displayName,
+        date: game.date,
+        week: game.week ?? null,
+        season: game.season,
+        sport: game.sport,
+        league: game.league,
         state: game.state,
-        completed: Boolean(game.completed),
-        conferenceGame: Boolean(game.conferenceGame),
-        neutralSite: Boolean(game.neutralSite),
+        completed: game.completed,
+        conferenceGame: game.conferenceGame,
+        neutralSite: game.neutralSite,
         venue: {
-          fullName: String(game.venue?.fullName || ''),
-          city: String(game.venue?.city || ''),
-          state: String(game.venue?.state || ''),
-          timezone: String(game.venue?.timezone || 'America/New_York'),
+          fullName: game.venue.fullName,
+          city: game.venue.city,
+          state: game.venue.state,
+          timezone: game.venue.timezone,
         },
         home: {
-          teamEspnId: String(game.home.teamEspnId),
-          abbrev: String(game.home.abbrev),
-          displayName: game.home.displayName || game.home.abbrev || '',
-          shortDisplayName:
-            game.home.shortDisplayName || game.home.displayName || game.home.abbrev || '',
-          logo: game.home.logo || '',
-          color: game.home.color || '',
-          alternateColor: game.home.alternateColor || '000000',
+          teamEspnId: game.home.teamEspnId,
+          abbrev: game.home.abbrev,
+          displayName: game.home.displayName,
+          shortDisplayName: game.home.shortDisplayName,
+          logo: game.home.logo,
+          color: game.home.color,
+          alternateColor: game.home.alternateColor,
           score: game.home.score ?? null,
           rank: game.home.rank ?? null,
         },
         away: {
-          teamEspnId: String(game.away.teamEspnId),
-          abbrev: String(game.away.abbrev),
-          displayName: game.away.displayName || game.away.abbrev || '',
-          shortDisplayName:
-            game.away.shortDisplayName || game.away.displayName || game.away.abbrev || '',
-          logo: game.away.logo || '',
-          color: game.away.color || '',
-          alternateColor: game.away.alternateColor || '000000',
+          teamEspnId: game.away.teamEspnId,
+          abbrev: game.away.abbrev,
+          displayName: game.away.displayName,
+          shortDisplayName: game.away.shortDisplayName,
+          logo: game.away.logo,
+          color: game.away.color,
+          alternateColor: game.away.alternateColor,
           score: game.away.score ?? null,
           rank: game.away.rank ?? null,
         },
         odds: {
-          favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
-            ? String(game.odds.favoriteTeamEspnId)
-            : null,
-          spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
-          overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
+          favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
+          spread: game.odds.spread ?? null,
+          overUnder: game.odds.overUnder ?? null,
         },
-        predictedScore: game.predictedScore
-          ? {
-              home: Number(game.predictedScore.home),
-              away: Number(game.predictedScore.away),
-            }
-          : getDefaultPredictedScore(),
-        gameType: game.gameType
-          ? {
-              name: String(game.gameType.name),
-              abbreviation: String(game.gameType.abbreviation),
-            }
-          : { name: 'Regular Season', abbreviation: 'reg' },
+        predictedScore: {
+          home: game.predictedScore.home,
+          away: game.predictedScore.away,
+        },
+        gameType: game.gameType && {
+          name: game.gameType.name,
+          abbreviation: game.gameType.abbreviation,
+        },
       })
     );
 
-    const teamMetadata: TeamMetadata[] = conferenceTeams.map((team) => {
-      const conferenceStanding = team.conferenceStanding
-        ? String(team.conferenceStanding)
-        : 'Tied for 1st';
-      return {
-        id: String(team._id),
-        abbrev: String(team.abbreviation),
-        name: String(team.name),
-        displayName: String(team.displayName),
-        shortDisplayName: String(team.shortDisplayName || team.displayName || team.abbreviation),
-        logo: String(team.logo),
-        color: String(team.color),
-        alternateColor: String(team.alternateColor),
-        conferenceStanding,
-        conferenceRecord: team.record?.conference || '0-0',
-        rank: parseRankFromStanding(conferenceStanding),
-      };
-    });
+    const teamMetadata: TeamMetadata[] = conferenceTeams.map((team) => ({
+      id: String(team._id),
+      abbrev: team.abbreviation,
+      name: team.name,
+      displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
+      logo: team.logo,
+      color: team.color,
+      alternateColor: team.alternateColor,
+      conferenceStanding: team.conferenceStanding ?? 'Tied for 1st',
+      conferenceRecord: team.record?.conference ?? '0-0',
+      rank: parseRankFromStanding(team.conferenceStanding ?? 'Tied for 1st'),
+    }));
 
     return NextResponse.json<GamesResponse>(
       {

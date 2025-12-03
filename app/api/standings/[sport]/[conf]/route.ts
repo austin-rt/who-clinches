@@ -6,7 +6,6 @@ import { GameLean, GameState } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
-import { getDefaultPredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -48,7 +47,6 @@ export const GET = async (
     const [espnSport, espnLeague] = espnRoute.split('/');
     const seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
 
-    // Fetch all conference teams
     const conferenceTeams = await Team.find({
       conferenceId: conferenceMeta.espnId,
     })
@@ -58,7 +56,6 @@ export const GET = async (
       )
       .exec();
 
-    // Fetch all completed conference games for the season
     const completedConferenceGames = await Game.find({
       sport: espnSport,
       league: espnLeague,
@@ -74,64 +71,58 @@ export const GET = async (
     const gamesForCalculation: GameLean[] = completedConferenceGames.map(
       (game): GameLean => ({
         _id: String(game._id),
-        espnId: String(game.espnId),
-        displayName: String(game.displayName),
-        date: String(game.date),
-        week: typeof game.week === 'number' ? game.week : null,
-        season: Number(game.season),
-        sport: String(game.sport),
-        league: String(game.league),
+        espnId: game.espnId,
+        displayName: game.displayName,
+        date: game.date,
+        week: game.week ?? null,
+        season: game.season,
+        sport: game.sport,
+        league: game.league,
         state: game.state as GameState,
-        completed: Boolean(game.completed),
-        conferenceGame: Boolean(game.conferenceGame),
-        neutralSite: Boolean(game.neutralSite),
+        completed: game.completed,
+        conferenceGame: game.conferenceGame,
+        neutralSite: game.neutralSite,
         venue: {
-          fullName: String(game.venue?.fullName || ''),
-          city: String(game.venue?.city || ''),
-          state: String(game.venue?.state || ''),
-          timezone: String(game.venue?.timezone || 'America/New_York'),
+          fullName: game.venue.fullName,
+          city: game.venue.city,
+          state: game.venue.state,
+          timezone: game.venue.timezone,
         },
         home: {
-          teamEspnId: String(game.home?.teamEspnId || ''),
-          abbrev: String(game.home?.abbrev || ''),
-          displayName: game.home?.displayName || game.home?.abbrev || '',
-          shortDisplayName: game.home?.shortDisplayName || game.home?.displayName || game.home?.abbrev || '',
-          logo: game.home?.logo || '',
-          color: game.home?.color || '',
-          alternateColor: game.home?.alternateColor || '000000',
-          score: typeof game.home?.score === 'number' ? game.home.score : null,
-          rank: typeof game.home?.rank === 'number' ? game.home.rank : null,
+          teamEspnId: game.home.teamEspnId,
+          abbrev: game.home.abbrev,
+          displayName: game.home.displayName,
+          shortDisplayName: game.home.shortDisplayName,
+          logo: game.home.logo,
+          color: game.home.color,
+          alternateColor: game.home.alternateColor,
+          score: game.home.score ?? null,
+          rank: game.home.rank ?? null,
         },
         away: {
-          teamEspnId: String(game.away?.teamEspnId || ''),
-          abbrev: String(game.away?.abbrev || ''),
-          displayName: game.away?.displayName || game.away?.abbrev || '',
-          shortDisplayName: game.away?.shortDisplayName || game.away?.displayName || game.away?.abbrev || '',
-          logo: game.away?.logo || '',
-          color: game.away?.color || '',
-          alternateColor: game.away?.alternateColor || '000000',
-          score: typeof game.away?.score === 'number' ? game.away.score : null,
-          rank: typeof game.away?.rank === 'number' ? game.away.rank : null,
+          teamEspnId: game.away.teamEspnId,
+          abbrev: game.away.abbrev,
+          displayName: game.away.displayName,
+          shortDisplayName: game.away.shortDisplayName,
+          logo: game.away.logo,
+          color: game.away.color,
+          alternateColor: game.away.alternateColor,
+          score: game.away.score ?? null,
+          rank: game.away.rank ?? null,
         },
         odds: {
-          favoriteTeamEspnId: game.odds?.favoriteTeamEspnId
-            ? String(game.odds.favoriteTeamEspnId)
-            : null,
-          spread: typeof game.odds?.spread === 'number' ? game.odds.spread : null,
-          overUnder: typeof game.odds?.overUnder === 'number' ? game.odds.overUnder : null,
+          favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
+          spread: game.odds.spread ?? null,
+          overUnder: game.odds.overUnder ?? null,
         },
-        predictedScore: game.predictedScore
-          ? {
-              home: Number(game.predictedScore.home || 0),
-              away: Number(game.predictedScore.away || 0),
-            }
-          : getDefaultPredictedScore(),
-        gameType: game.gameType
-          ? {
-              name: String(game.gameType.name),
-              abbreviation: String(game.gameType.abbreviation),
-            }
-          : { name: 'Regular Season', abbreviation: 'reg' },
+        predictedScore: {
+          home: game.predictedScore.home,
+          away: game.predictedScore.away,
+        },
+        gameType: game.gameType && {
+          name: game.gameType.name,
+          abbreviation: game.gameType.abbreviation,
+        },
       })
     );
 
@@ -145,17 +136,16 @@ export const GET = async (
 
       teamMap[teamId] = {
         id: teamId,
-        abbrev: String(team.abbreviation),
-        name: String(team.name),
-        displayName: String(team.displayName),
-        shortDisplayName: String(team.shortDisplayName || team.displayName || team.abbreviation),
-        logo: String(team.logo),
-        color: String(team.color || '000000'),
-        alternateColor:
-          team.alternateColor && team.alternateColor !== 'undefined' ? String(team.alternateColor) : '000000',
+        abbrev: team.abbreviation,
+        name: team.name,
+        displayName: team.displayName,
+        shortDisplayName: team.shortDisplayName,
+        logo: team.logo,
+        color: team.color,
+        alternateColor: team.alternateColor,
         conferenceStanding: standing
           ? `${standing.rank}${getOrdinalSuffix(standing.rank)}`
-          : team.conferenceStanding || 'Tied for 1st',
+          : team.conferenceStanding ?? 'Tied for 1st',
         conferenceRecord: standing
           ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
           : '0-0',
