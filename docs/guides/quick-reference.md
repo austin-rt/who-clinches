@@ -34,14 +34,13 @@ Domain-specific content locations for common tasks.
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
 - **Planning doc**: `docs/plans/tiebreaker-logic.md`
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
-- **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (e.g., `app/api/simulate/cfb/sec/route.ts`)
+- **Simulate endpoint**: `app/api/simulate/cfb/sec/route.ts` (currently hardcoded, not dynamic)
 
 ## Data Updates
 
 - **Architecture**: On-demand API endpoints with frontend polling
 - **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
 - **Frontend polling**: `app/hooks/useGamesData.ts` - Two-phase loading (GET for fast initial load, POST for background refresh), conditional polling based on game states and start times (starts 5 min before kickoff, polls every 60 seconds, disabled in development)
-- **Migration notes**: `docs/guides/api-reference-cron.md`
 
 ## Data Models
 

@@ -22,7 +22,7 @@
 | `POST /api/pull-teams/[sport]/[conf]` | Ingest ESPN team data | ✅ Active |
 | `POST /api/simulate/[sport]/[conf]` | Calculate standings | ✅ Active |
 
-**Cron Jobs:** See [API Reference - Cron Jobs](../guides/api-reference-cron.md)
+**Note:** All scheduled cron jobs have been replaced with on-demand API endpoints with frontend polling.
 
 ---
 

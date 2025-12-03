@@ -1,21 +1,16 @@
 # API Reference: Cron Jobs
 
-**Related:** [Main API Reference](./api-reference.md) | [Data Endpoints](./api-reference-data.md)
+**Status**: ⚠️ Mostly Obsolete - Data cron jobs removed, type generation remains
 
----
-
-## Migration to On-Demand Architecture
-
-All scheduled cron jobs have been replaced with on-demand API endpoints:
-
-- **POST /api/games/[sport]/[conf]** - Fetches from ESPN, upserts games, returns data (replaces update-games cron)
-- **POST /api/games/[sport]/[conf]/live** - Lightweight live game updates (scores/status only)
-- **POST /api/games/[sport]/[conf]/spreads** - Spread/odds updates only
-- Frontend polling drives all updates using RTK Query with conditional polling (starts 5 min before kickoff, polls every 60 seconds until games are post, disabled in development)
+All scheduled data update cron jobs have been replaced with on-demand API endpoints with frontend polling.
 
 **Remaining Scheduled Workflow:**
-- **GitHub Actions**: `.github/workflows/update-espn-types.yml` - Type generation (runs daily at 10 PM ET)
+- **GitHub Actions**: `.github/workflows/update-espn-types.yml` - ESPN type generation (runs daily at 02:15 UTC / 10:15 PM ET)
 
----
+**Current Data Architecture:**
+- **POST /api/games/[sport]/[conf]** - On-demand game data fetching
+- **POST /api/games/[sport]/[conf]/live** - Live game updates
+- **POST /api/games/[sport]/[conf]/spreads** - Spread/odds updates
+- Frontend polling drives all data updates using RTK Query
 
-**See also:** [Main API Reference](./api-reference.md) | [Data Endpoints](./api-reference-data.md)
+**See:** [Main API Reference](./api-reference.md) | [Data Endpoints](./api-reference-data.md)

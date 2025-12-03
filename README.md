@@ -149,8 +149,7 @@ ESPN API → reshape functions → MongoDB
 
 **Endpoints:**
 
-- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert games, return data
-- `POST /api/teams/[sport]/[conf]` - Fetch from ESPN, upsert teams, return data
+- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert games and teams (teams extracted from scoreboard), return data
 
 ### 2. Data Retrieval (MongoDB → Frontend)
 
@@ -177,7 +176,7 @@ User overrides → tiebreaker calculation → standings display
 
 **Endpoints:**
 
-- `POST /api/simulate/cfb/sec` - Simulate SEC standings with optional game overrides
+- `POST /api/simulate/cfb/sec` - Simulate SEC standings with optional game overrides (currently hardcoded to cfb/sec)
 
 ## Key Design Decisions
 
@@ -271,42 +270,7 @@ Fetches game data from ESPN, upserts to database, and returns reshaped data.
 
 **Notes**: Automatically fetches from ESPN and upserts reshaped data. Returns existing data during off-season.
 
-### POST /api/teams/[sport]/[conf]
-
-Fetches team data from ESPN, upserts to database, and returns reshaped data.
-
-**Path Parameters:**
-
-- `sport` - Sport slug (e.g., "cfb")
-- `conf` - Conference slug (e.g., "sec")
-
-**Example**: `POST /api/teams/cfb/sec`
-
-**Request Body:**
-
-```json
-{
-  "update": "rankings",
-  "force": true
-}
-```
-
-**Body Parameters:**
-
-- `update` - "rankings" (rankings/stats only), "stats" (team averages only), or undefined (full update)
-- `force` - `true` to bypass season check
-
-**Response:**
-
-```json
-{
-  "teams": [...],
-  "teamsMetadata": [...],
-  "lastUpdated": "2024-11-10T..."
-}
-```
-
-**Notes**: Automatically fetches from ESPN and upserts reshaped data. Teams must be seeded first (via games endpoint).
+**Note**: Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. There is no separate teams endpoint.
 
 ## Database Schema
 
@@ -336,9 +300,13 @@ Fetches team data from ESPN, upserts to database, and returns reshaped data.
     spread: number | null,
     overUnder: number | null
   },
-  predictedScore?: {
+  predictedScore: {
     home: number,
     away: number
+  },
+  gameType?: {
+    name: string,
+    abbreviation: string
   }
 }
 ```
@@ -369,10 +337,10 @@ Fetches team data from ESPN, upserts to database, and returns reshaped data.
     away: string,
     stats: { /* win %, points, etc */ }
   },
-  standingSummary: string,  // "3rd in SEC"
-  currentRank: number,
-  playoffSeed: number,
-  nextGameId: string,
+  conferenceStanding: string,  // "3rd in SEC"
+  nationalRanking: number | null,
+  playoffSeed: number | null,
+  nextGameId: string | null,
   lastUpdated: Date
 }
 ```

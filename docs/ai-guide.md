@@ -28,7 +28,7 @@ This is a specialized college football application built for simulating conferen
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/teams/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`)
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`). Note: `/api/simulate/cfb/sec` is currently hardcoded (not dynamic). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/models/` - Mongoose schemas (Game, Team, Error)
