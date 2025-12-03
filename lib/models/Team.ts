@@ -1,5 +1,22 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
+export interface TeamRecord {
+  overall: string;
+  conference: string;
+  home: string;
+  away: string;
+  stats: {
+    wins?: number;
+    losses?: number;
+    winPercent?: number;
+    pointsFor?: number;
+    pointsAgainst?: number;
+    pointDifferential?: number;
+    avgPointsFor?: number;
+    avgPointsAgainst?: number;
+  };
+}
+
 export interface ITeam extends Document {
   _id: string;
   name: string;
@@ -10,22 +27,7 @@ export interface ITeam extends Document {
   color: string;
   alternateColor: string;
   conferenceId: string;
-  record: {
-    overall: string;
-    conference: string;
-    home: string;
-    away: string;
-    stats: {
-      wins?: number;
-      losses?: number;
-      winPercent?: number;
-      pointsFor?: number;
-      pointsAgainst?: number;
-      pointDifferential?: number;
-      avgPointsFor?: number;
-      avgPointsAgainst?: number;
-    };
-  };
+  record: TeamRecord;
   conferenceStanding: string;
   nationalRanking?: number;
   playoffSeed?: number;

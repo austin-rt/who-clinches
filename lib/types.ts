@@ -1,6 +1,16 @@
 import type { EspnTeamGenerated } from './espn/espn-team-generated';
+import type {
+  GameState,
+  GameTeam,
+  GameVenue,
+  GameOdds,
+  GameType,
+  PredictedScore,
+} from './models/Game';
+import type { TeamRecord } from './models/Team';
 
-export type GameState = 'pre' | 'in' | 'post';
+export type { GameState, GameTeam, GameVenue, GameOdds, GameType, PredictedScore };
+export type { TeamRecord };
 
 export interface ReshapedGame {
   espnId: string;
@@ -14,65 +24,15 @@ export interface ReshapedGame {
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
-  venue: {
-    fullName: string;
-    city: string;
-    state: string;
-    timezone: string;
-  };
-  home: {
-    teamEspnId: string;
-    abbrev: string;
-    displayName: string;
-    score: number | null;
-    rank: number | null;
-    logo: string;
-    color: string;
-    shortDisplayName: string;
-    alternateColor: string;
-  };
-  away: {
-    teamEspnId: string;
-    abbrev: string;
-    displayName: string;
-    score: number | null;
-    rank: number | null;
-    logo: string;
-    color: string;
-    shortDisplayName: string;
-    alternateColor: string;
-  };
-  odds: {
-    favoriteTeamEspnId: string | null;
-    spread: number | null;
-    overUnder: number | null;
-  };
-  predictedScore: {
-    home: number;
-    away: number;
-  };
-  gameType: {
-    name: string;
-    abbreviation: string;
-  };
+  venue: GameVenue;
+  home: GameTeam;
+  away: GameTeam;
+  odds: GameOdds;
+  predictedScore: PredictedScore;
+  gameType?: GameType;
 }
 
-export interface ReshapedTeamRecord {
-  overall: string;
-  conference: string;
-  home: string;
-  away: string;
-  stats: {
-    wins?: number;
-    losses?: number;
-    winPercent?: number;
-    pointsFor?: number;
-    pointsAgainst?: number;
-    pointDifferential?: number;
-    avgPointsFor?: number;
-    avgPointsAgainst?: number;
-  };
-}
+export type ReshapedTeamRecord = TeamRecord;
 
 export interface ReshapedTeam {
   _id: string;
@@ -130,47 +90,12 @@ export interface GameLean {
   completed: boolean;
   conferenceGame: boolean;
   neutralSite: boolean;
-  venue: {
-    fullName: string;
-    city: string;
-    state: string;
-    timezone: string;
-  };
-  home: {
-    teamEspnId: string;
-    abbrev: string;
-    displayName: string;
-    shortDisplayName: string;
-    logo: string;
-    color: string;
-    alternateColor: string;
-    score: number | null;
-    rank: number | null;
-  };
-  away: {
-    teamEspnId: string;
-    abbrev: string;
-    displayName: string;
-    shortDisplayName: string;
-    logo: string;
-    color: string;
-    alternateColor: string;
-    score: number | null;
-    rank: number | null;
-  };
-  odds: {
-    favoriteTeamEspnId: string | null;
-    spread: number | null;
-    overUnder: number | null;
-  };
-  predictedScore: {
-    home: number;
-    away: number;
-  };
-  gameType: {
-    name: string;
-    abbreviation: string;
-  };
+  venue: GameVenue;
+  home: GameTeam;
+  away: GameTeam;
+  odds: GameOdds;
+  predictedScore: PredictedScore;
+  gameType?: GameType;
 }
 
 export interface TeamLean {
@@ -183,22 +108,7 @@ export interface TeamLean {
   color: string;
   alternateColor: string;
   conferenceId: string;
-  record: {
-    overall: string;
-    conference: string;
-    home: string;
-    away: string;
-    stats: {
-      wins?: number;
-      losses?: number;
-      winPercent?: number;
-      pointsFor?: number;
-      pointsAgainst?: number;
-      pointDifferential?: number;
-      avgPointsFor?: number;
-      avgPointsAgainst?: number;
-    };
-  };
+  record: TeamRecord;
   conferenceStanding: string;
   nationalRanking: number | null;
   playoffSeed: number | null;
