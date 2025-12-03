@@ -9,11 +9,6 @@ interface UseSyncGamePicksWithViewProps {
   view: ViewMode;
 }
 
-/**
- * Syncs game picks with view mode for live games that haven't scored yet.
- * - When switching to 'scores' mode: resets picks to 0-0 for live tie games
- * - When switching to 'picks' mode: sets picks to predicted scores for live tie games
- */
 export const useSyncGamePicksWithView = ({ games, view }: UseSyncGamePicksWithViewProps) => {
   const dispatch = useAppDispatch();
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
