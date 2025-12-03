@@ -136,6 +136,12 @@ async function testSimulate() {
               away: Number(game.predictedScore?.away || 0),
             }
           : getDefaultPredictedScore(),
+        gameType: game.gameType
+          ? {
+              name: String(game.gameType.name),
+              abbreviation: String(game.gameType.abbreviation),
+            }
+          : { name: 'Regular Season', abbreviation: 'reg' },
       })
     );
 
