@@ -6,7 +6,7 @@ import {
   applyOverrides,
   calculateStandings,
 } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
-import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
+import { SimulateResponse } from '@/lib/api-types';
 import { GameLean, GameState } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { getDefaultPredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
@@ -18,11 +18,16 @@ export const POST = async (
   request: NextRequest
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
   try {
-    const body: SimulateRequest = await request.json();
+    const body = await request.json();
     const { season, overrides = {} } = body;
 
     if (!season) {
-      return NextResponse.json({ error: 'Missing required field: season' }, { status: 400 });
+      return NextResponse.json(
+        {
+          error: 'Season is required',
+        },
+        { status: 400 }
+      );
     }
 
     const sport: SportSlug = 'cfb';
@@ -32,7 +37,7 @@ export const POST = async (
     const conferenceMeta = conferences[conf];
 
     if (!conferenceMeta) {
-      return NextResponse.json({ error: 'Unsupported conference: sec' }, { status: 400 });
+      return NextResponse.json({ error: `Unsupported conference: ${conf}` }, { status: 400 });
     }
 
     await dbConnect();
@@ -44,7 +49,10 @@ export const POST = async (
       .exec();
 
     if (conferenceTeams.length === 0) {
-      return NextResponse.json({ error: 'No teams found for SEC conference' }, { status: 404 });
+      return NextResponse.json(
+        { error: `No teams found for ${conferenceMeta.name} conference` },
+        { status: 404 }
+      );
     }
 
     const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
@@ -64,7 +72,7 @@ export const POST = async (
 
     if (gamesRaw.length === 0) {
       return NextResponse.json(
-        { error: `No SEC conference games found for season ${season}` },
+        { error: `No ${conferenceMeta.name} conference games found for season ${season}` },
         { status: 404 }
       );
     }
@@ -124,6 +132,12 @@ export const POST = async (
               away: Number(game.predictedScore.away || 0),
             }
           : getDefaultPredictedScore(),
+        gameType: game.gameType
+          ? {
+              name: String(game.gameType.name),
+              abbreviation: String(game.gameType.abbreviation),
+            }
+          : { name: 'Regular Season', abbreviation: 'reg' },
       };
     });
 

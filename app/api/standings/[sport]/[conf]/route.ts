@@ -126,6 +126,12 @@ export const GET = async (
               away: Number(game.predictedScore.away || 0),
             }
           : getDefaultPredictedScore(),
+        gameType: game.gameType
+          ? {
+              name: String(game.gameType.name),
+              abbreviation: String(game.gameType.abbreviation),
+            }
+          : { name: 'Regular Season', abbreviation: 'reg' },
       })
     );
 
@@ -173,7 +179,7 @@ export const GET = async (
   } catch (error) {
     return NextResponse.json<ApiErrorResponse>(
       {
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : 'Internal server error',
         code: 'DB_ERROR',
       },
       { status: 500 }
