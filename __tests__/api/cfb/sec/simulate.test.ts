@@ -1,12 +1,3 @@
-/**
- * API Route Tests: POST /api/simulate/cfb/sec
- *
- * Tests for the SEC simulate endpoint including:
- * - Team rankings and business logic
- * - Championship array validation
- * - Input validation
- */
-
 import { fetchAPI } from '../../../setup';
 import { SimulateResponse } from '@/lib/api-types';
 import { setupTestDB, teardownTestDB, clearTestDB } from '../../../helpers/db-mock-setup';
@@ -29,7 +20,6 @@ describe('POST /api/simulate/cfb/sec', () => {
 
   describe('Team Rankings', () => {
     it('returns exactly 16 teams for SEC conference', async () => {
-      // Seed data by calling games endpoint (extracts both games and teams)
       await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
         body: JSON.stringify({ season: SEASON, force: true }),
@@ -43,7 +33,6 @@ describe('POST /api/simulate/cfb/sec', () => {
         }),
       });
 
-      // Debug: Log team count and team abbreviations if not 16
       if (response.standings.length !== 16) {
         const teamAbbrevs = response.standings
           .sort((a, b) => a.rank - b.rank)
@@ -57,7 +46,6 @@ describe('POST /api/simulate/cfb/sec', () => {
     });
 
     it('ranks teams 1-16 without gaps', async () => {
-      // Seed data by calling games endpoint (extracts both games and teams)
       await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
         body: JSON.stringify({ season: SEASON, force: true }),
@@ -76,7 +64,6 @@ describe('POST /api/simulate/cfb/sec', () => {
     });
 
     it('championship array contains top 2 teams', async () => {
-      // Seed data by calling games endpoint (extracts both games and teams)
       await fetchAPI(`/api/games/cfb/sec`, {
         method: 'POST',
         body: JSON.stringify({ season: SEASON, force: true }),
@@ -92,7 +79,6 @@ describe('POST /api/simulate/cfb/sec', () => {
 
       if (response.championship) {
         expect(response.championship.length).toBeLessThanOrEqual(2);
-        // Championship should be top 2 teams
         const top2Ranks = response.standings
           .sort((a, b) => a.rank - b.rank)
           .slice(0, 2)
