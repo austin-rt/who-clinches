@@ -2,6 +2,7 @@ import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import { ReshapedGame, ReshapeResult, TeamLean } from './types';
 import cityTimezones from 'city-timezones';
 import { calculatePredictedScoreFromOdds, getDefaultPredictedScore } from './cfb/helpers/prefill-helpers';
+import { GAME_TYPE_MAP } from '@/lib/constants/game-types';
 
 export const reshapeScoreboardData = (
   espnResponse: EspnScoreboardGenerated,
@@ -128,6 +129,10 @@ export const reshapeScoreboardData = (
         }
       }
 
+      const gameTypeNumber = event.season?.type;
+      const gameType = (gameTypeNumber && GAME_TYPE_MAP[gameTypeNumber]) || 
+        { name: 'Regular Season', abbreviation: 'reg' };
+
       return {
         espnId: event.id,
         displayName: `${awayTeam.team.abbreviation} @ ${homeTeam.team.abbreviation}`,
@@ -187,6 +192,7 @@ export const reshapeScoreboardData = (
           );
           return oddsScore || getDefaultPredictedScore();
         })(),
+        gameType,
       };
     })
     .filter((game) => game !== null);

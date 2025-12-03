@@ -50,6 +50,10 @@ export interface IGame extends Document {
     home: number;
     away: number;
   };
+  gameType: {
+    name: string;
+    abbreviation: string;
+  };
 }
 
 const GameSchema = new Schema<IGame>(
@@ -224,6 +228,21 @@ const GameSchema = new Schema<IGame>(
         type: Number,
         required: true,
       },
+    },
+    gameType: {
+      type: {
+        name: {
+          type: String,
+          required: true,
+        },
+        abbreviation: {
+          type: String,
+          required: true,
+        },
+      },
+      required: true,
+      default: () => ({ name: 'Regular Season', abbreviation: 'reg' }),
+      _id: false,
     },
   },
   {
