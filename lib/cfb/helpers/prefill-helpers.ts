@@ -1,4 +1,4 @@
-import { ReshapedGame } from '../../types';
+import { ReshapedGame, PredictedScore } from '../../types';
 
 interface TeamForPrediction {
   record?: {
@@ -16,7 +16,7 @@ export const calculatePredictedScoreFromOdds = (
   spread: number | null,
   favoriteTeamEspnId: string | null,
   homeTeamEspnId: string
-): { home: number; away: number } | undefined => {
+): PredictedScore | undefined => {
   if (overUnder === null || spread === null || favoriteTeamEspnId === null) {
     return undefined;
   }
@@ -65,7 +65,7 @@ export const calculatePredictedScoreFromTeamAverages = (
   game: ReshapedGame,
   homeTeam: TeamForPrediction,
   awayTeam: TeamForPrediction
-): { home: number; away: number } | undefined => {
+): PredictedScore | undefined => {
   const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
   const awayAvg = awayTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
 
@@ -91,7 +91,7 @@ export const calculatePredictedScoreFromRanking = (
   game: ReshapedGame,
   homeTeam: TeamForPrediction,
   awayTeam: TeamForPrediction
-): { home: number; away: number } | undefined => {
+): PredictedScore | undefined => {
   if (
     game.odds.favoriteTeamEspnId !== null ||
     game.odds.spread !== null ||
@@ -151,7 +151,7 @@ export const calculatePredictedScoreFromRanking = (
   return undefined;
 };
 
-export const getDefaultPredictedScore = (): { home: number; away: number } => {
+export const getDefaultPredictedScore = (): PredictedScore => {
   const homeScore = Math.round(DEFAULT_AVG);
   const awayScore = Math.round(DEFAULT_AVG - 3);
 
@@ -164,7 +164,7 @@ export const getDefaultPredictedScore = (): { home: number; away: number } => {
 
 export const calculatePredictedScoreFromHomeFieldAdvantage = (
   homeTeam: TeamForPrediction
-): { home: number; away: number } => {
+): PredictedScore => {
   const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
 
   const homeScore = Math.round(homeAvg);
@@ -181,7 +181,7 @@ export const calculatePredictedScore = (
   game: ReshapedGame,
   homeTeam: TeamForPrediction,
   awayTeam: TeamForPrediction
-): { home: number; away: number } => {
+): PredictedScore => {
   if (game.completed) {
     return {
       home: game.home.score ?? 0,

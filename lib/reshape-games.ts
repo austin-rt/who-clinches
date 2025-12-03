@@ -1,7 +1,10 @@
 import type { EspnScoreboardGenerated } from './espn/espn-scoreboard-generated';
 import { ReshapedGame, ReshapeResult, TeamLean } from './types';
 import cityTimezones from 'city-timezones';
-import { calculatePredictedScoreFromOdds, getDefaultPredictedScore } from './cfb/helpers/prefill-helpers';
+import {
+  calculatePredictedScoreFromOdds,
+  getDefaultPredictedScore,
+} from './cfb/helpers/prefill-helpers';
 import { GAME_TYPE_MAP } from '@/lib/constants/game-types';
 
 export const reshapeScoreboardData = (
@@ -63,8 +66,8 @@ export const reshapeScoreboardData = (
         overUnder = null;
       }
 
-      const venueCity = competition.venue.address?.city || '';
-      const venueState = competition.venue.address?.state || '';
+      const venueCity = competition.venue.address?.city ?? '';
+      const venueState = competition.venue.address?.state ?? '';
       let timezone = 'America/New_York';
 
       if (venueCity && venueState) {
@@ -130,8 +133,7 @@ export const reshapeScoreboardData = (
       }
 
       const gameTypeNumber = event.season?.type;
-      const gameType = (gameTypeNumber && GAME_TYPE_MAP[gameTypeNumber]) || 
-        { name: 'Regular Season', abbreviation: 'reg' };
+      const gameType = gameTypeNumber ? GAME_TYPE_MAP[gameTypeNumber] : undefined;
 
       return {
         espnId: event.id,
@@ -148,7 +150,7 @@ export const reshapeScoreboardData = (
         conferenceGame: competition.conferenceCompetition || false,
         neutralSite: competition.neutralSite || false,
         venue: {
-          fullName: competition.venue.fullName || '',
+          fullName: competition.venue.fullName,
           city: venueCity,
           state: venueState,
           timezone,
@@ -160,9 +162,11 @@ export const reshapeScoreboardData = (
           score: homeScore,
           rank: homeRank,
           logo: homeTeam.team.logo,
-          color: homeTeam.team.color || '',
-          shortDisplayName: teamMap?.get(homeTeam.team.id)?.shortDisplayName || homeTeam.team.shortDisplayName || homeTeam.team.displayName || homeTeam.team.abbreviation,
-          alternateColor: teamMap?.get(homeTeam.team.id)?.alternateColor || homeTeam.team.alternateColor || '000000',
+          color: homeTeam.team.color,
+          shortDisplayName:
+            teamMap?.get(homeTeam.team.id)?.shortDisplayName ?? homeTeam.team.shortDisplayName,
+          alternateColor:
+            teamMap?.get(homeTeam.team.id)?.alternateColor ?? homeTeam.team.alternateColor,
         },
         away: {
           teamEspnId: awayTeam.team.id,
@@ -171,9 +175,11 @@ export const reshapeScoreboardData = (
           score: awayScore,
           rank: awayRank,
           logo: awayTeam.team.logo,
-          color: awayTeam.team.color || '',
-          shortDisplayName: teamMap?.get(awayTeam.team.id)?.shortDisplayName || awayTeam.team.shortDisplayName || awayTeam.team.displayName || awayTeam.team.abbreviation,
-          alternateColor: teamMap?.get(awayTeam.team.id)?.alternateColor || awayTeam.team.alternateColor || '000000',
+          color: awayTeam.team.color,
+          shortDisplayName:
+            teamMap?.get(awayTeam.team.id)?.shortDisplayName ?? awayTeam.team.shortDisplayName,
+          alternateColor:
+            teamMap?.get(awayTeam.team.id)?.alternateColor ?? awayTeam.team.alternateColor,
         },
         odds: {
           favoriteTeamEspnId,
