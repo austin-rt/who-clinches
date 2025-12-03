@@ -523,6 +523,13 @@ export const breakTie = (
 
   while (remaining.length > 0) {
     if (remaining.length === 1) {
+      steps.push({
+        rule: 'Final Position',
+        detail: 'Ranked last in tie',
+        survivors: remaining,
+        tieBroken: false,
+        label: 'Ranked last',
+      });
       ranked.push(remaining[0]);
       break;
     }
@@ -794,7 +801,7 @@ export const breakTie = (
 
     steps.push({
       rule: 'Unresolved',
-      detail: 'Tie unresolved by rules A-E',
+      detail: 'overall conf record',
       survivors: remaining,
       tieBroken: false,
       label: 'Remaining',
