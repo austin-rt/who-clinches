@@ -1,36 +1,54 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import GamesList from '@/app/components/GamesList';
 import ViewModeButton from '@/app/components/ViewModeButton';
 import HideCompletedButton from '@/app/components/HideCompletedButton';
 import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
-import CurrentStandings from '@/app/components/CurrentStandings';
+import Standings from '@/app/components/Standings';
+import { useGamesData } from '@/app/hooks/useGamesData';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 import { SimulateResponse } from '@/lib/api-types';
-import { useAppDispatch } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
+import { setStandingsOpen, setSeason } from '@/app/store/uiSlice';
+import { getDefaultSeasonFromESPN } from '@/lib/cfb/helpers/get-default-season';
 
 const ConferencePage = () => {
   const params = useParams();
   const sport = params.sport as SportSlug;
   const conf = params.conf as ConferenceSlug;
-  const currentSeason = useMemo(() => new Date().getFullYear(), []);
   const dispatch = useAppDispatch();
+  const standingsRef = useRef<HTMLDivElement>(null);
+  const season = useAppSelector((state) => state.ui.season);
+
+  useEffect(() => {
+    if (season === null) {
+      void getDefaultSeasonFromESPN(sport, conf).then((defaultSeason) => {
+        dispatch(setSeason(defaultSeason));
+      });
+    }
+  }, [sport, conf, season, dispatch]);
+
+  useGamesData({
+    sport,
+    conf,
+  });
 
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
-  const [hasSimulated, setHasSimulated] = useState<boolean>(false);
 
   const handleSimulateComplete = (response: SimulateResponse) => {
     setSimulateResponse(response);
-    setHasSimulated(true);
+    dispatch(setStandingsOpen(true));
+    setTimeout(() => {
+      standingsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
   };
 
   const handleReset = () => {
     setSimulateResponse(null);
-    setHasSimulated(false);
     dispatch(clearAllPicks());
   };
 
@@ -70,22 +88,18 @@ const ConferencePage = () => {
         <ViewModeButton />
       </div>
 
-      <CurrentStandings
-        season={currentSeason}
-        simulateResponse={simulateResponse}
-        hasSimulated={hasSimulated}
-      />
+      <Standings ref={standingsRef} simulateResponse={simulateResponse} />
 
       <div className="flex items-center justify-between gap-4">
         <HideCompletedButton />
         <ResetButton onReset={handleReset} className="w-fit" />
       </div>
 
-      <GamesList season={currentSeason} />
+      <GamesList />
 
       <div className="flex w-full flex-row justify-center gap-4 sm:w-auto sm:justify-between">
         <ResetButton onReset={handleReset} className="w-1/2 sm:w-fit" />
-        <SimulateButton season={currentSeason} onSimulateComplete={handleSimulateComplete} />
+        <SimulateButton onSimulateComplete={handleSimulateComplete} />
       </div>
     </div>
   );
