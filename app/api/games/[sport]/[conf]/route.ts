@@ -24,7 +24,8 @@ const queryGamesFromDatabase = async (
   conf: ConferenceSlug,
   query: MongoQuery,
   from?: string,
-  to?: string
+  to?: string,
+  seasonFromESPN?: number
 ): Promise<NextResponse<GamesResponse | ApiErrorResponse>> => {
   const { conferences, espnRoute } = sports[sport];
   const conferenceMeta = conferences[conf];
@@ -124,6 +125,12 @@ const queryGamesFromDatabase = async (
             away: Number(game.predictedScore.away || 0),
           }
         : getDefaultPredictedScore(),
+      gameType: game.gameType
+        ? {
+            name: String(game.gameType.name),
+            abbreviation: String(game.gameType.abbreviation),
+          }
+        : { name: 'Regular Season', abbreviation: 'reg' },
     })
   );
 
@@ -231,12 +238,16 @@ const queryGamesFromDatabase = async (
 
   const needsSeeding = games.length === 0 && Object.values(teamMap).length === 0;
 
+  const responseSeason =
+    seasonFromESPN || query.season || (games.length > 0 ? games[0].season : undefined);
+
   return NextResponse.json<GamesResponse>(
     {
       events: games,
       teams: Object.values(teamMap),
       lastUpdated,
       needsSeeding,
+      season: responseSeason,
     },
     {
       headers: {
@@ -265,6 +276,16 @@ export const GET = async (
     const from = searchParams.get('from');
     const to = searchParams.get('to');
 
+    if (week && !season) {
+      return NextResponse.json<ApiErrorResponse>(
+        {
+          error: 'Season is required when week is provided',
+          code: 'MISSING_SEASON',
+        },
+        { status: 400 }
+      );
+    }
+
     if (season) {
       query.season = parseInt(season, 10);
     }
@@ -281,7 +302,7 @@ export const GET = async (
   } catch (error) {
     return NextResponse.json<ApiErrorResponse>(
       {
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : 'Internal server error',
         code: 'DB_ERROR',
       },
       { status: 500 }
@@ -309,9 +330,17 @@ export const POST = async (
     const to = body.to;
     const force = body.force === true;
 
-    if (season) {
-      query.season = parseInt(season, 10);
+    if (!season) {
+      return NextResponse.json<ApiErrorResponse>(
+        {
+          error: 'Season is required',
+          code: 'MISSING_SEASON',
+        },
+        { status: 400 }
+      );
     }
+
+    query.season = parseInt(season, 10);
 
     if (week) {
       query.week = parseInt(week, 10);
@@ -368,7 +397,7 @@ export const POST = async (
         } else {
           scoreboardResponse = await client.getScoreboard({
             groups: conferenceMeta.espnId,
-            dates: seasonYear,
+            season: seasonYear,
           });
         }
 
@@ -502,6 +531,7 @@ export const POST = async (
                   ...game,
                   season: seasonYear,
                   predictedScore,
+                  gameType: game.gameType,
                 },
                 { upsert: true, new: true }
               );
@@ -527,15 +557,33 @@ export const POST = async (
       }
     };
 
+    let seasonYearFromESPN: number | undefined;
     if (shouldFetchFromESPN) {
+      const client = createESPNClient(espnRoute);
+      try {
+        const calendarResponse = await client.getScoreboard({
+          groups: conferenceMeta.espnId,
+        });
+        seasonYearFromESPN =
+          calendarResponse.season?.year || calendarResponse.leagues?.[0]?.season?.year || undefined;
+      } catch {
+        seasonYearFromESPN = undefined;
+      }
       await fetchFromESPN();
     }
 
-    return await queryGamesFromDatabase(sport, conf, query, from || undefined, to || undefined);
+    return await queryGamesFromDatabase(
+      sport,
+      conf,
+      query,
+      from || undefined,
+      to || undefined,
+      seasonYearFromESPN
+    );
   } catch (error) {
     return NextResponse.json<ApiErrorResponse>(
       {
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : 'Internal server error',
         code: 'DB_ERROR',
       },
       { status: 500 }

@@ -38,7 +38,6 @@ export const POST = async (
     await dbConnect();
     const body = await request.json().catch(() => ({}));
 
-    const season = body.season?.toString();
     const force = body.force === true;
 
     const { conferences, espnRoute } = sports[sport];
@@ -57,27 +56,19 @@ export const POST = async (
     const bypassSeasonCheck = force || process.env.NODE_ENV === 'test';
     const shouldFetchFromESPN = bypassSeasonCheck || (await isInSeasonFromESPN(sport, conf));
 
+    let seasonYear: number | undefined;
     if (shouldFetchFromESPN) {
       try {
         const client = createESPNClient(espnRoute);
 
-        let seasonYear: number;
-        try {
-          const calendarResponse = await client.getScoreboard({
-            groups: conferenceMeta.espnId,
-          });
-          seasonYear =
-            calendarResponse.season?.year ||
-            calendarResponse.leagues?.[0]?.season?.year ||
-            (season ? parseInt(season, 10) : new Date().getFullYear());
-        } catch {
-          seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
-        }
-
         const scoreboardResponse = await client.getScoreboard({
           groups: conferenceMeta.espnId,
-          season: seasonYear,
         });
+
+        seasonYear =
+          scoreboardResponse.season?.year ||
+          scoreboardResponse.leagues?.[0]?.season?.year ||
+          new Date().getFullYear();
 
         const teamIdsFromScoreboard = new Set<string>();
         if (scoreboardResponse.events) {
@@ -154,6 +145,7 @@ export const POST = async (
                   ...game,
                   season: seasonYear,
                   predictedScore,
+                  gameType: game.gameType,
                   lastUpdated: new Date(),
                 },
                 { upsert: true, new: true }
@@ -186,7 +178,9 @@ export const POST = async (
       sport: espnSport,
       league: espnLeague,
     };
-    if (season) query.season = parseInt(season, 10);
+    if (seasonYear) {
+      query.season = seasonYear;
+    }
 
     const conferenceTeams = await Team.find({
       conferenceId: conferenceMeta.espnId,
@@ -263,6 +257,12 @@ export const POST = async (
               away: Number(game.predictedScore.away),
             }
           : getDefaultPredictedScore(),
+        gameType: game.gameType
+          ? {
+              name: String(game.gameType.name),
+              abbreviation: String(game.gameType.abbreviation),
+            }
+          : { name: 'Regular Season', abbreviation: 'reg' },
       };
 
       return gameLean;
@@ -306,13 +306,13 @@ export const POST = async (
       timestamp: new Date(),
       endpoint: `/api/games/${sport}/${conf}/live`,
       payload: {},
-      error: error instanceof Error ? error.message : 'Unknown error occurred',
+      error: error instanceof Error ? error.message : 'Internal server error',
       stackTrace: error instanceof Error ? error.stack || '' : '',
     });
 
     return NextResponse.json<ApiErrorResponse>(
       {
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error: error instanceof Error ? error.message : 'Internal server error',
         code: 'INTERNAL_ERROR',
       },
       { status: 500 }
