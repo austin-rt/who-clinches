@@ -145,7 +145,7 @@ export const GET = async (
         alternateColor: team.alternateColor,
         conferenceStanding: standing
           ? `${standing.rank}${getOrdinalSuffix(standing.rank)}`
-          : team.conferenceStanding ?? 'Tied for 1st',
+          : (team.conferenceStanding ?? 'Tied for 1st'),
         conferenceRecord: standing
           ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
           : '0-0',
@@ -176,4 +176,3 @@ export const GET = async (
     );
   }
 };
-
