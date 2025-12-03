@@ -51,6 +51,10 @@ export interface ReshapedGame {
     home: number;
     away: number;
   };
+  gameType: {
+    name: string;
+    abbreviation: string;
+  };
 }
 
 export interface ReshapedTeamRecord {
@@ -162,6 +166,10 @@ export interface GameLean {
   predictedScore: {
     home: number;
     away: number;
+  };
+  gameType: {
+    name: string;
+    abbreviation: string;
   };
 }
 

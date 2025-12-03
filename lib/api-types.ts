@@ -75,6 +75,7 @@ export interface GamesResponse {
   teams: TeamMetadata[];
   lastUpdated: string;
   needsSeeding?: boolean;
+  season?: number;
 }
 
 export interface TeamsResponse {
@@ -109,7 +110,6 @@ export interface CronHealthCheckResponse {
 }
 
 export interface SimulateRequest {
-  season: number;
   overrides: {
     [gameId: string]: {
       homeScore: number;
@@ -146,5 +146,5 @@ export interface TieStep {
   detail: string;
   survivors: string[];
   tieBroken: boolean;
-  label: 'Advances' | 'Remaining';
+  label: 'Advances' | 'Remaining' | 'Ranked last';
 }
