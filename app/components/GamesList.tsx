@@ -10,11 +10,7 @@ import RemainingWeeks from './RemainingWeeks';
 import CompactWeekGrid from './CompactWeekGrid';
 import LoadingSpinner from './LoadingSpinner';
 
-interface GamesListProps {
-  season: number;
-}
-
-const GamesList = ({ season }: GamesListProps) => {
+const GamesList = () => {
   const params = useParams();
   const sport = params.sport as string;
   const conf = params.conf as string;
@@ -23,7 +19,6 @@ const GamesList = ({ season }: GamesListProps) => {
   const { enrichedGames, isLoading, isError, isUninitialized } = useGamesData({
     sport,
     conf,
-    season,
   });
 
   useSyncGamePicksWithView({ games: enrichedGames, view });

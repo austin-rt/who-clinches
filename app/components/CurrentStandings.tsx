@@ -1,109 +1,94 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
 import { useParams } from 'next/navigation';
-import { SimulateResponse } from '@/lib/api-types';
-import SimulatedStandings from './SimulatedStandings';
+import { useAppSelector } from '@/app/store/hooks';
+import { TeamMetadata } from '@/lib/api-types';
 import LoadingSpinner from './LoadingSpinner';
 import Divider from './Divider';
 import { cn } from '@/lib/utils';
 
 interface CurrentStandingsProps {
-  season: number;
-  simulateResponse?: SimulateResponse | null;
-  hasSimulated?: boolean;
+  isOpen: boolean;
 }
 
-const CurrentStandings = ({ season, simulateResponse }: CurrentStandingsProps) => {
-  const [currentStandingsOpen, setCurrentStandingsOpen] = useState(false);
+const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
   const params = useParams();
   const sport = params.sport as string;
   const conf = params.conf as string;
+  const season = useAppSelector((state) => state.ui.season);
 
   const { data, isLoading, refetch } = useGetSeasonGameDataQuery(
     {
       sport,
       conf,
-      season: season.toString(),
+      season: season!,
       force: true,
     },
     {
       refetchOnMountOrArgChange: true,
+      skip: season === null,
     }
   );
 
   useEffect(() => {
-    if (currentStandingsOpen) {
+    if (isOpen) {
       void refetch();
     }
-  }, [currentStandingsOpen, refetch]);
+  }, [isOpen, refetch]);
 
-  const sortedStandings = useMemo(() => {
+  const sortedStandings = useMemo((): TeamMetadata[] => {
     if (!data?.teams) return [];
 
     return data.teams
-      .map((team) => ({
+      .map((team: TeamMetadata) => ({
         team,
         rank: team.rank ?? Infinity,
       }))
-      .sort((a, b) => a.rank - b.rank)
-      .map((item) => item.team);
+      .sort((a: { rank: number }, b: { rank: number }) => a.rank - b.rank)
+      .map((item: { team: TeamMetadata }) => item.team);
   }, [data]);
 
-  if (simulateResponse) {
-    return <SimulatedStandings simulateResponse={simulateResponse} />;
-  }
-
   return (
-    <div className="dark:border-accent-50 collapse collapse-arrow border border-base-400 bg-base-200 shadow-md">
-      <input
-        type="checkbox"
-        checked={currentStandingsOpen}
-        onChange={(e) => setCurrentStandingsOpen(e.target.checked)}
-      />
-      <div className="collapse-title w-full justify-center text-base font-semibold">
-        Current Standings
-      </div>
-      <div className="collapse-content">
-        {isLoading || !data || sortedStandings.length === 0 ? (
-          <div className="flex items-center justify-center py-4">
-            <LoadingSpinner size="h-6 w-6" />
-          </div>
-        ) : (
-          <>
-            <Divider className="-mt-4 pb-4" />
-            <div className="flex flex-col gap-4">
-              <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
-                {sortedStandings.map((team) => {
-                  const isTopTwo = team.rank === 1 || team.rank === 2;
-                  return (
-                    <div
-                      key={team.id}
-                      className={cn(
-                        'flex items-center gap-1 whitespace-nowrap text-left',
-                        isTopTwo ? 'font-bold' : ''
-                      )}
-                    >
-                      <span>{team.rank}.</span>
-                      <span>{team.shortDisplayName}</span>
-                      <span className="text-base-content/70">
-                        ({team.conferenceRecord})
-                        {isTopTwo && <span className="text-base-content/70">*</span>}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-              <Divider />
-              <div className="text-base-content/60 w-full text-right text-xxs font-bold">
-                * - in Title Game
-              </div>
+    <>
+      {isLoading || !data || sortedStandings.length === 0 ? (
+        <div className="flex items-center justify-center py-4">
+          <LoadingSpinner size="h-6 w-6" />
+        </div>
+      ) : (
+        <>
+          <Divider className="-mt-4 pb-4" />
+          <div className="flex flex-col gap-4">
+            <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
+              {sortedStandings.map((team: TeamMetadata) => {
+                const isTopTwo = team.rank === 1 || team.rank === 2;
+                return (
+                  <div
+                    key={team.id}
+                    className={cn(
+                      'flex items-center gap-1 whitespace-nowrap text-left',
+                      isTopTwo ? 'font-bold' : ''
+                    )}
+                  >
+                    <span>{team.rank}.</span>
+                    <span>{team.shortDisplayName}</span>
+                    <span className="text-base-content/70">
+                      ({team.conferenceRecord})
+                      {isTopTwo && <span className="text-base-content/70">*</span>}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
-          </>
-        )}
-      </div>
-    </div>
+            <Divider />
+            <div className="text-base-content/60 w-full text-right text-xxs font-bold">
+              * - in Title Game
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
