@@ -58,6 +58,10 @@ const createReshapedGame = (
     alternateColor: '000000',
   },
   predictedScore,
+  gameType: {
+    name: 'Regular Season',
+    abbreviation: 'reg',
+  },
   odds: {
     spread,
     overUnder: null,

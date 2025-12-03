@@ -207,6 +207,9 @@ describe('reshapeScoreboardData', () => {
 
       expect(game.home.score).toBeNull();
       expect(game.away.score).toBeNull();
+      expect(game.gameType).toBeDefined();
+      expect(game.gameType).toHaveProperty('name');
+      expect(game.gameType).toHaveProperty('abbreviation');
     });
 
     it('handles partial scores for in-progress', () => {

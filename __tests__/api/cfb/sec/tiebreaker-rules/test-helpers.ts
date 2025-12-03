@@ -56,6 +56,10 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     alternateColor: '000000',
   },
   predictedScore: { home: 28, away: 24 },
+  gameType: {
+    name: 'Regular Season',
+    abbreviation: 'reg',
+  },
   odds: {
     spread: null,
     overUnder: null,
