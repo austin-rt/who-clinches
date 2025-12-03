@@ -50,21 +50,19 @@
 - Body params: `season`, `week`, `force`
 - Used by frontend polling for pre-game games (only in production, only when not starting within 5 minutes)
 
-### POST /api/teams/[sport]/[conf]
+### Teams Data
 
-**Example**: `/api/teams/cfb/sec`
-- Fetches team data from ESPN, upserts to database, returns data
-- Body params: `update` (rankings/stats/full), `force`
-- Response: `{ teams: [...], teamsMetadata: [...], lastUpdated: "..." }`
+**Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. Team metadata is included in the `teams` array of the games endpoint response.
 
-### POST /api/simulate/[sport]/[conf]
+### POST /api/simulate/cfb/sec
+
+**Note**: Currently hardcoded to `cfb/sec` (not dynamic `[sport]/[conf]`).
 
 **Example**: `/api/simulate/cfb/sec`
 - Input: `{ season, overrides }`
 - Verify: 16 teams, rankings 1-16, tiebreaker rules (A-E), championship array
 - Validation: Non-negative integers, no ties, required fields
 
-**Note**: Cron endpoints have been removed. All data updates are now handled via on-demand API endpoints with frontend polling.
 
 ---
 

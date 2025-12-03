@@ -8,9 +8,9 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 
 ## Prerequisites
 
-**Database Setup**: Fresh database with updated Game model, all conference teams pulled via `POST /api/teams/cfb/sec`, full 2025 regular season games (weeks 1-14) pulled via `POST /api/games/cfb/sec`
+**Database Setup**: Fresh database with updated Game model, all conference teams and games pulled via `POST /api/games/cfb/sec` (teams are automatically extracted from scoreboard data)
 
-**Note**: Routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is "sec" for SEC conference.
+**Note**: Most routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is "sec" for SEC conference. The simulate endpoint is currently hardcoded to `/api/simulate/cfb/sec`.
 
 **Data Requirements**: All conference teams in database, ~128 conference games (2025, weeks 1-14), games include `displayName`, team display fields, `predictedScore`, all completed games have final scores
 
@@ -23,7 +23,7 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 ```
 
-**Basic Simulate**: `POST /api/simulate/cfb/sec` (or `/api/simulate/[sport]/[conf]` with sport="cfb", conf="sec") with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (16 teams), `championship` (top 2), `tieLogs`. Checks: All 16 teams, ranks 1-16, team display fields populated, championship array has 2 teams
+**Basic Simulate**: `POST /api/simulate/cfb/sec` with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (16 teams), `championship` (top 2), `tieLogs`. Checks: All 16 teams, ranks 1-16, team display fields populated, championship array has 2 teams. Note: Currently hardcoded to `cfb/sec` (not dynamic `[sport]/[conf]`).
 
 **Simulate with Overrides**: `{"season": 2025, "overrides": {"gameEspnId": {"homeScore": 35, "awayScore": 24}}}`. Expected: Status 200, standings reflect overrides
 

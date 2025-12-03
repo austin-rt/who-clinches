@@ -33,9 +33,10 @@ MONGODB_URI="mongodb+srv://${READONLY_USER}:${READONLY_PW}@${MONGODB_HOST}/${MON
 
 ```bash
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
+# Note: Teams are automatically extracted when fetching games. No separate teams endpoint exists.
 # Dynamic route structure: /api/[operation]/[sport]/[conf]
-curl -X POST "{BASE_URL}/api/teams/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
-  -H "Content-Type: application/json" -d '{}'
+curl -X POST "{BASE_URL}/api/games/cfb/sec?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
+  -H "Content-Type: application/json" -d '{"season": 2025, "force": true}'
 ```
 
 ### Seed Games (Full Season)

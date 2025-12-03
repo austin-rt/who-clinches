@@ -52,6 +52,7 @@ Before 1.0.0: Use `0.x.x` versions, breaking changes OK in MINOR versions (0.1.0
 - Frontend Polling: Live games poll every 60 seconds (was 2 minutes)
 ### Fixed
 - Rule E Calculation: Fixed scoring margin bug
+
 ## [0.1.0] - 2025-11-12
 ### Added
 - Initial API: Teams, games, simulate endpoints
@@ -62,11 +63,11 @@ Before 1.0.0: Use `0.x.x` versions, breaking changes OK in MINOR versions (0.1.0
 
 ## Tips
 
-**Daily Development**: Update `[Unreleased]` as you code, don't worry about version numbers, group related changes
+**Daily Development**: Update `[Unreleased]` as you code, group related changes
 
 **Before Production Deploy**: Review unreleased changes, choose version number, move to versioned section, add date
 
-**After Production Deploy**: Tag commit (`git tag v0.1.0`), push tag (`git push origin v0.1.0`), GitHub Releases can auto-populate
+**After Production Deploy**: Tag commit and push tag, GitHub Releases can auto-populate
 
 ---
 
@@ -88,10 +89,6 @@ head -20 CHANGELOG.md
 
 # Check unreleased changes
 sed -n '/## \[Unreleased\]/,/## \[/p' CHANGELOG.md | head -n -1
-
-# Create new version: Edit CHANGELOG.md, commit, tag, push
-git add CHANGELOG.md && git commit -m "chore: release v0.1.0"
-git tag -a v0.1.0 -m "Release v0.1.0" && git push origin main --tags
 ```
 
 ---

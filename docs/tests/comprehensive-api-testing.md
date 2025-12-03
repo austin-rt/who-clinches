@@ -20,8 +20,6 @@ Complete testing procedures for all Conference Tiebreaker API endpoints.
 
 ## Testing Procedures
 
-## Testing Procedures
-
 **Setup**:
 ```bash
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
@@ -35,11 +33,10 @@ BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
 **POST /api/games/[sport]/[conf]/spreads**: Spread/odds updates only. Body params: `season`, `week`, `force`. Expected: Status 200, `events` array with updated odds. Example: `/api/games/cfb/sec/spreads`
 
-**POST /api/teams/[sport]/[conf]**: Fetches from ESPN, upserts to database, returns data. Body params: `update` (rankings/stats/full), `force`. Expected: Status 200, `teams` array (TeamLean[] with `_id`, `name`, `displayName`, `shortDisplayName`, `abbreviation`, `logo`, `color`, `alternateColor`, `conferenceId`, `record?`, etc.), `teamsMetadata` array (TeamMetadata[]), `lastUpdated`. Example: `/api/teams/cfb/sec`
+**Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. Team metadata is included in the `teams` array of the games endpoint response.
 
-**POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Example: `/api/simulate/cfb/sec`
+**POST /api/simulate/cfb/sec**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Note: Currently hardcoded to `cfb/sec` (not dynamic `[sport]/[conf]`).
 
-**Note**: Cron endpoints have been removed. All data updates are now handled via on-demand API endpoints with frontend polling.
 
 ---
 
