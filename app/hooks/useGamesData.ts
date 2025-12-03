@@ -7,30 +7,32 @@ import {
   useGetSpreadDataQuery,
 } from '@/app/store/apiSlice';
 import { useUIState } from '@/app/store/useUI';
+import { useAppSelector } from '@/app/store/hooks';
 import { GameLean } from '@/lib/types';
 import { TeamMetadata } from '@/lib/api-types';
 
 interface UseGamesDataParams {
   sport: string;
   conf: string;
-  season: number;
 }
 
 interface UseGamesDataReturn {
   enrichedGames: GameLean[];
+  season: number;
   isLoading: boolean;
   isError: boolean;
   isUninitialized: boolean;
 }
 
-export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGamesDataReturn => {
+export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataReturn => {
   const { view } = useUIState();
+  const season = useAppSelector((state) => state.ui.season) ?? new Date().getFullYear();
 
   const cacheQueryArgs = useMemo(
     () => ({
       sport,
       conf,
-      season: season.toString(),
+      season: season ?? undefined,
     }),
     [sport, conf, season]
   );
@@ -39,7 +41,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     () => ({
       sport,
       conf,
-      season: season.toString(),
+      season: season!,
       force: true,
     }),
     [sport, conf, season]
@@ -53,13 +55,14 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     isSuccess: isInitialSuccess,
   } = useGetSeasonGameDataFromCacheQuery(cacheQueryArgs, {
     refetchOnMountOrArgChange: true,
+    skip: season === null,
   });
 
   const hasSeededRef = useRef<string>('');
 
   const [triggerSeed, { data: seededData, isLoading: isSeeding }] = useLazyGetSeasonGameDataQuery();
 
-  const cacheKey = `${sport}/${conf}/${season}`;
+  const cacheKey = `${sport}/${conf}/${season ?? 'null'}`;
 
   useEffect(() => {
     if (hasSeededRef.current !== cacheKey) {
@@ -93,7 +96,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
   const { data: refreshData, isError: isRefreshError } = useGetSeasonGameDataQuery(
     refreshQueryArgs,
     {
-      skip: !shouldRefresh,
+      skip: !shouldRefresh || season === null,
     }
   );
 
@@ -106,17 +109,16 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
     () => ({
       sport,
       conf,
-      season: season.toString(),
       force: true,
     }),
-    [sport, conf, season]
+    [sport, conf]
   );
 
   const spreadsQueryArgs = useMemo(
     () => ({
       sport,
       conf,
-      season: season.toString(),
+      season: season!,
       force: true,
     }),
     [sport, conf, season]
@@ -250,6 +252,7 @@ export const useGamesData = ({ sport, conf, season }: UseGamesDataParams): UseGa
 
   return {
     enrichedGames,
+    season,
     isLoading,
     isError,
     isUninitialized,

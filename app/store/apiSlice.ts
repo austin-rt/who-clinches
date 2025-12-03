@@ -12,25 +12,35 @@ export const apiSlice = createApi({
       {
         sport: string;
         conf: string;
-        season?: string | number;
+        season?: number | null;
         week?: string | number;
         state?: string;
         from?: string;
         to?: string;
       }
     >({
-      query: ({ sport, conf, season, week, state, from, to }) => {
+      queryFn: async ({ sport, conf, season, week, state: gameState, from, to }) => {
         const params = new URLSearchParams();
-        if (season) params.set('season', season.toString());
-        if (week) params.set('week', week.toString());
-        if (state) params.set('state', state);
+        if (week) {
+          if (!season) {
+            return { error: { status: 400, data: 'Season is required when week is provided' } };
+          }
+          params.set('season', season.toString());
+          params.set('week', week.toString());
+        } else if (season) {
+          params.set('season', season.toString());
+        }
+        if (gameState) params.set('state', gameState);
         if (from) params.set('from', from);
         if (to) params.set('to', to);
         const queryString = params.toString();
-        return {
-          url: `games/${sport}/${conf}${queryString ? `?${queryString}` : ''}`,
-          method: 'GET',
-        };
+        try {
+          const response = await fetch(`/api/games/${sport}/${conf}${queryString ? `?${queryString}` : ''}`);
+          const data = await response.json();
+          return { data };
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } };
+        }
       },
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
@@ -47,7 +57,7 @@ export const apiSlice = createApi({
       {
         sport: string;
         conf: string;
-        season?: string | number;
+        season: number;
         week?: string | number;
         state?: string;
         from?: string;
@@ -55,20 +65,25 @@ export const apiSlice = createApi({
         force?: boolean;
       }
     >({
-      query: ({ sport, conf, season, week, state, from, to, force }) => {
-        return {
-          url: `games/${sport}/${conf}`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: {
-            season,
-            week,
-            state,
-            from,
-            to,
-            force,
-          },
-        };
+      queryFn: async ({ sport, conf, season, week, state: gameState, from, to, force }) => {
+        try {
+          const response = await fetch(`/api/games/${sport}/${conf}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              season,
+              week,
+              state: gameState,
+              from,
+              to,
+              force,
+            }),
+          });
+          const data = await response.json();
+          return { data };
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } };
+        }
       },
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
@@ -85,21 +100,17 @@ export const apiSlice = createApi({
       {
         sport: string;
         conf: string;
-        season?: string | number;
         force?: boolean;
       }
     >({
-      query: ({ sport, conf, season, force }) => {
-        return {
-          url: `games/${sport}/${conf}/live`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: {
-            season,
-            force,
-          },
-        };
-      },
+      query: ({ sport, conf, force }) => ({
+        url: `games/${sport}/${conf}/live`,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          force,
+        },
+      }),
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -115,22 +126,27 @@ export const apiSlice = createApi({
       {
         sport: string;
         conf: string;
-        season?: string | number;
+        season: number;
         week?: string | number;
         force?: boolean;
       }
     >({
-      query: ({ sport, conf, season, week, force }) => {
-        return {
-          url: `games/${sport}/${conf}/spreads`,
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: {
-            season,
-            week,
-            force,
-          },
-        };
+      queryFn: async ({ sport, conf, season, week, force }) => {
+        try {
+          const response = await fetch(`/api/games/${sport}/${conf}/spreads`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              season,
+              week,
+              force,
+            }),
+          });
+          const data = await response.json();
+          return { data };
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } };
+        }
       },
       async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
         try {
@@ -142,19 +158,28 @@ export const apiSlice = createApi({
       },
       providesTags: ['Games'],
     }),
-    simulate: builder.mutation<SimulateResponse, SimulateRequest & { sport: string; conf: string }>(
-      {
-        query: ({ sport, conf, ...request }) => {
-          return {
-            url: `simulate/${sport}/${conf}`,
+    simulate: builder.mutation<
+      SimulateResponse,
+      { sport: string; conf: string; season: number } & SimulateRequest
+    >({
+      queryFn: async ({ sport, conf, season, ...request }) => {
+        try {
+          const response = await fetch(`/api/simulate/${sport}/${conf}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: request,
-          };
-        },
-        invalidatesTags: ['Standings'],
-      }
-    ),
+            body: JSON.stringify({
+              season,
+              ...request,
+            }),
+          });
+          const data = await response.json();
+          return { data };
+        } catch (error) {
+          return { error: { status: 'FETCH_ERROR', error: String(error) } };
+        }
+      },
+      invalidatesTags: ['Standings'],
+    }),
   }),
 });
 
