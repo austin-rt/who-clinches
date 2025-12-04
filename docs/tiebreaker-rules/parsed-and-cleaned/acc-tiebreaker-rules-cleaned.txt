@@ -1,0 +1,24 @@
+TIEBREAKER POLICY
+The Atlantic Coast Conference Football Champion will be decided by a game between the top two (2) post-season eligible teams. The two teams with the highest percentage of wins during all regular-season Conference competition shall play in the Championship Game. If three (3) or more such teams are tied with the highest percentage of wins or two (2) or more teams are tied with the second highest percentage of wins, the following tiebreaker procedure shall be administered to determine the representative(s) in the Championship Game. The team with the highest win percentage, either outright or after application of the tiebreaker, shall be declared the home team for the Championship Game.
+
+Two-Team Tie
+a. Head-to-head competition between the two tied teams.
+b. Win-percentage against all common opponents.
+c. Win-percentage against common opponents based upon their order of finish (overall conference win-percentage, with ties broken) and proceeding through other common opponents based upon their order of finish.
+d. Combined win-percentage of conference opponents.
+e. The tied team with the higher ranking by the Team Rating Score metric provided by SportSource Analytics following the conclusion of regular-season games.
+f. The participant shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
+
+Three (or More) Team Tie
+The three (or more) team tiebreaker procedure will be used to either (a) identify one championship game participant, (b) identify both championship game participants, or (c) eliminate team(s) from the tie. If the administration of the three (or more) team tiebreaker results in the elimination of team(s) from the tie, teams remain tied, and both championship game participants have not been determined, the tiebreaker procedure will restart for remaining tied teams.
+
+a. Combined head-to-head win-percentage among the tied teams if all tied teams are common opponents.
+b. If all tied teams are not common opponents, the tied team that defeated each of the other tied teams.
+   i. If all tied teams are not common opponents and no tied team defeated each of the other tied teams, but a tied team lost to each of the other tied teams, such team shall be eliminated and removed from the tie.
+c. Win-percentage against all common opponents.
+d. Win-percentage against common opponents based upon their order of finish (overall conference win-percentage, with ties broken) and proceeding through other common opponents based upon their order of finish.
+e. Combined win-percentage of conference opponents.
+f. The tied team with the highest ranking by the Team Rating Score metric provided by SportSource Analytics following the conclusion of regular season games.
+g. The participant shall be chosen by a draw as administered by the Commissioner or Commissioner's designee.
+
+Conference games against otherwise post-season ineligible teams will always be counted in the league standings and in application of the tie-breaker procedure.
