@@ -55,12 +55,10 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) =
             </h3>
             <Divider />
           </div>
-          <div className="w-full">
-            <div className="mx-auto grid w-fit max-w-full grid-cols-[repeat(auto-fit,minmax(150px,auto))] justify-items-start gap-2 bg-transparent px-1 py-2 sm:px-2">
-              {week.games.map((game) => (
-                <CompactGameButton key={game._id} game={game} />
-              ))}
-            </div>
+          <div className="flex flex-wrap gap-2 px-5 py-2">
+            {week.games.map((game) => (
+              <CompactGameButton key={game._id} game={game} />
+            ))}
           </div>
         </div>
       ))}
