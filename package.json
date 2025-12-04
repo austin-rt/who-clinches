@@ -22,6 +22,7 @@
     "drop:production": "node scripts/drop-database.js production",
     "drop:all": "npm run drop:test && npm run drop:dev && npm run drop:preview && npm run drop:production",
     "test:api": "jest __tests__/api",
+    "test:api:all": "tsx scripts/test-all-api-routes.ts",
     "test:reshape": "jest __tests__/lib/reshape-teams",
     "cron:active": "bash scripts/run-cron.sh update-games mode=active",
     "cron:week": "bash scripts/run-cron.sh update-games mode=week",
