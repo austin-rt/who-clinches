@@ -1,0 +1,146 @@
+Rule A: Head-to-head competition among the tied teams
+
+================================================================================
+1. Two-Team Tie for Second Place
+================================================================================
+
+A. Head-to-head competition among the two tied teams
+
+
+================================================================================
+2. Three-Team Tie (or More) for First Place
+================================================================================
+
+A. Head-to-head competition among the tied teams
+1. If there is a complete round robin, meaning all tied teams played each other:
+a. If one team has sole possession of the best record among the tied teams,
+that team is selected for the championship game
+i. If two tied teams remain, they will return to the beginning of the
+two-team tiebreaker procedures for second place
+ii. If more than two tied teams remain, they will return to the
+beginning of the three-team (or more) tiebreaker procedures for
+second place
+b. If two teams are tied for the best record within the round robin standings,
+they are both selected for the championship game
+c. If three or more teams are tied for the best record within the round robin
+standings:
+i. Those teams revert to the beginning of the three-team (or more)
+tiebreaker procedures for first place; and
+ii. Any teams that do not have the best record within the round robin
+standings are eliminated from contention in the Conference
+Championship Game
+2. If there is not a complete round robin among the tied teams:
+a. If one team beat all the other tied teams, it is selected for the
+championship game, and the other remaining teams return to the start of
+the tiebreaker procedures for second place
+b. If one team lost to all the other tied teams, it is eliminated and the other
+teams return to the start of the applicable tiebreaker procedures, unless
+there are only two teams remaining, in which case they are both selected
+for the championship game
+c. If no team either beat all the other tied teams or lost to all the other tied
+teams, all the tied teams advance to the next tiebreaker procedure
+
+
+================================================================================
+3. Three-Team Tie (or More) for Second Place
+================================================================================
+
+A. Head-to-head competition among the tied teams
+1. If there is a complete round robin, meaning all tied teams played each other:
+a. If one team has sole possession of the best record among the tied teams, that
+team is selected for the championship game
+b. If two teams are tied for the best record within the round robin standings:
+i. Those teams revert to the beginning of the two-team tiebreaker
+procedures for second place; and
+ii. All other teams are eliminated from contention in the Conference
+Championship Game
+c. If three or more teams are tied for the best record within the round robin
+standings and there are teams below the best record:
+i. The teams with the best record revert to the beginning of the threeteam (or more) tiebreaker procedures for second place; and
+ii. All other teams are eliminated from contention in the Conference
+Championship Game
+2. If there is not a complete round robin among the tied teams:
+a. If one team beat all the other tied teams, it is selected for the championship
+game
+b. If one team lost to all the other tied teams, it is eliminated, and the remaining
+teams revert to the beginning of the tiebreaker procedures for second place
+c. If no team either beat all the other tied teams or lost to all the other tied teams,
+all the tied teams advance to the next step in the tiebreaker procedures
+
+
+================================================================================
+EXAMPLES
+================================================================================
+
+Two-Team Tie for Second Place Examples:
+Head-to-head competition among the two tied teams
+Example
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+• During the regular season, Team A defeated Team B
+• Team A advances to the championship game
+
+
+Three-Team Tie (or More) for First Place Examples:
+Head-to-head competition among the tied teams
+Example #1
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• During the regular season, Team A defeated both Team B and Team C
+• Team A advances to the championship game
+Example #2
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• During the regular season, Team A lost to both Team B and Team C
+• Team A is eliminated from contention in the Conference Championship Game
+• Team B and Team C advance to the Conference Championship Game
+o They will revert to the beginning of the two-team tiebreaker procedures for second
+place to determine the home team for the Championship Game
+Example #3
+• Conference records of tied teams
+o Team A: 5-3
+o Team B: 5-3
+o Team C: 5-3
+o Team D: 5-3
+There was not a round robin between the teams
+Team D lost to Team A, Team B, and Team C
+Team D is eliminated from contention in the Conference Championship Game
+Team A, Team B, and Team C revert to the beginning of the three-team tiebreaker procedures
+for first place
+
+
+Three-Team Tie (or More) for Second Place Examples:
+Head-to-head competition among the tied teams
+Example #1
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• During the regular season, Team A defeated both Team B and Team C
+• Team A advances to the championship game
+Example #2
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• During the regular season, Team A lost to both Team B and Team C
+• Team A is eliminated from contention in the Conference Championship Game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second
+place
+Example #3
+• Conference records of tied teams
+o Team A: 5-3
+o Team B: 5-3
+o Team C: 5-3
+o Team D: 5-3
+• There was not a round robin between the teams
+• Team D lost to Team A, Team B, and Team C
+• Team D is eliminated from contention in the Conference Championship Game
+• Team A, Team B, and Team C revert to the beginning of the three-team tiebreaker procedures for
+second place
+

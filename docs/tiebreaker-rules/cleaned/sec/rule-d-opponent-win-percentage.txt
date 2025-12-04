@@ -1,0 +1,102 @@
+Rule D: Cumulative Conference winning percentage of all Conference opponents among the
+tied teams
+
+================================================================================
+1. Two-Team Tie for Second Place
+================================================================================
+
+D. Cumulative Conference winning percentage of all Conference opponents among the
+tied teams
+
+
+================================================================================
+2. Three-Team Tie (or More) for First Place
+================================================================================
+
+D. Cumulative Conference winning percentage of all Conference opponents among the
+tied teams
+1. If the standings produced by this tiebreaker yield a clear first place team:
+a. The first-place team is selected for the championship game
+b. The remaining teams revert to the beginning of the applicable tiebreaker
+procedures (i.e., Head-to-Head)
+2. If the standings produced by this tiebreaker yield a two-team tie for first, those
+two teams are selected for the championship game
+3. If the standings produced by this tiebreaker yield more than two teams tied for
+first and there are any teams below first:
+a. The teams tied for first place revert to the beginning of the applicable
+tiebreaker procedures
+b. The remaining teams are eliminated from contention in the Conference
+Championship Game
+4. If the standings produced by this tiebreaker yield more than two teams tied for
+first and there are no teams below first, advance to the next step in the tiebreaker
+procedures
+
+
+================================================================================
+3. Three-Team Tie (or More) for Second Place
+================================================================================
+
+D. Cumulative Conference winning percentage of all Conference opponents among the tied
+teams
+1. If the standings produced by this tiebreaker yield a clear first place team,
+a. The first-place team is selected for the Championship game
+2. If the standings produced by this tiebreaker yield two or more teams tied for first:
+• The teams tied for first place revert to the beginning of the tiebreaker
+procedures
+• All remaining teams are eliminated from contention in the Conference
+Championship Game
+3. If the standings produced by this tiebreaker yield more than two teams tied for first and
+there are no teams below first, advance to the next step in the tiebreaker procedures
+
+
+================================================================================
+EXAMPLES
+================================================================================
+
+Two-Team Tie for Second Place Examples:
+Cumulative Conference winning percentage of all Conference opponents among the tied teams
+Example
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+• For each team above, the average will be calculated from the winning percentage of all 8 of their
+Conference opponents
+• Average winning percentage of Conference opponents
+o Team A: 52.5%
+o Team B: 50.0%
+• Team A advances to the championship game
+
+
+Three-Team Tie (or More) for First Place Examples:
+Cumulative Conference winning percentage of all Conference opponents among the tied teams
+Example
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• For each team above, the average will be calculated from the winning percentage of all 8 of their
+Conference opponents
+• Average winning percentage of Conference opponents
+o Team A: 52.5%
+o Team B: 50.0%
+o Team C: 47.5%
+• Team A advances to the championship game
+• Team B and Team C revert to the beginning of the two-team tiebreaker procedures for second
+place
+
+
+Three-Team Tie (or More) for Second Place Examples:
+Cumulative Conference winning percentage of all Conference opponents among the tied teams
+Example
+• Conference records of tied teams
+o Team A: 6-2
+o Team B: 6-2
+o Team C: 6-2
+• For each team above, the average will be calculated from the winning percentage of all 8 of
+their Conference opponents
+• Average winning percentage of Conference opponents
+o Team A: 52.5%
+o Team B: 50.0%
+o Team C: 47.5%
+• Team A advances to the championship game
+
