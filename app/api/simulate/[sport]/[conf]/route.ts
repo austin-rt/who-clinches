@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Game from '@/lib/models/Game';
 import Team from '@/lib/models/Team';
-import {
-  applyOverrides,
-  calculateStandings,
-} from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
+import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
+import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 import { SimulateResponse } from '@/lib/api-types';
 import { GameLean, GameState } from '@/lib/types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
@@ -13,8 +12,29 @@ import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const getConferenceConfig = async (
+  conf: ConferenceSlug
+): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
+  try {
+    if (conf === 'sec') {
+      const { SEC_TIEBREAKER_CONFIG } = await import(
+        '@/lib/cfb/tiebreaker-rules/sec/config'
+      );
+      return { config: SEC_TIEBREAKER_CONFIG };
+    }
+
+    return { config: null, error: `Unsupported conference: ${conf}` };
+  } catch (error) {
+    return {
+      config: null,
+      error: `Failed to load conference config for ${conf}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    };
+  }
+};
+
 export const POST = async (
-  request: NextRequest
+  request: NextRequest,
+  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
   try {
     const body = await request.json();
@@ -29,15 +49,27 @@ export const POST = async (
       );
     }
 
-    const sport: SportSlug = 'cfb';
-    const conf: ConferenceSlug = 'sec';
+    const { sport, conf } = await params;
 
     const { conferences } = sports[sport];
     const conferenceMeta = conferences[conf];
 
     if (!conferenceMeta) {
-      return NextResponse.json({ error: `Unsupported conference: ${conf}` }, { status: 400 });
+      return NextResponse.json(
+        { error: `Unsupported conference: ${conf} for sport: ${sport}` },
+        { status: 400 }
+      );
     }
+
+    const configResult = await getConferenceConfig(conf);
+    if (configResult.error || !configResult.config) {
+      return NextResponse.json(
+        { error: configResult.error || `Conference config not found for ${conf}` },
+        { status: 400 }
+      );
+    }
+
+    const config: ConferenceTiebreakerConfig = configResult.config;
 
     await dbConnect();
 
@@ -117,11 +149,11 @@ export const POST = async (
         score: game.away.score ?? null,
         rank: game.away.rank ?? null,
       },
-        odds: {
-          favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
-          spread: game.odds.spread ?? null,
-          overUnder: game.odds.overUnder ?? null,
-        },
+      odds: {
+        favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
+        spread: game.odds.spread ?? null,
+        overUnder: game.odds.overUnder ?? null,
+      },
       predictedScore: {
         home: game.predictedScore.home,
         away: game.predictedScore.away,
@@ -150,7 +182,7 @@ export const POST = async (
         conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
     );
 
-    const { standings, tieLogs } = calculateStandings(conferenceGamesOnly, allTeams);
+    const { standings, tieLogs } = calculateStandings(conferenceGamesOnly, allTeams, config);
 
     return NextResponse.json<SimulateResponse>(
       {
@@ -172,3 +204,4 @@ export const POST = async (
     );
   }
 };
+

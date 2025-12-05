@@ -5,7 +5,8 @@ import Team from '@/lib/models/Team';
 import { GameLean, GameState } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
-import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
+import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -17,6 +18,26 @@ const getOrdinalSuffix = (num: number): string => {
   if (j === 2 && k !== 12) return 'nd';
   if (j === 3 && k !== 13) return 'rd';
   return 'th';
+};
+
+const getConferenceConfig = async (
+  conf: ConferenceSlug
+): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
+  try {
+    if (conf === 'sec') {
+      const { SEC_TIEBREAKER_CONFIG } = await import(
+        '@/lib/cfb/tiebreaker-rules/sec/config'
+      );
+      return { config: SEC_TIEBREAKER_CONFIG };
+    }
+
+    return { config: null, error: `Unsupported conference: ${conf}` };
+  } catch (error) {
+    return {
+      config: null,
+      error: `Failed to load conference config for ${conf}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+    };
+  }
 };
 
 export const GET = async (
@@ -43,6 +64,19 @@ export const GET = async (
         { status: 400 }
       );
     }
+
+    const configResult = await getConferenceConfig(conf);
+    if (configResult.error || !configResult.config) {
+      return NextResponse.json<ApiErrorResponse>(
+        {
+          error: configResult.error || `Conference config not found for ${conf}`,
+          code: 'CONFIG_ERROR',
+        },
+        { status: 400 }
+      );
+    }
+
+    const config: ConferenceTiebreakerConfig = configResult.config;
 
     const [espnSport, espnLeague] = espnRoute.split('/');
     const seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
@@ -127,7 +161,7 @@ export const GET = async (
     );
 
     const allTeamIds = conferenceTeams.map((team) => String(team._id));
-    const { standings } = calculateStandingsFromCompletedGames(gamesForCalculation, allTeamIds);
+    const { standings } = calculateStandings(gamesForCalculation, allTeamIds, config);
 
     const teamMap: Record<string, TeamMetadata> = {};
     for (const team of conferenceTeams) {

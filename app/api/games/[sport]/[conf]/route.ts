@@ -365,7 +365,6 @@ export const POST = async (
 
         let seasonYear: number;
         if (force && season) {
-          // When force is true, use the season from the request body
           seasonYear = parseInt(season, 10);
         } else {
           try {
@@ -381,23 +380,20 @@ export const POST = async (
           }
         }
 
-        // Convert season to date range: Aug 1 of season year to Feb 1 of next year
-        const startDate = new Date(seasonYear, 7, 1); // August 1 (month 7 = August, 0-indexed)
-        const endDate = new Date(seasonYear + 1, 1, 1); // February 1 of next year (month 1 = February)
+        const startDate = new Date(seasonYear, 7, 1);
+        const endDate = new Date(seasonYear + 1, 1, 1);
         const startStr = `${startDate.getFullYear()}${String(startDate.getMonth() + 1).padStart(2, '0')}${String(startDate.getDate()).padStart(2, '0')}`;
         const endStr = `${endDate.getFullYear()}${String(endDate.getMonth() + 1).padStart(2, '0')}${String(endDate.getDate()).padStart(2, '0')}`;
         const dateRange = `${startStr}-${endStr}`;
 
         let scoreboardResponse;
         if (week) {
-          // For specific week, still use season parameter
           scoreboardResponse = await client.getScoreboard({
             groups: conferenceMeta.espnId,
             season: seasonYear,
             week: parseInt(week, 10),
           });
         } else {
-          // Always use dates parameter for full season queries
           scoreboardResponse = await client.getScoreboard({
             groups: conferenceMeta.espnId,
             dates: dateRange,
