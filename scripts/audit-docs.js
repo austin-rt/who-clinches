@@ -1,16 +1,5 @@
 #!/usr/bin/env node
 
-/**
- * Documentation Audit Script
- * 
- * Validates documentation structure:
- * - Checks for broken markdown links
- * - Validates filename conventions (kebab-case)
- * - Identifies orphaned documentation files
- * - Reports Tier 1 documentation load
- * - Detects duplicate headings
- */
-
 const fs = require('fs');
 const path = require('path');
 
@@ -144,7 +133,6 @@ function findOrphanedDocs() {
   for (const file of allFiles) {
     const content = fs.readFileSync(file, 'utf-8');
     
-    // Check markdown links
     const linkMatches = [...content.matchAll(linkRegex)];
     for (const match of linkMatches) {
       const linkPath = match[1];
@@ -159,7 +147,6 @@ function findOrphanedDocs() {
       }
     }
     
-    // Check path strings (like `docs/guides/quick-reference.md`)
     const pathMatches = [...content.matchAll(pathStringRegex)];
     for (const match of pathMatches) {
       const docPath = match[1];
