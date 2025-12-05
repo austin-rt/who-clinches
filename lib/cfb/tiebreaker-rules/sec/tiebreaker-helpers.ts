@@ -105,7 +105,6 @@ export const applyRuleAHeadToHead = (
     .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
     .map((r) => r.teamId);
 
-  // Only include games where the winning team is in the winners array
   const getTeamAbbrev = (teamId: string): string => {
     const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
     return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
