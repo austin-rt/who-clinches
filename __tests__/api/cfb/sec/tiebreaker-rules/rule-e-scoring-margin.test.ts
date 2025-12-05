@@ -1,4 +1,4 @@
-import { applyRuleEScoringMargin } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
+import { applyRuleESecScoringMargin } from '@/lib/cfb/tiebreaker-rules/sec/rule-e-sec-scoring-margin';
 import { createGameLean } from './test-helpers';
 
 describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', () => {
@@ -275,7 +275,7 @@ describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Sc
         }),
       ];
 
-      const result = applyRuleEScoringMargin(['A', 'B'], games);
+      const result = applyRuleESecScoringMargin(['A', 'B'], games);
 
       // Rules document line 89: Team A advances to the championship game
       expect(result.winners).toEqual(['A']);
@@ -558,7 +558,7 @@ describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Sc
         }),
       ];
 
-      const result = applyRuleEScoringMargin(['A', 'B', 'C'], games);
+      const result = applyRuleESecScoringMargin(['A', 'B', 'C'], games);
 
       // Rules document line 106: Team A advances to the championship game
       expect(result.winners).toEqual(['A']);
@@ -770,7 +770,7 @@ describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Sc
 
       // Need at least 2 teams for the function to work (it returns early if < 2)
       // Team Z has 0% margin, Team A should have ~30.9% margin, so Team A wins
-      const result = applyRuleEScoringMargin(['A', 'Z'], games);
+      const result = applyRuleESecScoringMargin(['A', 'Z'], games);
 
       // Team A only plays Team B, so the margin for that game is the average margin
       // Expected calculation from official example:
@@ -1065,7 +1065,7 @@ describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Sc
         }),
       ];
 
-      const result = applyRuleEScoringMargin(['A', 'B', 'C'], games);
+      const result = applyRuleESecScoringMargin(['A', 'B', 'C'], games);
 
       // Rules document line 124: Team A advances to the championship game
       expect(result.winners).toEqual(['A']);
