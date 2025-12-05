@@ -30,11 +30,11 @@ Domain-specific content locations for common tasks.
 ## Tiebreaker Logic
 
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
-- **Implementation**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - Must enforce rules exactly as specified in the rules files
+- **Implementation**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
 - **Planning doc**: `docs/plans/tiebreaker-logic.md`
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
-- **Simulate endpoint**: `app/api/simulate/cfb/sec/route.ts` (currently hardcoded, not dynamic)
+- **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (dynamic endpoint supporting multiple conferences)
 
 ## Data Updates
 
@@ -87,7 +87,7 @@ npm run test:db:check         # Check/seed test DB
 | API endpoints | `app/api/` |
 | Data models | `lib/models/` |
 | ESPN client | `lib/cfb/espn-client.ts` (CFB-specific) |
-| Tiebreaker logic | `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` (SEC-specific) |
+| Tiebreaker logic | Modular system: `lib/cfb/tiebreaker-rules/common/` (common rules), `lib/cfb/tiebreaker-rules/core/` (engine), `lib/cfb/tiebreaker-rules/{conf}/config.ts` (conference configs) |
 | Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt` |
 | Constants | `lib/constants.ts` (sports and conference configuration) |
 | Reshape games | `lib/reshape-games.ts` (generic) |

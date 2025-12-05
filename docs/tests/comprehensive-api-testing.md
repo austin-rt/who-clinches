@@ -35,7 +35,7 @@ BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
 **Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. Team metadata is included in the `teams` array of the games endpoint response.
 
-**POST /api/simulate/cfb/sec**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Note: Currently hardcoded to `cfb/sec` (not dynamic `[sport]/[conf]`).
+**POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (16 teams, ranks 1-16), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score → Status 400. Dynamic endpoint supporting multiple conferences (e.g., `/api/simulate/cfb/sec`).
 
 
 ---

@@ -16,19 +16,19 @@ This is a specialized college football application built for simulating conferen
 - **Pre-Commit Hooks**: Use `--no-verify` flag after validation passes to skip redundant hook checks.
 - **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
 - **No Code Comments**: Do not add comments to code files, including JSDoc comments. Write self-documenting code instead. Existing comments should remain, but do not add new ones.
-- **NEVER Edit Tiebreaker Rules Files**: The official conference tiebreaker rules are stored in `docs/tiebreaker-rules/*.txt`. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents MUST NEVER edit, modify, or delete these files. The code in `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` must enforce these rules exactly as specified in the rules files. If tiebreaker logic needs to be updated, the rules files are updated by running extraction scripts (e.g., `scripts/extract-sec-rules.py`) to fetch the latest official PDFs from conference sources.
+- **NEVER Edit Tiebreaker Rules Files**: The official conference tiebreaker rules are stored in `docs/tiebreaker-rules/*.txt`. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents MUST NEVER edit, modify, or delete these files. The modular tiebreaker system (`lib/cfb/tiebreaker-rules/common/`, `lib/cfb/tiebreaker-rules/core/`, `lib/cfb/tiebreaker-rules/{conf}/config.ts`) must enforce these rules exactly as specified in the rules files. If tiebreaker logic needs to be updated, the rules files are updated by running extraction scripts (e.g., `scripts/extract-sec-rules.py`) to fetch the latest official PDFs from conference sources.
 
 ## Application Overview
 
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
-- **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts`
+- **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by a modular system: common rules in `lib/cfb/tiebreaker-rules/common/`, core engine in `lib/cfb/tiebreaker-rules/core/`, and conference-specific configs in `lib/cfb/tiebreaker-rules/{conf}/config.ts`
 - **Standings Calculation**: Generates complete conference standings with explanations
 - **Real-Time Data**: Automatically updates from ESPN API via frontend polling with conditional logic
 
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`). Note: `/api/simulate/cfb/sec` is currently hardcoded (not dynamic). Teams are automatically extracted from games endpoint responses.
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/models/` - Mongoose schemas (Game, Team, Error)
@@ -59,7 +59,7 @@ This is a specialized college football application built for simulating conferen
 
 **Tiebreaker Rules:**
 - **Location**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
-- **Code**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - Must enforce rules exactly as specified
+- **Code**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified
 
 ## Key Files Reference
 
@@ -69,7 +69,7 @@ This is a specialized college football application built for simulating conferen
 
 **Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) before database upsert. This ensures all team name variations are stored in the `Game` model and available everywhere without needing multiple enrichment steps in different endpoints.
 
-**Tiebreaker Logic**: `lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts` - SEC tiebreaker rules A-E (must enforce rules from `docs/tiebreaker-rules/`)
+**Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and SEC config (`lib/cfb/tiebreaker-rules/sec/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`
 
 **Frontend State**: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
 

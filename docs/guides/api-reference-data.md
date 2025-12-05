@@ -75,13 +75,13 @@ Fetches game data from ESPN API, upserts to database, and returns reshaped data.
 
 ---
 
-## POST /api/simulate/cfb/sec
+## POST /api/simulate/[sport]/[conf]
 
 Simulates conference tiebreaker standings with optional user-provided game outcomes.
 
 **Authentication:** None required
 
-**Note**: Currently hardcoded to `cfb/sec`. The endpoint path is `/api/simulate/cfb/sec` (not dynamic `[sport]/[conf]`).  
+**Note**: Dynamic endpoint supporting multiple conferences. The endpoint path is `/api/simulate/[sport]/[conf]` where `sport` is `cfb` and `conf` is the conference slug (e.g., `sec`).  
 **Example**: `/api/simulate/cfb/sec`
 
 **Request Body**: `{ "season": 2025, "overrides": { "gameEspnId": { "homeScore": 45, "awayScore": 10 } } }`

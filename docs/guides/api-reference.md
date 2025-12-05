@@ -6,7 +6,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (fast MongoDB query), POST /api/games/[sport]/[conf] (ESPN fetch), POST /api/simulate/cfb/sec
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (fast MongoDB query), POST /api/games/[sport]/[conf] (ESPN fetch), POST /api/simulate/[sport]/[conf] (dynamic endpoint)
 
 **Note**: All scheduled data update cron jobs have been replaced with on-demand API endpoints. Frontend polling drives updates using RTK Query with conditional polling. The only remaining scheduled workflow is GitHub Actions type generation (`.github/workflows/update-espn-types.yml` - runs daily at 02:15 UTC / 10:15 PM ET).
 

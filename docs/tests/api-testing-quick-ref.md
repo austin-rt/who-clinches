@@ -54,9 +54,9 @@
 
 **Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. Team metadata is included in the `teams` array of the games endpoint response.
 
-### POST /api/simulate/cfb/sec
+### POST /api/simulate/[sport]/[conf]
 
-**Note**: Currently hardcoded to `cfb/sec` (not dynamic `[sport]/[conf]`).
+**Note**: Dynamic endpoint supporting multiple conferences.
 
 **Example**: `/api/simulate/cfb/sec`
 - Input: `{ season, overrides }`
