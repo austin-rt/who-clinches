@@ -25,10 +25,7 @@ Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
 
 ```bash
 BASE_URL="https://sec-tiebreaker-git-main-austinrts-projects.vercel.app"
-DATABASE="production"
 BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
-CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
 ```
 
 ## Prerequisites
@@ -40,11 +37,6 @@ READONLY_PW=$(grep MONGODB_PASSWORD_READONLY .env.local | cut -d '=' -f2)
    ```
    This gives the Vercel deployment time to complete before testing.
 
-2. **Check database seeding:**
-   ```bash
-   npm run db:check -- --env production
-   ```
-   This will auto-seed the `production` database if needed.
 
 ## Quick Test Commands
 
@@ -62,13 +54,6 @@ curl -X POST "https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/api/
   -d '{"season": 2025, "conferenceId": "8", "overrides": {}}' | jq .
 ```
 
-**Test GET /api/cron/update-all:**
-```bash
-BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
-CRON_SECRET=$(grep CRON_SECRET .env.local | cut -d '=' -f2)
-curl -X GET "https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/api/cron/update-all?x-vercel-protection-bypass=${BYPASS_TOKEN}" \
-  -H "Authorization: Bearer ${CRON_SECRET}" | jq .
-```
 
 **Verify TeamMetadata structure:**
 ```bash
@@ -87,10 +72,6 @@ curl -s -X POST "https://sec-tiebreaker-git-main-austinrts-projects.vercel.app/a
 ## Notes
 
 - `BYPASS_TOKEN` required for protected Vercel deployment
-- Check Vercel logs for database connection: `[MongoDB] Connecting to database: production`
-- **Monitor Vercel logs for 5-10 minutes after tests complete**
 - All credentials read from `.env.local`
-- Database name: `production` (uses `.env.production` with `MONGODB_DB=production`)
-- Use `npm run db:check -- --env production` to verify and auto-seed database before testing
-- **⚠️ Production testing will modify production data - use with caution**
+- **⚠️ Production testing - use with caution**
 
