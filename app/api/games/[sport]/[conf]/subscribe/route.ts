@@ -4,18 +4,28 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GamesResponse, TeamMetadata } from '@/lib/api-types';
 import { GameLean, TeamLean } from '@/lib/types';
-import { getConferenceMetadata } from '@/lib/constants';
+import { getConferenceMetadata, isValidSport, isValidConference, type ConferenceAbbreviation } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
-import type { Conference, Game, Team } from 'cfbd';
+import type { Game, Team } from 'cfbd';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
+  { params }: { params: Promise<{ sport: string; conf: string }> }
 ) => {
-  const { conf } = await params;
+  const { sport: sportParam, conf: confParam } = await params;
+
+  if (!isValidSport(sportParam)) {
+    return new Response(`Invalid sport: ${sportParam}`, { status: 400 });
+  }
+
+  if (!isValidConference(confParam)) {
+    return new Response(`Invalid conference: ${confParam}`, { status: 400 });
+  }
+
+  const conf = confParam as ConferenceAbbreviation;
   const { searchParams } = new URL(request.url);
   const season = searchParams.get('season');
 

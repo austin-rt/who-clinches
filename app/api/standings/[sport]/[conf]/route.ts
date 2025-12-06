@@ -5,7 +5,7 @@ import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
 import type { Conference } from 'cfbd';
-import { getConferenceMetadata } from '@/lib/constants';
+import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
@@ -42,11 +42,33 @@ const getConferenceConfig = async (
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
+  { params }: { params: Promise<{ sport: string; conf: string }> }
 ) => {
   try {
-    const { sport, conf } = await params;
+    const { sport: sportParam, conf: confParam } = await params;
 
+    if (!isValidSport(sportParam)) {
+      return NextResponse.json<ApiErrorResponse>(
+        {
+          error: `Unsupported sport: ${sportParam}`,
+          code: 'INVALID_SPORT',
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidConference(confParam)) {
+      return NextResponse.json<ApiErrorResponse>(
+        {
+          error: `Unsupported conference: ${confParam}`,
+          code: 'INVALID_CONFERENCE',
+        },
+        { status: 400 }
+      );
+    }
+
+    const sport = sportParam as SportSlug;
+    const conf = confParam as ConferenceAbbreviation;
     const { searchParams } = new URL(request.url);
     const season = searchParams.get('season');
 

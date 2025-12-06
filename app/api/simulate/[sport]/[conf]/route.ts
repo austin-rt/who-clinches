@@ -8,7 +8,7 @@ import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/type
 import { SimulateResponse } from '@/lib/api-types';
 import { GameLean, TeamLean } from '@/lib/types';
 import type { Conference } from 'cfbd';
-import { getConferenceMetadata } from '@/lib/constants';
+import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -35,7 +35,7 @@ const getConferenceConfig = async (
 
 export const POST = async (
   request: NextRequest,
-  { params }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
+  { params }: { params: Promise<{ sport: string; conf: string }> }
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
   try {
     const body = await request.json();
@@ -50,8 +50,28 @@ export const POST = async (
       );
     }
 
-    const { sport, conf } = await params;
+    const { sport: sportParam, conf: confParam } = await params;
 
+    if (!isValidSport(sportParam)) {
+      return NextResponse.json(
+        {
+          error: `Unsupported sport: ${sportParam}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!isValidConference(confParam)) {
+      return NextResponse.json(
+        {
+          error: `Unsupported conference: ${confParam}`,
+        },
+        { status: 400 }
+      );
+    }
+
+    const sport = sportParam as SportSlug;
+    const conf = confParam as ConferenceAbbreviation;
     const conferenceMeta = getConferenceMetadata(conf);
 
     if (!conferenceMeta) {
