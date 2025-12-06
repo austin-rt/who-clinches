@@ -281,7 +281,6 @@ export class CFBDGraphQLClient {
           }
         },
         complete: () => {
-          // Subscription completed
         },
       }
     );
