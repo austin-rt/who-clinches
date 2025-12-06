@@ -28,7 +28,16 @@ const USER_INFO_CACHE_MS = 60000;
 
 const logRemainingCalls = async (info: UserInfo) => {
   const { patronLevel, remainingCalls } = info;
-  const threshold = 1000;
+  
+  // Calculate threshold as 10% of tier limit
+  const TIER_LIMITS: Record<number, number> = {
+    0: 1000, // Free tier
+    1: 5000, // Patreon Tier 1 ($1/month)
+    2: 30000, // Patreon Tier 2 ($5/month)
+    3: 75000, // Patreon Tier 3 ($10/month)
+  };
+  const tierLimit = TIER_LIMITS[patronLevel] ?? TIER_LIMITS[0];
+  const threshold = Math.floor(tierLimit * 0.1); // 10% of tier limit
 
   if (remainingCalls < threshold) {
     // eslint-disable-next-line no-console

@@ -1,7 +1,22 @@
 import type { UserInfo } from 'cfbd';
 
-const getAlertThreshold = (): number => {
-  return 1000;
+// Cooldown period: 1 hour between alerts
+const ALERT_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+
+// Track last alert timestamp to enforce cooldown
+let lastAlertTimestamp: number | null = null;
+
+// CFBD API tier limits (monthly calls)
+const TIER_LIMITS: Record<number, number> = {
+  0: 1000, // Free tier
+  1: 5000, // Patreon Tier 1 ($1/month)
+  2: 30000, // Patreon Tier 2 ($5/month)
+  3: 75000, // Patreon Tier 3 ($10/month)
+};
+
+const getAlertThreshold = (patronLevel: number): number => {
+  const tierLimit = TIER_LIMITS[patronLevel] ?? TIER_LIMITS[0];
+  return Math.floor(tierLimit * 0.1); // 10% of tier limit
 };
 
 const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
@@ -28,7 +43,7 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
   }
 
   const { patronLevel, remainingCalls } = userInfo;
-  const threshold = getAlertThreshold();
+  const threshold = getAlertThreshold(patronLevel);
 
   const payload = {
     patronLevel,
@@ -75,24 +90,40 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
 };
 
 export const sendLowCallsAlert = async (userInfo: UserInfo): Promise<void> => {
-  const { remainingCalls } = userInfo;
-  const threshold = getAlertThreshold();
+  const { remainingCalls, patronLevel } = userInfo;
+  const threshold = getAlertThreshold(patronLevel);
 
   if (remainingCalls >= threshold) {
     return;
   }
 
+  // Check cooldown period
+  const now = Date.now();
+  if (lastAlertTimestamp !== null && now - lastAlertTimestamp < ALERT_COOLDOWN_MS) {
+    const remainingCooldownMs = ALERT_COOLDOWN_MS - (now - lastAlertTimestamp);
+    const remainingCooldownMinutes = Math.ceil(remainingCooldownMs / (60 * 1000));
+    // eslint-disable-next-line no-console
+    console.log('[CFBD Alert] Alert skipped due to cooldown', {
+      remainingCalls,
+      threshold,
+      patronLevel,
+      remainingCooldownMinutes,
+    });
+    return;
+  }
+
   try {
     await sendAlertViaWebhook(userInfo);
+    lastAlertTimestamp = now;
     // eslint-disable-next-line no-console
-    console.log('[CFBD Alert] Alert sent successfully', { remainingCalls, threshold });
+    console.log('[CFBD Alert] Alert sent successfully', { remainingCalls, threshold, patronLevel });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     // eslint-disable-next-line no-console
     console.error('[CFBD Alert] Failed to send alert:', errorMessage, {
       remainingCalls,
       threshold,
-      patronLevel: userInfo.patronLevel,
+      patronLevel,
     });
   }
 };
