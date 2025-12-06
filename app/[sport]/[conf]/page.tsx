@@ -10,8 +10,7 @@ import SimulateButton from '@/app/components/SimulateButton';
 import Standings from '@/app/components/Standings';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
-import type { Conference } from 'cfbd';
-import { getConferenceMetadata } from '@/lib/constants';
+import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { SimulateResponse } from '@/lib/api-types';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
@@ -21,11 +20,16 @@ import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-c
 
 const ConferencePage = () => {
   const params = useParams();
-  const sport = params.sport as string;
-  const conf = params.conf as NonNullable<Conference['abbreviation']>;
+  const sportParam = params.sport as string;
+  const confParam = params.conf as string;
   const dispatch = useAppDispatch();
   const standingsRef = useRef<HTMLDivElement>(null);
   const season = useAppSelector((state) => state.app.season);
+  const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
+
+  const isValid = isValidSport(sportParam) && isValidConference(confParam);
+  const sport = isValid ? (sportParam as SportSlug) : null;
+  const conf = isValid ? (confParam as ConferenceAbbreviation) : null;
 
   useEffect(() => {
     if (season === null) {
@@ -33,16 +37,14 @@ const ConferencePage = () => {
         dispatch(setSeason(defaultSeason));
       });
     }
-  }, [sport, conf, season, dispatch]);
+  }, [sportParam, confParam, season, dispatch]);
 
   useGamesData({
-    sport,
-    conf,
+    sport: sport!,
+    conf: conf!,
   });
 
   useInSeason();
-
-  const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
 
   const handleSimulateComplete = (response: SimulateResponse) => {
     setSimulateResponse(response);
@@ -57,17 +59,32 @@ const ConferencePage = () => {
     dispatch(clearAllPicks());
   };
 
-  const conferenceMeta = getConferenceMetadata(conf);
-  const conferenceName = conferenceMeta?.name;
-  const conferenceId = conferenceMeta?.cfbdId;
-
-  if (!conferenceName || !conferenceId || sport !== 'cfb') {
+  if (!isValid || !sport || !conf) {
     return (
       <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-error">Conference Not Found</h1>
           <p className="text-base-content/70 text-lg">
-            The conference &quot;{conf}&quot; for sport &quot;{sport}&quot; is not supported.
+            {!isValidSport(sportParam)
+              ? `The sport &quot;${sportParam}&quot; is not supported.`
+              : `The conference &quot;${confParam}&quot; for sport &quot;${sportParam}&quot; is not supported.`}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  const conferenceMeta = getConferenceMetadata(conf);
+  const conferenceName = conferenceMeta?.name;
+  const conferenceId = conferenceMeta?.cfbdId;
+
+  if (!conferenceName || !conferenceId) {
+    return (
+      <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl font-bold text-error">Conference Not Found</h1>
+          <p className="text-base-content/70 text-lg">
+            The conference &quot;{confParam}&quot; for sport &quot;{sportParam}&quot; is not supported.
           </p>
         </div>
       </div>

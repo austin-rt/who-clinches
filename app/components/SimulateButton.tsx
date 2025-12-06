@@ -2,11 +2,16 @@
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
 import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
+import {
+  isValidSport,
+  isValidConference,
+  type SportSlug,
+  type ConferenceAbbreviation,
+} from '@/lib/constants';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { useUIState } from '../store/useUI';
 import { useSimulateMutation } from '../store/apiSlice';
-import type { Conference } from 'cfbd';
 
 interface SimulateButtonProps {
   onSimulateComplete?: (response: SimulateResponse) => void;
@@ -14,14 +19,19 @@ interface SimulateButtonProps {
 
 const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
   const params = useParams();
-  const sport = params.sport as string;
-  const conf = params.conf as NonNullable<Conference['abbreviation']>;
+  const sportParam = params.sport as string;
+  const confParam = params.conf as string;
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
   const season = useAppSelector((state) => state.app.season);
-
   const { mode } = useUIState();
-
   const [simulate, { isLoading }] = useSimulateMutation();
+
+  if (!isValidSport(sportParam) || !isValidConference(confParam)) {
+    return null;
+  }
+
+  const sport = sportParam as SportSlug;
+  const conf = confParam as ConferenceAbbreviation;
 
   const handleSimulate = async () => {
     if (!season) {

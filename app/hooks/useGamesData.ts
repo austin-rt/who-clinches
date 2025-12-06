@@ -1,11 +1,12 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
 import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
 import { useAppSelector } from '@/app/store/hooks';
+import { type SportSlug } from '@/lib/constants';
 import { GameLean } from '@/lib/types';
 import { GamesResponse } from '@/lib/api-types';
 
 interface UseGamesDataParams {
-  sport: string;
+  sport: SportSlug;
   conf: string;
 }
 

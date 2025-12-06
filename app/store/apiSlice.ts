@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { GamesResponse, SimulateRequest, SimulateResponse } from '@/lib/api-types';
+import { type SportSlug } from '@/lib/constants';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -9,7 +10,7 @@ export const apiSlice = createApi({
     getSeasonGameData: builder.query<
       GamesResponse,
       {
-        sport: string;
+        sport: SportSlug;
         conf: string;
         season: number;
         week?: string | number;
@@ -34,7 +35,7 @@ export const apiSlice = createApi({
     }),
     simulate: builder.mutation<
       SimulateResponse,
-      { sport: string; conf: string; season: number } & SimulateRequest
+      { sport: SportSlug; conf: string; season: number } & SimulateRequest
     >({
       queryFn: async ({ sport, conf, season, ...request }) => {
         try {

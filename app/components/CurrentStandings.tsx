@@ -3,6 +3,7 @@
 import { useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
 import { useParams } from 'next/navigation';
+import { isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { useAppSelector } from '@/app/store/hooks';
 import { TeamMetadata } from '@/lib/api-types';
 import LoadingSpinner from './LoadingSpinner';
@@ -15,19 +16,23 @@ interface CurrentStandingsProps {
 
 const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
   const params = useParams();
-  const sport = params.sport as string;
-  const conf = params.conf as string;
+  const sportParam = params.sport as string;
+  const confParam = params.conf as string;
   const season = useAppSelector((state) => state.app.season);
+
+  const isValid = isValidSport(sportParam) && isValidConference(confParam);
+  const sport = isValid ? (sportParam as SportSlug) : null;
+  const conf = isValid ? (confParam as ConferenceAbbreviation) : null;
 
   const { data, isLoading, refetch } = useGetSeasonGameDataQuery(
     {
-      sport,
-      conf,
+      sport: sport!,
+      conf: conf!,
       season: season!,
     },
     {
       refetchOnMountOrArgChange: true,
-      skip: season === null,
+      skip: season === null || !isValid || !sport || !conf,
     }
   );
 
@@ -48,6 +53,10 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
       .sort((a: { rank: number }, b: { rank: number }) => a.rank - b.rank)
       .map((item: { team: TeamMetadata }) => item.team);
   }, [data]);
+
+  if (!isValid || !sport || !conf) {
+    return null;
+  }
 
   return (
     <>
