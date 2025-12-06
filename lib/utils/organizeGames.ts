@@ -1,11 +1,14 @@
 import { GameLean } from '@/lib/types';
 
 export const organizeGames = (
-  games: GameLean[]
+  games: GameLean[] | undefined
 ): {
   finalWeeks: GameLean[][];
   remainingWeeks: GameLean[][];
 } => {
+  if (!games || !Array.isArray(games)) {
+    return { finalWeeks: [], remainingWeeks: [] };
+  }
   const gamesByWeek = new Map<number, GameLean[]>();
   games.forEach((game) => {
     const week = game.week ?? 0;

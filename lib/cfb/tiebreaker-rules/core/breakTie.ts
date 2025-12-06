@@ -48,7 +48,7 @@ export const breakTie = (
 
       if (!isRecursive) {
         const h2hGames = games.filter(
-          (g) => remaining.includes(g.home.teamEspnId) && remaining.includes(g.away.teamEspnId)
+          (g) => remaining.includes(g.home.teamId) && remaining.includes(g.away.teamId)
         );
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
@@ -56,19 +56,19 @@ export const breakTie = (
             const lostTo: string[] = [];
             h2hGames.forEach((game) => {
               if (
-                game.home.teamEspnId === teamId &&
+                game.home.teamId === teamId &&
                 game.home.score !== null &&
                 game.away.score !== null &&
                 game.home.score < game.away.score
               ) {
-                lostTo.push(getTeamAbbrev(game.away.teamEspnId, games));
+                lostTo.push(getTeamAbbrev(game.away.teamId, games));
               } else if (
-                game.away.teamEspnId === teamId &&
+                game.away.teamId === teamId &&
                 game.home.score !== null &&
                 game.away.score !== null &&
                 game.away.score < game.home.score
               ) {
-                lostTo.push(getTeamAbbrev(game.home.teamEspnId, games));
+                lostTo.push(getTeamAbbrev(game.home.teamId, games));
               }
             });
             const opponentText = lostTo.length > 0 ? ` to ${lostTo.join(', ')}` : '';
@@ -117,11 +117,11 @@ export const breakTie = (
           if (!explanations.has(teamId)) {
             const opponentSets = remaining.map((t) => {
               const teamGames = games.filter(
-                (g) => g.home.teamEspnId === t || g.away.teamEspnId === t
+                (g) => g.home.teamId === t || g.away.teamId === t
               );
               return new Set(
                 teamGames.map((g) =>
-                  g.home.teamEspnId === t ? g.away.teamEspnId : g.home.teamEspnId
+                  g.home.teamId === t ? g.away.teamId : g.home.teamId
                 )
               );
             });
@@ -130,8 +130,8 @@ export const breakTie = (
             );
             const vsCommonGames = games.filter(
               (g) =>
-                (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
-                (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
+                (g.home.teamId === teamId && commonOpponents.includes(g.away.teamId)) ||
+                (g.away.teamId === teamId && commonOpponents.includes(g.home.teamId))
             );
             const record = getTeamRecord(teamId, vsCommonGames);
             explanations.set(teamId, [
@@ -205,10 +205,10 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             const teamGames = games.filter(
-              (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+              (g) => g.home.teamId === teamId || g.away.teamId === teamId
             );
             const opponents = teamGames.map((g) =>
-              g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+              g.home.teamId === teamId ? g.away.teamId : g.home.teamId
             );
             let totalWins = 0;
             let totalGames = 0;
@@ -263,15 +263,15 @@ export const breakTie = (
               const OFFENSIVE_PCT_CAP = 200;
               const DEFENSIVE_PCT_MIN = 0;
               const teamGames = games.filter(
-                (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+                (g) => g.home.teamId === teamId || g.away.teamId === teamId
               );
               let totalMargin = 0;
               for (const game of teamGames) {
                 if (game.home.score === null || game.away.score === null) continue;
-                const isHome = game.home.teamEspnId === teamId;
+                const isHome = game.home.teamId === teamId;
                 const teamScore = isHome ? game.home.score : game.away.score;
                 const oppScore = isHome ? game.away.score : game.home.score;
-                const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
+                const oppId = isHome ? game.away.teamId : game.home.teamId;
                 const oppAvgFor = getTeamAvgPointsFor(oppId, games);
                 const oppAvgAgainst = getTeamAvgPointsAgainst(oppId, games);
                 const offensivePct =

@@ -10,7 +10,7 @@ export const applyRuleAHeadToHead = (
   }
 
   const h2hGames = games.filter(
-    (g) => tiedTeams.includes(g.home.teamEspnId) && tiedTeams.includes(g.away.teamEspnId)
+    (g) => tiedTeams.includes(g.home.teamId) && tiedTeams.includes(g.away.teamId)
   );
 
   if (h2hGames.length === 0) {
@@ -33,8 +33,8 @@ export const applyRuleAHeadToHead = (
   for (const game of h2hGames) {
     if (game.home.score === null || game.away.score === null) continue;
 
-    const homeId = game.home.teamEspnId;
-    const awayId = game.away.teamEspnId;
+    const homeId = game.home.teamId;
+    const awayId = game.away.teamId;
     const homeAbbrev = getTeamAbbrev(homeId, games);
     const awayAbbrev = getTeamAbbrev(awayId, games);
 

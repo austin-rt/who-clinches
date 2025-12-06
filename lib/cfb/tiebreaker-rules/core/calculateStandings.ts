@@ -39,18 +39,18 @@ export const calculateStandings = (
 
       const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {
         const game = games.find(
-          (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+          (g) => g.home.teamId === teamId || g.away.teamId === teamId
         );
-        return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+        return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
       });
 
       const stepsWithAbbrevs = tieResult.steps.map((step) => ({
         ...step,
         survivors: step.survivors.map((teamId) => {
           const game = games.find(
-            (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+            (g) => g.home.teamId === teamId || g.away.teamId === teamId
           );
-          return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+          return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
         }),
       }));
 
@@ -63,9 +63,9 @@ export const calculateStandings = (
 
   const standings: StandingEntry[] = orderedTeams.map((teamId, index) => {
     const record = teamRecords.find((r) => r.teamId === teamId)!;
-    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId)!;
+    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId)!;
 
-    const team = game.home.teamEspnId === teamId ? game.home : game.away;
+    const team = game.home.teamId === teamId ? game.home : game.away;
 
     const recordKey = `${record.wins}-${record.losses}`;
     const teamsWithSameRecord = orderedTeams
@@ -84,13 +84,13 @@ export const calculateStandings = (
       const teamsBelow = teamsWithSameRecord.slice(currentIndex + 1);
 
       const getTeamShortNameFromId = (tid: string) => {
-        const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
+        const g = games.find((g) => g.home.teamId === tid || g.away.teamId === tid);
         if (!g) {
           return tid;
         }
 
         const shortDisplayName =
-          g.home.teamEspnId === tid
+          g.home.teamId === tid
             ? g.home.shortDisplayName || g.home.displayName || g.home.abbrev
             : g.away.shortDisplayName || g.away.displayName || g.away.abbrev || tid;
 
@@ -101,9 +101,9 @@ export const calculateStandings = (
         return tieLogs.find((log) => {
           const teamAbbrevs = teamsWithSameRecord.map((t) => {
             const g = games.find(
-              (g) => g.home.teamEspnId === t.teamId || g.away.teamEspnId === t.teamId
+              (g) => g.home.teamId === t.teamId || g.away.teamId === t.teamId
             );
-            return g?.home.teamEspnId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
+            return g?.home.teamId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
           });
           return teamAbbrevs.every((abbrev) => log.teams.includes(abbrev));
         });
@@ -115,8 +115,8 @@ export const calculateStandings = (
         if (!tieLog) return null;
 
         const getAbbrev = (tid: string) => {
-          const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
-          return g?.home.teamEspnId === tid ? g.home.abbrev : g?.away.abbrev || tid;
+          const g = games.find((g) => g.home.teamId === tid || g.away.teamId === tid);
+          return g?.home.teamId === tid ? g.home.abbrev : g?.away.abbrev || tid;
         };
 
         const team1Abbrev = getAbbrev(team1Id);
@@ -167,10 +167,10 @@ export const calculateStandings = (
           }
         } else if (step.rule.includes('Opponent Win Percentage')) {
           const teamGames = games.filter(
-            (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+            (g) => g.home.teamId === teamId || g.away.teamId === teamId
           );
           const opponents = teamGames.map((g) =>
-            g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+            g.home.teamId === teamId ? g.away.teamId : g.home.teamId
           );
           let totalWins = 0;
           let totalGames = 0;

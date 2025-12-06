@@ -43,18 +43,3 @@ export const fetchWithTimeout = async (
     throw error;
   }
 };
-
-export const fetchJSONWithTimeout = async <T = unknown>(
-  url: string | URL,
-  options: RequestInit = {},
-  timeoutMs: number = DEFAULT_TIMEOUT_MS
-): Promise<T> => {
-  const response = await fetchWithTimeout(url, options, timeoutMs);
-
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`HTTP ${response.status}: ${text}`);
-  }
-
-  return response.json() as Promise<T>;
-};

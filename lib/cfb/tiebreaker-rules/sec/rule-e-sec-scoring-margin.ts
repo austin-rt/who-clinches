@@ -6,7 +6,7 @@ const DEFENSIVE_PCT_MIN = 0;
 
 export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number => {
   const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+    (g) => g.home.teamId === teamId || g.away.teamId === teamId
   );
 
   if (teamGames.length === 0) return 0;
@@ -14,7 +14,7 @@ export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number =
   let totalPoints = 0;
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     totalPoints += isHome ? game.home.score : game.away.score;
   }
 
@@ -23,7 +23,7 @@ export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number =
 
 export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): number => {
   const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+    (g) => g.home.teamId === teamId || g.away.teamId === teamId
   );
 
   if (teamGames.length === 0) return 0;
@@ -31,7 +31,7 @@ export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): numb
   let totalPoints = 0;
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     totalPoints += isHome ? game.away.score : game.home.score;
   }
 
@@ -48,7 +48,7 @@ export const applyRuleESecScoringMargin = (
 
   const margins = tiedTeams.map((teamId) => {
     const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+      (g) => g.home.teamId === teamId || g.away.teamId === teamId
     );
 
     let totalMargin = 0;
@@ -56,8 +56,8 @@ export const applyRuleESecScoringMargin = (
     for (const game of teamGames) {
       if (game.home.score === null || game.away.score === null) continue;
 
-      const isHome = game.home.teamEspnId === teamId;
-      const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
+      const isHome = game.home.teamId === teamId;
+      const oppId = isHome ? game.away.teamId : game.home.teamId;
 
       const teamScore = isHome ? game.home.score : game.away.score;
       const oppScore = isHome ? game.away.score : game.home.score;

@@ -11,10 +11,10 @@ export const applyRuleBCommonOpponents = (
 
   const opponentSets = tiedTeams.map((teamId) => {
     const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+      (g) => g.home.teamId === teamId || g.away.teamId === teamId
     );
     return new Set(
-      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
+      teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
   });
 
@@ -29,8 +29,8 @@ export const applyRuleBCommonOpponents = (
   const records = tiedTeams.map((teamId) => {
     const vsCommonGames = games.filter(
       (g) =>
-        (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
-        (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
+        (g.home.teamId === teamId && commonOpponents.includes(g.away.teamId)) ||
+        (g.away.teamId === teamId && commonOpponents.includes(g.home.teamId))
     );
     return {
       teamId,

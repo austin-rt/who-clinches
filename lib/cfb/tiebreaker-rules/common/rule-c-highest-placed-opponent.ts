@@ -26,10 +26,10 @@ export const applyRuleCHighestPlacedOpponent = (
 
   const opponentSets = tiedTeams.map((teamId) => {
     const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+      (g) => g.home.teamId === teamId || g.away.teamId === teamId
     );
     return new Set(
-      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
+      teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
   });
 
@@ -78,8 +78,8 @@ export const applyRuleCHighestPlacedOpponent = (
       const records = tiedTeams.map((teamId) => {
         const vsOppGames = games.filter(
           (g) =>
-            (g.home.teamEspnId === teamId && g.away.teamEspnId === oppId) ||
-            (g.away.teamEspnId === teamId && g.home.teamEspnId === oppId)
+            (g.home.teamId === teamId && g.away.teamId === oppId) ||
+            (g.away.teamId === teamId && g.home.teamId === oppId)
         );
         return {
           teamId,
@@ -96,10 +96,10 @@ export const applyRuleCHighestPlacedOpponent = (
           .map((r) => r.teamId);
 
         const oppGame = games.find(
-          (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
+          (g) => g.home.teamId === oppId || g.away.teamId === oppId
         );
         const oppAbbrev =
-          oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+          oppGame?.home.teamId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
 
         const detail = `Record vs ${oppAbbrev}`;
 
@@ -112,14 +112,14 @@ export const applyRuleCHighestPlacedOpponent = (
       if (tiedOpponents.length === 2) {
         const h2hGame = games.find(
           (g) =>
-            (g.home.teamEspnId === tiedOpponents[0] && g.away.teamEspnId === tiedOpponents[1]) ||
-            (g.home.teamEspnId === tiedOpponents[1] && g.away.teamEspnId === tiedOpponents[0])
+            (g.home.teamId === tiedOpponents[0] && g.away.teamId === tiedOpponents[1]) ||
+            (g.home.teamId === tiedOpponents[1] && g.away.teamId === tiedOpponents[0])
         );
         if (h2hGame && h2hGame.home.score !== null && h2hGame.away.score !== null) {
           if (h2hGame.home.score > h2hGame.away.score) {
-            resolvedOpponents = [h2hGame.home.teamEspnId];
+            resolvedOpponents = [h2hGame.home.teamId];
           } else {
-            resolvedOpponents = [h2hGame.away.teamEspnId];
+            resolvedOpponents = [h2hGame.away.teamId];
           }
         }
       } else if (tiedOpponents.length > 2) {
@@ -134,8 +134,8 @@ export const applyRuleCHighestPlacedOpponent = (
       const records = tiedTeams.map((teamId) => {
         const vsTiedOppGames = games.filter(
           (g) =>
-            (opponentsToUse.includes(g.home.teamEspnId) && g.away.teamEspnId === teamId) ||
-            (opponentsToUse.includes(g.away.teamEspnId) && g.home.teamEspnId === teamId)
+            (opponentsToUse.includes(g.home.teamId) && g.away.teamId === teamId) ||
+            (opponentsToUse.includes(g.away.teamId) && g.home.teamId === teamId)
         );
         return {
           teamId,
@@ -153,9 +153,9 @@ export const applyRuleCHighestPlacedOpponent = (
 
         const oppAbbrevs = opponentsToUse.map((oppId) => {
           const oppGame = games.find(
-            (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
+            (g) => g.home.teamId === oppId || g.away.teamId === oppId
           );
-          return oppGame?.home.teamEspnId === oppId
+          return oppGame?.home.teamId === oppId
             ? oppGame.home.abbrev
             : oppGame?.away.abbrev || oppId;
         });

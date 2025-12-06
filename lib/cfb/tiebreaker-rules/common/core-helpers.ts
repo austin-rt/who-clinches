@@ -9,11 +9,11 @@ export const applyOverrides = (
   overrides: { [gameId: string]: { homeScore: number; awayScore: number } }
 ): GameLean[] => {
   return games.map((game) => {
-    const override = overrides[game.espnId];
+    const override = overrides[game.id];
 
     if (override) {
       if (override.homeScore === override.awayScore) {
-        throw new Error(`Tie scores not allowed for game ${game.espnId}`);
+        throw new Error(`Tie scores not allowed for game ${game.id}`);
       }
       if (override.homeScore < 0 || override.awayScore < 0) {
         throw new Error('Scores cannot be negative');
@@ -42,14 +42,14 @@ export const applyOverrides = (
     }
 
     throw new Error(
-      `Game ${game.espnId} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
+      `Game ${game.id} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
     );
   });
 };
 
 export const getTeamAbbrev = (teamId: string, games: GameLean[]): string => {
-  const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
-  return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+  const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+  return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
 };
 
 export const getTeamRecord = (
@@ -57,7 +57,7 @@ export const getTeamRecord = (
   games: GameLean[]
 ): { wins: number; losses: number; winPct: number } => {
   const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+    (g) => g.home.teamId === teamId || g.away.teamId === teamId
   );
 
   let wins = 0;
@@ -66,7 +66,7 @@ export const getTeamRecord = (
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
 
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     const teamScore = isHome ? game.home.score : game.away.score;
     const oppScore = isHome ? game.away.score : game.home.score;
 

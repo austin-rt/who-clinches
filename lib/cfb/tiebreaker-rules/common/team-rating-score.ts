@@ -11,7 +11,7 @@ export const calculateTeamRatingScore = (
   const winPct = record.winPct;
 
   const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+    (g) => g.home.teamId === teamId || g.away.teamId === teamId
   );
 
   let pointsFor = 0;
@@ -21,7 +21,7 @@ export const calculateTeamRatingScore = (
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
 
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     const teamScore = isHome ? game.home.score : game.away.score;
     const oppScore = isHome ? game.away.score : game.home.score;
 
@@ -35,7 +35,7 @@ export const calculateTeamRatingScore = (
 
   const tiedTeamDifferentials = tiedTeams.map((tid) => {
     const tidGames = games.filter(
-      (g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid
+      (g) => g.home.teamId === tid || g.away.teamId === tid
     );
     let tidPointsFor = 0;
     let tidPointsAgainst = 0;
@@ -44,7 +44,7 @@ export const calculateTeamRatingScore = (
     for (const game of tidGames) {
       if (game.home.score === null || game.away.score === null) continue;
 
-      const isHome = game.home.teamEspnId === tid;
+      const isHome = game.home.teamId === tid;
       const tidTeamScore = isHome ? game.home.score : game.away.score;
       const tidOppScore = isHome ? game.away.score : game.home.score;
 
@@ -68,11 +68,11 @@ export const calculateTeamRatingScore = (
   }
 
   const teamGamesForOppWinPct = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+    (g) => g.home.teamId === teamId || g.away.teamId === teamId
   );
 
   const opponents = teamGamesForOppWinPct.map((g) =>
-    g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+    g.home.teamId === teamId ? g.away.teamId : g.home.teamId
   );
 
   let totalWins = 0;

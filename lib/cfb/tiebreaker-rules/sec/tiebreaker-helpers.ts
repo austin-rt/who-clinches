@@ -5,61 +5,16 @@ const EPSILON = 0.0001;
 const OFFENSIVE_PCT_CAP = 200;
 const DEFENSIVE_PCT_MIN = 0;
 
-export const applyOverrides = (
-  games: GameLean[],
-  overrides: { [gameId: string]: { homeScore: number; awayScore: number } }
-): GameLean[] => {
-  return games.map((game) => {
-    const override = overrides[game.espnId];
-
-    if (override) {
-      if (override.homeScore === override.awayScore) {
-        throw new Error(`Tie scores not allowed for game ${game.espnId}`);
-      }
-      if (override.homeScore < 0 || override.awayScore < 0) {
-        throw new Error('Scores cannot be negative');
-      }
-      if (!Number.isInteger(override.homeScore) || !Number.isInteger(override.awayScore)) {
-        throw new Error('Scores must be whole numbers');
-      }
-
-      return {
-        ...game,
-        home: { ...game.home, score: override.homeScore },
-        away: { ...game.away, score: override.awayScore },
-      };
-    }
-
-    if (game.home.score !== null && game.away.score !== null) {
-      return game;
-    }
-
-    if (game.predictedScore) {
-      return {
-        ...game,
-        home: { ...game.home, score: game.predictedScore.home },
-        away: { ...game.away, score: game.predictedScore.away },
-      };
-    }
-
-    throw new Error(
-      `Game ${game.espnId} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
-    );
-  });
-};
-
 const getTeamAbbrev = (teamId: string, games: GameLean[]): string => {
-  const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
-  return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+  const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+  return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
 };
 
 export const getTeamRecord = (
   teamId: string,
   games: GameLean[]
 ): { wins: number; losses: number; winPct: number } => {
-  const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-  );
+  const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
   let wins = 0;
   let losses = 0;
@@ -67,7 +22,7 @@ export const getTeamRecord = (
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
 
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     const teamScore = isHome ? game.home.score : game.away.score;
     const oppScore = isHome ? game.away.score : game.home.score;
 
@@ -88,7 +43,7 @@ export const applyRuleAHeadToHead = (
   }
 
   const h2hGames = games.filter(
-    (g) => tiedTeams.includes(g.home.teamEspnId) && tiedTeams.includes(g.away.teamEspnId)
+    (g) => tiedTeams.includes(g.home.teamId) && tiedTeams.includes(g.away.teamId)
   );
 
   if (h2hGames.length === 0) {
@@ -106,8 +61,8 @@ export const applyRuleAHeadToHead = (
     .map((r) => r.teamId);
 
   const getTeamAbbrev = (teamId: string): string => {
-    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId);
-    return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+    return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
   };
 
   const winnersSet = new Set(winners);
@@ -116,8 +71,8 @@ export const applyRuleAHeadToHead = (
   for (const game of h2hGames) {
     if (game.home.score === null || game.away.score === null) continue;
 
-    const homeId = game.home.teamEspnId;
-    const awayId = game.away.teamEspnId;
+    const homeId = game.home.teamId;
+    const awayId = game.away.teamId;
     const homeAbbrev = getTeamAbbrev(homeId);
     const awayAbbrev = getTeamAbbrev(awayId);
 
@@ -164,11 +119,9 @@ export const applyRuleBCommonOpponents = (
   }
 
   const opponentSets = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     return new Set(
-      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
+      teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
   });
 
@@ -183,8 +136,8 @@ export const applyRuleBCommonOpponents = (
   const records = tiedTeams.map((teamId) => {
     const vsCommonGames = games.filter(
       (g) =>
-        (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
-        (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
+        (g.home.teamId === teamId && commonOpponents.includes(g.away.teamId)) ||
+        (g.away.teamId === teamId && commonOpponents.includes(g.home.teamId))
     );
     return {
       teamId,
@@ -222,11 +175,9 @@ export const applyRuleCHighestPlacedOpponent = (
     });
 
   const opponentSets = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     return new Set(
-      teamGames.map((g) => (g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId))
+      teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
   });
 
@@ -275,8 +226,8 @@ export const applyRuleCHighestPlacedOpponent = (
       const records = tiedTeams.map((teamId) => {
         const vsOppGames = games.filter(
           (g) =>
-            (g.home.teamEspnId === teamId && g.away.teamEspnId === oppId) ||
-            (g.away.teamEspnId === teamId && g.home.teamEspnId === oppId)
+            (g.home.teamId === teamId && g.away.teamId === oppId) ||
+            (g.away.teamId === teamId && g.home.teamId === oppId)
         );
         return {
           teamId,
@@ -292,11 +243,9 @@ export const applyRuleCHighestPlacedOpponent = (
           .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON)
           .map((r) => r.teamId);
 
-        const oppGame = games.find(
-          (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
-        );
+        const oppGame = games.find((g) => g.home.teamId === oppId || g.away.teamId === oppId);
         const oppAbbrev =
-          oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+          oppGame?.home.teamId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
 
         const detail = `Record vs ${oppAbbrev}`;
 
@@ -309,14 +258,14 @@ export const applyRuleCHighestPlacedOpponent = (
       if (tiedOpponents.length === 2) {
         const h2hGame = games.find(
           (g) =>
-            (g.home.teamEspnId === tiedOpponents[0] && g.away.teamEspnId === tiedOpponents[1]) ||
-            (g.home.teamEspnId === tiedOpponents[1] && g.away.teamEspnId === tiedOpponents[0])
+            (g.home.teamId === tiedOpponents[0] && g.away.teamId === tiedOpponents[1]) ||
+            (g.home.teamId === tiedOpponents[1] && g.away.teamId === tiedOpponents[0])
         );
         if (h2hGame && h2hGame.home.score !== null && h2hGame.away.score !== null) {
           if (h2hGame.home.score > h2hGame.away.score) {
-            resolvedOpponents = [h2hGame.home.teamEspnId];
+            resolvedOpponents = [h2hGame.home.teamId];
           } else {
-            resolvedOpponents = [h2hGame.away.teamEspnId];
+            resolvedOpponents = [h2hGame.away.teamId];
           }
         }
       } else if (tiedOpponents.length > 2) {
@@ -331,8 +280,8 @@ export const applyRuleCHighestPlacedOpponent = (
       const records = tiedTeams.map((teamId) => {
         const vsTiedOppGames = games.filter(
           (g) =>
-            (opponentsToUse.includes(g.home.teamEspnId) && g.away.teamEspnId === teamId) ||
-            (opponentsToUse.includes(g.away.teamEspnId) && g.home.teamEspnId === teamId)
+            (opponentsToUse.includes(g.home.teamId) && g.away.teamId === teamId) ||
+            (opponentsToUse.includes(g.away.teamId) && g.home.teamId === teamId)
         );
         return {
           teamId,
@@ -349,10 +298,8 @@ export const applyRuleCHighestPlacedOpponent = (
           .map((r) => r.teamId);
 
         const oppAbbrevs = opponentsToUse.map((oppId) => {
-          const oppGame = games.find(
-            (g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId
-          );
-          return oppGame?.home.teamEspnId === oppId
+          const oppGame = games.find((g) => g.home.teamId === oppId || g.away.teamId === oppId);
+          return oppGame?.home.teamId === oppId
             ? oppGame.home.abbrev
             : oppGame?.away.abbrev || oppId;
         });
@@ -379,12 +326,10 @@ export const applyRuleDOpponentWinPercentage = (
   }
 
   const records = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
     const opponents = teamGames.map((g) =>
-      g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+      g.home.teamId === teamId ? g.away.teamId : g.home.teamId
     );
 
     let totalWins = 0;
@@ -393,9 +338,9 @@ export const applyRuleDOpponentWinPercentage = (
 
     for (const oppId of opponents) {
       const oppRecord = getTeamRecord(oppId, games);
-      const oppGame = games.find((g) => g.home.teamEspnId === oppId || g.away.teamEspnId === oppId);
+      const oppGame = games.find((g) => g.home.teamId === oppId || g.away.teamId === oppId);
       const oppAbbrev =
-        oppGame?.home.teamEspnId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
+        oppGame?.home.teamId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
       totalWins += oppRecord.wins;
       totalGames += oppRecord.wins + oppRecord.losses;
       opponentDetails.push(`${oppAbbrev}(${oppRecord.wins}-${oppRecord.losses})`);
@@ -417,16 +362,14 @@ export const applyRuleDOpponentWinPercentage = (
 };
 
 export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number => {
-  const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-  );
+  const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
   if (teamGames.length === 0) return 0;
 
   let totalPoints = 0;
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     totalPoints += isHome ? game.home.score : game.away.score;
   }
 
@@ -434,16 +377,14 @@ export const getTeamAvgPointsFor = (teamId: string, games: GameLean[]): number =
 };
 
 export const getTeamAvgPointsAgainst = (teamId: string, games: GameLean[]): number => {
-  const teamGames = games.filter(
-    (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-  );
+  const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
   if (teamGames.length === 0) return 0;
 
   let totalPoints = 0;
   for (const game of teamGames) {
     if (game.home.score === null || game.away.score === null) continue;
-    const isHome = game.home.teamEspnId === teamId;
+    const isHome = game.home.teamId === teamId;
     totalPoints += isHome ? game.away.score : game.home.score;
   }
 
@@ -459,17 +400,15 @@ export const applyRuleEScoringMargin = (
   }
 
   const margins = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
     let totalMargin = 0;
 
     for (const game of teamGames) {
       if (game.home.score === null || game.away.score === null) continue;
 
-      const isHome = game.home.teamEspnId === teamId;
-      const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
+      const isHome = game.home.teamId === teamId;
+      const oppId = isHome ? game.away.teamId : game.home.teamId;
 
       const teamScore = isHome ? game.home.score : game.away.score;
       const oppScore = isHome ? game.away.score : game.home.score;
@@ -548,7 +487,7 @@ export const breakTie = (
 
       if (!isRecursive) {
         const h2hGames = games.filter(
-          (g) => remaining.includes(g.home.teamEspnId) && remaining.includes(g.away.teamEspnId)
+          (g) => remaining.includes(g.home.teamId) && remaining.includes(g.away.teamId)
         );
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
@@ -556,19 +495,19 @@ export const breakTie = (
             const lostTo: string[] = [];
             h2hGames.forEach((game) => {
               if (
-                game.home.teamEspnId === teamId &&
+                game.home.teamId === teamId &&
                 game.home.score !== null &&
                 game.away.score !== null &&
                 game.home.score < game.away.score
               ) {
-                lostTo.push(getTeamAbbrev(game.away.teamEspnId, games));
+                lostTo.push(getTeamAbbrev(game.away.teamId, games));
               } else if (
-                game.away.teamEspnId === teamId &&
+                game.away.teamId === teamId &&
                 game.home.score !== null &&
                 game.away.score !== null &&
                 game.away.score < game.home.score
               ) {
-                lostTo.push(getTeamAbbrev(game.home.teamEspnId, games));
+                lostTo.push(getTeamAbbrev(game.home.teamId, games));
               }
             });
             const opponentText = lostTo.length > 0 ? ` to ${lostTo.join(', ')}` : '';
@@ -616,13 +555,9 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             const opponentSets = remaining.map((t) => {
-              const teamGames = games.filter(
-                (g) => g.home.teamEspnId === t || g.away.teamEspnId === t
-              );
+              const teamGames = games.filter((g) => g.home.teamId === t || g.away.teamId === t);
               return new Set(
-                teamGames.map((g) =>
-                  g.home.teamEspnId === t ? g.away.teamEspnId : g.home.teamEspnId
-                )
+                teamGames.map((g) => (g.home.teamId === t ? g.away.teamId : g.home.teamId))
               );
             });
             const commonOpponents = [...opponentSets[0]].filter((opp) =>
@@ -630,8 +565,8 @@ export const breakTie = (
             );
             const vsCommonGames = games.filter(
               (g) =>
-                (g.home.teamEspnId === teamId && commonOpponents.includes(g.away.teamEspnId)) ||
-                (g.away.teamEspnId === teamId && commonOpponents.includes(g.home.teamEspnId))
+                (g.home.teamId === teamId && commonOpponents.includes(g.away.teamId)) ||
+                (g.away.teamId === teamId && commonOpponents.includes(g.home.teamId))
             );
             const record = getTeamRecord(teamId, vsCommonGames);
             explanations.set(teamId, [
@@ -705,10 +640,10 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             const teamGames = games.filter(
-              (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+              (g) => g.home.teamId === teamId || g.away.teamId === teamId
             );
             const opponents = teamGames.map((g) =>
-              g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+              g.home.teamId === teamId ? g.away.teamId : g.home.teamId
             );
             let totalWins = 0;
             let totalGames = 0;
@@ -760,15 +695,15 @@ export const breakTie = (
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             const teamGames = games.filter(
-              (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+              (g) => g.home.teamId === teamId || g.away.teamId === teamId
             );
             let totalMargin = 0;
             for (const game of teamGames) {
               if (game.home.score === null || game.away.score === null) continue;
-              const isHome = game.home.teamEspnId === teamId;
+              const isHome = game.home.teamId === teamId;
               const teamScore = isHome ? game.home.score : game.away.score;
               const oppScore = isHome ? game.away.score : game.home.score;
-              const oppId = isHome ? game.away.teamEspnId : game.home.teamEspnId;
+              const oppId = isHome ? game.away.teamId : game.home.teamId;
               const oppAvgFor = getTeamAvgPointsFor(oppId, games);
               const oppAvgAgainst = getTeamAvgPointsAgainst(oppId, games);
               const offensivePct =
@@ -844,8 +779,7 @@ export const calculateStandings = (
 
   const orderedTeams: string[] = [];
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  for (const [_winPct, tiedTeams] of sortedGroups) {
+  for (const [, tiedTeams] of sortedGroups) {
     if (tiedTeams.length === 1) {
       orderedTeams.push(tiedTeams[0]);
     } else {
@@ -853,19 +787,15 @@ export const calculateStandings = (
       orderedTeams.push(...tieResult.ranked);
 
       const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {
-        const game = games.find(
-          (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-        );
-        return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+        const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+        return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
       });
 
       const stepsWithAbbrevs = tieResult.steps.map((step) => ({
         ...step,
         survivors: step.survivors.map((teamId) => {
-          const game = games.find(
-            (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
-          );
-          return game?.home.teamEspnId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+          const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+          return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
         }),
       }));
 
@@ -878,9 +808,9 @@ export const calculateStandings = (
 
   const standings: StandingEntry[] = orderedTeams.map((teamId, index) => {
     const record = teamRecords.find((r) => r.teamId === teamId)!;
-    const game = games.find((g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId)!;
+    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId)!;
 
-    const team = game.home.teamEspnId === teamId ? game.home : game.away;
+    const team = game.home.teamId === teamId ? game.home : game.away;
 
     const recordKey = `${record.wins}-${record.losses}`;
     const teamsWithSameRecord = orderedTeams
@@ -899,13 +829,13 @@ export const calculateStandings = (
       const teamsBelow = teamsWithSameRecord.slice(currentIndex + 1);
 
       const getTeamShortNameFromId = (tid: string) => {
-        const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
+        const g = games.find((g) => g.home.teamId === tid || g.away.teamId === tid);
         if (!g) {
           return tid;
         }
 
         const shortDisplayName =
-          g.home.teamEspnId === tid
+          g.home.teamId === tid
             ? g.home.shortDisplayName || g.home.displayName || g.home.abbrev
             : g.away.shortDisplayName || g.away.displayName || g.away.abbrev || tid;
 
@@ -915,10 +845,8 @@ export const calculateStandings = (
       const findTieLog = () => {
         return tieLogs.find((log) => {
           const teamAbbrevs = teamsWithSameRecord.map((t) => {
-            const g = games.find(
-              (g) => g.home.teamEspnId === t.teamId || g.away.teamEspnId === t.teamId
-            );
-            return g?.home.teamEspnId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
+            const g = games.find((g) => g.home.teamId === t.teamId || g.away.teamId === t.teamId);
+            return g?.home.teamId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
           });
           return teamAbbrevs.every((abbrev) => log.teams.includes(abbrev));
         });
@@ -930,8 +858,8 @@ export const calculateStandings = (
         if (!tieLog) return null;
 
         const getAbbrev = (tid: string) => {
-          const g = games.find((g) => g.home.teamEspnId === tid || g.away.teamEspnId === tid);
-          return g?.home.teamEspnId === tid ? g.home.abbrev : g?.away.abbrev || tid;
+          const g = games.find((g) => g.home.teamId === tid || g.away.teamId === tid);
+          return g?.home.teamId === tid ? g.home.abbrev : g?.away.abbrev || tid;
         };
 
         const team1Abbrev = getAbbrev(team1Id);
@@ -982,10 +910,10 @@ export const calculateStandings = (
           }
         } else if (step.rule.includes('Opponent Win Percentage')) {
           const teamGames = games.filter(
-            (g) => g.home.teamEspnId === teamId || g.away.teamEspnId === teamId
+            (g) => g.home.teamId === teamId || g.away.teamId === teamId
           );
           const opponents = teamGames.map((g) =>
-            g.home.teamEspnId === teamId ? g.away.teamEspnId : g.home.teamEspnId
+            g.home.teamId === teamId ? g.away.teamId : g.home.teamId
           );
           let totalWins = 0;
           let totalGames = 0;
