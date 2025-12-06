@@ -1,8 +1,5 @@
 import type { UserInfo } from 'cfbd';
 
-let lastAlertSent: { remainingCalls: number; timestamp: number } | null = null;
-const ALERT_COOLDOWN_MS = 3600000;
-
 const getAlertThreshold = (): number => {
   return 1000;
 };
@@ -18,7 +15,16 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
   const targetUrl = webhookUrl || alertHandlerUrl;
 
   if (!targetUrl) {
-    return;
+    const errorMsg =
+      '[CFBD Alert] No alert URL configured. Set CFBD_ALERT_WEBHOOK_URL, CFBD_ALERT_HANDLER_URL, or ensure VERCEL_URL is set.';
+    // eslint-disable-next-line no-console
+    console.error(errorMsg, {
+      hasWebhookUrl: !!webhookUrl,
+      hasAlertHandlerUrl: !!process.env.CFBD_ALERT_HANDLER_URL,
+      vercelUrl: process.env.VERCEL_URL,
+      nodeEnv: process.env.NODE_ENV,
+    });
+    throw new Error(errorMsg);
   }
 
   const { patronLevel, remainingCalls } = userInfo;
@@ -48,10 +54,13 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
     }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.error('[CFBD Alert] Failed to send alert:', errorMessage);
-    }
+    // eslint-disable-next-line no-console
+    console.error('[CFBD Alert] Failed to send alert:', errorMessage, {
+      targetUrl,
+      hasWebhookUrl: !!webhookUrl,
+      hasAlertHandlerUrl: !!alertHandlerUrl,
+      vercelUrl: process.env.VERCEL_URL,
+    });
     throw error;
   }
 };
@@ -64,23 +73,17 @@ export const sendLowCallsAlert = async (userInfo: UserInfo): Promise<void> => {
     return;
   }
 
-  const now = Date.now();
-
-  if (
-    lastAlertSent &&
-    now - lastAlertSent.timestamp < ALERT_COOLDOWN_MS &&
-    remainingCalls >= lastAlertSent.remainingCalls
-  ) {
-    return;
-  }
-
   try {
     await sendAlertViaWebhook(userInfo);
-    lastAlertSent = { remainingCalls, timestamp: now };
-  } catch {
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.warn('[CFBD Alert] Webhook not configured or failed');
-    }
+    // eslint-disable-next-line no-console
+    console.log('[CFBD Alert] Alert sent successfully', { remainingCalls, threshold });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // eslint-disable-next-line no-console
+    console.error('[CFBD Alert] Failed to send alert:', errorMessage, {
+      remainingCalls,
+      threshold,
+      patronLevel: userInfo.patronLevel,
+    });
   }
 };
