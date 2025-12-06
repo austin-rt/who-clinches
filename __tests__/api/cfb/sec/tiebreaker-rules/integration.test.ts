@@ -73,7 +73,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should be eliminated first (Rule A)
       // B should rank higher than C (Rule D - opponent win percentage)
@@ -121,7 +127,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C', 'D'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C', 'D'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // C and D should advance (Rule A)
       // A should rank higher than B in recursion (A beats B head-to-head)
@@ -185,7 +197,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule B)
       // B should rank higher than C in recursion (B beats C head-to-head)
@@ -196,7 +214,9 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C')); // B ranks higher than C
       expect(result.steps.length).toBeGreaterThan(1); // Should have multiple steps (recursion)
       // Find Rule B step that breaks the tie
-      const ruleBStep = result.steps.find((step) => step.rule === 'Common Opponents' && step.tieBroken);
+      const ruleBStep = result.steps.find(
+        (step) => step.rule === 'Common Opponents' && step.tieBroken
+      );
       expect(ruleBStep).toBeDefined();
       expect(ruleBStep?.survivors).toContain('A'); // A advances
     });
@@ -273,7 +293,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule C)
       // B should rank higher than C in recursion (B beats C head-to-head)
@@ -284,10 +310,18 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C')); // B ranks higher than C
       expect(result.steps.length).toBeGreaterThan(2); // Should have multiple steps (cascading through A→B→C)
       // Find which rule broke the tie (could be B, C, D, or E depending on test setup)
-      const ruleCStep = result.steps.find((step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken);
-      const ruleBStep = result.steps.find((step) => step.rule === 'Common Opponents' && step.tieBroken);
-      const ruleDStep = result.steps.find((step) => step.rule === 'Opponent Win Percentage' && step.tieBroken);
-      const ruleEStep = result.steps.find((step) => step.rule === 'Scoring Margin' && step.tieBroken);
+      const ruleCStep = result.steps.find(
+        (step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
+      );
+      const ruleBStep = result.steps.find(
+        (step) => step.rule === 'Common Opponents' && step.tieBroken
+      );
+      const ruleDStep = result.steps.find(
+        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+      );
+      const ruleEStep = result.steps.find(
+        (step) => step.rule === 'Scoring Margin' && step.tieBroken
+      );
       // Some rule should have broken the tie and A should advance
       const breakingRule = ruleBStep || ruleCStep || ruleDStep || ruleEStep;
       expect(breakingRule).toBeDefined();
@@ -380,7 +414,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule D)
       // B should rank higher than C in recursion (B beats C head-to-head)
@@ -391,7 +431,9 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C')); // B ranks higher than C
       expect(result.steps.length).toBeGreaterThan(3); // Should have multiple steps (cascading through A→B→C→D)
       // Find Rule D step that breaks the tie
-      const ruleDStep = result.steps.find((step) => step.rule === 'Opponent Win Percentage' && step.tieBroken);
+      const ruleDStep = result.steps.find(
+        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+      );
       expect(ruleDStep).toBeDefined();
       expect(ruleDStep?.survivors).toContain('A'); // A advances
     });
@@ -577,7 +619,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule E)
       // B should rank higher than C in recursion (B beats C head-to-head)
@@ -588,7 +636,9 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C')); // B ranks higher than C
       expect(result.steps.length).toBeGreaterThanOrEqual(4); // Should have multiple steps (cascading through A→B→C→D→E)
       // Find the Rule E step that breaks the tie
-      const ruleEStep = result.steps.find((step) => step.rule === 'Scoring Margin' && step.tieBroken);
+      const ruleEStep = result.steps.find(
+        (step) => step.rule === 'Scoring Margin' && step.tieBroken
+      );
       // Rule E might not break if another rule did, but we should have at least 4 steps for the cascade
       if (ruleEStep) {
         expect(ruleEStep.survivors).toContain('A'); // A advances via Rule E
@@ -656,7 +706,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule C)
       // B and C should be ranked (they don't play each other, so they'll tie through all rules)
@@ -667,16 +723,22 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps[1].rule).toBe('Common Opponents');
       expect(result.steps[1].tieBroken).toBe(false);
       // Find the Rule C step that breaks the tie (may be at different index due to recursion)
-      const ruleCStep = result.steps.find((step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken);
+      const ruleCStep = result.steps.find(
+        (step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
+      );
       // If Rule C doesn't break, check if Rule B or another rule did
       if (!ruleCStep) {
         // Rule B might have broken it if records differ
-        const ruleBStep = result.steps.find((step) => step.rule === 'Common Opponents' && step.tieBroken);
+        const ruleBStep = result.steps.find(
+          (step) => step.rule === 'Common Opponents' && step.tieBroken
+        );
         if (ruleBStep) {
           expect(ruleBStep.survivors).toContain('A');
         } else {
           // Just verify A advances somehow
-          expect(result.ranked[0] === 'A' || result.ranked[result.ranked.length - 1] === 'A').toBe(true);
+          expect(result.ranked[0] === 'A' || result.ranked[result.ranked.length - 1] === 'A').toBe(
+            true
+          );
         }
       } else {
         expect(ruleCStep.survivors).toContain('A');
@@ -710,7 +772,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule A, early exit)
       // B and C should be ranked (B beats C)
@@ -804,7 +872,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(['A', 'B', 'C'], games, allTeams, SEC_TIEBREAKER_CONFIG, explanations);
+      const result = breakTie(
+        ['A', 'B', 'C'],
+        games,
+        allTeams,
+        SEC_TIEBREAKER_CONFIG,
+        explanations
+      );
 
       // A should advance (Rule D, early exit)
       // B and C should be ranked (B beats C)
@@ -815,10 +889,11 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       // B should rank higher than C (B beats C head-to-head in recursion)
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C'));
       // Find the Rule D step that breaks the tie
-      const ruleDStep = result.steps.find((step) => step.rule === 'Opponent Win Percentage' && step.tieBroken);
+      const ruleDStep = result.steps.find(
+        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+      );
       expect(ruleDStep).toBeDefined();
       expect(ruleDStep?.survivors).toEqual(['A']); // Single winner, early exit
     });
   });
 });
-
