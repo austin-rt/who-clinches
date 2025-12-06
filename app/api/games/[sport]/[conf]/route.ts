@@ -139,9 +139,7 @@ const fetchGamesFromCfbd = async (
 
 export const GET = async (
   request: NextRequest,
-  {
-    params,
-  }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
+  { params }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
 ) => {
   try {
     const { sport, conf } = await params;
