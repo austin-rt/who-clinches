@@ -38,10 +38,20 @@ export const POST = async (request: NextRequest) => {
 
       if (!response.ok) {
         const error = await response.text();
+        // eslint-disable-next-line no-console
+        console.error('[CFBD Alert Handler] Resend API error:', response.status, error);
         throw new Error(`Resend API error: ${response.status} - ${error}`);
       }
 
-      return NextResponse.json({ success: true, method: 'resend' });
+      const resendData = await response.json();
+      // eslint-disable-next-line no-console
+      console.log('[CFBD Alert Handler] Email sent successfully', {
+        emailId: resendData.id,
+        to: ALERT_EMAIL,
+        from: process.env.RESEND_FROM_EMAIL || 'alerts@yourdomain.com',
+      });
+
+      return NextResponse.json({ success: true, method: 'resend', emailId: resendData.id });
     }
 
     return NextResponse.json(
@@ -49,8 +59,15 @@ export const POST = async (request: NextRequest) => {
       { status: 500 }
     );
   } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    // eslint-disable-next-line no-console
+    console.error('[CFBD Alert Handler] Error:', errorMessage, {
+      hasAlertEmail: !!process.env.CFBD_ALERT_EMAIL,
+      hasResendKey: !!process.env.RESEND_API_KEY,
+      fromEmail: process.env.RESEND_FROM_EMAIL || 'alerts@yourdomain.com',
+    });
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Unknown error' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
