@@ -1,12 +1,9 @@
 import type { UserInfo } from 'cfbd';
 
-// Cooldown period: 1 hour between alerts
-const ALERT_COOLDOWN_MS = 60 * 60 * 1000; // 1 hour
+const ALERT_COOLDOWN_MS = 60 * 60 * 1000;
 
-// Track last alert timestamp to enforce cooldown
 let lastAlertTimestamp: number | null = null;
 
-// CFBD API tier limits (monthly calls)
 const TIER_LIMITS: Record<number, number> = {
   0: 1000, // Free tier
   1: 5000, // Patreon Tier 1 ($1/month)
@@ -14,9 +11,17 @@ const TIER_LIMITS: Record<number, number> = {
   3: 75000, // Patreon Tier 3 ($10/month)
 };
 
+const TIER_THRESHOLD_PERCENTAGES: Record<number, number> = {
+  0: 0.1, // 10% for Free tier
+  1: 0.1, // 10% for Tier 1
+  2: 0.05, // 5% for Tier 2
+  3: 0.025, // 2.5% for Tier 3
+};
+
 const getAlertThreshold = (patronLevel: number): number => {
   const tierLimit = TIER_LIMITS[patronLevel] ?? TIER_LIMITS[0];
-  return Math.floor(tierLimit * 0.1); // 10% of tier limit
+  const percentage = TIER_THRESHOLD_PERCENTAGES[patronLevel] ?? TIER_THRESHOLD_PERCENTAGES[0];
+  return Math.floor(tierLimit * percentage);
 };
 
 const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
@@ -97,7 +102,6 @@ export const sendLowCallsAlert = async (userInfo: UserInfo): Promise<void> => {
     return;
   }
 
-  // Check cooldown period
   const now = Date.now();
   if (lastAlertTimestamp !== null && now - lastAlertTimestamp < ALERT_COOLDOWN_MS) {
     const remainingCooldownMs = ALERT_COOLDOWN_MS - (now - lastAlertTimestamp);
