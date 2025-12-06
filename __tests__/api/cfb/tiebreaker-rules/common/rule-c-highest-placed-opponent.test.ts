@@ -6,39 +6,39 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #1: Team B beats Team D, Team C loses to Team D, Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '4',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '5',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '7',
-          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '7',
+          home: { teamId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
       ];
 
@@ -52,24 +52,24 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #2: Team B beats Team D, Team C loses to Team D, Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '4',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
       ];
 
@@ -83,39 +83,39 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #3: Combined records when D and E are tied, Team B 2-0, Team C 0-2, Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '7',
-          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '7',
+          home: { teamId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
       ];
 
@@ -129,34 +129,34 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #4: Only Team D is common when D and E are tied, Team B beats D, Team C loses to D, Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
       ];
 
@@ -172,39 +172,39 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #1: Team B beats Team D, Team C loses to Team D, Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '7',
-          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '7',
+          home: { teamId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
       ];
 
@@ -218,29 +218,29 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #2: Team A and Team B both beat Team D, Team C loses; A and B advance', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: null, abbrev: 'UA' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'B', score: null, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
       ];
 
@@ -255,29 +255,29 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #3: Team A beats Team D, Team B and C lose; Team A advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: null, abbrev: 'UA' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'B', score: null, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 17, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '4',
+          home: { teamId: 'B', score: 17, abbrev: 'UA' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
       ];
 
@@ -295,34 +295,34 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       // So we combine records against both D and E
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '2',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'D', score: 24, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'D', score: 24, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 17, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 17, abbrev: 'UA' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'D', score: 20, abbrev: 'UGA' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'D', score: 20, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         // D and E don't play each other, so head-to-head cannot break the tie
       ];
@@ -340,54 +340,54 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #1: Team B beats Team E, Team C and D lose; Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: null, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'D', score: null, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          gameId: '5',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'F', score: 24, abbrev: 'FLA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '7',
-          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
-          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          gameId: '7',
+          home: { teamId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamId: 'F', score: 24, abbrev: 'FLA' },
         }),
         createGameLean({
-          gameEspnId: '8',
-          home: { teamEspnId: 'D', score: 17, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '8',
+          home: { teamId: 'D', score: 17, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '9',
-          home: { teamEspnId: 'D', score: 28, abbrev: 'UGA' },
-          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          gameId: '9',
+          home: { teamId: 'D', score: 28, abbrev: 'UGA' },
+          away: { teamId: 'F', score: 24, abbrev: 'FLA' },
         }),
         createGameLean({
-          gameEspnId: '10',
-          home: { teamEspnId: 'E', score: 28, abbrev: 'TENN' },
-          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          gameId: '10',
+          home: { teamId: 'E', score: 28, abbrev: 'TENN' },
+          away: { teamId: 'F', score: 24, abbrev: 'FLA' },
         }),
       ];
 
@@ -402,34 +402,34 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #2: Team B beats Team E, Team C and D lose; Team B advances', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: null, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'D', score: null, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '5',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'D', score: 17, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'D', score: 17, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
       ];
 
@@ -444,34 +444,34 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
     it('Example #3: Team B and C beat Team E, Team D loses; B and C revert to two-team tiebreaker', () => {
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: null, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'D', score: null, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '5',
+          home: { teamId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'D', score: 17, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'D', score: 17, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
       ];
 
@@ -489,49 +489,49 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       // So we combine records against both E and F
       const games = [
         createGameLean({
-          gameEspnId: '1',
-          home: { teamEspnId: 'A', score: 28, abbrev: 'ALA' },
-          away: { teamEspnId: 'B', score: 24, abbrev: 'UA' },
+          gameId: '1',
+          home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+          away: { teamId: 'B', score: 24, abbrev: 'UA' },
         }),
         createGameLean({
-          gameEspnId: '2',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'C', score: null, abbrev: 'LSU' },
+          gameId: '2',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'C', score: null, abbrev: 'LSU' },
         }),
         createGameLean({
-          gameEspnId: '3',
-          home: { teamEspnId: 'A', score: null, abbrev: 'ALA' },
-          away: { teamEspnId: 'D', score: null, abbrev: 'UGA' },
+          gameId: '3',
+          home: { teamId: 'A', score: null, abbrev: 'ALA' },
+          away: { teamId: 'D', score: null, abbrev: 'UGA' },
         }),
         createGameLean({
-          gameEspnId: '4',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '4',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '5',
-          home: { teamEspnId: 'B', score: 28, abbrev: 'UA' },
-          away: { teamEspnId: 'F', score: 24, abbrev: 'FLA' },
+          gameId: '5',
+          home: { teamId: 'B', score: 28, abbrev: 'UA' },
+          away: { teamId: 'F', score: 24, abbrev: 'FLA' },
         }),
         createGameLean({
-          gameEspnId: '6',
-          home: { teamEspnId: 'C', score: 28, abbrev: 'LSU' },
-          away: { teamEspnId: 'E', score: 24, abbrev: 'TENN' },
+          gameId: '6',
+          home: { teamId: 'C', score: 28, abbrev: 'LSU' },
+          away: { teamId: 'E', score: 24, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '7',
-          home: { teamEspnId: 'C', score: 17, abbrev: 'LSU' },
-          away: { teamEspnId: 'F', score: 20, abbrev: 'FLA' },
+          gameId: '7',
+          home: { teamId: 'C', score: 17, abbrev: 'LSU' },
+          away: { teamId: 'F', score: 20, abbrev: 'FLA' },
         }),
         createGameLean({
-          gameEspnId: '8',
-          home: { teamEspnId: 'D', score: 17, abbrev: 'UGA' },
-          away: { teamEspnId: 'E', score: 20, abbrev: 'TENN' },
+          gameId: '8',
+          home: { teamId: 'D', score: 17, abbrev: 'UGA' },
+          away: { teamId: 'E', score: 20, abbrev: 'TENN' },
         }),
         createGameLean({
-          gameEspnId: '9',
-          home: { teamEspnId: 'D', score: 17, abbrev: 'UGA' },
-          away: { teamEspnId: 'F', score: 20, abbrev: 'FLA' },
+          gameId: '9',
+          home: { teamId: 'D', score: 17, abbrev: 'UGA' },
+          away: { teamId: 'F', score: 20, abbrev: 'FLA' },
         }),
         // E and F don't play each other, so head-to-head cannot break the tie
       ];

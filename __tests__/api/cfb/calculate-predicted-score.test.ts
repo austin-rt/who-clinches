@@ -15,10 +15,10 @@ const createReshapedGame = (
   homeScore: number | null = null,
   awayScore: number | null = null,
   spread: number | null = null,
-  favoriteTeamEspnId: string | null = null,
+  favoriteTeamId: string | null = null,
   predictedScore: { home: number; away: number } = { home: 28, away: 24 }
 ): ReshapedGame => ({
-  espnId: '123',
+  id: '123',
   displayName: 'Test Game',
   season: 2025,
   week: 1,
@@ -36,7 +36,7 @@ const createReshapedGame = (
   },
   date: '2025-09-06T12:00Z',
   home: {
-    teamEspnId: '25',
+    teamId: '25',
     abbrev: 'ALA',
     displayName: 'Alabama',
     score: homeScore,
@@ -47,7 +47,7 @@ const createReshapedGame = (
     alternateColor: '000000',
   },
   away: {
-    teamEspnId: '2335',
+    teamId: '2335',
     abbrev: 'LSU',
     displayName: 'LSU',
     score: awayScore,
@@ -65,7 +65,7 @@ const createReshapedGame = (
   odds: {
     spread,
     overUnder: null,
-    favoriteTeamEspnId,
+    favoriteTeamId,
   },
 });
 

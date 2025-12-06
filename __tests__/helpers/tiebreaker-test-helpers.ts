@@ -1,86 +1,68 @@
 import { GameLean } from '@/lib/types';
 
-export interface MockGameOptions {
-  espnId: string;
-  homeTeamEspnId: string;
-  awayTeamEspnId: string;
-  homeScore?: number | null;
-  awayScore?: number | null;
-  homeAbbrev?: string;
-  awayAbbrev?: string;
-  season?: number;
-  week?: number | null;
-  completed?: boolean;
+interface GameForTiebreaker {
+  gameId: string;
+  home: {
+    teamId: string;
+    score: number | null;
+    abbrev: string;
+  };
+  away: {
+    teamId: string;
+    score: number | null;
+    abbrev: string;
+  };
 }
 
-export const createMockGame = (options: MockGameOptions): GameLean => {
-  const {
-    espnId,
-    homeTeamEspnId,
-    awayTeamEspnId,
-    homeScore = null,
-    awayScore = null,
-    homeAbbrev = 'HOME',
-    awayAbbrev = 'AWAY',
-    season = 2025,
-    week = null,
-    completed = false,
-  } = options;
-
-  return {
-    _id: `game-${espnId}`,
-    espnId,
-    displayName: `${homeAbbrev} vs ${awayAbbrev}`,
-    date: new Date().toISOString(),
-    week,
-    season,
-    sport: 'football',
-    league: 'college-football',
-    state: completed ? 'post' : 'pre',
-    completed,
-    conferenceGame: true,
-    neutralSite: false,
-    venue: {
-      fullName: 'Test Stadium',
-      city: 'Test City',
-      state: 'TS',
-      timezone: 'America/New_York',
-    },
-    home: {
-      teamEspnId: homeTeamEspnId,
-      abbrev: homeAbbrev,
-      displayName: `${homeAbbrev} Team`,
-      shortDisplayName: homeAbbrev,
-      logo: '',
-      color: '000000',
-      alternateColor: 'FFFFFF',
-      score: homeScore,
-      rank: null,
-    },
-    away: {
-      teamEspnId: awayTeamEspnId,
-      abbrev: awayAbbrev,
-      displayName: `${awayAbbrev} Team`,
-      shortDisplayName: awayAbbrev,
-      logo: '',
-      color: '000000',
-      alternateColor: 'FFFFFF',
-      score: awayScore,
-      rank: null,
-    },
-    odds: {
-      favoriteTeamEspnId: null,
-      spread: null,
-      overUnder: null,
-    },
-    predictedScore: {
-      home: homeScore ?? 0,
-      away: awayScore ?? 0,
-    },
-  };
-};
-
-export const createMockGames = (games: MockGameOptions[]): GameLean[] => {
-  return games.map(createMockGame);
-};
-
+export const createGameLean = (game: GameForTiebreaker): GameLean => ({
+  _id: game.gameId,
+  id: game.gameId,
+  displayName: `${game.away.abbrev} @ ${game.home.abbrev}`,
+  season: 2025,
+  week: 1,
+  sport: 'football',
+  league: 'college-football',
+  state: game.home.score !== null && game.away.score !== null ? 'post' : 'pre',
+  completed: game.home.score !== null && game.away.score !== null,
+  conferenceGame: true,
+  neutralSite: false,
+  venue: {
+    fullName: 'Test Stadium',
+    city: 'Atlanta',
+    state: 'GA',
+    timezone: 'America/New_York',
+  },
+  date: '2025-09-06T12:00Z',
+  home: {
+    teamId: game.home.teamId,
+    abbrev: game.home.abbrev,
+    displayName: game.home.abbrev,
+    shortDisplayName: game.home.abbrev,
+    score: game.home.score,
+    rank: null,
+    logo: '',
+    color: '000000',
+    alternateColor: '000000',
+  },
+  away: {
+    teamId: game.away.teamId,
+    abbrev: game.away.abbrev,
+    displayName: game.away.abbrev,
+    shortDisplayName: game.away.abbrev,
+    score: game.away.score,
+    rank: null,
+    logo: '',
+    color: '000000',
+    alternateColor: '000000',
+  },
+  predictedScore: { home: 28, away: 24 },
+  gameType: {
+    name: 'Regular Season',
+    abbreviation: 'reg',
+  },
+  odds: {
+    favoriteTeamId: null,
+    spread: null,
+    overUnder: null,
+  },
+});

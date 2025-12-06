@@ -1,22 +1,22 @@
 import { GameLean } from '@/lib/types';
 
 interface GameForTiebreaker {
-  gameEspnId: string;
+  gameId: string;
   home: {
-    teamEspnId: string;
+    teamId: string;
     score: number | null;
     abbrev: string;
   };
   away: {
-    teamEspnId: string;
+    teamId: string;
     score: number | null;
     abbrev: string;
   };
 }
 
 export const createGameLean = (game: GameForTiebreaker): GameLean => ({
-  _id: game.gameEspnId,
-  espnId: game.gameEspnId,
+  _id: game.gameId,
+  id: game.gameId,
   displayName: `${game.away.abbrev} @ ${game.home.abbrev}`,
   season: 2025,
   week: 1,
@@ -34,7 +34,7 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
   },
   date: '2025-09-06T12:00Z',
   home: {
-    teamEspnId: game.home.teamEspnId,
+    teamId: game.home.teamId,
     abbrev: game.home.abbrev,
     displayName: game.home.abbrev,
     score: game.home.score,
@@ -45,7 +45,7 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     alternateColor: '000000',
   },
   away: {
-    teamEspnId: game.away.teamEspnId,
+    teamId: game.away.teamId,
     abbrev: game.away.abbrev,
     displayName: game.away.abbrev,
     score: game.away.score,
@@ -63,6 +63,6 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
   odds: {
     spread: null,
     overUnder: null,
-    favoriteTeamEspnId: null,
+    favoriteTeamId: null,
   },
 });

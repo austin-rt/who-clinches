@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
 import 'dotenv/config';
 import { fetchWithTimeout } from '@/lib/fetch-with-timeout';
 
@@ -44,11 +43,11 @@ export const fetchAPI = async <T = unknown>(
 };
 
 export const createOverride = (
-  gameEspnId: string,
+  gameId: string,
   homeScore: number,
   awayScore: number
 ): [string, { homeScore: number; awayScore: number }] => {
-  return [gameEspnId, { homeScore, awayScore }];
+  return [gameId, { homeScore, awayScore }];
 };
 
 export const sleep = (ms: number): Promise<void> => {
@@ -110,35 +109,10 @@ beforeAll(() => {
   console.log('[Test Setup] ===== beforeAll() COMPLETE =====');
 });
 
-afterAll(async () => {
+afterAll(() => {
   console.log('[Test Setup] ===== afterAll() START =====');
   console.log('[Test Setup] Restoring all mocks...');
   jest.restoreAllMocks();
   console.log('[Test Setup] Mocks restored');
-  try {
-    console.log('[Test Setup] Closing database connections...');
-    const mongoose = require('mongoose');
-    console.log('[Test Setup] Mongoose required');
-    const { dbDisconnectTest } = require('../lib/mongodb-test');
-    console.log('[Test Setup] dbDisconnectTest imported');
-
-    console.log('[Test Setup] Calling dbDisconnectTest()...');
-    await dbDisconnectTest();
-    console.log('[Test Setup] dbDisconnectTest() complete');
-
-    const readyState = mongoose.connection.readyState;
-    console.log(`[Test Setup] Checking default mongoose connection (readyState: ${readyState})...`);
-    if (readyState !== 0) {
-      console.log('[Test Setup] Disconnecting default mongoose connection...');
-      await mongoose.disconnect();
-      console.log('[Test Setup] Default mongoose connection disconnected');
-    } else {
-      console.log('[Test Setup] Default mongoose connection already closed');
-    }
-  } catch (error) {
-    console.log(
-      `[Test Setup] Error in afterAll cleanup: ${error instanceof Error ? error.message : String(error)}`
-    );
-  }
   console.log('[Test Setup] ===== afterAll() COMPLETE =====');
 });
