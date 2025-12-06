@@ -1,5 +1,13 @@
 import type { Conference } from 'cfbd';
 
+export type SportSlug = 'cfb';
+
+const VALID_SPORTS: SportSlug[] = ['cfb'];
+
+export const isValidSport = (sport: string): sport is SportSlug => {
+  return VALID_SPORTS.includes(sport as SportSlug);
+};
+
 export interface ConferenceMetadata {
   cfbdId: NonNullable<Conference['abbreviation']>;
   name: string;
@@ -52,4 +60,8 @@ export type ConferenceAbbreviation = keyof typeof CONFERENCE_METADATA;
 
 export const getConferenceMetadata = (conf: string): ConferenceMetadata | null => {
   return conf in CONFERENCE_METADATA ? CONFERENCE_METADATA[conf as ConferenceAbbreviation] : null;
+};
+
+export const isValidConference = (conf: string): conf is ConferenceAbbreviation => {
+  return conf in CONFERENCE_METADATA;
 };
