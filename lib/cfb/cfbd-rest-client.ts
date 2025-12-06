@@ -31,16 +31,16 @@ const logRemainingCalls = async (info: UserInfo) => {
   const threshold = 1000;
 
   if (remainingCalls < threshold) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[CFBD API] Low remaining calls: ${remainingCalls} (Patron Level: ${patronLevel}) - Sending alert...`
+    );
     if (process.env.NODE_ENV === 'production') {
       const { sendLowCallsAlert } = await import('./helpers/email-alerts');
-      void sendLowCallsAlert(info).catch(() => {
-        // Silently fail if alert sending fails
+      void sendLowCallsAlert(info).catch((error) => {
+        // eslint-disable-next-line no-console
+        console.error('[CFBD API] Alert sending failed:', error);
       });
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `[CFBD API] Low remaining calls: ${remainingCalls} (Patron Level: ${patronLevel})`
-      );
     }
   } else if (process.env.NODE_ENV === 'development') {
     // eslint-disable-next-line no-console

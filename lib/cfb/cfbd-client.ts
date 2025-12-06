@@ -37,6 +37,7 @@ export class CFBDClient {
           week: params.week,
           conference: params.conference,
         });
+        void getUserInfoFromCfbd();
         return result.gameAggregate.nodes.map((node) => ({
           id: node.id,
           season: node.season,
@@ -143,6 +144,7 @@ export class CFBDClient {
         const result = await cfbdGraphQLClient.getCurrentTeams({
           conference: params?.conference,
         });
+        void getUserInfoFromCfbd();
         return result.currentTeams.nodes.map((node) => ({
           id: node.id,
           school: node.school,
