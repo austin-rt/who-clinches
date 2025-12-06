@@ -6,9 +6,9 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (fast MongoDB query), POST /api/games/[sport]/[conf] (ESPN fetch), POST /api/simulate/[sport]/[conf] (dynamic endpoint)
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (CFBD fetch), GET /api/standings/[sport]/[conf] (standings calculation), POST /api/simulate/[sport]/[conf] (dynamic endpoint)
 
-**Note**: All scheduled data update cron jobs have been replaced with on-demand API endpoints. Frontend polling drives updates using RTK Query with conditional polling. The only remaining scheduled workflow is GitHub Actions type generation (`.github/workflows/update-espn-types.yml` - runs daily at 02:15 UTC / 10:15 PM ET).
+**Note**: All endpoints fetch data directly from the CFBD API on each request. No database persistence or scheduled jobs are used.
 
 ---
 
@@ -18,19 +18,20 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | ---- | ------------ | -------------------------------------- |
 | 200  | Success      | Request completed successfully         |
 | 400  | Bad Request  | Missing required fields, invalid input |
-| 500  | Server Error | Database error, ESPN API timeout       |
+| 500  | Server Error | CFBD API error, server error            |
 
 ---
 
 ## Rate Limiting
 
-**ESPN API:**
-- Site API: ~500ms between requests
-- Scoreboard API: No rate limit (batched by week)
+**CFBD API:**
+- Free tier: 1,000 calls/month
+- Tier 2: $1/month (recommended for normal use)
+- Tier 3+: Higher limits for in-season usage
 
 **Our APIs:**
 - Data endpoints: No rate limit
-- Frontend polling: Conditional (every 60 seconds for live games, every 2 minutes for spreads, disabled in development)
+- Live updates: GraphQL subscriptions (Server-Sent Events) when in season
 
 ---
 
@@ -38,56 +39,24 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 | Variable              | Required | Description                          |
 | --------------------- | -------- | ------------------------------------ |
-| `MONGODB_USER`        | Yes      | MongoDB username                     |
-| `MONGODB_PASSWORD`    | Yes      | MongoDB password                     |
-| `MONGODB_HOST`        | Yes      | MongoDB cluster host                 |
-| `MONGODB_APP_NAME`    | Yes      | MongoDB application name             |
-| `MONGODB_DB`          | Yes*     | Database name (required locally)     |
-| `VERCEL_ENV`          | No       | Vercel environment (auto-set)        |
-| `MONGODB_MEMORY_SERVER_URI` | No  | In-memory test database URI (test mode) |
-
----
-
-## Error Logging
-
-All endpoints log errors to MongoDB `errors` collection:
-
-```typescript
-{
-  timestamp: Date,
-  endpoint: string,      // e.g., "/api/games/cfb/sec"
-  payload: object,       // Request details
-  error: string,         // Error message
-  stackTrace: string,    // Full stack trace
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-**Query Errors:**
-```javascript
-db.errors.find({ endpoint: '/api/games/cfb/sec' }).sort({ timestamp: -1 });
-```
+| `CFBD_API_KEY`        | Yes      | CFBD API key (get from https://collegefootballdata.com/) |
+| `CFBD_ALERT_WEBHOOK_URL` | No    | Webhook URL for low API call alerts  |
+| `CFBD_ALERT_EMAIL`    | No       | Email address for low API call alerts |
+| `RESEND_API_KEY`      | No       | Resend API key for email alerts      |
+| `RESEND_FROM_EMAIL`   | No       | From email address for alerts         |
 
 ---
 
 ## Notes
 
-- All timestamps in ISO 8601 format (UTC)
-- GET /api/games/[sport]/[conf] queries MongoDB only (read-only, fast, ~50-200ms)
-- POST /api/games/[sport]/[conf] fetches from ESPN, reshapes data, upserts to database, and returns reshaped data
-- Dev/prod/preview databases store reshaped data (Game, Team models), not raw ESPN responses
-- Conference IDs vary by conference (e.g., 8 for SEC)
-- Team IDs are ESPN team IDs (e.g., "333" = Alabama)
-- Frontend uses RTK Query with two-phase loading (GET for fast initial load, POST for background refresh) and conditional polling for live updates
+- All endpoints fetch data directly from CFBD API on each request
+- Conference identifiers use CFBD format (e.g., "SEC" for SEC)
+- Frontend uses RTK Query with GraphQL subscriptions for live updates (when in season)
+- REST API used when out of season or GraphQL disabled
 
-**API Route Pattern**: `export const POST/GET = async (request: NextRequest) => { ... }`
+**API Route Pattern**: `export const GET = async (request: NextRequest) => { ... }`
 
-**Database Pattern**: `await dbConnect()` before any DB operation
-
-**Error Logging Pattern**: `ErrorModel.create({ timestamp, endpoint, payload, error, stackTrace })`
-
-**Type Casting Pattern**: `.lean<GameLean[]>()` for MongoDB queries
+**Type Safety**: Uses CFBD TypeScript types directly
 
 ---
 

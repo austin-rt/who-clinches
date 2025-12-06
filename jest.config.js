@@ -6,8 +6,6 @@ const createJestConfig = nextJest({
 
 const customJestConfig = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  globalSetup: '<rootDir>/jest.server-setup.js',
-  globalTeardown: '<rootDir>/jest.server-teardown.js',
   testEnvironment: 'jest-environment-node',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',

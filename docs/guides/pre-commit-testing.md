@@ -12,7 +12,7 @@ Pre-commit hook automatically runs entire test suite before allowing commits: No
 
 ## Pre-Commit Workflow
 
-When you run `git commit`, hook executes: Branch Protection (prevents commits to main), ESLint Disable Check (blocks file-level eslint-disable), Linting + TypeScript (format, ESLint, type check), Run All Tests (database check + 240 tests). If ANY step fails: Commit blocked with clear error messages
+When you run `git commit`, hook executes: Branch Protection (prevents commits to main), ESLint Disable Check (blocks file-level eslint-disable), Linting + TypeScript (format, ESLint, type check), Run All Tests. If ANY step fails: Commit blocked with clear error messages
 
 ---
 
@@ -22,7 +22,7 @@ When you run `git commit`, hook executes: Branch Protection (prevents commits to
 
 **Test Command:** `npm run test:all`
 
-**What This Runs**: Database seeding check (`npm run db:check`), 240 passing tests (`npm run test`), ~67 second execution time
+**What This Runs**: All tests via `npm run test:all` (which runs `npm run test`)
 
 **If Tests Fail**: `ERROR: Tests failed. Commit blocked. Fix test failures and try again. Run 'npm run test:all' locally to debug.`
 
@@ -40,9 +40,9 @@ When you run `git commit`, hook executes: Branch Protection (prevents commits to
 
 ## Test Suite Details
 
-**Test Coverage**: API Integration (60), Reshape Functions (54), Tiebreaker Logic (62), Score Prediction (59), Constants (38), Types (34) - **Total: 240 (ALL REQUIRED)**
+**Test Coverage**: All tests must pass. Test suite includes API integration, reshape functions, tiebreaker logic, and other core functionality.
 
-**Execution Time**: Database check (~5s), Running tests (~62s), Total (~67s)
+**Execution Time**: Varies based on test suite size
 
 ---
 
@@ -52,11 +52,11 @@ When you run `git commit`, hook executes: Branch Protection (prevents commits to
 
 **"npm command not found"**: Run `npm install`
 
-**"Database connection failed"**: Ensure dev server running (`npm run dev`)
+**"Tests failed"**: Run `npm run test:all` locally to see detailed error messages
 
 **"Hook is not running at all"**: Reinstall hooks (`npx husky install`)
 
-**"Slow commit (67 seconds)"**: Normal - test suite ensures quality, run `npm run test:watch` while developing
+**"Slow commit"**: Normal - test suite ensures quality, run `npm run test:watch` while developing
 
 ---
 

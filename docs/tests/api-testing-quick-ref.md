@@ -17,51 +17,40 @@
 
 ### GET /api/games/[sport]/[conf]
 
-**Example**: `GET /api/games/cfb/sec?season=2025&week=11`
-- Path: `sport` (e.g., "cfb"), `conf` (e.g., "sec")
-- Query params: `season`, `week`, `state` (pre/in/post), `from`, `to`
-- Read-only: Queries database only, does not fetch from ESPN
-- Response: Same format as POST endpoint
+**Example**: `GET /api/games/cfb/SEC?season=2025&week=11`
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "SEC")
+- Query params: `season` (optional, defaults to current season), `week` (optional, requires season if provided)
+- Fetches from CFBD API on each request - no database persistence
+- Response: `{ events: GameLean[], teams: TeamMetadata[], season: number }`
+- Verify: `TeamMetadata` fields (id, abbrev, name, displayName, shortDisplayName, logo, color, alternateColor, conferenceStanding, conferenceRecord, rank)
+- Verify: `GameLean` events with `home`/`away` containing `teamId`, `abbrev`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `score`, `rank`
+- Caching: Live games (state: "in"): 10s, others: 60s
 
-### POST /api/games/[sport]/[conf]
+### GET /api/standings/[sport]/[conf]
 
-**Example**: `POST /api/games/cfb/sec`
-- Path: `sport` (e.g., "cfb"), `conf` (e.g., "sec")
-- Body params: `season`, `week`, `state` (pre/in/post), `from`, `to`, `force`
-- Fetches from ESPN, upserts to database, returns reshaped data
-- Verify: `TeamMetadata` fields (id, abbrev, name, displayName, logo, color, alternateColor, conferenceStanding, conferenceRecord)
-- Verify: `GameLean` events with `home`/`away` containing `teamEspnId`, `abbrev`, `score`, `rank` (note: `displayName`, `logo`, `color` are NOT in game objects - use `teams` array to look up by `teamEspnId`)
-- Response: `{ events: [...], teams: [...], lastUpdated: "..." }`
-
-### POST /api/games/[sport]/[conf]/live
-
-**Example**: `/api/games/cfb/sec/live`
-- Lightweight live game updates (scores/status only)
-- Body params: `season`, `force` (no `week` parameter - always queries current week)
-- Used by frontend polling when games are in progress or starting within 5 minutes of kickoff
-- Polls every 60 seconds (disabled in development)
-- Upserts games (creates if they don't exist, updates if they do)
-- Recalculates predicted scores using full method (team stats, rankings, odds)
-
-### POST /api/games/[sport]/[conf]/spreads
-
-**Example**: `/api/games/cfb/sec/spreads`
-- Spread/odds updates only
-- Body params: `season`, `week`, `force`
-- Used by frontend polling for pre-game games (only in production, only when not starting within 5 minutes)
+**Example**: `GET /api/standings/cfb/SEC?season=2025`
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "SEC")
+- Query params: `season` (optional, defaults to current season)
+- Fetches from CFBD API and calculates standings from completed conference games
+- Response: `{ teams: TeamMetadata[] }`
+- Verify: `TeamMetadata` with `conferenceStanding` (e.g., "1st", "2nd"), `conferenceRecord` (e.g., "7-1"), `rank` (number | null)
+- Caching: 60s
 
 ### Teams Data
 
-**Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. Team metadata is included in the `teams` array of the games endpoint response.
+**Note**: There is no separate `/api/teams/[sport]/[conf]` endpoint. Teams are automatically extracted from CFBD API responses when fetching games. Team metadata is included in the `teams` array of the games endpoint response.
 
 ### POST /api/simulate/[sport]/[conf]
 
 **Note**: Dynamic endpoint supporting multiple conferences.
 
-**Example**: `/api/simulate/cfb/sec`
-- Input: `{ season, overrides }`
-- Verify: 16 teams, rankings 1-16, tiebreaker rules (A-E), championship array
-- Validation: Non-negative integers, no ties, required fields
+**Example**: `/api/simulate/cfb/SEC`
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "SEC")
+- Input: `{ season: number, overrides?: { [gameId: string]: { homeScore: number, awayScore: number } } }`
+- Game IDs in overrides match the `id` field from GameLean objects
+- Verify: All teams in conference, rankings 1-N, tiebreaker rules (A-E), championship array (top 2)
+- Validation: Non-negative integers, no ties, required fields (season)
+- Response: `{ standings: StandingEntry[], championship: [string, string], tieLogs: TieLog[] }`
 
 
 ---
@@ -76,9 +65,6 @@
 ## Quick Commands
 
 ```bash
-# Check/seed database
-npm run db:check
-
 # Run API tests
 npm run test:api
 

@@ -8,11 +8,9 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 
 ## Prerequisites
 
-**Database Setup**: Fresh database with updated Game model, all conference teams and games pulled via `POST /api/games/cfb/sec` (teams are automatically extracted from scoreboard data)
+**Note**: All routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is the conference abbreviation (e.g., "SEC" for SEC conference). The simulate endpoint is `/api/simulate/[sport]/[conf]`.
 
-**Note**: All routes use dynamic structure `/api/[operation]/[sport]/[conf]` where `sport` is "cfb" and `conf` is the conference slug (e.g., "sec" for SEC conference). The simulate endpoint is `/api/simulate/[sport]/[conf]`.
-
-**Data Requirements**: All conference teams in database, ~128 conference games (2025, weeks 1-14), games include `displayName`, team display fields, `predictedScore`, all completed games have final scores
+**Data Requirements**: All data is fetched from CFBD API on each request. No database setup required. Games include `displayName`, team display fields, `predictedScore` (calculated from CFBD data), all completed games have final scores from CFBD API.
 
 ---
 
@@ -23,9 +21,9 @@ Tests the complete tiebreaker implementation: Game model updates, simulate endpo
 BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3000")
 ```
 
-**Basic Simulate**: `POST /api/simulate/cfb/sec` with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (16 teams), `championship` (top 2), `tieLogs`. Checks: All 16 teams, ranks 1-16, team display fields populated, championship array has 2 teams.
+**Basic Simulate**: `POST /api/simulate/cfb/SEC` with `{"season": 2025, "overrides": {}}`. Expected: Status 200, `standings` (all teams in conference), `championship` (top 2), `tieLogs`. Checks: All teams in conference, ranks 1-N, team display fields populated, championship array has 2 teams.
 
-**Simulate with Overrides**: `{"season": 2025, "overrides": {"gameEspnId": {"homeScore": 35, "awayScore": 24}}}`. Expected: Status 200, standings reflect overrides
+**Simulate with Overrides**: `{"season": 2025, "overrides": {"gameId": {"homeScore": 35, "awayScore": 24}}}`. Expected: Status 200, standings reflect overrides. Game IDs match the `id` field from GameLean objects returned by the games endpoint.
 
 **Invalid Score Validation**: Tie score → Status 400 (tie not allowed), Negative score → Status 400 (negative not allowed), Non-integer → Status 400 (whole numbers only), Missing `season` → Status 400
 
@@ -41,7 +39,7 @@ BASE_URL=$(grep BASE_URL .env.local | cut -d '=' -f2 || echo "http://localhost:3
 
 **Performance**: Response time < 2s (no overrides), < 3s (10 overrides), no memory leaks after 10 consecutive requests
 
-**Troubleshooting**: "Cannot read properties of undefined" → Games missing displayName/logo/color (restart dev server, drop database, re-pull games). "No conference games found" → Wrong database or no games (check MONGODB_URI, verify games exist). Empty standings → No teams with conference game records (ensure conferenceGame flag true). Incorrect tiebreaker → Logic error or missing data (check tie logs, verify scores, check head-to-head games)
+**Troubleshooting**: "Cannot read properties of undefined" → Games missing displayName/logo/color (restart dev server, verify CFBD API responses). "No conference games found" → Invalid season or conference (check CFBD API, verify conference abbreviation). Empty standings → No teams with conference game records (ensure conferenceGame flag true in CFBD data). Incorrect tiebreaker → Logic error or missing data (check tie logs, verify scores, check head-to-head games)
 
 ---
 

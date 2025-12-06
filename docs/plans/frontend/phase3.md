@@ -97,8 +97,6 @@ See [Styling Guide](./phase3-styling.md) for CSS variables approach and implemen
 
 ## Important Notes
 
-**Important Notes:**
-
 - Override keys use `game.espnId` (matches backend `applyOverrides()`)
 - `predictedScore` always present, used as default for buttons/inputs
 - Button clicks calculate opponent -1, styling reflects selected winner

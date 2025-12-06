@@ -6,10 +6,8 @@ Domain-specific content locations for common tasks.
 
 - **Quick commands**: `docs/guides/testing-quick-reference.md`
 - **API testing procedures**: `docs/tests/comprehensive-api-testing.md`
-- **ESPN API testing**: `docs/tests/espn-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
-- **Test data management**: Implemented - see `__tests__/helpers/test-data-loader.ts` and `app/api/cron/update-test-data/route.ts` (test data endpoint only)
 - **Unit tests plan**: `docs/plans/unit-tests.md`
 - **Integration tests plan**: `docs/plans/integration-tests-plan.md`
 
@@ -19,13 +17,12 @@ Domain-specific content locations for common tasks.
 - **API architecture**: `docs/plans/api-foundation.md`
 - **Request/response types**: `lib/api-types.ts`
 
-## ESPN Integration
+## CFBD Integration
 
-- **API patterns**: `docs/tests/espn-api-testing.md`
-- **Data pipeline**: `docs/tests/espn-data-pipeline.md`
-- **Type generation workflow**: `docs/tests/generated-types-workflow-testing.md`
-- **Client code**: `lib/cfb/espn-client.ts` (CFB-specific)
-- **Reshape functions**: `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic)
+- **REST API client**: `lib/cfb/cfbd-rest-client.ts`
+- **GraphQL API client**: `lib/cfb/cfbd-graphql-client.ts`
+- **Unified client**: `lib/cfb/cfbd-client.ts` (switches between REST/GraphQL based on season)
+- **Reshape functions**: `lib/reshape-games.ts` (generic), `lib/reshape-teams-from-cfbd.ts` (generic)
 
 ## Tiebreaker Logic
 
@@ -38,15 +35,15 @@ Domain-specific content locations for common tasks.
 
 ## Data Updates
 
-- **Architecture**: On-demand API endpoints with frontend polling
+- **Architecture**: Direct CFBD API fetching with GraphQL subscriptions for live updates
 - **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
-- **Frontend polling**: `app/hooks/useGamesData.ts` - Two-phase loading (GET for fast initial load, POST for background refresh), conditional polling based on game states and start times (starts 5 min before kickoff, polls every 60 seconds, disabled in development)
+- **Frontend data loading**: `app/hooks/useGamesData.ts` - GraphQL subscriptions (Server-Sent Events) when in season, REST API when out of season
 
 ## Data Models
 
-- **Game schema**: `lib/models/Game.ts`
-- **Team schema**: `lib/models/Team.ts`
-- **Type definitions**: `lib/types.ts`
+- **API types**: `lib/api-types.ts`
+- **Internal types**: `lib/types.ts`
+- **CFBD types**: Imported from `cfbd` package
 
 ## Frontend Development
 
@@ -69,15 +66,10 @@ Domain-specific content locations for common tasks.
 # Testing
 npm run test:all              # All tests
 npm run test:api              # API tests only
-npm run db:check              # Check/seed main DB
 
 # Development
 npm run dev                   # Start dev server
 npm run lint                  # Run ESLint
-
-# Database
-npm run db:check              # Check/seed database
-npm run test:db:check         # Check/seed test DB
 ```
 
 ## File Locations
@@ -85,17 +77,17 @@ npm run test:db:check         # Check/seed test DB
 | Need | Location |
 |------|----------|
 | API endpoints | `app/api/` |
-| Data models | `lib/models/` |
-| ESPN client | `lib/cfb/espn-client.ts` (CFB-specific) |
+| CFBD REST client | `lib/cfb/cfbd-rest-client.ts` |
+| CFBD GraphQL client | `lib/cfb/cfbd-graphql-client.ts` |
+| CFBD unified client | `lib/cfb/cfbd-client.ts` |
 | Tiebreaker logic | Modular system: `lib/cfb/tiebreaker-rules/common/` (common rules), `lib/cfb/tiebreaker-rules/core/` (engine), `lib/cfb/tiebreaker-rules/{conf}/config.ts` (conference configs) |
 | Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt` |
 | Constants | `lib/constants.ts` (sports and conference configuration) |
-| Reshape games | `lib/reshape-games.ts` (generic) |
-| Reshape teams | `lib/reshape-teams.ts` (generic) |
-| Reshape teams from scoreboard | `lib/reshape-teams-from-scoreboard.ts` (generic) |
-| Prefill helpers | `lib/cfb/helpers/prefill-helpers.ts` (CFB-specific) |
-| Season check | `lib/cfb/helpers/season-check-espn.ts` (CFB-specific) |
+| Reshape games | `lib/reshape-games.ts` |
+| Reshape teams from CFBD | `lib/reshape-teams-from-cfbd.ts` |
+| Prefill helpers | `lib/cfb/helpers/prefill-helpers.ts` |
+| Season check | `lib/cfb/helpers/season-check-cfbd.ts` |
 | Types | `lib/types.ts`, `lib/api-types.ts` |
 | Tests | `__tests__/` |
-| Frontend polling | `app/hooks/useGamesData.ts` |
+| Frontend data loading | `app/hooks/useGamesData.ts` |
 

@@ -23,19 +23,17 @@ This is a specialized college football application built for simulating conferen
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
 - **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by a modular system: common rules in `lib/cfb/tiebreaker-rules/common/`, core engine in `lib/cfb/tiebreaker-rules/core/`, and conference-specific configs in `lib/cfb/tiebreaker-rules/{conf}/config.ts`
 - **Standings Calculation**: Generates complete conference standings with explanations
-- **Real-Time Data**: Automatically updates from ESPN API via frontend polling with conditional logic
+- **Real-Time Data**: Automatically updates from CFBD API via frontend polling with conditional logic
 
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/standings/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
-- `lib/models/` - Mongoose schemas (Game, Team, Error)
-- `lib/espn/` - Generated ESPN API types
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
-- `lib/` - Core utilities (espn-client, reshape-*, tiebreaker-helpers)
-- `scripts/` - Database and type generation scripts
+- `lib/cfb/` - CFBD API clients (cfbd-client, cfbd-rest-client, cfbd-graphql-client)
+- `lib/` - Core utilities (reshape-*, tiebreaker-helpers)
 
 ## Documentation Navigation
 
@@ -45,7 +43,7 @@ This is a specialized college football application built for simulating conferen
 **API Documentation:**
 - **[API Reference](./guides/api-reference.md)** - Complete API endpoint reference
 - **[API Data Endpoints](./guides/api-reference-data.md)** - Detailed data endpoint documentation
-- **[ESPN API Testing](./tests/espn-api-testing.md)** - ESPN API quirks, types, and testing procedures
+- **[CFBD API Monitoring](./guides/cfbd-api-monitoring.md)** - CFBD API monitoring and alerting
 
 **Frontend Documentation:**
 - **[Frontend Index](./guides/frontend/index.md)** - Frontend architecture overview
@@ -55,7 +53,6 @@ This is a specialized college football application built for simulating conferen
 **Testing Documentation:**
 - **[Testing Quick Reference](./guides/testing-quick-reference.md)** - Quick testing commands and procedures
 - **[Comprehensive API Testing](./tests/comprehensive-api-testing.md)** - Complete API testing guide
-- **[ESPN Data Pipeline](./tests/espn-data-pipeline.md)** - ESPN data ingestion and transformation
 
 **Tiebreaker Rules:**
 - **Location**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
@@ -63,11 +60,11 @@ This is a specialized college football application built for simulating conferen
 
 ## Key Files Reference
 
-**Models**: `lib/models/Game.ts`, `lib/models/Team.ts`, `lib/types.ts`
+**Types**: `lib/types.ts`
 
-**ESPN Integration**: `lib/cfb/espn-client.ts` (CFB-specific), `lib/reshape-games.ts` (generic), `lib/reshape-teams.ts` (generic), `lib/constants.ts` (sports and conference configuration)
+**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-rest-client.ts`, `lib/cfb/cfbd-graphql-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration)
 
-**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) before database upsert. This ensures all team name variations are stored in the `Game` model and available everywhere without needing multiple enrichment steps in different endpoints.
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. All data is fetched directly from CFBD API on each request - no database persistence.
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and SEC config (`lib/cfb/tiebreaker-rules/sec/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`
 
@@ -84,8 +81,9 @@ This is a specialized college football application built for simulating conferen
 ## Constraints
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby
-- **ESPN API**: 500ms delays between requests
+- **CFBD API**: Rate limits based on tier (Free: 1,000/month, Tier 2: $1/month, Tier 3+: higher limits for in-season)
 - **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
+- **No Database**: All data is fetched directly from CFBD API on each request. No MongoDB/Mongoose persistence.
 
 ---
 

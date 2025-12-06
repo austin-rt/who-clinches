@@ -83,13 +83,7 @@ interface GamePicksState {
 
 **Important**: All localStorage access in this codebase is through redux-persist. There is no direct `localStorage.getItem()` or `localStorage.setItem()` usage. Components interact with Redux state only; persistence is handled automatically by redux-persist.
 
-**Implementation** (`app/store/store.ts`):
-
-- Uses `persistReducer` to wrap ui and gamePicks slices
-- Automatically reads from localStorage on app load
-- Automatically writes to localStorage on state changes
-- SSR-safe via `PersistGate` component
-- Single source of truth (Redux)
+**Implementation** (`app/store/store.ts`): Uses `persistReducer` to wrap ui and gamePicks slices. Automatically reads from localStorage on app load and writes on state changes. SSR-safe via `PersistGate` component. Single source of truth (Redux).
 
 **Configuration:**
 
@@ -105,7 +99,6 @@ interface GamePicksState {
 
 **Usage:** Components dispatch Redux actions normally - persistence is automatic.
 
-**Game Picks Expiration:**
-Game picks are automatically cleared from localStorage after 1 hour of inactivity. The expiration timer resets whenever picks are updated, ensuring active users retain their selections. This prevents stale simulation data from persisting across sessions.
+**Game Picks Expiration:** Game picks are automatically cleared from localStorage after 1 hour of inactivity. The expiration timer resets whenever picks are updated, ensuring active users retain their selections. This prevents stale simulation data from persisting across sessions.
 
 **Notes:** API slice (RTK Query) is NOT persisted. State restored on app load via `PersistGate`.
