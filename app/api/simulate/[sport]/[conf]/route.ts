@@ -1,22 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Game from '@/lib/models/Game';
-import Team from '@/lib/models/Team';
+import { cfbdClient } from '@/lib/cfb/cfbd-client';
+import { reshapeCfbdGames } from '@/lib/reshape-games';
+import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 import { SimulateResponse } from '@/lib/api-types';
-import { GameLean, GameState } from '@/lib/types';
-import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
+import { GameLean, TeamLean } from '@/lib/types';
+import type { Conference } from 'cfbd';
+import { getConferenceMetadata } from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 const getConferenceConfig = async (
-  conf: ConferenceSlug
+  conf: NonNullable<Conference['abbreviation']>
 ): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
   try {
-    if (conf === 'sec') {
+    if (conf === 'SEC') {
       const { SEC_TIEBREAKER_CONFIG } = await import(
         '@/lib/cfb/tiebreaker-rules/sec/config'
       );
@@ -34,7 +35,7 @@ const getConferenceConfig = async (
 
 export const POST = async (
   request: NextRequest,
-  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
+  { params }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
   try {
     const body = await request.json();
@@ -51,8 +52,7 @@ export const POST = async (
 
     const { sport, conf } = await params;
 
-    const { conferences } = sports[sport];
-    const conferenceMeta = conferences[conf];
+    const conferenceMeta = getConferenceMetadata(conf);
 
     if (!conferenceMeta) {
       return NextResponse.json(
@@ -71,118 +71,61 @@ export const POST = async (
 
     const config: ConferenceTiebreakerConfig = configResult.config;
 
-    await dbConnect();
+    const cfbdGames = await cfbdClient.getGames({
+      year: season,
+      conference: conferenceMeta.cfbdId,
+    });
 
-    const conferenceTeams = await Team.find({
-      conferenceId: conferenceMeta.espnId,
-    })
-      .lean()
-      .exec();
+    const conferenceGamesOnly = cfbdGames.filter((game) => game.conferenceGame);
 
-    if (conferenceTeams.length === 0) {
-      return NextResponse.json(
-        { error: `No teams found for ${conferenceMeta.name} conference` },
-        { status: 404 }
-      );
-    }
-
-    const conferenceTeamIds = new Set(conferenceTeams.map((team) => team._id));
-
-    const allConferenceGamesRaw = await Game.find({
-      season,
-      conferenceGame: true,
-      league: 'college-football',
-    })
-      .lean()
-      .exec();
-
-    const gamesRaw = allConferenceGamesRaw.filter(
-      (game) =>
-        conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
-    );
-
-    if (gamesRaw.length === 0) {
+    if (conferenceGamesOnly.length === 0) {
       return NextResponse.json(
         { error: `No ${conferenceMeta.name} conference games found for season ${season}` },
         { status: 404 }
       );
     }
 
-    const games: GameLean[] = gamesRaw.map((game): GameLean => ({
-      _id: String(game._id),
-      espnId: game.espnId,
-      displayName: game.displayName,
-      date: game.date,
-      week: game.week ?? null,
-      season: game.season,
-      sport: game.sport,
-      league: game.league,
-      state: game.state as GameState,
-      completed: game.completed,
-      conferenceGame: game.conferenceGame,
-      neutralSite: game.neutralSite,
-      venue: {
-        fullName: game.venue.fullName,
-        city: game.venue.city,
-        state: game.venue.state,
-        timezone: game.venue.timezone,
-      },
-      home: {
-        teamEspnId: game.home.teamEspnId,
-        abbrev: game.home.abbrev,
-        displayName: game.home.displayName,
-        shortDisplayName: game.home.shortDisplayName,
-        logo: game.home.logo,
-        color: game.home.color,
-        alternateColor: game.home.alternateColor,
-        score: game.home.score ?? null,
-        rank: game.home.rank ?? null,
-      },
-      away: {
-        teamEspnId: game.away.teamEspnId,
-        abbrev: game.away.abbrev,
-        displayName: game.away.displayName,
-        shortDisplayName: game.away.shortDisplayName,
-        logo: game.away.logo,
-        color: game.away.color,
-        alternateColor: game.away.alternateColor,
-        score: game.away.score ?? null,
-        rank: game.away.rank ?? null,
-      },
-      odds: {
-        favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
-        spread: game.odds.spread ?? null,
-        overUnder: game.odds.overUnder ?? null,
-      },
-      predictedScore: {
-        home: game.predictedScore.home,
-        away: game.predictedScore.away,
-      },
-      gameType: game.gameType && {
-        name: game.gameType.name,
-        abbreviation: game.gameType.abbreviation,
-      },
+    const cfbdTeams = await cfbdClient.getTeams({
+      conference: conferenceMeta.cfbdId,
+    });
+
+    const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
+    const teamMap = new Map<string, TeamLean>(
+      teams.map((team) => [
+        team._id,
+        {
+          ...team,
+          conferenceId: team.conference,
+        } as TeamLean,
+      ])
+    );
+
+    const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
+    const games: GameLean[] = reshaped.games.map((game) => ({
+      _id: game.id,
+      ...game,
     }));
 
     const finalGames = applyOverrides(games, overrides);
 
+    const conferenceTeamIds = new Set(teams.map((team) => team._id));
     const teamSet = new Set<string>();
     for (const game of finalGames) {
-      if (conferenceTeamIds.has(game.home.teamEspnId)) {
-        teamSet.add(game.home.teamEspnId);
+      if (conferenceTeamIds.has(game.home.teamId)) {
+        teamSet.add(game.home.teamId);
       }
-      if (conferenceTeamIds.has(game.away.teamEspnId)) {
-        teamSet.add(game.away.teamEspnId);
+      if (conferenceTeamIds.has(game.away.teamId)) {
+        teamSet.add(game.away.teamId);
       }
     }
     const allTeams = Array.from(teamSet);
 
-    const conferenceGamesOnly = finalGames.filter(
+    const filteredConferenceGames = finalGames.filter(
       (game) =>
-        conferenceTeamIds.has(game.home.teamEspnId) && conferenceTeamIds.has(game.away.teamEspnId)
+        conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
     );
 
-    const { standings, tieLogs } = calculateStandings(conferenceGamesOnly, allTeams, config);
+    const { standings, tieLogs } = calculateStandings(filteredConferenceGames, allTeams, config);
 
     return NextResponse.json<SimulateResponse>(
       {
@@ -204,4 +147,3 @@ export const POST = async (
     );
   }
 };
-

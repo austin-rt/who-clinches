@@ -14,14 +14,14 @@ export const DEFAULT_AVG = 28;
 export const calculatePredictedScoreFromOdds = (
   overUnder: number | null,
   spread: number | null,
-  favoriteTeamEspnId: string | null,
-  homeTeamEspnId: string
+  favoriteTeamId: string | null,
+  homeTeamId: string
 ): PredictedScore | undefined => {
-  if (overUnder === null || spread === null || favoriteTeamEspnId === null) {
+  if (overUnder === null || spread === null || favoriteTeamId === null) {
     return undefined;
   }
 
-  const isFavoriteHome = favoriteTeamEspnId === homeTeamEspnId;
+  const isFavoriteHome = favoriteTeamId === homeTeamId;
 
   const spreadAbs = Math.abs(spread);
 
@@ -69,8 +69,8 @@ export const calculatePredictedScoreFromTeamAverages = (
   const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
   const awayAvg = awayTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
 
-  if (game.odds.spread !== null && game.odds.favoriteTeamEspnId) {
-    const isFavoriteHome = game.odds.favoriteTeamEspnId === game.home.teamEspnId;
+  if (game.odds.spread !== null && game.odds.favoriteTeamId) {
+    const isFavoriteHome = game.odds.favoriteTeamId === game.home.teamId;
     const favoriteAvg = isFavoriteHome ? homeAvg : awayAvg;
 
     const favoriteScore = Math.round(favoriteAvg);
@@ -93,7 +93,7 @@ export const calculatePredictedScoreFromRanking = (
   awayTeam: TeamForPrediction
 ): PredictedScore | undefined => {
   if (
-    game.odds.favoriteTeamEspnId !== null ||
+    game.odds.favoriteTeamId !== null ||
     game.odds.spread !== null ||
     game.odds.overUnder !== null
   ) {
@@ -199,8 +199,8 @@ export const calculatePredictedScore = (
   const oddsScore = calculatePredictedScoreFromOdds(
     game.odds.overUnder,
     game.odds.spread,
-    game.odds.favoriteTeamEspnId,
-    game.home.teamEspnId
+    game.odds.favoriteTeamId,
+    game.home.teamId
   );
   if (oddsScore) {
     return oddsScore;

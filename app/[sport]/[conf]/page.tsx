@@ -9,24 +9,27 @@ import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
 import Standings from '@/app/components/Standings';
 import { useGamesData } from '@/app/hooks/useGamesData';
-import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
+import { useInSeason } from '@/app/hooks/useInSeason';
+import type { Conference } from 'cfbd';
+import { getConferenceMetadata } from '@/lib/constants';
 import { SimulateResponse } from '@/lib/api-types';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
-import { setStandingsOpen, setSeason } from '@/app/store/uiSlice';
-import { getDefaultSeasonFromESPN } from '@/lib/cfb/helpers/get-default-season';
+import { setStandingsOpen } from '@/app/store/uiSlice';
+import { setSeason } from '@/app/store/appSlice';
+import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 const ConferencePage = () => {
   const params = useParams();
-  const sport = params.sport as SportSlug;
-  const conf = params.conf as ConferenceSlug;
+  const sport = params.sport as string;
+  const conf = params.conf as NonNullable<Conference['abbreviation']>;
   const dispatch = useAppDispatch();
   const standingsRef = useRef<HTMLDivElement>(null);
-  const season = useAppSelector((state) => state.ui.season);
+  const season = useAppSelector((state) => state.app.season);
 
   useEffect(() => {
     if (season === null) {
-      void getDefaultSeasonFromESPN(sport, conf).then((defaultSeason) => {
+      void getDefaultSeasonFromCfbd().then((defaultSeason) => {
         dispatch(setSeason(defaultSeason));
       });
     }
@@ -36,6 +39,8 @@ const ConferencePage = () => {
     sport,
     conf,
   });
+
+  useInSeason();
 
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
 
@@ -52,12 +57,11 @@ const ConferencePage = () => {
     dispatch(clearAllPicks());
   };
 
-  const { conferences } = sports[sport];
-  const conferenceMeta = conferences[conf];
+  const conferenceMeta = getConferenceMetadata(conf);
   const conferenceName = conferenceMeta?.name;
-  const conferenceId = conferenceMeta?.espnId;
+  const conferenceId = conferenceMeta?.cfbdId;
 
-  if (!conferenceName || !conferenceId || !(sport in sports)) {
+  if (!conferenceName || !conferenceId || sport !== 'cfb') {
     return (
       <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <div className="flex flex-col gap-2">

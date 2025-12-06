@@ -12,11 +12,11 @@ interface CompactGameButtonProps {
 
 const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const dispatch = useAppDispatch();
-  const gamePick = useAppSelector((state) => state.gamePicks.picks[game.espnId]);
+  const gamePick = useAppSelector((state) => state.gamePicks.picks[game.id]);
 
   const calculateScoresForPick = useCallback(
-    (pickedTeamEspnId: string) => {
-      const isPickingHome = pickedTeamEspnId === game.home.teamEspnId;
+    (pickedTeamId: string) => {
+      const isPickingHome = pickedTeamId === game.home.teamId;
 
       if (game.completed) {
         const actualHomeScore = game.home.score ?? 0;
@@ -54,7 +54,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
         };
       }
     },
-    [game.completed, game.home.teamEspnId, game.home.score, game.away.score, game.predictedScore]
+    [game.completed, game.home.teamId, game.home.score, game.away.score, game.predictedScore]
   );
 
   const defaultSelectedTeam = useMemo(() => {
@@ -62,38 +62,38 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
       const homeScore = game.home.score ?? 0;
       const awayScore = game.away.score ?? 0;
       if (homeScore > awayScore) {
-        return game.home.teamEspnId;
+        return game.home.teamId;
       } else if (awayScore > homeScore) {
-        return game.away.teamEspnId;
+        return game.away.teamId;
       }
     }
     if (game.predictedScore) {
       if (game.predictedScore.home > game.predictedScore.away) {
-        return game.home.teamEspnId;
+        return game.home.teamId;
       } else if (game.predictedScore.away > game.predictedScore.home) {
-        return game.away.teamEspnId;
+        return game.away.teamId;
       }
     }
-    if (game.odds.favoriteTeamEspnId) {
-      return game.odds.favoriteTeamEspnId;
+    if (game.odds.favoriteTeamId) {
+      return game.odds.favoriteTeamId;
     }
-    return game.home.teamEspnId;
+    return game.home.teamId;
   }, [
     game.completed,
     game.home.score,
     game.away.score,
-    game.home.teamEspnId,
-    game.away.teamEspnId,
+    game.home.teamId,
+    game.away.teamId,
     game.predictedScore,
-    game.odds.favoriteTeamEspnId,
+    game.odds.favoriteTeamId,
   ]);
 
   useEffect(() => {
     if (!gamePick && defaultSelectedTeam) {
       const scores = calculateScoresForPick(defaultSelectedTeam);
-      dispatch(setGamePick({ gameId: game.espnId, pick: scores }));
+      dispatch(setGamePick({ gameId: game.id, pick: scores }));
     }
-  }, [gamePick, defaultSelectedTeam, game.espnId, dispatch, calculateScoresForPick]);
+  }, [gamePick, defaultSelectedTeam, game.id, dispatch, calculateScoresForPick]);
 
   const selectedTeam = useMemo(() => {
     if (!gamePick) {
@@ -101,27 +101,27 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
     }
 
     if (gamePick.homeScore > gamePick.awayScore) {
-      return game.home.teamEspnId;
+      return game.home.teamId;
     }
     if (gamePick.awayScore > gamePick.homeScore) {
-      return game.away.teamEspnId;
+      return game.away.teamId;
     }
     return defaultSelectedTeam;
-  }, [gamePick, game.home.teamEspnId, game.away.teamEspnId, defaultSelectedTeam]);
+  }, [gamePick, game.home.teamId, game.away.teamId, defaultSelectedTeam]);
 
-  const handleTeamClick = (teamEspnId: string) => {
-    const scores = calculateScoresForPick(teamEspnId);
-    dispatch(setGamePick({ gameId: game.espnId, pick: scores }));
+  const handleTeamClick = (teamId: string) => {
+    const scores = calculateScoresForPick(teamId);
+    dispatch(setGamePick({ gameId: game.id, pick: scores }));
   };
 
-  const isHomeSelected = selectedTeam === game.home.teamEspnId;
-  const isAwaySelected = selectedTeam === game.away.teamEspnId;
+  const isHomeSelected = selectedTeam === game.home.teamId;
+  const isAwaySelected = selectedTeam === game.away.teamId;
 
   return (
     <div className="flex w-36 items-center justify-around rounded-lg border border-base-300 bg-base-200 px-1 py-1 sm:py-2 dark:border-base-400 dark:bg-base-300">
       <CompactTeamSelector
         team={game.away}
-        teamEspnId={game.away.teamEspnId}
+        teamId={game.away.teamId}
         isSelected={isAwaySelected}
         isWon={isAwaySelected}
         onTeamClick={handleTeamClick}
@@ -129,7 +129,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
       <span className="text-base-content/60 text-xxs leading-none">vs</span>
       <CompactTeamSelector
         team={game.home}
-        teamEspnId={game.home.teamEspnId}
+        teamId={game.home.teamId}
         isSelected={isHomeSelected}
         isWon={isHomeSelected}
         onTeamClick={handleTeamClick}

@@ -7,15 +7,15 @@ import TeamRankAbbrev from './TeamRankAbbrev';
 
 interface CompactTeamSelectorProps {
   team: GameLean['home'] | GameLean['away'];
-  teamEspnId: string;
+  teamId: string;
   isSelected: boolean;
   isWon: boolean;
-  onTeamClick: (teamEspnId: string) => void;
+  onTeamClick: (teamId: string) => void;
 }
 
 const CompactTeamSelector = ({
   team,
-  teamEspnId,
+  teamId,
   isSelected,
   isWon,
   onTeamClick,
@@ -23,7 +23,7 @@ const CompactTeamSelector = ({
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    onTeamClick(teamEspnId);
+    onTeamClick(teamId);
   };
 
   const hasRank = team.rank !== null;

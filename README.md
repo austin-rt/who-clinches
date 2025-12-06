@@ -1,13 +1,12 @@
 # Who Clinches
 
-A web application that simulates game outcomes to show who clinches playoff spots and conference championships. Built with Next.js 16, TypeScript, MongoDB, and the ESPN public API.
+A web application that simulates game outcomes to show who clinches playoff spots and conference championships. Built with Next.js 16, TypeScript, and the College Football Data (CFBD) API.
 
 ## Overview
 
 This application allows users to simulate "what-if" scenarios for SEC Football conference standings by:
 
-- Fetching live game data from ESPN's public API
-- Storing historical and upcoming game information
+- Fetching live game data from CFBD API (REST when out of season, GraphQL when in season)
 - Allowing users to override game outcomes
 - Calculating standings using official SEC tiebreaker rules (A-E)
 - Visualizing potential playoff and bowl game scenarios
@@ -16,8 +15,7 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
-- **Database**: MongoDB Atlas + Mongoose
-- **API**: ESPN Public JSON API ([Unofficial Documentation](https://gist.github.com/akeaswaran/b48b02f1c94f873c6655e7129910fc3b))
+- **API**: College Football Data (CFBD) API - REST API when out of season, GraphQL API when in season
 - **Deployment**: Vercel (serverless functions)
 - **Styling**: Tailwind CSS
 
@@ -27,26 +25,29 @@ This application allows users to simulate "what-if" scenarios for SEC Football c
 who-clinches/
 ├── app/
 │   ├── api/
-│   │   ├── games/[sport]/[conf]/route.ts       # GET: Query from database (fast), POST: Fetch from ESPN, upsert to database
-│   │   ├── games/[sport]/[conf]/live/route.ts  # Lightweight live game updates
-│   │   ├── games/[sport]/[conf]/spreads/route.ts # Spread/odds updates
-│   │   ├── teams/[sport]/[conf]/route.ts      # Fetch teams from ESPN, upsert to database
-│   │   └── simulate/[sport]/[conf]/route.ts   # Tiebreaker simulation endpoint
+│   │   ├── games/[sport]/[conf]/route.ts          # GET: Fetch games from CFBD API
+│   │   ├── games/[sport]/[conf]/subscribe/route.ts # GET: GraphQL subscription for live updates
+│   │   ├── standings/[sport]/[conf]/route.ts       # GET: Calculate standings from CFBD data
+│   │   ├── simulate/[sport]/[conf]/route.ts        # POST: Tiebreaker simulation endpoint
+│   │   ├── cfbd-monitor/route.ts                    # GET: CFBD API usage monitoring
+│   │   ├── cfbd-alert-handler/route.ts              # POST: Alert webhook handler
+│   │   └── season-status/route.ts                  # GET: Check if currently in season
 │   ├── page.tsx                 # Main UI
 │   └── layout.tsx
 ├── lib/
-│   ├── mongodb.ts               # MongoDB connection singleton
-│   ├── cfb/espn-client.ts       # ESPN API client (CFB-specific)
+│   ├── cfb/
+│   │   ├── cfbd-client.ts       # Unified CFBD API client (switches REST/GraphQL)
+│   │   ├── cfbd-rest-client.ts  # CFBD REST API client
+│   │   ├── cfbd-graphql-client.ts # CFBD GraphQL API client
+│   │   ├── tiebreaker-rules/
+│   │   │   ├── core/             # Core tiebreaker engine (calculateStandings, breakTie)
+│   │   │   ├── common/           # Common tiebreaker rules (A-D)
+│   │   │   └── sec/              # SEC-specific rules and config
+│   │   └── helpers/              # Helper functions (season detection, prefill, etc.)
 │   ├── reshape-games.ts         # Game data transformation
-│   ├── reshape-teams.ts         # Team data transformation
-│   ├── cfb/tiebreaker-rules/sec/tiebreaker-helpers.ts # SEC tiebreaker rules implementation
-│   ├── cfb/helpers/prefill-helpers.ts # Predicted score calculation
+│   ├── reshape-teams-from-cfbd.ts # Team data transformation from CFBD
 │   ├── api-types.ts             # API request/response types
-│   ├── types.ts                 # Internal application types
-│   └── models/
-│       ├── Game.ts              # Game schema
-│       ├── Team.ts              # Team schema
-│       └── Error.ts             # Error logging schema
+│   └── types.ts                 # Internal application types
 └── docs/                        # Documentation (see docs/ai-loading-manifest.md)
 ```
 
@@ -55,7 +56,7 @@ who-clinches/
 ### Prerequisites
 
 - Node.js 18+ and npm
-- MongoDB Atlas account
+- CFBD API key ([Get one here](https://collegefootballdata.com/))
 - Environment variables (see `.env.local.example`)
 
 ### Installation
@@ -66,7 +67,7 @@ npm install
 
 # Set up environment variables
 cp .env.local.example .env.local
-# Edit .env.local with your MongoDB URI
+# Edit .env.local with your CFBD API key
 
 # Run development server (includes TypeScript checking)
 npm run dev
@@ -76,42 +77,21 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 ### Environment Variables
 
-The MongoDB connection is dynamically constructed and **automatically selects the correct database** based on the deployment environment:
-
 ```bash
-MONGODB_USER=your_username
-MONGODB_PASSWORD=your_password
-MONGODB_HOST=cluster0.rr6gggn.mongodb.net
-MONGODB_APP_NAME=Who-Clinches
+CFBD_API_KEY=your_cfbd_api_key  # Required: Get from https://collegefootballdata.com/
 ```
 
-**Database Selection (Fail-Safe):**
+**API Rate Limits:**
+- Free tier: 1,000 calls/month (sufficient for development)
+- Tier 2: $1/month (recommended for normal use)
+- Tier 3+: Higher limits for in-season usage
 
-The database name **must be explicitly set** via environment variables:
+**Optional Environment Variables:**
 
-```bash
-MONGODB_DB=test  # Explicit database name (takes priority)
-```
-
-Or falls back to Vercel's automatic environment:
-
-```bash
-VERCEL_ENV=production  # Vercel sets this automatically per branch
-```
-
-**Examples:**
-
-- **Local**: Set `MONGODB_DB=test` in `.env.local`
-- **Vercel develop branch**: `VERCEL_ENV=preview` (automatic) → Database = `preview`
-- **Vercel main branch**: `VERCEL_ENV=production` (automatic) → Database = `production`
-- **Staging**: Set `MONGODB_DB=staging` override in Vercel
-
-**Safety:**
-
-- ✅ **No fallback defaults** - app fails if database not specified
-- ✅ Prevents accidentally connecting to wrong database
-- ✅ Explicit configuration required for all environments
-- ✅ Vercel deployments work automatically via `VERCEL_ENV`
+- `CFBD_ALERT_WEBHOOK_URL` - Webhook URL for low API call alerts (optional)
+- `CFBD_ALERT_EMAIL` - Email address for low API call alerts (optional)
+- `RESEND_API_KEY` - Resend API key for email alerts (optional)
+- `RESEND_FROM_EMAIL` - From email address for alerts (optional)
 
 ## Development Workflow
 
@@ -141,34 +121,24 @@ npm run dev  # Runs: tsc --noEmit && next dev
 
 ## Data Flow
 
-### 1. Data Ingestion (ESPN → MongoDB)
+### 1. Data Fetching (CFBD API → Frontend)
 
 ```
-ESPN API → reshape functions → MongoDB
-```
-
-**Endpoints:**
-
-- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert games and teams (teams extracted from scoreboard), return data
-
-### 2. Data Retrieval (MongoDB → Frontend)
-
-```
-MongoDB → lean queries → strongly typed transformations → API response
+CFBD API → reshape functions → API response → Frontend
 ```
 
 **Endpoints:**
 
-- `GET /api/games/[sport]/[conf]` - Query games from database (read-only, no ESPN fetch, ~50-200ms for fast initial loads)
-- `POST /api/games/[sport]/[conf]` - Fetch from ESPN, upsert to database, return data (~500-2000ms)
+- `GET /api/games/[sport]/[conf]` - Fetch games and teams from CFBD API, reshape, return data
+- `GET /api/games/[sport]/[conf]/subscribe` - GraphQL subscription for live score updates (Server-Sent Events)
+- `GET /api/standings/[sport]/[conf]` - Calculate current conference standings from completed games
 
 **Frontend Loading Strategy:**
 
-- Initial load uses GET endpoint for fast MongoDB query (~50-200ms)
-- Background refresh automatically triggers POST endpoint to fetch fresh data from ESPN (~500-2000ms)
-- Loading spinner only shows during GET request; POST refresh happens silently
+- Initial load fetches from CFBD API
+- Live updates use GraphQL subscriptions (when in season) or REST API polling (when out of season)
 
-### 3. Simulation Engine
+### 2. Simulation Engine
 
 ```
 User overrides → tiebreaker calculation → standings display
@@ -176,174 +146,36 @@ User overrides → tiebreaker calculation → standings display
 
 **Endpoints:**
 
-- `POST /api/simulate/cfb/sec` - Simulate SEC standings with optional game overrides (currently hardcoded to cfb/sec)
+- `POST /api/simulate/[sport]/[conf]` - Simulate conference standings with optional game overrides
+
+**Utility Endpoints:**
+
+- `GET /api/season-status` - Check if currently in season
+- `GET /api/cfbd-monitor` - Monitor CFBD API usage and remaining calls
+- `POST /api/cfbd-alert-handler` - Webhook handler for API usage alerts
 
 ## Key Design Decisions
 
-### ESPN IDs as Primary Keys
+### CFBD Types as Source of Truth
 
-Team documents use ESPN's team IDs directly as MongoDB `_id`:
+All types are derived from CFBD's TypeScript package:
 
 ```typescript
-// Team document
-{
-  _id: "61",  // ESPN team ID for Georgia
-  name: "Bulldogs",
-  displayName: "Georgia Bulldogs",
-  // ...
-}
+import type { Conference, Game, Team } from 'cfbd';
+
+// Conference identifier uses CFBD's Conference type
+type ConferenceSlug = NonNullable<Conference['abbreviation']>;
 ```
 
 **Benefits:**
 
-- No redundant ID fields
-- Direct relationship mapping
-- Simpler queries
+- Type safety from official CFBD types
+- No custom type mapping needed
+- Direct compatibility with CFBD API responses
 
-### Lean Queries with Strong Typing
+### Direct API Integration
 
-All database reads use Mongoose `.lean()` for performance, with explicit type transformations:
-
-```typescript
-const gamesRaw = await Game.find(query).lean().exec();
-const games: GameLean[] = gamesRaw.map(
-  (game): GameLean => ({
-    _id: String(game._id),
-    espnId: String(game.espnId),
-    // ... explicit field-by-field transformation
-  })
-);
-```
-
-### Null vs Undefined Semantics
-
-- `null`: Data was fetched but not available (e.g., no betting odds)
-- `undefined`: Data not yet fetched
-
-### Multi-Sport Architecture
-
-The ESPN client and data models support multiple sports/leagues for future expansion beyond SEC Football.
-
-## API Endpoints
-
-### POST /api/games/[sport]/[conf]
-
-Fetches game data from ESPN, upserts to database, and returns reshaped data.
-
-**Path Parameters:**
-
-- `sport` - Sport slug (e.g., "cfb")
-- `conf` - Conference slug (e.g., "sec")
-
-**Example**: `POST /api/games/cfb/sec`
-
-**Request Body:**
-
-```json
-{
-  "season": 2025,
-  "week": 11,
-  "state": "in",
-  "update": "live",
-  "force": true
-}
-```
-
-**Body Parameters:**
-
-- `season` - Year (e.g., 2025)
-- `week` - Week number
-- `state` - Game state: "pre", "in", "post"
-- `from` / `to` - Date range filters (ISO format)
-- `update` - "live" (scores/status only), "spreads" (odds only), or undefined (full update)
-- `force` - `true` to bypass season check
-
-**Response:**
-
-```json
-{
-  "events": [...],
-  "teams": [...],
-  "lastUpdated": "2024-11-10T..."
-}
-```
-
-**Notes**: Automatically fetches from ESPN and upserts reshaped data. Returns existing data during off-season.
-
-**Note**: Teams are automatically extracted and upserted when fetching games via `POST /api/games/[sport]/[conf]`. There is no separate teams endpoint.
-
-## Database Schema
-
-### Game Collection
-
-```typescript
-{
-  espnId: string,           // ESPN game ID
-  date: string,             // ISO date
-  week: number | null,
-  season: number,
-  sport: string,
-  league: string,
-  state: "pre" | "in" | "post",
-  completed: boolean,
-  conferenceGame: boolean,
-  neutralSite: boolean,
-  home: {
-    teamEspnId: string,
-    abbrev: string,
-    score: number | null,
-    rank: number | null
-  },
-  away: { /* same structure */ },
-  odds: {
-    favoriteTeamEspnId: string | null,
-    spread: number | null,
-    overUnder: number | null
-  },
-  predictedScore: {
-    home: number,
-    away: number
-  },
-  gameType?: {
-    name: string,
-    abbreviation: string
-  }
-}
-```
-
-**Indexes:**
-
-- Compound: `{ sport, league, conferenceGame, season, week }`
-- `{ state, completed }`
-- `{ "home.teamEspnId" }`
-- `{ "away.teamEspnId" }`
-
-### Team Collection
-
-```typescript
-{
-  _id: string,              // ESPN team ID (primary key)
-  name: string,
-  displayName: string,
-  abbreviation: string,
-  logo: string,
-  color: string,
-  alternateColor: string,
-  conferenceId: string,
-  record: {
-    overall: string,        // "8-1"
-    conference: string,     // "6-1"
-    home: string,
-    away: string,
-    stats: { /* win %, points, etc */ }
-  },
-  conferenceStanding: string,  // "3rd in SEC"
-  nationalRanking: number | null,
-  playoffSeed: number | null,
-  nextGameId: string | null,
-  lastUpdated: Date
-}
-```
+All data is fetched directly from CFBD API on each request. No database persistence is used.
 
 ## Testing
 
@@ -365,25 +197,26 @@ npm run lint
 
 ## Current Status
 
-✅ **Phase 1 Complete**: API Foundation
+✅ **Complete**: CFBD API Integration
 
-- ESPN data ingestion
-- MongoDB integration
-- Strongly typed API layer
-- Game and team data storage
+- CFBD REST and GraphQL API integration
+- Season-based API switching (REST out of season, GraphQL in season)
+- GraphQL subscriptions for live score updates
+- Strongly typed API layer using CFBD TypeScript types
 
-✅ **Phase 2 Complete**: Tiebreaker Engine
+✅ **Complete**: Tiebreaker Engine
 
 - SEC rules implementation (Rules A-E)
 - Simulation endpoint (`/api/simulate/[sport]/[conf]`)
 - User score overrides
-- Frontend polling for live data updates
+- Standings calculation
 
-📋 **Phase 3 Planned**: Frontend UI
+✅ **Complete**: Frontend UI
 
 - Game picker interface
 - Standings visualization
 - Simulation controls
+- Live score updates via GraphQL subscriptions
 
 ## License
 

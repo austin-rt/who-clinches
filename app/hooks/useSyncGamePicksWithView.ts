@@ -27,11 +27,11 @@ export const useSyncGamePicksWithView = ({ games, view }: UseSyncGamePicksWithVi
     };
 
     const resetLiveGamePickToZero = (game: GameLean) => {
-      const currentPick = gamePicks[game.espnId];
+      const currentPick = gamePicks[game.id];
       if (currentPick && (currentPick.awayScore !== 0 || currentPick.homeScore !== 0)) {
         dispatch(
           setGamePick({
-            gameId: game.espnId,
+            gameId: game.id,
             pick: { awayScore: 0, homeScore: 0 },
           })
         );
@@ -41,11 +41,11 @@ export const useSyncGamePicksWithView = ({ games, view }: UseSyncGamePicksWithVi
     const setLiveGamePickToPredicted = (game: GameLean) => {
       if (!game.predictedScore) return;
 
-      const currentPick = gamePicks[game.espnId];
+      const currentPick = gamePicks[game.id];
       if (!currentPick || (currentPick.awayScore === 0 && currentPick.homeScore === 0)) {
         dispatch(
           setGamePick({
-            gameId: game.espnId,
+            gameId: game.id,
             pick: {
               awayScore: game.predictedScore.away,
               homeScore: game.predictedScore.home,

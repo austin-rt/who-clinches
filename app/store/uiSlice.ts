@@ -6,9 +6,7 @@ interface UIState {
   mode: ThemeMode;
   view: ViewMode;
   hideCompletedGames: boolean;
-  lastUpdated: string | null;
   standingsOpen: boolean;
-  season: number | null;
 }
 
 const initialState: UIState = {
@@ -16,9 +14,7 @@ const initialState: UIState = {
   mode: 'light',
   view: 'picks',
   hideCompletedGames: false,
-  lastUpdated: null,
   standingsOpen: false,
-  season: null,
 };
 
 const uiSlice = createSlice({
@@ -37,17 +33,12 @@ const uiSlice = createSlice({
     setHideCompletedGames: (state, action: PayloadAction<boolean>) => {
       state.hideCompletedGames = action.payload;
     },
-    setLastUpdated: (state, action: PayloadAction<string>) => {
-      state.lastUpdated = action.payload;
-    },
     setStandingsOpen: (state, action: PayloadAction<boolean>) => {
       state.standingsOpen = action.payload;
-    },
-    setSeason: (state, action: PayloadAction<number | null>) => {
-      state.season = action.payload;
     },
   },
 });
 
-export const { setTheme, setMode, setView, setHideCompletedGames, setLastUpdated, setStandingsOpen, setSeason } = uiSlice.actions;
+export const { setTheme, setMode, setView, setHideCompletedGames, setStandingsOpen } =
+  uiSlice.actions;
 export default uiSlice.reducer;

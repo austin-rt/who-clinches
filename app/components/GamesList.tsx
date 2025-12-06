@@ -16,14 +16,14 @@ const GamesList = () => {
   const conf = params.conf as string;
   const { view } = useUIState();
 
-  const { enrichedGames, isLoading, isError, isUninitialized } = useGamesData({
+  const { games, isLoading, isError, isUninitialized } = useGamesData({
     sport,
     conf,
   });
 
-  useSyncGamePicksWithView({ games: enrichedGames, view });
+  useSyncGamePicksWithView({ games, view });
 
-  const { finalWeeks, remainingWeeks } = organizeGames(enrichedGames);
+  const { finalWeeks, remainingWeeks } = organizeGames(games);
 
   if (isLoading || isUninitialized) {
     return (

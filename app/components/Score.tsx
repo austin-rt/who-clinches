@@ -14,7 +14,7 @@ interface ScoreProps {
 const Score = ({ game }: ScoreProps) => {
   const dispatch = useAppDispatch();
   const { view } = useUIState();
-  const gamePick = useAppSelector((state) => state.gamePicks.picks[game.espnId]);
+  const gamePick = useAppSelector((state) => state.gamePicks.picks[game.id]);
 
   const getCurrentScores = useMemo(() => {
     if (game.completed) {
@@ -77,7 +77,7 @@ const Score = ({ game }: ScoreProps) => {
       return;
     }
 
-    dispatch(setGamePick({ gameId: game.espnId, pick: { homeScore: home, awayScore: away } }));
+    dispatch(setGamePick({ gameId: game.id, pick: { homeScore: home, awayScore: away } }));
   };
 
   const awayScoreNum = parseInt(awayScore, 10) || 0;

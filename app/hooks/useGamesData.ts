@@ -1,15 +1,8 @@
-import { useMemo, useEffect, useRef } from 'react';
-import {
-  useGetSeasonGameDataFromCacheQuery,
-  useGetSeasonGameDataQuery,
-  useLazyGetSeasonGameDataQuery,
-  useGetLiveGameDataQuery,
-  useGetSpreadDataQuery,
-} from '@/app/store/apiSlice';
-import { useUIState } from '@/app/store/useUI';
+import { useMemo, useEffect, useRef, useState } from 'react';
+import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
 import { useAppSelector } from '@/app/store/hooks';
 import { GameLean } from '@/lib/types';
-import { TeamMetadata } from '@/lib/api-types';
+import { GamesResponse } from '@/lib/api-types';
 
 interface UseGamesDataParams {
   sport: string;
@@ -17,7 +10,7 @@ interface UseGamesDataParams {
 }
 
 interface UseGamesDataReturn {
-  enrichedGames: GameLean[];
+  games: GameLean[];
   season: number;
   isLoading: boolean;
   isError: boolean;
@@ -25,233 +18,102 @@ interface UseGamesDataReturn {
 }
 
 export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataReturn => {
-  const { view } = useUIState();
-  const season = useAppSelector((state) => state.ui.season) ?? new Date().getFullYear();
+  const season = useAppSelector((state) => state.app.season) ?? new Date().getFullYear();
 
-  const cacheQueryArgs = useMemo(
-    () => ({
-      sport,
-      conf,
-      season: season ?? undefined,
-    }),
-    [sport, conf, season]
-  );
-
-  const refreshQueryArgs = useMemo(
+  const queryArgs = useMemo(
     () => ({
       sport,
       conf,
       season: season!,
-      force: true,
     }),
     [sport, conf, season]
   );
 
   const {
-    data: initialData,
-    isLoading: isInitialLoading,
-    isError: isInitialError,
-    isUninitialized: isInitialUninitialized,
-    isSuccess: isInitialSuccess,
-  } = useGetSeasonGameDataFromCacheQuery(cacheQueryArgs, {
-    refetchOnMountOrArgChange: true,
+    data: seasonData,
+    isLoading,
+    isError,
+    isUninitialized,
+  } = useGetSeasonGameDataQuery(queryArgs, {
     skip: season === null,
+    refetchOnMountOrArgChange: true,
   });
 
-  const hasSeededRef = useRef<string>('');
+  const [subscriptionData, setSubscriptionData] = useState<GamesResponse | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
-  const [triggerSeed, { data: seededData, isLoading: isSeeding }] = useLazyGetSeasonGameDataQuery();
-
-  const cacheKey = `${sport}/${conf}/${season ?? 'null'}`;
-
-  useEffect(() => {
-    if (hasSeededRef.current !== cacheKey) {
-      hasSeededRef.current = '';
-    }
-  }, [cacheKey]);
-
-  useEffect(() => {
-    if (
-      isInitialSuccess &&
-      initialData?.needsSeeding &&
-      hasSeededRef.current !== cacheKey &&
-      !isSeeding
-    ) {
-      hasSeededRef.current = cacheKey;
-      void triggerSeed(refreshQueryArgs);
-    }
-  }, [
-    isInitialSuccess,
-    initialData?.needsSeeding,
-    triggerSeed,
-    refreshQueryArgs,
-    isSeeding,
-    cacheKey,
-  ]);
-
-  const shouldRefresh = useMemo(() => {
-    return isInitialSuccess && !!initialData && !initialData.needsSeeding;
-  }, [isInitialSuccess, initialData]);
-
-  const { data: refreshData, isError: isRefreshError } = useGetSeasonGameDataQuery(
-    refreshQueryArgs,
-    {
-      skip: !shouldRefresh || season === null,
-    }
-  );
-
-  const seasonData = seededData || refreshData || initialData;
-  const isLoading = isInitialLoading || isSeeding;
-  const isError = isInitialError || isRefreshError;
-  const isUninitialized = isInitialUninitialized && !isSeeding;
-
-  const liveQueryArgs = useMemo(
-    () => ({
-      sport,
-      conf,
-      force: true,
-    }),
-    [sport, conf]
-  );
-
-  const spreadsQueryArgs = useMemo(
-    () => ({
-      sport,
-      conf,
-      season: season!,
-      force: true,
-    }),
-    [sport, conf, season]
-  );
-
-  const initialPollingConfig = useMemo(() => {
-    if (!seasonData?.events || seasonData.events.length === 0) {
-      return { pollingInterval: 0, useLive: false, useSpreads: false };
-    }
-
-    const now = new Date().getTime();
-    const fiveMinutesInMs = 5 * 60 * 1000;
-
-    const hasLiveGames = seasonData.events.some((game: GameLean) => game.state === 'in');
-    const hasGamesStartingSoon = seasonData.events.some((game: GameLean) => {
-      if (game.state !== 'pre') return false;
-      const gameDate = new Date(game.date).getTime();
-      const timeUntilGame = gameDate - now;
-      return timeUntilGame > 0 && timeUntilGame <= fiveMinutesInMs;
-    });
-
-    const allCompleted = seasonData.events.every(
-      (game: GameLean) => game.state === 'post' && game.completed
-    );
-
-    if (allCompleted) {
-      return { pollingInterval: 0, useLive: false, useSpreads: false };
-    }
-
-    if (hasLiveGames || hasGamesStartingSoon) {
-      return {
-        pollingInterval: 60000,
-        useLive: true,
-        useSpreads: false,
-      };
-    }
-
-    const isDev = process.env.NODE_ENV === 'development';
-
-    const hasPreGameGames = seasonData.events.some((game: GameLean) => game.state === 'pre');
-    if (hasPreGameGames && view === 'scores' && !isDev) {
-      return {
-        pollingInterval: 120000,
-        useLive: false,
-        useSpreads: true,
-      };
-    }
-
-    return { pollingInterval: 0, useLive: false, useSpreads: false };
-  }, [seasonData, view]);
-
-  const isDev = process.env.NODE_ENV === 'development';
-  const { data: liveData } = useGetLiveGameDataQuery(liveQueryArgs, {
-    pollingInterval:
-      initialPollingConfig.useLive && !isDev ? initialPollingConfig.pollingInterval : 0,
-    skip: !initialPollingConfig.useLive || isLoading || isUninitialized || isDev,
-  });
-
-  const pollingConfig = useMemo(() => {
-    const dataToCheck = liveData || seasonData;
-
+  const hasLiveGames = useMemo(() => {
+    const dataToCheck = subscriptionData || seasonData;
     if (!dataToCheck?.events || dataToCheck.events.length === 0) {
-      return initialPollingConfig;
+      return false;
     }
+    return dataToCheck.events.some((game: GameLean) => game.state === 'in');
+  }, [subscriptionData, seasonData]);
 
+  const hasGamesStartingSoon = useMemo(() => {
+    const dataToCheck = subscriptionData || seasonData;
+    if (!dataToCheck?.events || dataToCheck.events.length === 0) {
+      return false;
+    }
     const now = new Date().getTime();
     const fiveMinutesInMs = 5 * 60 * 1000;
-
-    const hasLiveGames = dataToCheck.events.some((game: GameLean) => game.state === 'in');
-    const hasGamesStartingSoon = dataToCheck.events.some((game: GameLean) => {
+    return dataToCheck.events.some((game: GameLean) => {
       if (game.state !== 'pre') return false;
       const gameDate = new Date(game.date).getTime();
       const timeUntilGame = gameDate - now;
       return timeUntilGame > 0 && timeUntilGame <= fiveMinutesInMs;
     });
+  }, [subscriptionData, seasonData]);
 
-    const allPost = dataToCheck.events.every((game: GameLean) => game.state === 'post');
+  const shouldSubscribe = hasLiveGames || hasGamesStartingSoon;
 
-    if (allPost) {
-      return { pollingInterval: 0, useLive: false, useSpreads: false };
+  useEffect(() => {
+    if (!shouldSubscribe || isLoading || isUninitialized || season === null) {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+      return;
     }
 
-    if (hasLiveGames || hasGamesStartingSoon) {
-      return {
-        pollingInterval: 60000,
-        useLive: true,
-        useSpreads: false,
-      };
-    }
+    const eventSource = new EventSource(`/api/games/${sport}/${conf}/subscribe?season=${season}`);
 
-    return initialPollingConfig;
-  }, [seasonData, liveData, initialPollingConfig]);
+    eventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.error) {
+          return;
+        }
+        setSubscriptionData(data as GamesResponse);
+      } catch {
+        // Ignore parse errors
+      }
+    };
 
-  const { data: spreadsData } = useGetSpreadDataQuery(spreadsQueryArgs, {
-    pollingInterval: pollingConfig.useSpreads ? pollingConfig.pollingInterval : 0,
-    skip: !pollingConfig.useSpreads || isLoading || isUninitialized,
-  });
+    eventSource.onerror = () => {
+      eventSource.close();
+      eventSourceRef.current = null;
+    };
 
-  const finalData = liveData || spreadsData || seasonData;
+    eventSourceRef.current = eventSource;
 
-  const enrichedGames = useMemo(() => {
-    if (!finalData) return [];
+    return () => {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+    };
+  }, [shouldSubscribe, isLoading, isUninitialized, sport, conf, season]);
 
-    const teamMap = new Map<string, TeamMetadata>(
-      finalData.teams.map((team: TeamMetadata) => [team.id, team])
-    );
+  const finalData = subscriptionData || seasonData;
 
-    return finalData.events.map((game: GameLean) => {
-      const homeTeam = teamMap.get(game.home.teamEspnId);
-      const awayTeam = teamMap.get(game.away.teamEspnId);
-
-      return {
-        ...game,
-        home: {
-          ...game.home,
-          displayName: homeTeam?.displayName || game.home.abbrev,
-          logo: homeTeam?.logo || game.home.logo || '',
-          color: homeTeam?.color || game.home.color || '',
-          alternateColor: homeTeam?.alternateColor || game.home.alternateColor || '',
-        },
-        away: {
-          ...game.away,
-          displayName: awayTeam?.displayName || game.away.abbrev,
-          logo: awayTeam?.logo || game.away.logo || '',
-          color: awayTeam?.color || game.away.color || '',
-          alternateColor: awayTeam?.alternateColor || game.away.alternateColor || '',
-        },
-      };
-    }) as GameLean[];
+  const games = useMemo(() => {
+    if (!finalData || !finalData.events) return [];
+    return finalData.events;
   }, [finalData]);
 
   return {
-    enrichedGames,
+    games,
     season,
     isLoading,
     isError,

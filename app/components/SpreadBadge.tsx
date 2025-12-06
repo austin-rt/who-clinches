@@ -12,8 +12,8 @@ interface SpreadBadgeProps {
 const SpreadBadge = ({ game }: SpreadBadgeProps) => {
   const { mode } = useUIState();
 
-  const isHomeFavorite = game.odds.favoriteTeamEspnId === game.home.teamEspnId;
-  const isAwayFavorite = game.odds.favoriteTeamEspnId === game.away.teamEspnId;
+  const isHomeFavorite = game.odds.favoriteTeamId === game.home.teamId;
+  const isAwayFavorite = game.odds.favoriteTeamId === game.away.teamId;
   const favoredTeam = isHomeFavorite ? game.home : isAwayFavorite ? game.away : null;
   const favoredTeamColor = favoredTeam?.color;
 

@@ -17,14 +17,13 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
   const params = useParams();
   const sport = params.sport as string;
   const conf = params.conf as string;
-  const season = useAppSelector((state) => state.ui.season);
+  const season = useAppSelector((state) => state.app.season);
 
   const { data, isLoading, refetch } = useGetSeasonGameDataQuery(
     {
       sport,
       conf,
       season: season!,
-      force: true,
     },
     {
       refetchOnMountOrArgChange: true,

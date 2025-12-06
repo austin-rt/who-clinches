@@ -3,13 +3,20 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import expireReducer from 'redux-persist-expire';
 import uiReducer from './uiSlice';
+import appReducer from './appSlice';
 import gamePicksReducer from './gamePicksSlice';
 import { apiSlice } from './apiSlice';
 
 const uiPersistConfig = {
   key: 'ui',
   storage,
-  blacklist: ['lastUpdated', 'standingsOpen'],
+  blacklist: ['standingsOpen'],
+};
+
+const appPersistConfig = {
+  key: 'app',
+  storage,
+  blacklist: ['isInSeason'],
 };
 
 const gamePicksPersistConfig = {
@@ -25,10 +32,12 @@ const gamePicksPersistConfig = {
 };
 
 const persistedUiReducer = persistReducer(uiPersistConfig, uiReducer);
+const persistedAppReducer = persistReducer(appPersistConfig, appReducer);
 const persistedGamePicksReducer = persistReducer(gamePicksPersistConfig, gamePicksReducer);
 
 const rootReducer = combineReducers({
   ui: persistedUiReducer,
+  app: persistedAppReducer,
   gamePicks: persistedGamePicksReducer,
   [apiSlice.reducerPath]: apiSlice.reducer,
 });

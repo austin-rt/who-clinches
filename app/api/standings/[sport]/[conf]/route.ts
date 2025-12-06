@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import dbConnect from '@/lib/mongodb';
-import Game from '@/lib/models/Game';
-import Team from '@/lib/models/Team';
-import { GameLean, GameState } from '@/lib/types';
+import { cfbdClient } from '@/lib/cfb/cfbd-client';
+import { reshapeCfbdGames } from '@/lib/reshape-games';
+import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
+import { GameLean, TeamLean } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
-import { sports, type SportSlug, type ConferenceSlug } from '@/lib/constants';
+import type { Conference } from 'cfbd';
+import { getConferenceMetadata } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
+import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -21,13 +23,11 @@ const getOrdinalSuffix = (num: number): string => {
 };
 
 const getConferenceConfig = async (
-  conf: ConferenceSlug
+  conf: NonNullable<Conference['abbreviation']>
 ): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
   try {
-    if (conf === 'sec') {
-      const { SEC_TIEBREAKER_CONFIG } = await import(
-        '@/lib/cfb/tiebreaker-rules/sec/config'
-      );
+    if (conf === 'SEC') {
+      const { SEC_TIEBREAKER_CONFIG } = await import('@/lib/cfb/tiebreaker-rules/sec/config');
       return { config: SEC_TIEBREAKER_CONFIG };
     }
 
@@ -42,18 +42,17 @@ const getConferenceConfig = async (
 
 export const GET = async (
   request: NextRequest,
-  { params }: { params: Promise<{ sport: SportSlug; conf: ConferenceSlug }> }
+  {
+    params,
+  }: { params: Promise<{ sport: string; conf: NonNullable<Conference['abbreviation']> }> }
 ) => {
   try {
-    await dbConnect();
-
     const { sport, conf } = await params;
 
     const { searchParams } = new URL(request.url);
     const season = searchParams.get('season');
 
-    const { conferences, espnRoute } = sports[sport];
-    const conferenceMeta = conferences[conf];
+    const conferenceMeta = getConferenceMetadata(conf);
 
     if (!conferenceMeta) {
       return NextResponse.json<ApiErrorResponse>(
@@ -78,98 +77,53 @@ export const GET = async (
 
     const config: ConferenceTiebreakerConfig = configResult.config;
 
-    const [espnSport, espnLeague] = espnRoute.split('/');
-    const seasonYear = season ? parseInt(season, 10) : new Date().getFullYear();
+    const seasonYear = season ? parseInt(season, 10) : await getDefaultSeasonFromCfbd();
 
-    const conferenceTeams = await Team.find({
-      conferenceId: conferenceMeta.espnId,
-    })
-      .lean()
-      .select(
-        '_id name abbreviation displayName shortDisplayName logo color alternateColor conferenceStanding record'
-      )
-      .exec();
+    const cfbdGames = await cfbdClient.getGames({
+      year: seasonYear,
+      conference: conferenceMeta.cfbdId,
+    });
 
-    const completedConferenceGames = await Game.find({
-      sport: espnSport,
-      league: espnLeague,
-      season: seasonYear,
-      conferenceGame: true,
-      completed: true,
-      'home.score': { $ne: null },
-      'away.score': { $ne: null },
-    })
-      .lean()
-      .exec();
-
-    const gamesForCalculation: GameLean[] = completedConferenceGames.map(
-      (game): GameLean => ({
-        _id: String(game._id),
-        espnId: game.espnId,
-        displayName: game.displayName,
-        date: game.date,
-        week: game.week ?? null,
-        season: game.season,
-        sport: game.sport,
-        league: game.league,
-        state: game.state as GameState,
-        completed: game.completed,
-        conferenceGame: game.conferenceGame,
-        neutralSite: game.neutralSite,
-        venue: {
-          fullName: game.venue.fullName,
-          city: game.venue.city,
-          state: game.venue.state,
-          timezone: game.venue.timezone,
-        },
-        home: {
-          teamEspnId: game.home.teamEspnId,
-          abbrev: game.home.abbrev,
-          displayName: game.home.displayName,
-          shortDisplayName: game.home.shortDisplayName,
-          logo: game.home.logo,
-          color: game.home.color,
-          alternateColor: game.home.alternateColor,
-          score: game.home.score ?? null,
-          rank: game.home.rank ?? null,
-        },
-        away: {
-          teamEspnId: game.away.teamEspnId,
-          abbrev: game.away.abbrev,
-          displayName: game.away.displayName,
-          shortDisplayName: game.away.shortDisplayName,
-          logo: game.away.logo,
-          color: game.away.color,
-          alternateColor: game.away.alternateColor,
-          score: game.away.score ?? null,
-          rank: game.away.rank ?? null,
-        },
-        odds: {
-          favoriteTeamEspnId: game.odds.favoriteTeamEspnId ?? null,
-          spread: game.odds.spread ?? null,
-          overUnder: game.odds.overUnder ?? null,
-        },
-        predictedScore: {
-          home: game.predictedScore.home,
-          away: game.predictedScore.away,
-        },
-        gameType: game.gameType && {
-          name: game.gameType.name,
-          abbreviation: game.gameType.abbreviation,
-        },
-      })
+    const completedConferenceGames = cfbdGames.filter(
+      (game) =>
+        game.conferenceGame &&
+        game.completed &&
+        game.homePoints !== null &&
+        game.homePoints !== undefined &&
+        game.awayPoints !== null &&
+        game.awayPoints !== undefined
     );
 
-    const allTeamIds = conferenceTeams.map((team) => String(team._id));
+    const cfbdTeams = await cfbdClient.getTeams({
+      conference: conferenceMeta.cfbdId,
+    });
+
+    const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
+    const teamMap = new Map<string, TeamLean>(
+      teams.map((team) => [
+        team._id,
+        {
+          ...team,
+          conferenceId: team.conference,
+        } as TeamLean,
+      ])
+    );
+
+    const reshaped = reshapeCfbdGames(completedConferenceGames, teamMap);
+    const gamesForCalculation: GameLean[] = reshaped.games.map((game) => ({
+      _id: game.id,
+      ...game,
+    }));
+
+    const allTeamIds = teams.map((team) => team._id);
     const { standings } = calculateStandings(gamesForCalculation, allTeamIds, config);
 
-    const teamMap: Record<string, TeamMetadata> = {};
-    for (const team of conferenceTeams) {
-      const teamId = String(team._id);
-      const standing = standings.find((s) => s.teamId === teamId);
+    const teamMetadata: Record<string, TeamMetadata> = {};
+    for (const team of teams) {
+      const standing = standings.find((s) => s.teamId === team._id);
 
-      teamMap[teamId] = {
-        id: teamId,
+      teamMetadata[team._id] = {
+        id: team._id,
         abbrev: team.abbreviation,
         name: team.name,
         displayName: team.displayName,
@@ -187,12 +141,9 @@ export const GET = async (
       };
     }
 
-    const lastUpdated = new Date().toISOString();
-
     return NextResponse.json(
       {
-        teams: Object.values(teamMap),
-        lastUpdated,
+        teams: Object.values(teamMetadata),
       },
       {
         headers: {
@@ -204,7 +155,7 @@ export const GET = async (
     return NextResponse.json<ApiErrorResponse>(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
-        code: 'DB_ERROR',
+        code: 'API_ERROR',
       },
       { status: 500 }
     );
