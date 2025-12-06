@@ -41,7 +41,16 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
   };
 
   try {
-    const response = await fetch(targetUrl, {
+    // Add Vercel protection bypass if calling a Vercel URL and secret is available
+    let finalUrl = targetUrl;
+    const bypassSecret = process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+    if (bypassSecret && (targetUrl.includes('vercel.app') || targetUrl.includes('vercel.com'))) {
+      const urlObj = new URL(targetUrl);
+      urlObj.searchParams.set('x-vercel-protection-bypass', bypassSecret);
+      finalUrl = urlObj.toString();
+    }
+
+    const response = await fetch(finalUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
