@@ -4,34 +4,19 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
-import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
+import { CONFERENCE_CONFIGS } from '@/lib/cfb/tiebreaker-rules/configs';
 import { SimulateResponse } from '@/app/store/apiSlice';
 import { GameLean, TeamLean } from '@/lib/types';
-import type { Conference } from 'cfbd';
-import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import {
+  getConferenceMetadata,
+  isValidSport,
+  isValidConference,
+  type SportSlug,
+  type ConferenceAbbreviation,
+} from '@/lib/constants';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
-
-const getConferenceConfig = async (
-  conf: NonNullable<Conference['abbreviation']>
-): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
-  try {
-    if (conf === 'SEC') {
-      const { SEC_TIEBREAKER_CONFIG } = await import(
-        '@/lib/cfb/tiebreaker-rules/sec/config'
-      );
-      return { config: SEC_TIEBREAKER_CONFIG };
-    }
-
-    return { config: null, error: `Unsupported conference: ${conf}` };
-  } catch (error) {
-    return {
-      config: null,
-      error: `Failed to load conference config for ${conf}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
-  }
-};
 
 export const POST = async (
   request: NextRequest,
@@ -81,15 +66,13 @@ export const POST = async (
       );
     }
 
-    const configResult = await getConferenceConfig(conf);
-    if (configResult.error || !configResult.config) {
+    const config = CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    if (!config) {
       return NextResponse.json(
-        { error: configResult.error || `Conference config not found for ${conf}` },
+        { error: `Conference config not found for ${conf}` },
         { status: 400 }
       );
     }
-
-    const config: ConferenceTiebreakerConfig = configResult.config;
 
     const cfbdGames = await cfbdClient.getGames({
       year: season,
@@ -141,8 +124,7 @@ export const POST = async (
     const allTeams = Array.from(teamSet);
 
     const filteredConferenceGames = finalGames.filter(
-      (game) =>
-        conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
+      (game) => conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
     );
 
     const { standings, tieLogs } = calculateStandings(filteredConferenceGames, allTeams, config);

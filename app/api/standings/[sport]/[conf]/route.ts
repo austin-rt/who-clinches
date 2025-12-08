@@ -4,10 +4,9 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/app/store/apiSlice';
-import type { Conference } from 'cfbd';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
-import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
+import { CONFERENCE_CONFIGS } from '@/lib/cfb/tiebreaker-rules/configs';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
@@ -20,24 +19,6 @@ const getOrdinalSuffix = (num: number): string => {
   if (j === 2 && k !== 12) return 'nd';
   if (j === 3 && k !== 13) return 'rd';
   return 'th';
-};
-
-const getConferenceConfig = async (
-  conf: NonNullable<Conference['abbreviation']>
-): Promise<{ config: ConferenceTiebreakerConfig | null; error?: string }> => {
-  try {
-    if (conf === 'SEC') {
-      const { SEC_TIEBREAKER_CONFIG } = await import('@/lib/cfb/tiebreaker-rules/sec/config');
-      return { config: SEC_TIEBREAKER_CONFIG };
-    }
-
-    return { config: null, error: `Unsupported conference: ${conf}` };
-  } catch (error) {
-    return {
-      config: null,
-      error: `Failed to load conference config for ${conf}: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    };
-  }
 };
 
 export const GET = async (
@@ -84,18 +65,16 @@ export const GET = async (
       );
     }
 
-    const configResult = await getConferenceConfig(conf);
-    if (configResult.error || !configResult.config) {
+    const config = CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    if (!config) {
       return NextResponse.json<ApiErrorResponse>(
         {
-          error: configResult.error || `Conference config not found for ${conf}`,
+          error: `Conference config not found for ${conf}`,
           code: 'CONFIG_ERROR',
         },
         { status: 400 }
       );
     }
-
-    const config: ConferenceTiebreakerConfig = configResult.config;
 
     const seasonYear = season ? parseInt(season, 10) : await getDefaultSeasonFromCfbd();
 
