@@ -19,15 +19,8 @@
     "test:sandbox": "tsx scripts/test-sandbox-api-routes.ts",
     "test:sandbox:cleanup": "tsx scripts/test-sandbox-api-routes.ts --cleanup",
     "test:reshape": "jest __tests__/lib/reshape-teams",
-    "cron:active": "bash scripts/run-cron.sh update-games mode=active",
-    "cron:week": "bash scripts/run-cron.sh update-games mode=week",
-    "cron:season": "bash scripts/run-cron.sh update-games mode=season",
-    "cron:rankings": "bash scripts/run-cron.sh update-rankings",
-    "cron:spreads": "bash scripts/run-cron.sh update-spreads",
-    "cron:all:dev": "bash scripts/run-cron.sh update-all dev",
-    "cron:all:preview": "bash scripts/run-cron.sh update-all preview",
-    "cron:all:prod": "bash scripts/run-cron.sh update-all production",
-    "cron:all:all": "bash scripts/run-cron.sh update-all all",
+    "generate": "rtk-query-codegen-openapi rtk-query-codegen.config.js",
+    "codegen": "rtk-query-codegen-openapi rtk-query-codegen.config.js",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -46,6 +39,7 @@
     "city-timezones": "^1.3.2",
     "clsx": "^2.1.1",
     "daisyui": "^5.5.0",
+    "graphql-ws": "^5.14.2",
     "next": "16.0.7",
     "react": "19.2.1",
     "react-dom": "19.2.1",
@@ -54,10 +48,10 @@
     "redux-persist": "^6.0.0",
     "redux-persist-expire": "^1.1.1",
     "redux-thunk": "^3.1.0",
-    "tailwind-merge": "^3.4.0",
-    "graphql-ws": "^5.14.2"
+    "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@rtk-query/codegen-openapi": "^2.2.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^16.0.0",
     "@types/jest": "^29.5.11",
@@ -73,6 +67,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-extended": "^3.0.5",
     "lint-staged": "^16.2.6",
+    "openapi-typescript": "^7.10.1",
     "postcss": "^8.5.6",
     "postcss-nesting": "^13.0.2",
     "prettier": "^3.6.2",
