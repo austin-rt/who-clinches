@@ -6,8 +6,8 @@ export interface GameTeam {
   displayName: string;
   shortDisplayName: string;
   logo: string;
-  color?: string;
-  alternateColor?: string;
+  color?: string | null;
+  alternateColor?: string | null;
   score: number | null;
   rank: number | null;
 }
