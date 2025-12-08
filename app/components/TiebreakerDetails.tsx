@@ -1,6 +1,6 @@
 'use client';
 
-import { TieLog } from '@/lib/api-types';
+import { TieLog } from '@/app/store/apiSlice';
 
 interface TiebreakerDetailsProps {
   tieLogs: TieLog[];

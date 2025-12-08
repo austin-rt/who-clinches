@@ -1,6 +1,6 @@
 'use client';
 
-import { SimulateResponse } from '@/lib/api-types';
+import { SimulateResponse } from '@/app/store/apiSlice';
 import { useMemo } from 'react';
 import ChampionshipMatchup from './ChampionshipMatchup';
 import StandingsExplanations from './StandingsExplanations';

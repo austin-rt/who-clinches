@@ -1,11 +1,10 @@
 'use client';
 
 import { useMemo, useEffect } from 'react';
-import { useGetSeasonGameDataQuery } from '@/app/store/apiSlice';
+import { useGetSeasonGameDataQuery, TeamMetadata } from '@/app/store/apiSlice';
 import { useParams } from 'next/navigation';
 import { isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { useAppSelector } from '@/app/store/hooks';
-import { TeamMetadata } from '@/lib/api-types';
 import LoadingSpinner from './LoadingSpinner';
 import Divider from './Divider';
 import { cn } from '@/lib/utils';

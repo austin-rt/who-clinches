@@ -1,7 +1,7 @@
 'use client';
 
 import ChampionshipCard from './ChampionshipCard';
-import { StandingEntry } from '@/lib/api-types';
+import { StandingEntry } from '@/app/store/apiSlice';
 
 interface ChampionshipMatchupProps {
   team1: StandingEntry;

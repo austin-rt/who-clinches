@@ -5,7 +5,7 @@ import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { ConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
-import { SimulateResponse } from '@/lib/api-types';
+import { SimulateResponse } from '@/app/store/apiSlice';
 import { GameLean, TeamLean } from '@/lib/types';
 import type { Conference } from 'cfbd';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';

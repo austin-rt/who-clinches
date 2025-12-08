@@ -4,7 +4,7 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { GameLean, TeamLean } from '@/lib/types';
-import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/lib/api-types';
+import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/apiSlice';
 import type { Conference } from 'cfbd';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';

@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { StandingEntry } from '@/lib/api-types';
+import { StandingEntry } from '@/app/store/apiSlice';
 
 interface StandingsExplanationsProps {
   standings: StandingEntry[];

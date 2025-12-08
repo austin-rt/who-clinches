@@ -1,7 +1,11 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
-import { SimulateRequest, SimulateResponse } from '@/lib/api-types';
+import {
+  SimulateResponse,
+  SimulateRequestBody,
+  useSimulateMutation,
+} from '../store/apiSlice';
 import {
   isValidSport,
   isValidConference,
@@ -11,7 +15,6 @@ import {
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { useUIState } from '../store/useUI';
-import { useSimulateMutation } from '../store/apiSlice';
 
 interface SimulateButtonProps {
   onSimulateComplete?: (response: SimulateResponse) => void;
@@ -38,7 +41,7 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
       return;
     }
 
-    const overrides: SimulateRequest['overrides'] = {};
+    const overrides: SimulateRequestBody['overrides'] = {};
 
     Object.entries(gamePicks).forEach(([gameId, pick]) => {
       const gamePick = pick as GamePick;
@@ -48,12 +51,17 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
       };
     });
 
-    const payload: SimulateRequest = {
+    const simulateRequestBody: SimulateRequestBody = {
+      season,
       overrides,
     };
 
     try {
-      const response = await simulate({ ...payload, sport, conf, season }).unwrap();
+      const response = await simulate({
+        sport,
+        conf,
+        simulateRequestBody,
+      }).unwrap();
 
       if (onSimulateComplete) {
         onSimulateComplete(response);

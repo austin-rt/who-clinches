@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { cfbdGraphQLClient } from '@/lib/cfb/cfbd-graphql-client';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
-import { GamesResponse, TeamMetadata } from '@/lib/api-types';
+import { GamesResponse, TeamMetadata } from '@/app/store/apiSlice';
 import { GameLean, TeamLean } from '@/lib/types';
 import { getConferenceMetadata, isValidSport, isValidConference, type ConferenceAbbreviation } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';

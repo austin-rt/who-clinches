@@ -3,7 +3,7 @@
 import { useState, forwardRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { setStandingsOpen } from '@/app/store/uiSlice';
-import { SimulateResponse } from '@/lib/api-types';
+import { SimulateResponse } from '@/app/store/apiSlice';
 import CurrentStandings from './CurrentStandings';
 import SimulatedStandings from './SimulatedStandings';
 
