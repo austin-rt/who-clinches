@@ -5,10 +5,14 @@ import { EPSILON_CONSTANT } from './core-helpers';
 export const applyRuleETeamRatingScore = (
   tiedTeams: string[],
   games: GameLean[],
-  allTeams: string[]
+  allTeams?: string[]
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
+  }
+
+  if (!allTeams) {
+    return { winners: tiedTeams, detail: 'All teams required for Team Rating Score' };
   }
 
   const ratings = tiedTeams.map((teamId) => ({
