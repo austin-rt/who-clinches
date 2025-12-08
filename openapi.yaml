@@ -1,0 +1,701 @@
+openapi: 3.0.3
+info:
+  title: Conference Tiebreaker API
+  version: 1.0.0
+  description: API for fetching games, standings, and simulating conference tiebreaker scenarios
+servers:
+  - url: /api
+    description: Local development server
+
+paths:
+  /games/{sport}/{conf}:
+    get:
+      summary: Get games and teams for a conference
+      operationId: getSeasonGameData
+      tags:
+        - Games
+      parameters:
+        - name: sport
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sport identifier
+        - name: conf
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Conference abbreviation
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          description: Season year (defaults to current season)
+        - name: week
+          in: query
+          required: false
+          schema:
+            oneOf:
+              - type: integer
+                format: int32
+              - type: string
+          description: Week number (requires season parameter)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GamesResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /standings/{sport}/{conf}:
+    get:
+      summary: Get current conference standings
+      operationId: getStandings
+      tags:
+        - Standings
+      parameters:
+        - name: sport
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sport identifier
+        - name: conf
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Conference abbreviation
+        - name: season
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+          description: Season year (defaults to current season)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandingsResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiErrorResponse'
+
+  /simulate/{sport}/{conf}:
+    post:
+      summary: Simulate conference standings with optional game overrides
+      operationId: simulate
+      tags:
+        - Simulation
+      parameters:
+        - name: sport
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Sport identifier
+        - name: conf
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Conference abbreviation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimulateRequestBody'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimulateResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: No games found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /season-status:
+    get:
+      summary: Check if currently in season
+      operationId: getSeasonStatus
+      tags:
+        - Status
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonStatusResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SeasonStatusResponse'
+
+  /cfbd-monitor:
+    get:
+      summary: Monitor CFBD API usage and remaining calls
+      operationId: getCfbdMonitor
+      tags:
+        - Monitoring
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CfbdMonitorResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CfbdMonitorResponse'
+
+  /cfbd-alert-handler:
+    post:
+      summary: Webhook handler for CFBD API usage alerts
+      operationId: postCfbdAlertHandler
+      tags:
+        - Monitoring
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CfbdAlertRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CfbdAlertResponse'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    GameState:
+      type: string
+      enum: [pre, in, post]
+
+    GameTeam:
+      type: object
+      required:
+        - teamId
+        - abbrev
+        - displayName
+        - shortDisplayName
+        - logo
+        - score
+        - rank
+      properties:
+        teamId:
+          type: string
+        abbrev:
+          type: string
+        displayName:
+          type: string
+        shortDisplayName:
+          type: string
+        logo:
+          type: string
+        color:
+          type: string
+          nullable: true
+        alternateColor:
+          type: string
+          nullable: true
+        score:
+          type: integer
+          format: int32
+          nullable: true
+        rank:
+          type: integer
+          format: int32
+          nullable: true
+
+    GameVenue:
+      type: object
+      required:
+        - fullName
+        - city
+        - state
+        - timezone
+      properties:
+        fullName:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        timezone:
+          type: string
+
+    GameOdds:
+      type: object
+      required:
+        - favoriteTeamId
+        - spread
+        - overUnder
+      properties:
+        favoriteTeamId:
+          type: string
+          nullable: true
+        spread:
+          type: number
+          format: float
+          nullable: true
+        overUnder:
+          type: number
+          format: float
+          nullable: true
+
+    PredictedScore:
+      type: object
+      required:
+        - home
+        - away
+      properties:
+        home:
+          type: integer
+          format: int32
+        away:
+          type: integer
+          format: int32
+
+    GameType:
+      type: object
+      required:
+        - name
+        - abbreviation
+      properties:
+        name:
+          type: string
+        abbreviation:
+          type: string
+
+    GameLean:
+      type: object
+      required:
+        - _id
+        - id
+        - displayName
+        - date
+        - week
+        - season
+        - sport
+        - league
+        - state
+        - completed
+        - conferenceGame
+        - neutralSite
+        - venue
+        - home
+        - away
+        - odds
+        - predictedScore
+      properties:
+        _id:
+          type: string
+        id:
+          type: string
+        displayName:
+          type: string
+        date:
+          type: string
+          format: date-time
+        week:
+          type: integer
+          format: int32
+          nullable: true
+        season:
+          type: integer
+          format: int32
+        sport:
+          type: string
+        league:
+          type: string
+        state:
+          $ref: '#/components/schemas/GameState'
+        completed:
+          type: boolean
+        conferenceGame:
+          type: boolean
+        neutralSite:
+          type: boolean
+        venue:
+          $ref: '#/components/schemas/GameVenue'
+        home:
+          $ref: '#/components/schemas/GameTeam'
+        away:
+          $ref: '#/components/schemas/GameTeam'
+        odds:
+          $ref: '#/components/schemas/GameOdds'
+        predictedScore:
+          $ref: '#/components/schemas/PredictedScore'
+        gameType:
+          $ref: '#/components/schemas/GameType'
+
+    TeamMetadata:
+      type: object
+      required:
+        - id
+        - abbrev
+        - name
+        - displayName
+        - shortDisplayName
+        - logo
+        - color
+        - alternateColor
+        - conferenceStanding
+        - conferenceRecord
+        - rank
+      properties:
+        id:
+          type: string
+        abbrev:
+          type: string
+        name:
+          type: string
+        displayName:
+          type: string
+        shortDisplayName:
+          type: string
+        logo:
+          type: string
+        color:
+          type: string
+        alternateColor:
+          type: string
+        conferenceStanding:
+          type: string
+        conferenceRecord:
+          type: string
+        rank:
+          type: integer
+          format: int32
+          nullable: true
+
+    GamesResponse:
+      type: object
+      required:
+        - events
+        - teams
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/GameLean'
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMetadata'
+        season:
+          type: integer
+          format: int32
+
+    StandingsResponse:
+      type: object
+      required:
+        - teams
+      properties:
+        teams:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeamMetadata'
+
+    GameOverride:
+      type: object
+      required:
+        - homeScore
+        - awayScore
+      properties:
+        homeScore:
+          type: integer
+          format: int32
+          minimum: 0
+        awayScore:
+          type: integer
+          format: int32
+          minimum: 0
+
+    SimulateRequestBody:
+      type: object
+      required:
+        - season
+        - overrides
+      properties:
+        season:
+          type: integer
+          format: int32
+        overrides:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/GameOverride'
+
+    TieStep:
+      type: object
+      required:
+        - rule
+        - detail
+        - survivors
+        - tieBroken
+        - label
+      properties:
+        rule:
+          type: string
+        detail:
+          type: string
+        survivors:
+          type: array
+          items:
+            type: string
+        tieBroken:
+          type: boolean
+        label:
+          type: string
+          enum: [Advances, Remaining, Ranked last]
+
+    TieLog:
+      type: object
+      required:
+        - teams
+        - steps
+      properties:
+        teams:
+          type: array
+          items:
+            type: string
+        steps:
+          type: array
+          items:
+            $ref: '#/components/schemas/TieStep'
+
+    StandingEntry:
+      type: object
+      required:
+        - rank
+        - teamId
+        - abbrev
+        - displayName
+        - logo
+        - color
+        - record
+        - confRecord
+        - explainPosition
+      properties:
+        rank:
+          type: integer
+          format: int32
+        teamId:
+          type: string
+        abbrev:
+          type: string
+        displayName:
+          type: string
+        logo:
+          type: string
+        color:
+          type: string
+        record:
+          $ref: '#/components/schemas/TeamRecord'
+        confRecord:
+          $ref: '#/components/schemas/TeamRecord'
+        explainPosition:
+          type: string
+
+    TeamRecord:
+      type: object
+      required:
+        - wins
+        - losses
+      properties:
+        wins:
+          type: integer
+          format: int32
+        losses:
+          type: integer
+          format: int32
+
+    SimulateResponse:
+      type: object
+      required:
+        - standings
+        - championship
+        - tieLogs
+      properties:
+        standings:
+          type: array
+          items:
+            $ref: '#/components/schemas/StandingEntry'
+        championship:
+          type: array
+          items:
+            type: string
+          minItems: 2
+          maxItems: 2
+        tieLogs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TieLog'
+
+    SeasonStatusResponse:
+      type: object
+      required:
+        - inSeason
+      properties:
+        inSeason:
+          type: boolean
+        error:
+          type: string
+          nullable: true
+
+    CfbdMonitorResponse:
+      type: object
+      required:
+        - patronLevel
+        - remainingCalls
+        - threshold
+        - isLow
+        - timestamp
+      properties:
+        patronLevel:
+          type: integer
+          format: int32
+        remainingCalls:
+          type: integer
+          format: int32
+        threshold:
+          type: integer
+          format: int32
+        isLow:
+          type: boolean
+        timestamp:
+          type: string
+          format: date-time
+        error:
+          type: string
+          nullable: true
+
+    CfbdAlertRequest:
+      type: object
+      required:
+        - remainingCalls
+        - patronLevel
+        - threshold
+      properties:
+        remainingCalls:
+          type: integer
+          format: int32
+        patronLevel:
+          type: integer
+          format: int32
+        threshold:
+          type: integer
+          format: int32
+        message:
+          type: string
+          nullable: true
+        timestamp:
+          type: string
+          format: date-time
+          nullable: true
+
+    CfbdAlertResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+        method:
+          type: string
+          nullable: true
+        emailId:
+          type: string
+          nullable: true
+        error:
+          type: string
+          nullable: true
+
+    BaseError:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+
+    ApiErrorResponse:
+      type: object
+      required:
+        - error
+        - code
+      properties:
+        error:
+          type: string
+        code:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+
