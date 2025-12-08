@@ -5,7 +5,7 @@ import expireReducer from 'redux-persist-expire';
 import uiReducer from './uiSlice';
 import appReducer from './appSlice';
 import gamePicksReducer from './gamePicksSlice';
-import { apiSlice } from './apiSlice';
+import { api } from './generated-api';
 
 const uiPersistConfig = {
   key: 'ui',
@@ -39,7 +39,7 @@ const rootReducer = combineReducers({
   ui: persistedUiReducer,
   app: persistedAppReducer,
   gamePicks: persistedGamePicksReducer,
-  [apiSlice.reducerPath]: apiSlice.reducer,
+  [api.reducerPath]: api.reducer,
 });
 
 export const store = configureStore({
@@ -49,7 +49,7 @@ export const store = configureStore({
       serializableCheck: {
         ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE', 'persist/PURGE'],
       },
-    }).concat(apiSlice.middleware),
+    }).concat(api.middleware),
 });
 
 export const persistor = persistStore(store);
