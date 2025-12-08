@@ -13,7 +13,7 @@ export interface ConferenceMetadata {
   name: string;
 }
 
-const CONFERENCE_METADATA = {
+export const CFB_CONFERENCE_METADATA = {
   sec: {
     cfbdId: 'SEC',
     name: 'SEC',
@@ -56,12 +56,14 @@ const CONFERENCE_METADATA = {
   },
 } as const satisfies Record<string, ConferenceMetadata>;
 
-export type ConferenceAbbreviation = keyof typeof CONFERENCE_METADATA;
+export type ConferenceAbbreviation = keyof typeof CFB_CONFERENCE_METADATA;
 
 export const getConferenceMetadata = (conf: string): ConferenceMetadata | null => {
-  return conf in CONFERENCE_METADATA ? CONFERENCE_METADATA[conf as ConferenceAbbreviation] : null;
+  return conf in CFB_CONFERENCE_METADATA
+    ? CFB_CONFERENCE_METADATA[conf as ConferenceAbbreviation]
+    : null;
 };
 
 export const isValidConference = (conf: string): conf is ConferenceAbbreviation => {
-  return conf in CONFERENCE_METADATA;
+  return conf in CFB_CONFERENCE_METADATA;
 };
