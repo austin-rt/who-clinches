@@ -5,6 +5,14 @@ export const conferenceThemes: ConferenceThemes = {
     defaultTheme: 'sec',
     name: 'SEC',
   },
+  sec: {
+    defaultTheme: 'sec',
+    name: 'SEC',
+  },
+  mac: {
+    defaultTheme: 'mac',
+    name: 'MAC',
+  },
 };
 
 export const getDefaultThemeForConference = (conferenceId: string): string => {

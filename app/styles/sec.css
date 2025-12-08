@@ -1,0 +1,39 @@
+/* SEC Default Theme - Team Colors Only */
+[data-theme='sec'] {
+  --color-primary: #002d74; /* SEC Blue - Pantone PMS288 C */
+  --color-primary-content: #002d7433; /* SEC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-secondary: #0052cc; /* Lighter SEC Blue */
+  --color-secondary-content: #0052cc33; /* Lighter SEC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-accent: #ffd040; /* SEC Gold - Pantone PMS 122 */
+  --color-accent-content: #ffd04033; /* SEC Gold with 33 opacity (for badge-soft backgrounds) */
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 217 100% 23%; /* SEC Blue in HSL - for DaisyUI components */
+  --pc: 0 0% 100%; /* White text on primary */
+  --s: 217 100% 40%; /* Lighter SEC Blue in HSL - for DaisyUI components */
+  --sc: 0 0% 100%; /* White text on secondary */
+  --a: 45 100% 63%; /* SEC Gold in HSL - for DaisyUI components */
+  --ac: 0 0% 10%; /* Dark text on accent */
+}
+
+/* SEC Light Mode - Blue-tinted backgrounds */
+[data-theme='sec'][data-mode='light'],
+[data-theme='sec']:not([data-mode='dark']) {
+  --color-base-100: #ffffff; /* Lightest - clean white */
+  --color-base-200: #f8f9fb; /* Medium - very subtle blue tint */
+  --color-base-300: #e6f0ff; /* Darkest of the three - pale blue for cards/sections */
+  --color-base-400: #d0e0f5; /* Fourth background - slightly more saturated blue */
+  --toggle-border-color: var(--color-primary); /* SEC Blue for toggle border/circle in light mode */
+}
+
+/* SEC Dark Mode - Only applies when SEC theme is active */
+[data-theme='sec'][data-mode='dark'] {
+  /* Dark mode base colors (SEC-specific) */
+  --color-base-100: #0a0f1a; /* Main background (very dark blue-black) */
+  --color-base-200: #151a25; /* Secondary background (SEC Blue tint, lower opacity) */
+  --color-base-300: #1a2d4a; /* Tertiary background - more visible blue */
+  --color-base-400: #2d4470; /* Fourth background - lighter blue for contrast */
+  --color-base-content: rgba(245, 245, 245, 0.8); /* Main text color (light) */
+  --toggle-border-color: var(--color-accent); /* SEC Gold for toggle border/circle in dark mode */
+}
+

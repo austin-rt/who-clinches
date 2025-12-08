@@ -42,10 +42,10 @@
 
       html[data-mode='dark'] &,
       [data-mode='dark'] & {
-        @apply border-base-content text-base-content;
+        @apply border-accent-80 text-accent-80;
 
         &:hover {
-          background-color: hsl(var(--bc) / 0.1);
+          background-color: hsl(var(--a) / 0.1);
         }
       }
     }
@@ -147,6 +147,76 @@
       html[data-mode='dark'] &,
       [data-mode='dark'] & {
         @apply text-base-content;
+      }
+    }
+
+    &:disabled {
+      @apply cursor-not-allowed opacity-50;
+    }
+  }
+
+  .select.select-stroke {
+    @apply border-2 bg-transparent;
+
+    &.select-primary {
+      @apply border-primary bg-transparent text-primary;
+
+      &:hover {
+        background-color: hsl(var(--p) / 0.1);
+      }
+
+      html[data-mode='dark'] &,
+      [data-mode='dark'] & {
+        @apply border-accent-80 text-accent-80;
+
+        &:hover {
+          background-color: hsl(var(--a) / 0.1);
+        }
+      }
+    }
+
+    &.select-secondary {
+      html[data-mode='light'] &,
+      html:not([data-mode='dark']) & {
+        @apply border-secondary bg-transparent text-primary;
+
+        &:hover {
+          @apply bg-secondary;
+        }
+      }
+
+      html[data-mode='dark'] &,
+      [data-mode='dark'] & {
+        @apply border-secondary bg-transparent text-secondary;
+
+        &:hover {
+          background-color: hsl(var(--s) / 0.1);
+        }
+      }
+    }
+
+    &.select-accent {
+      @apply border-accent-80 text-accent-80 bg-transparent;
+
+      &:hover {
+        background-color: hsl(var(--a) / 0.1);
+      }
+    }
+
+    &.select-neutral {
+      @apply border-neutral bg-transparent text-neutral;
+
+      &:hover {
+        @apply bg-neutral text-neutral-content;
+      }
+
+      html[data-mode='dark'] &,
+      [data-mode='dark'] & {
+        @apply border-base-content text-base-content;
+
+        &:hover {
+          @apply bg-base-content text-base-100;
+        }
       }
     }
 

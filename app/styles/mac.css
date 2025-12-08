@@ -1,0 +1,43 @@
+/* MAC Default Theme - Team Colors Only */
+[data-theme='mac'] {
+  --color-primary: #1e73be; /* MAC Blue */
+  --color-primary-content: #1e73be33; /* MAC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-secondary: #4a9de8; /* Lighter MAC Blue */
+  --color-secondary-content: #4a9de833; /* Lighter MAC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-accent: #00a160; /* MAC Green - Pantone 3405 CP */
+  --color-accent-content: #00a16033; /* MAC Green with 33 opacity (for badge-soft backgrounds) */
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 210 73% 43%; /* MAC Blue in HSL - for DaisyUI components */
+  --pc: 0 0% 100%; /* White text on primary */
+  --s: 210 73% 60%; /* Lighter MAC Blue in HSL - for DaisyUI components */
+  --sc: 0 0% 100%; /* White text on secondary */
+  --a: 155 100% 32%; /* MAC Green in HSL - for DaisyUI components */
+  --ac: 0 0% 100%; /* White text on accent */
+}
+
+/* MAC Light Mode - Blue-tinted backgrounds */
+[data-theme='mac'][data-mode='light'],
+[data-theme='mac']:not([data-mode='dark']) {
+  --color-base-100: #ffffff; /* Lightest - clean white */
+  --color-base-200: #f5f8fb; /* Medium - very subtle blue tint */
+  --color-base-300: #e3f0ff; /* Darkest of the three - pale blue for cards/sections */
+  --color-base-400: #cce5ff; /* Fourth background - slightly more saturated blue */
+  --toggle-border-color: var(--color-primary); /* MAC Blue for toggle border/circle in light mode */
+}
+
+/* MAC Dark Mode - Only applies when MAC theme is active */
+[data-theme='mac'][data-mode='dark'] {
+  /* Dark mode base colors (MAC-specific) - darker backgrounds for WCAG AA contrast (4.5:1) with green accent */
+  --color-base-100: #030609; /* Main background (very dark blue-black) - darker for 4.5:1 green contrast */
+  --color-base-200: #080d12; /* Secondary background (darker MAC Blue tint) */
+  --color-base-300: #0a0f15; /* Tertiary background - darker blue */
+  --color-base-400: #0e141c; /* Fourth background - darker blue for contrast */
+  --color-base-content: rgba(
+    255,
+    255,
+    255,
+    0.95
+  ); /* Main text color (light) - brighter for readability */
+  --toggle-border-color: var(--color-accent); /* MAC Green for toggle border/circle in dark mode */
+}
