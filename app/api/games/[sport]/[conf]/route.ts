@@ -8,6 +8,7 @@ import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import type { Conference } from 'cfbd';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
+import { loadFixture, shouldUseFixtures } from '@/lib/fixtures/loader';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -181,6 +182,13 @@ export const GET = async (
         },
         { status: 400 }
       );
+    }
+
+    // Check if we should use fixtures
+    if (shouldUseFixtures()) {
+      const fixturePath = `api/games/${sport}/${conf}/${seasonYear}${week ? `-week${week}` : ''}.json`;
+      const fixture = await loadFixture<GamesResponse>(fixturePath);
+      return NextResponse.json<GamesResponse>(fixture);
     }
 
     return await fetchGamesFromCfbd(sport, conf, seasonYear, week ? parseInt(week, 10) : undefined);

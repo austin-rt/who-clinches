@@ -3,7 +3,7 @@ import { cfbdClient } from '@/lib/cfb/cfbd-client';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
-import { TeamMetadata, ApiErrorResponse } from '@/app/store/api';
+import { TeamMetadata, ApiErrorResponse, StandingsResponse } from '@/app/store/api';
 import {
   getConferenceMetadata,
   isValidSport,
@@ -14,6 +14,7 @@ import {
 } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
+import { loadFixture, shouldUseFixtures } from '@/lib/fixtures/loader';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -83,6 +84,17 @@ export const GET = async (
     }
 
     const seasonYear = season ? parseInt(season, 10) : await getDefaultSeasonFromCfbd();
+
+    // Check if we should use fixtures
+    if (shouldUseFixtures()) {
+      const fixturePath = `api/standings/${sport}/${conf}/${seasonYear}.json`;
+      const fixture = await loadFixture<StandingsResponse>(fixturePath);
+      return NextResponse.json(fixture, {
+        headers: {
+          'Cache-Control': 'public, s-maxage=60',
+        },
+      });
+    }
 
     const cfbdGames = await cfbdClient.getGames({
       year: seasonYear,
