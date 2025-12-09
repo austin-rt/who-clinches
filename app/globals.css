@@ -2,6 +2,13 @@
 @import './styles/sec.css';
 @import './styles/mac.css';
 @import './styles/acc.css';
+@import './styles/b1g.css';
+@import './styles/big12.css';
+@import './styles/pac12.css';
+@import './styles/cusa.css';
+@import './styles/mw.css';
+@import './styles/aac.css';
+@import './styles/sunbelt.css';
 
 @tailwind base;
 @tailwind components;
