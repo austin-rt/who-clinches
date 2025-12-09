@@ -1,5 +1,5 @@
 import { breakTie } from '@/lib/cfb/tiebreaker-rules/core/breakTie';
-import { SEC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sec/config';
+import { CFB_SEC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sec/config';
 import { createGameLean } from './test-helpers';
 
 describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', () => {
@@ -77,7 +77,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -131,7 +131,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C', 'D'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -201,7 +201,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -297,7 +297,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -418,7 +418,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -623,7 +623,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -710,7 +710,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -776,7 +776,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
@@ -876,7 +876,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         ['A', 'B', 'C'],
         games,
         allTeams,
-        SEC_TIEBREAKER_CONFIG,
+        CFB_SEC_TIEBREAKER_CONFIG,
         explanations
       );
 
