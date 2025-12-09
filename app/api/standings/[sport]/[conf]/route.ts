@@ -3,7 +3,7 @@ import { cfbdClient } from '@/lib/cfb/cfbd-client';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
-import { TeamMetadata, ApiErrorResponse } from '@/app/store/apiSlice';
+import { TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { CONFERENCE_CONFIGS } from '@/lib/cfb/tiebreaker-rules/configs';
