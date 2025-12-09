@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { StandingEntry } from '@/app/store/apiSlice';
+import { StandingEntry } from '@/app/store/api';
 
 interface ChampionshipCardProps {
   team1: StandingEntry;

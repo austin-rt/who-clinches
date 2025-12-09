@@ -5,7 +5,7 @@ import {
   SimulateResponse,
   SimulateRequestBody,
   useSimulateMutation,
-} from '../store/apiSlice';
+} from '../store/api';
 import {
   isValidSport,
   isValidConference,
