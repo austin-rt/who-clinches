@@ -86,6 +86,20 @@ html:not([data-mode]) {
     }
   }
 
+  /* Style DaisyUI dropdown to match design */
+  .dropdown-content {
+    @apply border-primary;
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      @apply border-accent-80;
+    }
+  }
+
+  .dropdown-content li > a {
+    @apply relative;
+  }
+
   /* Accordion borders - all collapse elements with bg-base-300 */
   /* Light mode: 4 shades darker than base-200 (using base-300) */
   /* Dark mode: 4 shades lighter than base-200 (using base-300) */
