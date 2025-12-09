@@ -1,0 +1,55 @@
+/* Mountain West Default Theme */
+[data-theme='mw'] {
+  --color-primary: #4f2d7f;
+  --color-primary-content: #4f2d7f33;
+  --color-secondary: #afafaf;
+  --color-secondary-content: #afafaf33;
+  --color-accent: #9154e6;
+  --color-accent-content: #9154e633;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 270 48% 33%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 0 0% 69%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 270 75% 62%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+}
+
+/* Mountain West Light Mode */
+[data-theme='mw'][data-mode='light'],
+[data-theme='mw']:not([data-mode='dark']) {
+  --color-base-100: #f4f0fb;
+  --color-base-200: #e9e1f6;
+  --color-base-300: #dacfed;
+  --color-base-400: #c9b9e3;
+  --color-base-content: #06030a;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* Mountain West Dark Mode */
+[data-theme='mw'][data-mode='dark'] {
+  --color-base-100: #090410;
+  --color-base-200: #120820;
+  --color-base-300: #1b0c30;
+  --color-base-400: #241040;
+  --color-base-content: #f7f3fb;
+
+  --color-primary: #a17fd2;
+  --color-primary-content: #a17fd233;
+  --color-secondary: #4f4f4f;
+  --color-secondary-content: #4f4f4f33;
+  --color-accent: #5519a9;
+  --color-accent-content: #5519a933;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 270 48% 66%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 0 0% 31%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 270 75% 38%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

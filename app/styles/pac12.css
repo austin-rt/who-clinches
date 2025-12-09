@@ -1,0 +1,55 @@
+/* Pac-12 Default Theme */
+[data-theme='pac12'] {
+  --color-primary: #092244;
+  --color-primary-content: #09224433;
+  --color-secondary: #8fb3e4;
+  --color-secondary-content: #8fb3e433;
+  --color-accent: #679be4;
+  --color-accent-content: #679be433;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 75% 15%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 215 65% 75%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 215 70% 68%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+}
+
+/* Pac-12 Light Mode */
+[data-theme='pac12'][data-mode='light'],
+[data-theme='pac12']:not([data-mode='dark']) {
+  --color-base-100: #f6f8fb;
+  --color-base-200: #edf1f6;
+  --color-base-300: #e0e7ef;
+  --color-base-400: #d1dbe6;
+  --color-base-content: #0c121b;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* Pac-12 Dark Mode */
+[data-theme='pac12'][data-mode='dark'] {
+  --color-base-100: #05070b;
+  --color-base-200: #0b0f16;
+  --color-base-300: #111721;
+  --color-base-400: #171f2c;
+  --color-base-content: #e3e9f2;
+
+  --color-primary: #bbd4f6;
+  --color-primary-content: #bbd4f633;
+  --color-secondary: #1b3e6f;
+  --color-secondary-content: #1b3e6f33;
+  --color-accent: #1b4f98;
+  --color-accent-content: #1b4f9833;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 80% 88%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 215 60% 26%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 215 70% 35%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

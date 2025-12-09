@@ -1,0 +1,55 @@
+/* Sun Belt Default Theme */
+[data-theme='sunbelt'] {
+  --color-primary: #0a2240;
+  --color-primary-content: #0a224033;
+  --color-secondary: #91b9e9;
+  --color-secondary-content: #91b9e933;
+  --color-accent: #f6a800;
+  --color-accent-content: #f6a80033;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 75% 14%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 215 65% 75%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 40 100% 48%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+}
+
+/* Sun Belt Light Mode */
+[data-theme='sunbelt'][data-mode='light'],
+[data-theme='sunbelt']:not([data-mode='dark']) {
+  --color-base-100: #f1f5fa;
+  --color-base-200: #e3ebf4;
+  --color-base-300: #d1ddeb;
+  --color-base-400: #bccce0;
+  --color-base-content: #07090d;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* Sun Belt Dark Mode */
+[data-theme='sunbelt'][data-mode='dark'] {
+  --color-base-100: #050a0f;
+  --color-base-200: #0b141f;
+  --color-base-300: #111e2f;
+  --color-base-400: #17283f;
+  --color-base-content: #f2f4f8;
+
+  --color-primary: #bdd6f5;
+  --color-primary-content: #bdd6f533;
+  --color-secondary: #163e6f;
+  --color-secondary-content: #163e6f33;
+  --color-accent: #ffb10a;
+  --color-accent-content: #ffb10a33;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 75% 85%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 215 65% 26%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 40 100% 52%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

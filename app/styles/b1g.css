@@ -1,0 +1,55 @@
+/* Big Ten Default Theme */
+[data-theme='b1g'] {
+  --color-primary: #0088cc;
+  --color-primary-content: #0088cc33;
+  --color-secondary: #90ccea;
+  --color-secondary-content: #90ccea33;
+  --color-accent: #949699;
+  --color-accent-content: #94969933;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 200 100% 40%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 200 55% 75%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 210 3% 60%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+}
+
+/* Big Ten Light Mode */
+[data-theme='b1g'][data-mode='light'],
+[data-theme='b1g']:not([data-mode='dark']) {
+  --color-base-100: #f6f9fb;
+  --color-base-200: #edf2f6;
+  --color-base-300: #e0e8ed;
+  --color-base-400: #d1dce3;
+  --color-base-content: #0e1315;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* Big Ten Dark Mode */
+[data-theme='b1g'][data-mode='dark'] {
+  --color-base-100: #05080b;
+  --color-base-200: #0b1013;
+  --color-base-300: #11181b;
+  --color-base-400: #172023;
+  --color-base-content: #eaeff1;
+
+  --color-primary: #33bbff;
+  --color-primary-content: #33bbff33;
+  --color-secondary: #15516f;
+  --color-secondary-content: #15516f33;
+  --color-accent: #66686b;
+  --color-accent-content: #66686b33;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 200 100% 60%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 200 66% 25%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 210 3% 42%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

@@ -1,0 +1,55 @@
+/* C-USA Default Theme */
+[data-theme='cusa'] {
+  --color-primary: #003865;
+  --color-primary-content: #00386533;
+  --color-secondary: #a3bbcf;
+  --color-secondary-content: #a3bbcf33;
+  --color-accent: #a6192e;
+  --color-accent-content: #a6192e33;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 210 100% 20%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 210 30% 72%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 350 75% 36%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+}
+
+/* C-USA Light Mode */
+[data-theme='cusa'][data-mode='light'],
+[data-theme='cusa']:not([data-mode='dark']) {
+  --color-base-100: #f8f9fa;
+  --color-base-200: #f1f3f5;
+  --color-base-300: #e6e9ec;
+  --color-base-400: #d9dde1;
+  --color-base-content: #0d0f11;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* C-USA Dark Mode */
+[data-theme='cusa'][data-mode='dark'] {
+  --color-base-100: #040506;
+  --color-base-200: #0a0b0d;
+  --color-base-300: #101114;
+  --color-base-400: #16171b;
+  --color-base-content: #eef0f2;
+
+  --color-primary: #99d1ff;
+  --color-primary-content: #99d1ff33;
+  --color-secondary: #30475a;
+  --color-secondary-content: #30475a33;
+  --color-accent: #e65b70;
+  --color-accent-content: #e65b7033;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 210 100% 80%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 210 30% 28%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 350 75% 66%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

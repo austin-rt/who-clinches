@@ -1,0 +1,55 @@
+/* AAC Default Theme */
+[data-theme='aac'] {
+  --color-primary: #041e41;
+  --color-primary-content: #041e4133;
+  --color-secondary: #8ab0e1;
+  --color-secondary-content: #8ab0e133;
+  --color-accent: #ee2231;
+  --color-accent-content: #ee223133;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 88% 13%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 215 60% 73%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 355 86% 53%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+}
+
+/* AAC Light Mode */
+[data-theme='aac'][data-mode='light'],
+[data-theme='aac']:not([data-mode='dark']) {
+  --color-base-100: #f6f8fb;
+  --color-base-200: #edf1f6;
+  --color-base-300: #e0e7ef;
+  --color-base-400: #d1dbe6;
+  --color-base-content: #0c1015;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* AAC Dark Mode */
+[data-theme='aac'][data-mode='dark'] {
+  --color-base-100: #05070b;
+  --color-base-200: #0b0f16;
+  --color-base-300: #111721;
+  --color-base-400: #171f2c;
+  --color-base-content: #eceff4;
+
+  --color-primary: #bcd7fb;
+  --color-primary-content: #bcd7fb33;
+  --color-secondary: #1e4476;
+  --color-secondary-content: #1e447633;
+  --color-accent: #df111f;
+  --color-accent-content: #df111f33;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 88% 88%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 215 60% 26%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 355 86% 50%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+

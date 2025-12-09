@@ -1,0 +1,55 @@
+/* Big 12 Default Theme */
+[data-theme='big12'] {
+  --color-primary: #c41230;
+  --color-primary-content: #c4123033;
+  --color-secondary: #d4a0a9;
+  --color-secondary-content: #d4a0a933;
+  --color-accent: #cfd4d8;
+  --color-accent-content: #cfd4d833;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 350 85% 42%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 350 30% 76%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 210 8% 84%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+}
+
+/* Big 12 Light Mode */
+[data-theme='big12'][data-mode='light'],
+[data-theme='big12']:not([data-mode='dark']) {
+  --color-base-100: #fcf9fa;
+  --color-base-200: #f5eff1;
+  --color-base-300: #ebe2e5;
+  --color-base-400: #dfd3d7;
+  --color-base-content: #110c0d;
+  --toggle-border-color: var(--color-primary);
+}
+
+/* Big 12 Dark Mode */
+[data-theme='big12'][data-mode='dark'] {
+  --color-base-100: #070305;
+  --color-base-200: #0f080a;
+  --color-base-300: #170d0f;
+  --color-base-400: #1f1214;
+  --color-base-content: #f2edee;
+
+  --color-primary: #ed3b59;
+  --color-primary-content: #ed3b5933;
+  --color-secondary: #5f2b33;
+  --color-secondary-content: #5f2b3333;
+  --color-accent: #272c30;
+  --color-accent-content: #272c3033;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 350 85% 58%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 350 36% 28%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 210 8% 18%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
+}
+
