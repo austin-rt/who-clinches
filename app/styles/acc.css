@@ -1,39 +1,58 @@
 /* ACC Default Theme - Team Colors Only */
 [data-theme='acc'] {
-  --color-primary: #013ca6; /* ACC Blue */
-  --color-primary-content: #013ca633; /* ACC Blue with 33 opacity (for badge-soft backgrounds) */
-  --color-secondary: #0148c4; /* Lighter ACC Blue */
-  --color-secondary-content: #0148c433; /* Lighter ACC Blue with 33 opacity (for badge-soft backgrounds) */
-  --color-accent: #013ca6; /* ACC Blue (same as primary) */
-  --color-accent-content: #013ca633; /* ACC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-primary: #013ba7; /* ACC Blue from palette */
+  --color-primary-content: #013ba733; /* ACC Blue with 33 opacity (for badge-soft backgrounds) */
+  --color-secondary: #8ba8e0; /* Light blue from palette */
+  --color-secondary-content: #8ba8e033; /* Light blue with 33 opacity (for badge-soft backgrounds) */
+  --color-accent: #6792e3; /* Medium blue from palette */
+  --color-accent-content: #6792e333; /* Medium blue with 33 opacity (for badge-soft backgrounds) */
 
   /* Map to DaisyUI theme variables for component compatibility */
-  --p: 217 100% 33%; /* ACC Blue in HSL - for DaisyUI components */
+  --p: 217 99% 33%; /* ACC Blue in HSL - for DaisyUI components */
   --pc: 0 0% 100%; /* White text on primary */
-  --s: 217 100% 38%; /* Lighter ACC Blue in HSL - for DaisyUI components */
-  --sc: 0 0% 100%; /* White text on secondary */
-  --a: 217 100% 33%; /* ACC Blue in HSL - for DaisyUI components */
+  --s: 217 60% 71%; /* Light blue in HSL - for DaisyUI components */
+  --sc: 0 0% 10%; /* Dark text on secondary */
+  --a: 217 72% 65%; /* Medium blue in HSL - for DaisyUI components */
   --ac: 0 0% 100%; /* White text on accent */
 }
 
 /* ACC Light Mode - Blue-tinted backgrounds */
 [data-theme='acc'][data-mode='light'],
 [data-theme='acc']:not([data-mode='dark']) {
-  --color-base-100: #ffffff; /* Lightest - clean white */
-  --color-base-200: #f8f9fb; /* Medium - very subtle blue tint */
-  --color-base-300: #e6f0ff; /* Darkest of the three - pale blue for cards/sections */
-  --color-base-400: #d0e0f5; /* Fourth background - slightly more saturated blue */
+  --color-base-100: #f9fafc; /* Background from palette */
+  --color-base-200: #f0f2f6; /* Slightly darker than base-100 */
+  --color-base-300: #e1e5eb; /* Medium background */
+  --color-base-400: #d1d6e0; /* Darker background */
+  --color-base-content: #050607; /* Text from palette */
   --toggle-border-color: var(--color-primary); /* ACC Blue for toggle border/circle in light mode */
 }
 
 /* ACC Dark Mode - Only applies when ACC theme is active */
 [data-theme='acc'][data-mode='dark'] {
-  /* Dark mode base colors (ACC-specific) */
-  --color-base-100: #0a0f1a; /* Main background (very dark blue-black) */
-  --color-base-200: #151a25; /* Secondary background (ACC Blue tint, lower opacity) */
-  --color-base-300: #1a2d4a; /* Tertiary background - more visible blue */
-  --color-base-400: #2d4470; /* Fourth background - lighter blue for contrast */
-  --color-base-content: rgba(245, 245, 245, 0.8); /* Main text color (light) */
-  --toggle-border-color: var(--color-accent); /* ACC Blue for toggle border/circle in dark mode */
-}
+  /* Dark mode base colors from palette */
+  --color-base-100: #030507; /* Background from palette */
+  --color-base-200: #0a0d12; /* Slightly lighter than base-100 */
+  --color-base-300: #141821; /* Medium background */
+  --color-base-400: #1e2530; /* Lighter background */
+  --color-base-content: #f9fafb; /* Text from palette */
 
+  /* Dark mode colors from palette */
+  --color-primary: #5892fe; /* Bright blue from palette */
+  --color-primary-content: #5892fe33; /* Bright blue with 33 opacity */
+  --color-secondary: #1f3c75; /* Dark blue from palette */
+  --color-secondary-content: #1f3c7533; /* Dark blue with 33 opacity */
+  --color-accent: #1c4797; /* Darker blue from palette */
+  --color-accent-content: #1c479733; /* Darker blue with 33 opacity */
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 217 99% 67%; /* Bright blue in HSL */
+  --pc: 0 0% 100%; /* White text on primary */
+  --s: 217 58% 29%; /* Dark blue in HSL */
+  --sc: 0 0% 100%; /* White text on secondary */
+  --a: 217 69% 35%; /* Darker blue in HSL */
+  --ac: 0 0% 100%; /* White text on accent */
+
+  --toggle-border-color: var(
+    --color-accent
+  ); /* Accent blue for toggle border/circle in dark mode */
+}
