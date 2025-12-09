@@ -14,7 +14,7 @@ export const conferenceThemes: ConferenceThemes = {
     name: 'MAC',
   },
   acc: {
-    defaultTheme: 'sec',
+    defaultTheme: 'acc',
     name: 'ACC',
   },
   b1g: {

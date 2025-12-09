@@ -1,6 +1,7 @@
 @import './styles/buttons.css';
 @import './styles/sec.css';
 @import './styles/mac.css';
+@import './styles/acc.css';
 
 @tailwind base;
 @tailwind components;
