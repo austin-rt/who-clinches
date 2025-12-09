@@ -5,7 +5,7 @@ import expireReducer from 'redux-persist-expire';
 import uiReducer from './uiSlice';
 import appReducer from './appSlice';
 import gamePicksReducer from './gamePicksSlice';
-import { api } from './generated-api';
+import { api } from './api';
 
 const uiPersistConfig = {
   key: 'ui',
