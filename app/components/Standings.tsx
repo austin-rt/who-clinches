@@ -31,7 +31,7 @@ const Standings = forwardRef<HTMLDivElement, StandingsProps>(({ simulateResponse
     <div
       ref={ref}
       className={`collapse collapse-arrow ${
-        isSimulated ? 'bg-base-200' : 'border border-base-400 bg-base-200 dark:border-accent-50'
+        isSimulated ? 'bg-base-200' : 'border border-base-400 bg-base-200 dark:border-accent'
       } shadow-md`}
     >
       <input type="checkbox" checked={isOpen} onChange={(e) => handleToggle(e.target.checked)} />

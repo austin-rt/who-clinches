@@ -91,11 +91,11 @@ const ConferenceSelector = () => {
                   className={cn(
                     'flex w-full items-center gap-2 rounded-md py-2 pl-[calc(0.75rem+1rem+0.5rem)] pr-3 text-left text-sm font-semibold uppercase transition-all',
                     'bg-base-100 text-base-content hover:bg-base-200',
-                    key === currentConf && 'bg-base-200 text-primary dark:text-accent-80'
+                    key === currentConf && 'bg-base-200 text-primary dark:text-accent'
                   )}
                 >
                   {key === currentConf ? (
-                    <HiCheck className="absolute left-3 h-4 w-4 flex-shrink-0 text-primary dark:text-accent-80" />
+                    <HiCheck className="absolute left-3 h-4 w-4 flex-shrink-0 text-primary dark:text-accent" />
                   ) : (
                     <span className="absolute left-3 h-4 w-4" />
                   )}

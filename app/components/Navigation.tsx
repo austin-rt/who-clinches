@@ -41,7 +41,7 @@ const Navigation = () => {
       </label>
       <ul
         tabIndex={0}
-        className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-primary bg-base-100 p-2 shadow-lg dark:border-accent-80"
+        className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-primary bg-base-100 p-2 shadow-lg dark:border-accent"
       >
         {CFB_AVAILABLE_CONFERENCES.map((key) => {
           const metadata = CFB_CONFERENCE_METADATA[key];
@@ -54,11 +54,11 @@ const Navigation = () => {
                 }}
                 className={cn(
                   'flex items-center gap-2 rounded-md py-2 pl-[calc(0.75rem+1rem+0.5rem)] pr-3 font-semibold uppercase',
-                  key === currentConf && 'bg-base-200 text-primary dark:text-accent-80'
+                  key === currentConf && 'bg-base-200 text-primary dark:text-accent'
                 )}
               >
                 {key === currentConf ? (
-                  <HiCheck className="absolute left-3 h-4 w-4 flex-shrink-0 text-primary dark:text-accent-80" />
+                  <HiCheck className="absolute left-3 h-4 w-4 flex-shrink-0 text-primary dark:text-accent" />
                 ) : (
                   <span className="absolute left-3 h-4 w-4" />
                 )}

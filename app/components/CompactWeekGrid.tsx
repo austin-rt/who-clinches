@@ -47,7 +47,7 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) =
       {weeksData.map((week) => (
         <div
           key={week.weekNumber}
-          className="flex flex-col gap-3 rounded-lg border border-base-400 p-2 dark:border-accent-50"
+          className="flex flex-col gap-3 rounded-lg border border-base-400 p-2 dark:border-accent"
         >
           <div className="flex flex-col gap-1">
             <h3 className="text-base font-semibold">
