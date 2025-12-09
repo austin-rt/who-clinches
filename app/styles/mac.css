@@ -1,43 +1,54 @@
-/* MAC Default Theme - Team Colors Only */
+/* MAC Default Theme */
 [data-theme='mac'] {
-  --color-primary: #0a2240; /* MAC Blue - from getsomemaction.com */
-  --color-primary-content: #0a224033; /* MAC Blue with 33 opacity (for badge-soft backgrounds) */
-  --color-secondary: #2d4a73; /* Lighter MAC Blue */
-  --color-secondary-content: #2d4a7333; /* Lighter MAC Blue with 33 opacity (for badge-soft backgrounds) */
-  --color-accent: #009a4d; /* MAC Green - from getsomemaction.com */
-  --color-accent-content: #009a4d33; /* MAC Green with 33 opacity (for badge-soft backgrounds) */
+  --color-primary: #0b213e;
+  --color-primary-content: #0b213e33;
+  --color-secondary: #9da5a8;
+  --color-secondary-content: #9da5a833;
+  --color-accent: #019e4f;
+  --color-accent-content: #019e4f33;
 
   /* Map to DaisyUI theme variables for component compatibility */
-  --p: 215 75% 14%; /* MAC Blue in HSL - for DaisyUI components */
-  --pc: 0 0% 100%; /* White text on primary */
-  --s: 215 50% 30%; /* Lighter MAC Blue in HSL - for DaisyUI components */
-  --sc: 0 0% 100%; /* White text on secondary */
-  --a: 150 100% 30%; /* MAC Green in HSL - for DaisyUI components */
-  --ac: 0 0% 100%; /* White text on accent */
+  --p: 215 70% 13%; /* primary */
+  --pc: 0 0% 100%; /* primary-content */
+  --s: 200 3% 65%; /* secondary */
+  --sc: 0 0% 10%; /* secondary-content */
+  --a: 150 98% 31%; /* accent */
+  --ac: 0 0% 100%; /* accent-content */
 }
 
-/* MAC Light Mode - Blue-tinted backgrounds */
+/* MAC Light Mode */
 [data-theme='mac'][data-mode='light'],
 [data-theme='mac']:not([data-mode='dark']) {
-  --color-base-100: #ffffff; /* Lightest - clean white */
-  --color-base-200: #f5f8fb; /* Medium - very subtle blue tint */
-  --color-base-300: #e3f0ff; /* Darkest of the three - pale blue for cards/sections */
-  --color-base-400: #cce5ff; /* Fourth background - slightly more saturated blue */
-  --toggle-border-color: var(--color-primary); /* MAC Blue for toggle border/circle in light mode */
+  --color-base-100: #f1f6fc;
+  --color-base-200: #e3ecf5;
+  --color-base-300: #d1deeb;
+  --color-base-400: #bccde0;
+  --color-base-content: #05090e;
+  --toggle-border-color: var(--color-primary);
 }
 
-/* MAC Dark Mode - Only applies when MAC theme is active */
+/* MAC Dark Mode */
 [data-theme='mac'][data-mode='dark'] {
-  /* Dark mode base colors (MAC-specific) - darker backgrounds for WCAG AA contrast (4.5:1) with green accent #009a4d */
-  --color-base-100: #000102; /* Main background (very dark blue-black) - 5.70:1 contrast with green */
-  --color-base-200: #010203; /* Secondary background (darker MAC Blue tint) - 5.67:1 contrast with green */
-  --color-base-300: #010204; /* Tertiary background - darker blue - 5.66:1 contrast with green */
-  --color-base-400: #010305; /* Fourth background - darker blue for contrast - 5.65:1 contrast with green */
-  --color-base-content: rgba(
-    255,
-    255,
-    255,
-    0.95
-  ); /* Main text color (light) - brighter for readability */
-  --toggle-border-color: var(--color-accent); /* MAC Green for toggle border/circle in dark mode */
+  --color-base-100: #03070d;
+  --color-base-200: #0a0f18;
+  --color-base-300: #111723;
+  --color-base-400: #181f2e;
+  --color-base-content: #f0f4fa;
+
+  --color-primary: #c2d8f4;
+  --color-primary-content: #c2d8f433;
+  --color-secondary: #565e61;
+  --color-secondary-content: #565e6133;
+  --color-accent: #62feb0;
+  --color-accent-content: #62feb033;
+
+  /* Map to DaisyUI theme variables for component compatibility */
+  --p: 215 65% 87%; /* primary */
+  --pc: 0 0% 10%; /* primary-content */
+  --s: 200 4% 36%; /* secondary */
+  --sc: 0 0% 100%; /* secondary-content */
+  --a: 150 99% 75%; /* accent */
+  --ac: 0 0% 10%; /* accent-content */
+
+  --toggle-border-color: var(--color-accent);
 }
