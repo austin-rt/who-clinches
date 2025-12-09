@@ -1,0 +1,3845 @@
+{
+  "events": [
+    {
+      "_id": "401752686",
+      "id": "401752686",
+      "displayName": "Ole Miss @ Kentucky",
+      "date": "2025-09-06T19:30:00.000Z",
+      "week": 2,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kroger Field",
+        "city": "Kroger Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": 8,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752705",
+      "id": "401752705",
+      "displayName": "Georgia @ Tennessee",
+      "date": "2025-09-13T19:30:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Neyland Stadium",
+        "city": "Neyland Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 44,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": 3.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 44
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752700",
+      "id": "401752700",
+      "displayName": "Arkansas @ Ole Miss",
+      "date": "2025-09-13T23:00:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Vaught-Hemingway Stadium",
+        "city": "Vaught-Hemingway Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": -3.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752699",
+      "id": "401752699",
+      "displayName": "Florida @ LSU",
+      "date": "2025-09-13T23:30:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Tiger Stadium (LA)",
+        "city": "Tiger Stadium (LA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "99",
+        "spread": -5.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752704",
+      "id": "401752704",
+      "displayName": "Vanderbilt @ South Carolina",
+      "date": "2025-09-13T23:45:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams-Brice Stadium",
+        "city": "Williams-Brice Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "away": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2579",
+        "spread": -3,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 7,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752714",
+      "id": "401752714",
+      "displayName": "Auburn @ Oklahoma",
+      "date": "2025-09-20T19:30:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Norman, OK)",
+        "city": "Memorial Stadium (Norman",
+        "state": "OK)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": -6.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752713",
+      "id": "401752713",
+      "displayName": "South Carolina @ Missouri",
+      "date": "2025-09-20T23:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium",
+        "city": "Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 29,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "142",
+        "spread": -10,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 29,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752724",
+      "id": "401752724",
+      "displayName": "Auburn @ Texas A&M",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kyle Field",
+        "city": "Kyle Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": -6.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752719",
+      "id": "401752719",
+      "displayName": "LSU @ Ole Miss",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Vaught-Hemingway Stadium",
+        "city": "Vaught-Hemingway Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": -2.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752720",
+      "id": "401752720",
+      "displayName": "Tennessee @ Mississippi State",
+      "date": "2025-09-27T20:15:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Davis Wade Stadium",
+        "city": "Davis Wade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 41,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": 7.5,
+        "overUnder": 63.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 41
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752718",
+      "id": "401752718",
+      "displayName": "Alabama @ Georgia",
+      "date": "2025-09-27T23:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sanford Stadium",
+        "city": "Sanford Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": -2.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752722",
+      "id": "401752722",
+      "displayName": "Kentucky @ South Carolina",
+      "date": "2025-09-27T23:45:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams-Brice Stadium",
+        "city": "Williams-Brice Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2579",
+        "spread": -5.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752728",
+      "id": "401752728",
+      "displayName": "Kentucky @ Georgia",
+      "date": "2025-10-04T16:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sanford Stadium",
+        "city": "Sanford Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": -19.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752727",
+      "id": "401752727",
+      "displayName": "Texas @ Florida",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ben Hill Griffin Stadium",
+        "city": "Ben Hill Griffin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 29,
+        "rank": null
+      },
+      "away": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": 4.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 29,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752726",
+      "id": "401752726",
+      "displayName": "Vanderbilt @ Alabama",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bryant-Denny Stadium",
+        "city": "Bryant-Denny Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": -13.5,
+        "overUnder": 58.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752730",
+      "id": "401752730",
+      "displayName": "Mississippi State @ Texas A&M",
+      "date": "2025-10-04T23:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kyle Field",
+        "city": "Kyle Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 9,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": -17.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 9
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752734",
+      "id": "401752734",
+      "displayName": "Alabama @ Missouri",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium",
+        "city": "Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": 3.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752736",
+      "id": "401752736",
+      "displayName": "Oklahoma @ Texas",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Cotton Bowl",
+        "city": "Cotton Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": -2.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752735",
+      "id": "401752735",
+      "displayName": "Arkansas @ Tennessee",
+      "date": "2025-10-11T20:15:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Neyland Stadium",
+        "city": "Neyland Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": -10,
+        "overUnder": 68.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752737",
+      "id": "401752737",
+      "displayName": "Florida @ Texas A&M",
+      "date": "2025-10-11T23:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kyle Field",
+        "city": "Kyle Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": -7,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752731",
+      "id": "401752731",
+      "displayName": "Georgia @ Auburn",
+      "date": "2025-10-11T23:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Jordan-Hare Stadium",
+        "city": "Jordan-Hare Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": 4.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752732",
+      "id": "401752732",
+      "displayName": "South Carolina @ LSU",
+      "date": "2025-10-11T23:45:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Tiger Stadium (LA)",
+        "city": "Tiger Stadium (LA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "99",
+        "spread": -8.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752745",
+      "id": "401752745",
+      "displayName": "LSU @ Vanderbilt",
+      "date": "2025-10-18T16:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "FirstBank Stadium",
+        "city": "FirstBank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "238",
+        "spread": -1.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752744",
+      "id": "401752744",
+      "displayName": "Oklahoma @ South Carolina",
+      "date": "2025-10-18T16:45:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams-Brice Stadium",
+        "city": "Williams-Brice Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "away": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": 4.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 7,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752742",
+      "id": "401752742",
+      "displayName": "Ole Miss @ Georgia",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sanford Stadium",
+        "city": "Sanford Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 43,
+        "rank": null
+      },
+      "away": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": -7.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 43,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752739",
+      "id": "401752739",
+      "displayName": "Texas A&M @ Arkansas",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Razorback Stadium",
+        "city": "Razorback Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": 7.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752741",
+      "id": "401752741",
+      "displayName": "Mississippi State @ Florida",
+      "date": "2025-10-18T20:15:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ben Hill Griffin Stadium",
+        "city": "Ben Hill Griffin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "57",
+        "spread": -9.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752743",
+      "id": "401752743",
+      "displayName": "Texas @ Kentucky",
+      "date": "2025-10-18T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kroger Field",
+        "city": "Kroger Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "away": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 16,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": 12.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 13,
+        "away": 16
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752738",
+      "id": "401752738",
+      "displayName": "Tennessee @ Alabama",
+      "date": "2025-10-18T23:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bryant-Denny Stadium",
+        "city": "Bryant-Denny Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 37,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": -8.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 37,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752740",
+      "id": "401752740",
+      "displayName": "Missouri @ Auburn",
+      "date": "2025-10-18T23:45:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Jordan-Hare Stadium",
+        "city": "Jordan-Hare Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "142",
+        "spread": 1.5,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752750",
+      "id": "401752750",
+      "displayName": "Ole Miss @ Oklahoma",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Norman, OK)",
+        "city": "Memorial Stadium (Norman",
+        "state": "OK)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": -5.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752746",
+      "id": "401752746",
+      "displayName": "Auburn @ Arkansas",
+      "date": "2025-10-25T16:45:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Razorback Stadium",
+        "city": "Razorback Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 33,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "8",
+        "spread": -2.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 33
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752752",
+      "id": "401752752",
+      "displayName": "Missouri @ Vanderbilt",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "FirstBank Stadium",
+        "city": "FirstBank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "238",
+        "spread": -3,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752751",
+      "id": "401752751",
+      "displayName": "Alabama @ South Carolina",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams-Brice Stadium",
+        "city": "Williams-Brice Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 22,
+        "rank": null
+      },
+      "away": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 29,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": 11.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 22,
+        "away": 29
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752749",
+      "id": "401752749",
+      "displayName": "Texas @ Mississippi State",
+      "date": "2025-10-25T20:15:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Davis Wade Stadium",
+        "city": "Davis Wade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": 8.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752748",
+      "id": "401752748",
+      "displayName": "Texas A&M @ LSU",
+      "date": "2025-10-25T23:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Tiger Stadium (LA)",
+        "city": "Tiger Stadium (LA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 25,
+        "rank": null
+      },
+      "away": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 49,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": 1.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 25,
+        "away": 49
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752747",
+      "id": "401752747",
+      "displayName": "Tennessee @ Kentucky",
+      "date": "2025-10-25T23:45:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kroger Field",
+        "city": "Kroger Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 56,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": 7.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 56
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752758",
+      "id": "401752758",
+      "displayName": "Vanderbilt @ Texas",
+      "date": "2025-11-01T16:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "DKR-Texas Memorial Stadium",
+        "city": "DKR-Texas Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": -3.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752755",
+      "id": "401752755",
+      "displayName": "Georgia @ Florida",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "EverBank Stadium",
+        "city": "EverBank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": 7,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752753",
+      "id": "401752753",
+      "displayName": "Mississippi State @ Arkansas",
+      "date": "2025-11-01T20:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Razorback Stadium",
+        "city": "Razorback Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "8",
+        "spread": -5.5,
+        "overUnder": 66.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752756",
+      "id": "401752756",
+      "displayName": "South Carolina @ Ole Miss",
+      "date": "2025-11-01T23:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Vaught-Hemingway Stadium",
+        "city": "Vaught-Hemingway Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": -12.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752754",
+      "id": "401752754",
+      "displayName": "Kentucky @ Auburn",
+      "date": "2025-11-01T23:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Jordan-Hare Stadium",
+        "city": "Jordan-Hare Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2",
+        "spread": -11.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752757",
+      "id": "401752757",
+      "displayName": "Oklahoma @ Tennessee",
+      "date": "2025-11-01T23:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Neyland Stadium",
+        "city": "Neyland Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 33,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": -3,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 33
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752762",
+      "id": "401752762",
+      "displayName": "Georgia @ Mississippi State",
+      "date": "2025-11-08T17:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Davis Wade Stadium",
+        "city": "Davis Wade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 41,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": 9.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 41
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752763",
+      "id": "401752763",
+      "displayName": "Texas A&M @ Missouri",
+      "date": "2025-11-08T20:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium",
+        "city": "Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": 7,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752764",
+      "id": "401752764",
+      "displayName": "Auburn @ Vanderbilt",
+      "date": "2025-11-08T21:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "FirstBank Stadium",
+        "city": "FirstBank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "238",
+        "spread": -6,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752760",
+      "id": "401752760",
+      "displayName": "Florida @ Kentucky",
+      "date": "2025-11-09T00:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kroger Field",
+        "city": "Kroger Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "57",
+        "spread": 4.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752759",
+      "id": "401752759",
+      "displayName": "LSU @ Alabama",
+      "date": "2025-11-09T00:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bryant-Denny Stadium",
+        "city": "Bryant-Denny Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 9,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": -10.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 9
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752772",
+      "id": "401752772",
+      "displayName": "South Carolina @ Texas A&M",
+      "date": "2025-11-15T17:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kyle Field",
+        "city": "Kyle Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2579",
+        "abbrev": "SC",
+        "displayName": "South Carolina Gamecocks",
+        "shortDisplayName": "South Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+        "color": "#73000a",
+        "alternateColor": "#ffffff",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": -16.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752768",
+      "id": "401752768",
+      "displayName": "Arkansas @ LSU",
+      "date": "2025-11-15T17:45:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Tiger Stadium (LA)",
+        "city": "Tiger Stadium (LA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "99",
+        "spread": -4,
+        "overUnder": 58.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752765",
+      "id": "401752765",
+      "displayName": "Oklahoma @ Alabama",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bryant-Denny Stadium",
+        "city": "Bryant-Denny Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": -6.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752769",
+      "id": "401752769",
+      "displayName": "Florida @ Ole Miss",
+      "date": "2025-11-16T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Vaught-Hemingway Stadium",
+        "city": "Vaught-Hemingway Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": -10.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752766",
+      "id": "401752766",
+      "displayName": "Texas @ Georgia",
+      "date": "2025-11-16T00:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sanford Stadium",
+        "city": "Sanford Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": -3.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752770",
+      "id": "401752770",
+      "displayName": "Mississippi State @ Missouri",
+      "date": "2025-11-16T00:45:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium",
+        "city": "Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 49,
+        "rank": null
+      },
+      "away": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "142",
+        "spread": -7.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 49,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752778",
+      "id": "401752778",
+      "displayName": "Missouri @ Oklahoma",
+      "date": "2025-11-22T17:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Norman, OK)",
+        "city": "Memorial Stadium (Norman",
+        "state": "OK)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": -4.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752782",
+      "id": "401752782",
+      "displayName": "Kentucky @ Vanderbilt",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "FirstBank Stadium",
+        "city": "FirstBank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "96",
+        "abbrev": "UK",
+        "displayName": "Kentucky Wildcats",
+        "shortDisplayName": "Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+        "color": "#0033a0",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "238",
+        "spread": -7,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752780",
+      "id": "401752780",
+      "displayName": "Arkansas @ Texas",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "DKR-Texas Memorial Stadium",
+        "city": "DKR-Texas Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 52,
+        "rank": null
+      },
+      "away": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "251",
+        "spread": -10.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 52,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752775",
+      "id": "401752775",
+      "displayName": "Tennessee @ Florida",
+      "date": "2025-11-23T00:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ben Hill Griffin Stadium",
+        "city": "Ben Hill Griffin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "57",
+        "abbrev": "FLA",
+        "displayName": "Florida Gators",
+        "shortDisplayName": "Florida",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+        "color": "#0021a5",
+        "alternateColor": "#fa4616",
+        "score": 11,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": 3.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 11,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752788",
+      "id": "401752788",
+      "displayName": "Ole Miss @ Mississippi State",
+      "date": "2025-11-28T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Davis Wade Stadium",
+        "city": "Davis Wade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "344",
+        "abbrev": "MSST",
+        "displayName": "Mississippi State Bulldogs",
+        "shortDisplayName": "Mississippi State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+        "color": "#5d1725",
+        "alternateColor": "#c1c6c8",
+        "score": 19,
+        "rank": null
+      },
+      "away": {
+        "teamId": "145",
+        "abbrev": "MISS",
+        "displayName": "Ole Miss Rebels",
+        "shortDisplayName": "Ole Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+        "color": "#13294b",
+        "alternateColor": "#c8102e",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "145",
+        "spread": 7.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 19,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752792",
+      "id": "401752792",
+      "displayName": "Texas A&M @ Texas",
+      "date": "2025-11-29T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "DKR-Texas Memorial Stadium",
+        "city": "DKR-Texas Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "251",
+        "abbrev": "TEX",
+        "displayName": "Texas Longhorns",
+        "shortDisplayName": "Texas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+        "color": "#c15d26",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "245",
+        "abbrev": "TA&M",
+        "displayName": "Texas A&M Aggies",
+        "shortDisplayName": "Texas A&M",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+        "color": "#500000",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "245",
+        "spread": 2.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752791",
+      "id": "401752791",
+      "displayName": "Vanderbilt @ Tennessee",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Neyland Stadium",
+        "city": "Neyland Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2633",
+        "abbrev": "TENN",
+        "displayName": "Tennessee Volunteers",
+        "shortDisplayName": "Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+        "color": "#ff8200",
+        "alternateColor": "#58595b",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "238",
+        "abbrev": "VAN",
+        "displayName": "Vanderbilt Commodores",
+        "shortDisplayName": "Vanderbilt",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+        "color": "#866d4b",
+        "alternateColor": "#000000",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2633",
+        "spread": -2,
+        "overUnder": 66.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752783",
+      "id": "401752783",
+      "displayName": "Missouri @ Arkansas",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Razorback Stadium",
+        "city": "Razorback Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "8",
+        "abbrev": "ARK",
+        "displayName": "Arkansas Razorbacks",
+        "shortDisplayName": "Arkansas",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+        "color": "#a41f35",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "142",
+        "abbrev": "MIZ",
+        "displayName": "Missouri Tigers",
+        "shortDisplayName": "Missouri",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+        "color": "#f1b82d",
+        "alternateColor": "#000000",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "142",
+        "spread": 4.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752789",
+      "id": "401752789",
+      "displayName": "LSU @ Oklahoma",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Norman, OK)",
+        "city": "Memorial Stadium (Norman",
+        "state": "OK)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "99",
+        "abbrev": "LSU",
+        "displayName": "LSU Tigers",
+        "shortDisplayName": "LSU",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+        "color": "#461d7c",
+        "alternateColor": "#fdd023",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": -11.5,
+        "overUnder": 36.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752784",
+      "id": "401752784",
+      "displayName": "Alabama @ Auburn",
+      "date": "2025-11-30T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Jordan-Hare Stadium",
+        "city": "Jordan-Hare Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2",
+        "abbrev": "AUB",
+        "displayName": "Auburn Tigers",
+        "shortDisplayName": "Auburn",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+        "color": "#002b5c",
+        "alternateColor": "#f26522",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "333",
+        "spread": 6.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401777351",
+      "id": "401777351",
+      "displayName": "Georgia @ Alabama",
+      "date": "2025-12-06T21:00:00.000Z",
+      "week": 15,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Mercedes-Benz Stadium",
+        "city": "Mercedes-Benz Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "away": {
+        "teamId": "61",
+        "abbrev": "UGA",
+        "displayName": "Georgia Bulldogs",
+        "shortDisplayName": "Georgia",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+        "color": "#ba0c2f",
+        "alternateColor": "#000000",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "61",
+        "spread": 2.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 7,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401779840",
+      "id": "401779840",
+      "displayName": "Alabama @ Oklahoma",
+      "date": "2025-12-20T01:00:00.000Z",
+      "week": 1,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "pre",
+      "completed": false,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Norman, OK)",
+        "city": "Memorial Stadium (Norman",
+        "state": "OK)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "201",
+        "abbrev": "OU",
+        "displayName": "Oklahoma Sooners",
+        "shortDisplayName": "Oklahoma",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+        "color": "#a32036",
+        "alternateColor": "#ffffff",
+        "score": null,
+        "rank": null
+      },
+      "away": {
+        "teamId": "333",
+        "abbrev": "ALA",
+        "displayName": "Alabama Crimson Tide",
+        "shortDisplayName": "Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+        "color": "#9e1632",
+        "alternateColor": "#ffffff",
+        "score": null,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "201",
+        "spread": -1,
+        "overUnder": null
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Postseason",
+        "abbreviation": "post"
+      }
+    }
+  ],
+  "teams": [
+    {
+      "id": "2",
+      "abbrev": "AUB",
+      "name": "Auburn",
+      "displayName": "Auburn Tigers",
+      "shortDisplayName": "Auburn",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2.png",
+      "color": "#002b5c",
+      "alternateColor": "#f26522",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 14
+    },
+    {
+      "id": "8",
+      "abbrev": "ARK",
+      "name": "Arkansas",
+      "displayName": "Arkansas Razorbacks",
+      "shortDisplayName": "Arkansas",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/8.png",
+      "color": "#a41f35",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "0-8",
+      "rank": 16
+    },
+    {
+      "id": "57",
+      "abbrev": "FLA",
+      "name": "Florida",
+      "displayName": "Florida Gators",
+      "shortDisplayName": "Florida",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/57.png",
+      "color": "#0021a5",
+      "alternateColor": "#fa4616",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 12
+    },
+    {
+      "id": "61",
+      "abbrev": "UGA",
+      "name": "Georgia",
+      "displayName": "Georgia Bulldogs",
+      "shortDisplayName": "Georgia",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/61.png",
+      "color": "#ba0c2f",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "8-1",
+      "rank": 1
+    },
+    {
+      "id": "96",
+      "abbrev": "UK",
+      "name": "Kentucky",
+      "displayName": "Kentucky Wildcats",
+      "shortDisplayName": "Kentucky",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/96.png",
+      "color": "#0033a0",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 11
+    },
+    {
+      "id": "99",
+      "abbrev": "LSU",
+      "name": "LSU",
+      "displayName": "LSU Tigers",
+      "shortDisplayName": "LSU",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/99.png",
+      "color": "#461d7c",
+      "alternateColor": "#fdd023",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 10
+    },
+    {
+      "id": "142",
+      "abbrev": "MIZ",
+      "name": "Missouri",
+      "displayName": "Missouri Tigers",
+      "shortDisplayName": "Missouri",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/142.png",
+      "color": "#f1b82d",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 9
+    },
+    {
+      "id": "145",
+      "abbrev": "MISS",
+      "name": "Ole Miss",
+      "displayName": "Ole Miss Rebels",
+      "shortDisplayName": "Ole Miss",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/145.png",
+      "color": "#13294b",
+      "alternateColor": "#c8102e",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-1",
+      "rank": 2
+    },
+    {
+      "id": "201",
+      "abbrev": "OU",
+      "name": "Oklahoma",
+      "displayName": "Oklahoma Sooners",
+      "shortDisplayName": "Oklahoma",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/201.png",
+      "color": "#a32036",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 7
+    },
+    {
+      "id": "238",
+      "abbrev": "VAN",
+      "name": "Vanderbilt",
+      "displayName": "Vanderbilt Commodores",
+      "shortDisplayName": "Vanderbilt",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/238.png",
+      "color": "#866d4b",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 6
+    },
+    {
+      "id": "245",
+      "abbrev": "TA&M",
+      "name": "Texas A&M",
+      "displayName": "Texas A&M Aggies",
+      "shortDisplayName": "Texas A&M",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/245.png",
+      "color": "#500000",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-1",
+      "rank": 3
+    },
+    {
+      "id": "251",
+      "abbrev": "TEX",
+      "name": "Texas",
+      "displayName": "Texas Longhorns",
+      "shortDisplayName": "Texas",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/251.png",
+      "color": "#c15d26",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 5
+    },
+    {
+      "id": "333",
+      "abbrev": "ALA",
+      "name": "Alabama",
+      "displayName": "Alabama Crimson Tide",
+      "shortDisplayName": "Alabama",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/333.png",
+      "color": "#9e1632",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-2",
+      "rank": 4
+    },
+    {
+      "id": "344",
+      "abbrev": "MSST",
+      "name": "Mississippi State",
+      "displayName": "Mississippi State Bulldogs",
+      "shortDisplayName": "Mississippi State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/344.png",
+      "color": "#5d1725",
+      "alternateColor": "#c1c6c8",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 15
+    },
+    {
+      "id": "2579",
+      "abbrev": "SC",
+      "name": "South Carolina",
+      "displayName": "South Carolina Gamecocks",
+      "shortDisplayName": "South Carolina",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2579.png",
+      "color": "#73000a",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 13
+    },
+    {
+      "id": "2633",
+      "abbrev": "TENN",
+      "name": "Tennessee",
+      "displayName": "Tennessee Volunteers",
+      "shortDisplayName": "Tennessee",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2633.png",
+      "color": "#ff8200",
+      "alternateColor": "#58595b",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 8
+    }
+  ],
+  "season": 2025
+}

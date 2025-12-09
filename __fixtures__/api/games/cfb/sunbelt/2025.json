@@ -1,0 +1,3379 @@
+{
+  "events": [
+    {
+      "_id": "401761607",
+      "id": "401761607",
+      "displayName": "App State @ Southern Miss",
+      "date": "2025-09-13T23:00:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "M. M. Roberts Stadium",
+        "city": "M. M. Roberts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2026",
+        "spread": 3,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761611",
+      "id": "401761611",
+      "displayName": "Coastal Carolina @ South Alabama",
+      "date": "2025-09-20T23:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Hancock Whitney Stadium",
+        "city": "Hancock Whitney Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": -14.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761614",
+      "id": "401761614",
+      "displayName": "Georgia Southern @ James Madison",
+      "date": "2025-09-27T17:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bridgeforth Stadium",
+        "city": "Bridgeforth Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": -14.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761616",
+      "id": "401761616",
+      "displayName": "Arkansas State @ UL Monroe",
+      "date": "2025-09-27T19:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Malone Stadium",
+        "city": "Malone Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 16,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2433",
+        "spread": -1.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 16
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761615",
+      "id": "401761615",
+      "displayName": "Marshall @ Louisiana",
+      "date": "2025-09-28T00:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Cajun Field",
+        "city": "Cajun Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 54,
+        "rank": null
+      },
+      "away": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 51,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "276",
+        "spread": 2.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 54,
+        "away": 51
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761618",
+      "id": "401761618",
+      "displayName": "James Madison @ Georgia State",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Center Parc Stadium",
+        "city": "Center Parc Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 7,
+        "rank": null
+      },
+      "away": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": 19.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 7,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761620",
+      "id": "401761620",
+      "displayName": "Texas State @ Arkansas State",
+      "date": "2025-10-04T20:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Centennial Bank Stadium",
+        "city": "Centennial Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": 14,
+        "overUnder": 63.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761619",
+      "id": "401761619",
+      "displayName": "Coastal Carolina @ Old Dominion",
+      "date": "2025-10-04T22:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "S.B. Ballard Stadium",
+        "city": "S.B. Ballard Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 47,
+        "rank": null
+      },
+      "away": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": -18.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 47,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761621",
+      "id": "401761621",
+      "displayName": "South Alabama @ Troy",
+      "date": "2025-10-04T23:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Veterans Memorial Stadium (AL)",
+        "city": "Veterans Memorial Stadium (AL)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": 2.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761622",
+      "id": "401761622",
+      "displayName": "Southern Miss @ Georgia Southern",
+      "date": "2025-10-10T00:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Allen E. Paulson Stadium",
+        "city": "Allen E. Paulson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": 3,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761625",
+      "id": "401761625",
+      "displayName": "Louisiana @ James Madison",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bridgeforth Stadium",
+        "city": "Bridgeforth Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": -18.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761626",
+      "id": "401761626",
+      "displayName": "Old Dominion @ Marshall",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joan C. Edwards Stadium",
+        "city": "Joan C. Edwards Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 48,
+        "rank": null
+      },
+      "away": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": 14.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 48,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761624",
+      "id": "401761624",
+      "displayName": "App State @ Georgia State",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Center Parc Stadium",
+        "city": "Center Parc Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 41,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2026",
+        "spread": 3,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 41
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761623",
+      "id": "401761623",
+      "displayName": "UL Monroe @ Coastal Carolina",
+      "date": "2025-10-11T23:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Brooks Stadium (SC)",
+        "city": "Brooks Stadium (SC)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 8,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2433",
+        "spread": 3,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 8
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761627",
+      "id": "401761627",
+      "displayName": "Troy @ Texas State",
+      "date": "2025-10-12T00:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bobcat Stadium (TX)",
+        "city": "Bobcat Stadium (TX)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 48,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": -7.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 48
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761628",
+      "id": "401761628",
+      "displayName": "Arkansas State @ South Alabama",
+      "date": "2025-10-14T23:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Hancock Whitney Stadium",
+        "city": "Hancock Whitney Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 15,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": -8.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 15
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761633",
+      "id": "401761633",
+      "displayName": "Troy @ UL Monroe",
+      "date": "2025-10-18T19:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Malone Stadium",
+        "city": "Malone Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2653",
+        "spread": 4.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761629",
+      "id": "401761629",
+      "displayName": "Coastal Carolina @ App State",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kidd Brewer Stadium",
+        "city": "Kidd Brewer Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 37,
+        "rank": null
+      },
+      "away": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2026",
+        "spread": -10.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 37,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761631",
+      "id": "401761631",
+      "displayName": "Old Dominion @ James Madison",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bridgeforth Stadium",
+        "city": "Bridgeforth Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 63,
+        "rank": null
+      },
+      "away": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": -3,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 63,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761632",
+      "id": "401761632",
+      "displayName": "Texas State @ Marshall",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joan C. Edwards Stadium",
+        "city": "Joan C. Edwards Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 40,
+        "rank": null
+      },
+      "away": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": 3,
+        "overUnder": 65.5
+      },
+      "predictedScore": {
+        "home": 40,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761668",
+      "id": "401761668",
+      "displayName": "Southern Miss @ Louisiana",
+      "date": "2025-10-18T21:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Cajun Field",
+        "city": "Cajun Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": 4.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761630",
+      "id": "401761630",
+      "displayName": "Georgia State @ Georgia Southern",
+      "date": "2025-10-18T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Allen E. Paulson Stadium",
+        "city": "Allen E. Paulson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "290",
+        "spread": -6.5,
+        "overUnder": 58.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761634",
+      "id": "401761634",
+      "displayName": "South Alabama @ Georgia State",
+      "date": "2025-10-23T23:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Center Parc Stadium",
+        "city": "Center Parc Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": 5.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761635",
+      "id": "401761635",
+      "displayName": "App State @ Old Dominion",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "S.B. Ballard Stadium",
+        "city": "S.B. Ballard Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": -12.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761637",
+      "id": "401761637",
+      "displayName": "UL Monroe @ Southern Miss",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "M. M. Roberts Stadium",
+        "city": "M. M. Roberts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 49,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": -14,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 49,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761636",
+      "id": "401761636",
+      "displayName": "Georgia Southern @ Arkansas State",
+      "date": "2025-10-25T23:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Centennial Bank Stadium",
+        "city": "Centennial Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "290",
+        "spread": 1.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761638",
+      "id": "401761638",
+      "displayName": "Louisiana @ Troy",
+      "date": "2025-10-25T23:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Veterans Memorial Stadium (AL)",
+        "city": "Veterans Memorial Stadium (AL)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2653",
+        "spread": -7,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761639",
+      "id": "401761639",
+      "displayName": "James Madison @ Texas State",
+      "date": "2025-10-29T00:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bobcat Stadium (TX)",
+        "city": "Bobcat Stadium (TX)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 52,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": 7.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 52
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761640",
+      "id": "401761640",
+      "displayName": "Marshall @ Coastal Carolina",
+      "date": "2025-10-30T23:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Brooks Stadium (SC)",
+        "city": "Brooks Stadium (SC)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 44,
+        "rank": null
+      },
+      "away": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "276",
+        "spread": 7.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 44,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761641",
+      "id": "401761641",
+      "displayName": "Old Dominion @ UL Monroe",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Malone Stadium",
+        "city": "Malone Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 6,
+        "rank": null
+      },
+      "away": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": 16.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 6,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761642",
+      "id": "401761642",
+      "displayName": "Louisiana @ South Alabama",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Hancock Whitney Stadium",
+        "city": "Hancock Whitney Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 22,
+        "rank": null
+      },
+      "away": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": -3.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 22,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761643",
+      "id": "401761643",
+      "displayName": "Arkansas State @ Troy",
+      "date": "2025-11-02T00:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Veterans Memorial Stadium (AL)",
+        "city": "Veterans Memorial Stadium (AL)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2653",
+        "spread": -7.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761644",
+      "id": "401761644",
+      "displayName": "Georgia Southern @ App State",
+      "date": "2025-11-07T00:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kidd Brewer Stadium",
+        "city": "Kidd Brewer Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 25,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2026",
+        "spread": -4.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761647",
+      "id": "401761647",
+      "displayName": "Southern Miss @ Arkansas State",
+      "date": "2025-11-08T17:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Centennial Bank Stadium",
+        "city": "Centennial Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": 6.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761646",
+      "id": "401761646",
+      "displayName": "James Madison @ Marshall",
+      "date": "2025-11-08T17:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joan C. Edwards Stadium",
+        "city": "Joan C. Edwards Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": 13.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761645",
+      "id": "401761645",
+      "displayName": "Georgia State @ Coastal Carolina",
+      "date": "2025-11-08T21:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Brooks Stadium (SC)",
+        "city": "Brooks Stadium (SC)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 40,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "324",
+        "spread": -7,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 40,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761648",
+      "id": "401761648",
+      "displayName": "Texas State @ Louisiana",
+      "date": "2025-11-08T22:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Cajun Field",
+        "city": "Cajun Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 39,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": 3.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 39
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761649",
+      "id": "401761649",
+      "displayName": "Troy @ Old Dominion",
+      "date": "2025-11-14T00:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "S.B. Ballard Stadium",
+        "city": "S.B. Ballard Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 33,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 0,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": -9.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 33,
+        "away": 0
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761651",
+      "id": "401761651",
+      "displayName": "Marshall @ Georgia State",
+      "date": "2025-11-15T19:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Center Parc Stadium",
+        "city": "Center Parc Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 18,
+        "rank": null
+      },
+      "away": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "276",
+        "spread": 9.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 18,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761654",
+      "id": "401761654",
+      "displayName": "Texas State @ Southern Miss",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "M. M. Roberts Stadium",
+        "city": "M. M. Roberts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 41,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": -3,
+        "overUnder": 65.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 41
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761653",
+      "id": "401761653",
+      "displayName": "South Alabama @ UL Monroe",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Malone Stadium",
+        "city": "Malone Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "6",
+        "spread": 4,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761652",
+      "id": "401761652",
+      "displayName": "App State @ James Madison",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bridgeforth Stadium",
+        "city": "Bridgeforth Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 58,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": -21,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 58,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761650",
+      "id": "401761650",
+      "displayName": "Coastal Carolina @ Georgia Southern",
+      "date": "2025-11-15T23:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Allen E. Paulson Stadium",
+        "city": "Allen E. Paulson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 40,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "290",
+        "spread": -3,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 40
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761655",
+      "id": "401761655",
+      "displayName": "Louisiana @ Arkansas State",
+      "date": "2025-11-21T00:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Centennial Bank Stadium",
+        "city": "Centennial Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2032",
+        "spread": -2.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761657",
+      "id": "401761657",
+      "displayName": "Old Dominion @ Georgia Southern",
+      "date": "2025-11-22T18:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Allen E. Paulson Stadium",
+        "city": "Allen E. Paulson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": 10,
+        "overUnder": 62
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761656",
+      "id": "401761656",
+      "displayName": "Marshall @ App State",
+      "date": "2025-11-22T19:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kidd Brewer Stadium",
+        "city": "Kidd Brewer Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "276",
+        "spread": 4,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761658",
+      "id": "401761658",
+      "displayName": "Southern Miss @ South Alabama",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Hancock Whitney Stadium",
+        "city": "Hancock Whitney Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": 2.5,
+        "overUnder": 53
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761660",
+      "id": "401761660",
+      "displayName": "Georgia State @ Troy",
+      "date": "2025-11-22T21:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Veterans Memorial Stadium (AL)",
+        "city": "Veterans Memorial Stadium (AL)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2653",
+        "spread": -9.5,
+        "overUnder": 51
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761659",
+      "id": "401761659",
+      "displayName": "UL Monroe @ Texas State",
+      "date": "2025-11-22T22:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bobcat Stadium (TX)",
+        "city": "Bobcat Stadium (TX)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": -20.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761663",
+      "id": "401761663",
+      "displayName": "Georgia Southern @ Marshall",
+      "date": "2025-11-29T18:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joan C. Edwards Stadium",
+        "city": "Joan C. Edwards Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "276",
+        "abbrev": "MRSH",
+        "displayName": "Marshall Thundering Herd",
+        "shortDisplayName": "Marshall",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+        "color": "#00ae42",
+        "alternateColor": "#be854c",
+        "score": 19,
+        "rank": null
+      },
+      "away": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "276",
+        "spread": -10.5,
+        "overUnder": 61.5
+      },
+      "predictedScore": {
+        "home": 19,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761664",
+      "id": "401761664",
+      "displayName": "Georgia State @ Old Dominion",
+      "date": "2025-11-29T19:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "S.B. Ballard Stadium",
+        "city": "S.B. Ballard Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "295",
+        "abbrev": "ODU",
+        "displayName": "Old Dominion Monarchs",
+        "shortDisplayName": "Old Dominion",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+        "color": "#00507d",
+        "alternateColor": "#a1d2f1",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2247",
+        "abbrev": "GAST",
+        "displayName": "Georgia State Panthers",
+        "shortDisplayName": "Georgia State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+        "color": "#1e539a",
+        "alternateColor": "#ebebeb",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "295",
+        "spread": -29,
+        "overUnder": 58.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761661",
+      "id": "401761661",
+      "displayName": "Arkansas State @ App State",
+      "date": "2025-11-29T19:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kidd Brewer Stadium",
+        "city": "Kidd Brewer Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": 29,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2032",
+        "abbrev": "ARST",
+        "displayName": "Arkansas State Red Wolves",
+        "shortDisplayName": "Arkansas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+        "color": "#e81018",
+        "alternateColor": "#000000",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2026",
+        "spread": -1,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 29,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761665",
+      "id": "401761665",
+      "displayName": "UL Monroe @ Louisiana",
+      "date": "2025-11-29T20:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Cajun Field",
+        "city": "Cajun Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "309",
+        "abbrev": "UL",
+        "displayName": "Louisiana Ragin' Cajuns",
+        "shortDisplayName": "Louisiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+        "color": "#ce181e",
+        "alternateColor": "#ffffff",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2433",
+        "abbrev": "ULM",
+        "displayName": "UL Monroe Warhawks",
+        "shortDisplayName": "UL Monroe",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+        "color": "#231F20",
+        "alternateColor": "#b18445",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "309",
+        "spread": -10.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761667",
+      "id": "401761667",
+      "displayName": "South Alabama @ Texas State",
+      "date": "2025-11-29T20:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bobcat Stadium (TX)",
+        "city": "Bobcat Stadium (TX)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "326",
+        "abbrev": "TXST",
+        "displayName": "Texas State Bobcats",
+        "shortDisplayName": "Texas State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+        "color": "#4e1719",
+        "alternateColor": "#b4975a",
+        "score": 49,
+        "rank": null
+      },
+      "away": {
+        "teamId": "6",
+        "abbrev": "USA",
+        "displayName": "South Alabama Jaguars",
+        "shortDisplayName": "South Alabama",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+        "color": "#00205B",
+        "alternateColor": "#BF0D3E",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "326",
+        "spread": -9.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 49,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761666",
+      "id": "401761666",
+      "displayName": "Troy @ Southern Miss",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "M. M. Roberts Stadium",
+        "city": "M. M. Roberts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2572",
+        "abbrev": "USM",
+        "displayName": "Southern Miss Golden Eagles",
+        "shortDisplayName": "Southern Miss",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+        "color": "#FFAA3C",
+        "alternateColor": "#ffc423",
+        "score": 18,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2572",
+        "spread": -6.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 18,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401761662",
+      "id": "401761662",
+      "displayName": "James Madison @ Coastal Carolina",
+      "date": "2025-11-29T20:45:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Brooks Stadium (SC)",
+        "city": "Brooks Stadium (SC)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "324",
+        "abbrev": "CCU",
+        "displayName": "Coastal Carolina Chanticleers",
+        "shortDisplayName": "Coastal Carolina",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+        "color": "#007073",
+        "alternateColor": "#876447",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 59,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": 24,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 59
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401777352",
+      "id": "401777352",
+      "displayName": "Troy @ James Madison",
+      "date": "2025-12-06T00:00:00.000Z",
+      "week": 15,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Bridgeforth Stadium",
+        "city": "Bridgeforth Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "256",
+        "abbrev": "JMU",
+        "displayName": "James Madison Dukes",
+        "shortDisplayName": "James Madison",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+        "color": "#450084",
+        "alternateColor": "#b5a068",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2653",
+        "abbrev": "TROY",
+        "displayName": "Troy Trojans",
+        "shortDisplayName": "Troy",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+        "color": "#AE0210",
+        "alternateColor": "#88898c",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "256",
+        "spread": -24.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401778324",
+      "id": "401778324",
+      "displayName": "Georgia Southern @ App State",
+      "date": "2025-12-29T19:00:00.000Z",
+      "week": 1,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "pre",
+      "completed": false,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Protective Stadium",
+        "city": "Protective Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2026",
+        "abbrev": "APP",
+        "displayName": "App State Mountaineers",
+        "shortDisplayName": "App State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+        "color": "#ffcc00",
+        "alternateColor": "#222222",
+        "score": null,
+        "rank": null
+      },
+      "away": {
+        "teamId": "290",
+        "abbrev": "GASO",
+        "displayName": "Georgia Southern Eagles",
+        "shortDisplayName": "Georgia Southern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+        "color": "#003775",
+        "alternateColor": "#f0f0f0",
+        "score": null,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "290",
+        "spread": 2.5,
+        "overUnder": 60
+      },
+      "predictedScore": {
+        "home": 29,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Postseason",
+        "abbreviation": "post"
+      }
+    }
+  ],
+  "teams": [
+    {
+      "id": "6",
+      "abbrev": "USA",
+      "name": "South Alabama",
+      "displayName": "South Alabama Jaguars",
+      "shortDisplayName": "South Alabama",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+      "color": "#00205B",
+      "alternateColor": "#BF0D3E",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 11
+    },
+    {
+      "id": "256",
+      "abbrev": "JMU",
+      "name": "James Madison",
+      "displayName": "James Madison Dukes",
+      "shortDisplayName": "James Madison",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+      "color": "#450084",
+      "alternateColor": "#b5a068",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "9-0",
+      "rank": 1
+    },
+    {
+      "id": "276",
+      "abbrev": "MRSH",
+      "name": "Marshall",
+      "displayName": "Marshall Thundering Herd",
+      "shortDisplayName": "Marshall",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+      "color": "#00ae42",
+      "alternateColor": "#be854c",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 9
+    },
+    {
+      "id": "290",
+      "abbrev": "GASO",
+      "name": "Georgia Southern",
+      "displayName": "Georgia Southern Eagles",
+      "shortDisplayName": "Georgia Southern",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+      "color": "#003775",
+      "alternateColor": "#f0f0f0",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 8
+    },
+    {
+      "id": "295",
+      "abbrev": "ODU",
+      "name": "Old Dominion",
+      "displayName": "Old Dominion Monarchs",
+      "shortDisplayName": "Old Dominion",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+      "color": "#00507d",
+      "alternateColor": "#a1d2f1",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 2
+    },
+    {
+      "id": "309",
+      "abbrev": "UL",
+      "name": "Louisiana",
+      "displayName": "Louisiana Ragin' Cajuns",
+      "shortDisplayName": "Louisiana",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+      "color": "#ce181e",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 5
+    },
+    {
+      "id": "324",
+      "abbrev": "CCU",
+      "name": "Coastal Carolina",
+      "displayName": "Coastal Carolina Chanticleers",
+      "shortDisplayName": "Coastal Carolina",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+      "color": "#007073",
+      "alternateColor": "#876447",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 6
+    },
+    {
+      "id": "326",
+      "abbrev": "TXST",
+      "name": "Texas State",
+      "displayName": "Texas State Bobcats",
+      "shortDisplayName": "Texas State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+      "color": "#4e1719",
+      "alternateColor": "#b4975a",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 10
+    },
+    {
+      "id": "2026",
+      "abbrev": "APP",
+      "name": "App State",
+      "displayName": "App State Mountaineers",
+      "shortDisplayName": "App State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+      "color": "#ffcc00",
+      "alternateColor": "#222222",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 12
+    },
+    {
+      "id": "2032",
+      "abbrev": "ARST",
+      "name": "Arkansas State",
+      "displayName": "Arkansas State Red Wolves",
+      "shortDisplayName": "Arkansas State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+      "color": "#e81018",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 7
+    },
+    {
+      "id": "2247",
+      "abbrev": "GAST",
+      "name": "Georgia State",
+      "displayName": "Georgia State Panthers",
+      "shortDisplayName": "Georgia State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+      "color": "#1e539a",
+      "alternateColor": "#ebebeb",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "0-8",
+      "rank": 14
+    },
+    {
+      "id": "2433",
+      "abbrev": "ULM",
+      "name": "UL Monroe",
+      "displayName": "UL Monroe Warhawks",
+      "shortDisplayName": "UL Monroe",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+      "color": "#231F20",
+      "alternateColor": "#b18445",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 13
+    },
+    {
+      "id": "2572",
+      "abbrev": "USM",
+      "name": "Southern Miss",
+      "displayName": "Southern Miss Golden Eagles",
+      "shortDisplayName": "Southern Miss",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+      "color": "#FFAA3C",
+      "alternateColor": "#ffc423",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 4
+    },
+    {
+      "id": "2653",
+      "abbrev": "TROY",
+      "name": "Troy",
+      "displayName": "Troy Trojans",
+      "shortDisplayName": "Troy",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+      "color": "#AE0210",
+      "alternateColor": "#88898c",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-3",
+      "rank": 3
+    }
+  ],
+  "season": 2025
+}

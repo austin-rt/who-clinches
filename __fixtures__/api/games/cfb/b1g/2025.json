@@ -1,0 +1,4751 @@
+{
+  "events": [
+    {
+      "_id": "401752831",
+      "id": "401752831",
+      "displayName": "Oregon @ Northwestern",
+      "date": "2025-09-13T16:00:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Lanny and Sharon Martin Stadium",
+        "city": "Lanny and Sharon Martin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": 25.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752832",
+      "id": "401752832",
+      "displayName": "USC @ Purdue",
+      "date": "2025-09-13T19:30:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ross-Ade Stadium",
+        "city": "Ross-Ade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 33,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": 20.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 33
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752844",
+      "id": "401752844",
+      "displayName": "Iowa @ Rutgers",
+      "date": "2025-09-20T00:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SHI Stadium",
+        "city": "SHI Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": 2.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752845",
+      "id": "401752845",
+      "displayName": "Maryland @ Wisconsin",
+      "date": "2025-09-20T16:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Camp Randall Stadium",
+        "city": "Camp Randall Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "275",
+        "spread": -10.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752846",
+      "id": "401752846",
+      "displayName": "Michigan @ Nebraska",
+      "date": "2025-09-20T19:30:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Lincoln, NE)",
+        "city": "Memorial Stadium (Lincoln",
+        "state": "NE)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": 1.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752843",
+      "id": "401752843",
+      "displayName": "Illinois @ Indiana",
+      "date": "2025-09-20T23:30:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Bloomington, IN)",
+        "city": "Memorial Stadium (Bloomington",
+        "state": "IN)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 63,
+        "rank": null
+      },
+      "away": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": -7,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 63,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752847",
+      "id": "401752847",
+      "displayName": "Michigan State @ USC",
+      "date": "2025-09-21T03:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Los Angeles Memorial Coliseum",
+        "city": "Los Angeles Memorial Coliseum",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": -18.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752850",
+      "id": "401752850",
+      "displayName": "USC @ Illinois",
+      "date": "2025-09-27T16:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Champaign, IL)",
+        "city": "Memorial Stadium (Champaign",
+        "state": "IL)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 32,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": 6.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 32
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752849",
+      "id": "401752849",
+      "displayName": "Rutgers @ Minnesota",
+      "date": "2025-09-27T16:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huntington Bank Stadium",
+        "city": "Huntington Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "135",
+        "spread": -3.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752853",
+      "id": "401752853",
+      "displayName": "Indiana @ Iowa",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kinnick Stadium",
+        "city": "Kinnick Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 15,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": 9.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 15,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752852",
+      "id": "401752852",
+      "displayName": "Ohio State @ Washington",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Husky Stadium",
+        "city": "Husky Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 6,
+        "rank": null
+      },
+      "away": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": 9.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 6,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752851",
+      "id": "401752851",
+      "displayName": "UCLA @ Northwestern",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Lanny and Sharon Martin Stadium",
+        "city": "Lanny and Sharon Martin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "77",
+        "spread": -6,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752854",
+      "id": "401752854",
+      "displayName": "Oregon @ Penn State",
+      "date": "2025-09-27T23:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Beaver Stadium",
+        "city": "Beaver Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": -4.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752861",
+      "id": "401752861",
+      "displayName": "Illinois @ Purdue",
+      "date": "2025-10-04T16:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ross-Ade Stadium",
+        "city": "Ross-Ade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 43,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "356",
+        "spread": 7.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 43
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752856",
+      "id": "401752856",
+      "displayName": "Wisconsin @ Michigan",
+      "date": "2025-10-04T16:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Michigan Stadium",
+        "city": "Michigan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": -17.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752855",
+      "id": "401752855",
+      "displayName": "Penn State @ UCLA",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rose Bowl",
+        "city": "Rose Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": 24.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752857",
+      "id": "401752857",
+      "displayName": "Washington @ Maryland",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SECU Stadium",
+        "city": "SECU Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": 5.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752860",
+      "id": "401752860",
+      "displayName": "Michigan State @ Nebraska",
+      "date": "2025-10-04T20:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Lincoln, NE)",
+        "city": "Memorial Stadium (Lincoln",
+        "state": "NE)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "158",
+        "spread": -12.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752859",
+      "id": "401752859",
+      "displayName": "Minnesota @ Ohio State",
+      "date": "2025-10-04T23:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ohio Stadium",
+        "city": "Ohio Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 3,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": -23.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 3
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752862",
+      "id": "401752862",
+      "displayName": "Rutgers @ Washington",
+      "date": "2025-10-11T01:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Husky Stadium",
+        "city": "Husky Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": -9.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752863",
+      "id": "401752863",
+      "displayName": "UCLA @ Michigan State",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Spartan Stadium",
+        "city": "Spartan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "away": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "127",
+        "spread": -7,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 13,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752865",
+      "id": "401752865",
+      "displayName": "Ohio State @ Illinois",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Champaign, IL)",
+        "city": "Memorial Stadium (Champaign",
+        "state": "IL)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": 15.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752867",
+      "id": "401752867",
+      "displayName": "Nebraska @ Maryland",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SECU Stadium",
+        "city": "SECU Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "158",
+        "spread": 7,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752866",
+      "id": "401752866",
+      "displayName": "Northwestern @ Penn State",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Beaver Stadium",
+        "city": "Beaver Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": -20.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752870",
+      "id": "401752870",
+      "displayName": "Indiana @ Oregon",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Autzen Stadium",
+        "city": "Autzen Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": -7,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752869",
+      "id": "401752869",
+      "displayName": "Iowa @ Wisconsin",
+      "date": "2025-10-11T23:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Camp Randall Stadium",
+        "city": "Camp Randall Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 0,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": 5.5,
+        "overUnder": 37.5
+      },
+      "predictedScore": {
+        "home": 0,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752864",
+      "id": "401752864",
+      "displayName": "Purdue @ Minnesota",
+      "date": "2025-10-11T23:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huntington Bank Stadium",
+        "city": "Huntington Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "135",
+        "spread": -7.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752868",
+      "id": "401752868",
+      "displayName": "Michigan @ USC",
+      "date": "2025-10-11T23:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Los Angeles Memorial Coliseum",
+        "city": "Los Angeles Memorial Coliseum",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": -3,
+        "overUnder": 58.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752872",
+      "id": "401752872",
+      "displayName": "Nebraska @ Minnesota",
+      "date": "2025-10-18T00:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huntington Bank Stadium",
+        "city": "Huntington Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "158",
+        "spread": 7,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752873",
+      "id": "401752873",
+      "displayName": "Washington @ Michigan",
+      "date": "2025-10-18T16:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Michigan Stadium",
+        "city": "Michigan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": -4.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752874",
+      "id": "401752874",
+      "displayName": "Purdue @ Northwestern",
+      "date": "2025-10-18T19:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Lanny and Sharon Martin Stadium",
+        "city": "Lanny and Sharon Martin Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 19,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 0,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "77",
+        "spread": -3,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 19,
+        "away": 0
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752877",
+      "id": "401752877",
+      "displayName": "Ohio State @ Wisconsin",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Camp Randall Stadium",
+        "city": "Camp Randall Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 0,
+        "rank": null
+      },
+      "away": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": 24.5,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 0,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752878",
+      "id": "401752878",
+      "displayName": "Michigan State @ Indiana",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Bloomington, IN)",
+        "city": "Memorial Stadium (Bloomington",
+        "state": "IN)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": -26.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752876",
+      "id": "401752876",
+      "displayName": "Oregon @ Rutgers",
+      "date": "2025-10-18T22:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SHI Stadium",
+        "city": "SHI Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 56,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": 17.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 56
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752875",
+      "id": "401752875",
+      "displayName": "Penn State @ Iowa",
+      "date": "2025-10-18T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kinnick Stadium",
+        "city": "Kinnick Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 25,
+        "rank": null
+      },
+      "away": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": -3.5,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 25,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752879",
+      "id": "401752879",
+      "displayName": "Maryland @ UCLA",
+      "date": "2025-10-18T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rose Bowl",
+        "city": "Rose Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "26",
+        "spread": -3.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752884",
+      "id": "401752884",
+      "displayName": "Rutgers @ Purdue",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ross-Ade Stadium",
+        "city": "Ross-Ade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2509",
+        "spread": -2.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752883",
+      "id": "401752883",
+      "displayName": "Northwestern @ Nebraska",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Lincoln, NE)",
+        "city": "Memorial Stadium (Lincoln",
+        "state": "NE)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "158",
+        "spread": -7.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752885",
+      "id": "401752885",
+      "displayName": "UCLA @ Indiana",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Bloomington, IN)",
+        "city": "Memorial Stadium (Bloomington",
+        "state": "IN)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 56,
+        "rank": null
+      },
+      "away": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": -26.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 56,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752880",
+      "id": "401752880",
+      "displayName": "Illinois @ Washington",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Husky Stadium",
+        "city": "Husky Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 25,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": -3.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752882",
+      "id": "401752882",
+      "displayName": "Minnesota @ Iowa",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kinnick Stadium",
+        "city": "Kinnick Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 3,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": -7.5,
+        "overUnder": 39.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 3
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752886",
+      "id": "401752886",
+      "displayName": "Wisconsin @ Oregon",
+      "date": "2025-10-25T23:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Autzen Stadium",
+        "city": "Autzen Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": -31.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752881",
+      "id": "401752881",
+      "displayName": "Michigan @ Michigan State",
+      "date": "2025-10-25T23:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Spartan Stadium",
+        "city": "Spartan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": 13.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752891",
+      "id": "401752891",
+      "displayName": "Rutgers @ Illinois",
+      "date": "2025-11-01T16:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Champaign, IL)",
+        "city": "Memorial Stadium (Champaign",
+        "state": "IL)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "356",
+        "spread": -13.5,
+        "overUnder": 63.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752889",
+      "id": "401752889",
+      "displayName": "Penn State @ Ohio State",
+      "date": "2025-11-01T16:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ohio Stadium",
+        "city": "Ohio Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": -17.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752888",
+      "id": "401752888",
+      "displayName": "Michigan State @ Minnesota",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huntington Bank Stadium",
+        "city": "Huntington Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "135",
+        "spread": -4.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752887",
+      "id": "401752887",
+      "displayName": "Indiana @ Maryland",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SECU Stadium",
+        "city": "SECU Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 55,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": 21,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 55
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752890",
+      "id": "401752890",
+      "displayName": "Purdue @ Michigan",
+      "date": "2025-11-01T23:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Michigan Stadium",
+        "city": "Michigan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 16,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": -21,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 16
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752892",
+      "id": "401752892",
+      "displayName": "USC @ Nebraska",
+      "date": "2025-11-01T23:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Lincoln, NE)",
+        "city": "Memorial Stadium (Lincoln",
+        "state": "NE)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": 4.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752896",
+      "id": "401752896",
+      "displayName": "Northwestern @ USC",
+      "date": "2025-11-08T02:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Los Angeles Memorial Coliseum",
+        "city": "Los Angeles Memorial Coliseum",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": -14.5,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752893",
+      "id": "401752893",
+      "displayName": "Indiana @ Penn State",
+      "date": "2025-11-08T17:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Beaver Stadium",
+        "city": "Beaver Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": 13.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752897",
+      "id": "401752897",
+      "displayName": "Ohio State @ Purdue",
+      "date": "2025-11-08T18:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ross-Ade Stadium",
+        "city": "Ross-Ade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": 29.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752894",
+      "id": "401752894",
+      "displayName": "Maryland @ Rutgers",
+      "date": "2025-11-08T19:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SHI Stadium",
+        "city": "SHI Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "164",
+        "spread": -1.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752898",
+      "id": "401752898",
+      "displayName": "Oregon @ Iowa",
+      "date": "2025-11-08T20:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kinnick Stadium",
+        "city": "Kinnick Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 18,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": 4.5,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 18
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752899",
+      "id": "401752899",
+      "displayName": "Washington @ Wisconsin",
+      "date": "2025-11-08T21:30:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Camp Randall Stadium",
+        "city": "Camp Randall Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "away": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": 10.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 13,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752895",
+      "id": "401752895",
+      "displayName": "Nebraska @ UCLA",
+      "date": "2025-11-09T02:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rose Bowl",
+        "city": "Rose Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "26",
+        "spread": -1.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752904",
+      "id": "401752904",
+      "displayName": "Minnesota @ Oregon",
+      "date": "2025-11-15T02:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Autzen Stadium",
+        "city": "Autzen Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": -26.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752901",
+      "id": "401752901",
+      "displayName": "Wisconsin @ Indiana",
+      "date": "2025-11-15T17:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Bloomington, IN)",
+        "city": "Memorial Stadium (Bloomington",
+        "state": "IN)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": -28.5,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752905",
+      "id": "401752905",
+      "displayName": "Michigan @ Northwestern",
+      "date": "2025-11-15T17:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Wrigley Field",
+        "city": "Wrigley Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 22,
+        "rank": null
+      },
+      "away": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": 10,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 22,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752903",
+      "id": "401752903",
+      "displayName": "Penn State @ Michigan State",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Spartan Stadium",
+        "city": "Spartan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": 7,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752906",
+      "id": "401752906",
+      "displayName": "Maryland @ Illinois",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Champaign, IL)",
+        "city": "Memorial Stadium (Champaign",
+        "state": "IL)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "356",
+        "spread": -15.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752907",
+      "id": "401752907",
+      "displayName": "Iowa @ USC",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Los Angeles Memorial Coliseum",
+        "city": "Los Angeles Memorial Coliseum",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": -6.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752902",
+      "id": "401752902",
+      "displayName": "Purdue @ Washington",
+      "date": "2025-11-16T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Husky Stadium",
+        "city": "Husky Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 49,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": -14.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 49,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752900",
+      "id": "401752900",
+      "displayName": "UCLA @ Ohio State",
+      "date": "2025-11-16T00:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ohio Stadium",
+        "city": "Ohio Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 48,
+        "rank": null
+      },
+      "away": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": -33.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 48,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752912",
+      "id": "401752912",
+      "displayName": "Rutgers @ Ohio State",
+      "date": "2025-11-22T17:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ohio Stadium",
+        "city": "Ohio Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 9,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": -29,
+        "overUnder": 54
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 9
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752909",
+      "id": "401752909",
+      "displayName": "Minnesota @ Northwestern",
+      "date": "2025-11-22T17:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Wrigley Field",
+        "city": "Wrigley Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "77",
+        "spread": -4,
+        "overUnder": 41
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752911",
+      "id": "401752911",
+      "displayName": "USC @ Oregon",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Autzen Stadium",
+        "city": "Autzen Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": -10.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752913",
+      "id": "401752913",
+      "displayName": "Michigan State @ Iowa",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kinnick Stadium",
+        "city": "Kinnick Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": -17.5,
+        "overUnder": 43
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752914",
+      "id": "401752914",
+      "displayName": "Michigan @ Maryland",
+      "date": "2025-11-22T21:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SECU Stadium",
+        "city": "SECU Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "130",
+        "spread": 14,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752908",
+      "id": "401752908",
+      "displayName": "Nebraska @ Penn State",
+      "date": "2025-11-23T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Beaver Stadium",
+        "city": "Beaver Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 37,
+        "rank": null
+      },
+      "away": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": -7.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 37,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752915",
+      "id": "401752915",
+      "displayName": "Illinois @ Wisconsin",
+      "date": "2025-11-23T00:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Camp Randall Stadium",
+        "city": "Camp Randall Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "356",
+        "spread": 8.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752910",
+      "id": "401752910",
+      "displayName": "Washington @ UCLA",
+      "date": "2025-11-23T03:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rose Bowl",
+        "city": "Rose Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 48,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "264",
+        "spread": 10.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 48
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752916",
+      "id": "401752916",
+      "displayName": "Iowa @ Nebraska",
+      "date": "2025-11-28T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Lincoln, NE)",
+        "city": "Memorial Stadium (Lincoln",
+        "state": "NE)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "158",
+        "abbrev": "NEB",
+        "displayName": "Nebraska Cornhuskers",
+        "shortDisplayName": "Nebraska",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+        "color": "#d00000",
+        "alternateColor": "#ffffff",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2294",
+        "abbrev": "IOWA",
+        "displayName": "Iowa Hawkeyes",
+        "shortDisplayName": "Iowa",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+        "color": "#000000",
+        "alternateColor": "#FFCD00",
+        "score": 40,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2294",
+        "spread": 5.5,
+        "overUnder": 38.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 40
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752924",
+      "id": "401752924",
+      "displayName": "Indiana @ Purdue",
+      "date": "2025-11-29T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Ross-Ade Stadium",
+        "city": "Ross-Ade Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2509",
+        "abbrev": "PUR",
+        "displayName": "Purdue Boilermakers",
+        "shortDisplayName": "Purdue",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+        "color": "#000000",
+        "alternateColor": "#ceb888",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 56,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "84",
+        "spread": 28.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 56
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752921",
+      "id": "401752921",
+      "displayName": "Ohio State @ Michigan",
+      "date": "2025-11-29T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Michigan Stadium",
+        "city": "Michigan Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "130",
+        "abbrev": "MICH",
+        "displayName": "Michigan Wolverines",
+        "shortDisplayName": "Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+        "color": "#00274c",
+        "alternateColor": "#ffcb05",
+        "score": 9,
+        "rank": null
+      },
+      "away": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": 9.5,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 9,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752920",
+      "id": "401752920",
+      "displayName": "Penn State @ Rutgers",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "SHI Stadium",
+        "city": "SHI Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "164",
+        "abbrev": "RUTG",
+        "displayName": "Rutgers Scarlet Knights",
+        "shortDisplayName": "Rutgers",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+        "color": "#d21034",
+        "alternateColor": "#ffffff",
+        "score": 36,
+        "rank": null
+      },
+      "away": {
+        "teamId": "213",
+        "abbrev": "PSU",
+        "displayName": "Penn State Nittany Lions",
+        "shortDisplayName": "Penn State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+        "color": "#041E42",
+        "alternateColor": "#FFFFFF",
+        "score": 40,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "213",
+        "spread": 14.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 36,
+        "away": 40
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752917",
+      "id": "401752917",
+      "displayName": "Oregon @ Washington",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Husky Stadium",
+        "city": "Husky Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "264",
+        "abbrev": "WASH",
+        "displayName": "Washington Huskies",
+        "shortDisplayName": "Washington",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+        "color": "#33006f",
+        "alternateColor": "#e8d3a2",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2483",
+        "abbrev": "ORE",
+        "displayName": "Oregon Ducks",
+        "shortDisplayName": "Oregon",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+        "color": "#007030",
+        "alternateColor": "#fee11a",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2483",
+        "spread": 6.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752918",
+      "id": "401752918",
+      "displayName": "Wisconsin @ Minnesota",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huntington Bank Stadium",
+        "city": "Huntington Bank Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "135",
+        "abbrev": "MINN",
+        "displayName": "Minnesota Golden Gophers",
+        "shortDisplayName": "Minnesota",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+        "color": "#5e0a2f",
+        "alternateColor": "#fab41c",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "275",
+        "abbrev": "WIS",
+        "displayName": "Wisconsin Badgers",
+        "shortDisplayName": "Wisconsin",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+        "color": "#c4012f",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "275",
+        "spread": 2.5,
+        "overUnder": 38.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752923",
+      "id": "401752923",
+      "displayName": "Maryland @ Michigan State",
+      "date": "2025-11-30T00:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Ford Field",
+        "city": "Ford Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "127",
+        "abbrev": "MSU",
+        "displayName": "Michigan State Spartans",
+        "shortDisplayName": "Michigan State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+        "color": "#18453b",
+        "alternateColor": "#ffffff",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "120",
+        "abbrev": "MD",
+        "displayName": "Maryland Terrapins",
+        "shortDisplayName": "Maryland",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+        "color": "#D5002B",
+        "alternateColor": "#ffcd00",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "127",
+        "spread": -4,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752922",
+      "id": "401752922",
+      "displayName": "Northwestern @ Illinois",
+      "date": "2025-11-30T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Memorial Stadium (Champaign, IL)",
+        "city": "Memorial Stadium (Champaign",
+        "state": "IL)",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "356",
+        "abbrev": "ILL",
+        "displayName": "Illinois Fighting Illini",
+        "shortDisplayName": "Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+        "color": "#ff5f05",
+        "alternateColor": "#13294b",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "77",
+        "abbrev": "NU",
+        "displayName": "Northwestern Wildcats",
+        "shortDisplayName": "Northwestern",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+        "color": "#582c83",
+        "alternateColor": "#ffffff",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "356",
+        "spread": -7,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401752919",
+      "id": "401752919",
+      "displayName": "UCLA @ USC",
+      "date": "2025-11-30T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Los Angeles Memorial Coliseum",
+        "city": "Los Angeles Memorial Coliseum",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "30",
+        "abbrev": "USC",
+        "displayName": "USC Trojans",
+        "shortDisplayName": "USC",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+        "color": "#9e2237",
+        "alternateColor": "#ffcc00",
+        "score": 29,
+        "rank": null
+      },
+      "away": {
+        "teamId": "26",
+        "abbrev": "UCLA",
+        "displayName": "UCLA Bruins",
+        "shortDisplayName": "UCLA",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+        "color": "#2774ae",
+        "alternateColor": "#f2a900",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "30",
+        "spread": -21,
+        "overUnder": 59
+      },
+      "predictedScore": {
+        "home": 29,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401777353",
+      "id": "401777353",
+      "displayName": "Indiana @ Ohio State",
+      "date": "2025-12-07T01:00:00.000Z",
+      "week": 15,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Lucas Oil Stadium",
+        "city": "Lucas Oil Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "194",
+        "abbrev": "OSU",
+        "displayName": "Ohio State Buckeyes",
+        "shortDisplayName": "Ohio State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+        "color": "#ce1141",
+        "alternateColor": "#505056",
+        "score": 10,
+        "rank": null
+      },
+      "away": {
+        "teamId": "84",
+        "abbrev": "IU",
+        "displayName": "Indiana Hoosiers",
+        "shortDisplayName": "Indiana",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+        "color": "#990000",
+        "alternateColor": "#edebeb",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "194",
+        "spread": -5.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 10,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    }
+  ],
+  "teams": [
+    {
+      "id": "26",
+      "abbrev": "UCLA",
+      "name": "UCLA",
+      "displayName": "UCLA Bruins",
+      "shortDisplayName": "UCLA",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/26.png",
+      "color": "#2774ae",
+      "alternateColor": "#f2a900",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-6",
+      "rank": 12
+    },
+    {
+      "id": "30",
+      "abbrev": "USC",
+      "name": "USC",
+      "displayName": "USC Trojans",
+      "shortDisplayName": "USC",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/30.png",
+      "color": "#9e2237",
+      "alternateColor": "#ffcc00",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-2",
+      "rank": 4
+    },
+    {
+      "id": "77",
+      "abbrev": "NU",
+      "name": "Northwestern",
+      "displayName": "Northwestern Wildcats",
+      "shortDisplayName": "Northwestern",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/77.png",
+      "color": "#582c83",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-5",
+      "rank": 11
+    },
+    {
+      "id": "84",
+      "abbrev": "IU",
+      "name": "Indiana",
+      "displayName": "Indiana Hoosiers",
+      "shortDisplayName": "Indiana",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/84.png",
+      "color": "#990000",
+      "alternateColor": "#edebeb",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "10-0",
+      "rank": 1
+    },
+    {
+      "id": "120",
+      "abbrev": "MD",
+      "name": "Maryland",
+      "displayName": "Maryland Terrapins",
+      "shortDisplayName": "Maryland",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/120.png",
+      "color": "#D5002B",
+      "alternateColor": "#ffcd00",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-8",
+      "rank": 17
+    },
+    {
+      "id": "127",
+      "abbrev": "MSU",
+      "name": "Michigan State",
+      "displayName": "Michigan State Spartans",
+      "shortDisplayName": "Michigan State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/127.png",
+      "color": "#18453b",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-8",
+      "rank": 16
+    },
+    {
+      "id": "130",
+      "abbrev": "MICH",
+      "name": "Michigan",
+      "displayName": "Michigan Wolverines",
+      "shortDisplayName": "Michigan",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/130.png",
+      "color": "#00274c",
+      "alternateColor": "#ffcb05",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-2",
+      "rank": 5
+    },
+    {
+      "id": "135",
+      "abbrev": "MINN",
+      "name": "Minnesota",
+      "displayName": "Minnesota Golden Gophers",
+      "shortDisplayName": "Minnesota",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/135.png",
+      "color": "#5e0a2f",
+      "alternateColor": "#fab41c",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-4",
+      "rank": 8
+    },
+    {
+      "id": "158",
+      "abbrev": "NEB",
+      "name": "Nebraska",
+      "displayName": "Nebraska Cornhuskers",
+      "shortDisplayName": "Nebraska",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/158.png",
+      "color": "#d00000",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-5",
+      "rank": 10
+    },
+    {
+      "id": "164",
+      "abbrev": "RUTG",
+      "name": "Rutgers",
+      "displayName": "Rutgers Scarlet Knights",
+      "shortDisplayName": "Rutgers",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/164.png",
+      "color": "#d21034",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-7",
+      "rank": 14
+    },
+    {
+      "id": "194",
+      "abbrev": "OSU",
+      "name": "Ohio State",
+      "displayName": "Ohio State Buckeyes",
+      "shortDisplayName": "Ohio State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/194.png",
+      "color": "#ce1141",
+      "alternateColor": "#505056",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "9-1",
+      "rank": 2
+    },
+    {
+      "id": "213",
+      "abbrev": "PSU",
+      "name": "Penn State",
+      "displayName": "Penn State Nittany Lions",
+      "shortDisplayName": "Penn State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/213.png",
+      "color": "#041E42",
+      "alternateColor": "#FFFFFF",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-6",
+      "rank": 13
+    },
+    {
+      "id": "264",
+      "abbrev": "WASH",
+      "name": "Washington",
+      "displayName": "Washington Huskies",
+      "shortDisplayName": "Washington",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/264.png",
+      "color": "#33006f",
+      "alternateColor": "#e8d3a2",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-4",
+      "rank": 7
+    },
+    {
+      "id": "275",
+      "abbrev": "WIS",
+      "name": "Wisconsin",
+      "displayName": "Wisconsin Badgers",
+      "shortDisplayName": "Wisconsin",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/275.png",
+      "color": "#c4012f",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-7",
+      "rank": 15
+    },
+    {
+      "id": "356",
+      "abbrev": "ILL",
+      "name": "Illinois",
+      "displayName": "Illinois Fighting Illini",
+      "shortDisplayName": "Illinois",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/356.png",
+      "color": "#ff5f05",
+      "alternateColor": "#13294b",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-4",
+      "rank": 9
+    },
+    {
+      "id": "2294",
+      "abbrev": "IOWA",
+      "name": "Iowa",
+      "displayName": "Iowa Hawkeyes",
+      "shortDisplayName": "Iowa",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2294.png",
+      "color": "#000000",
+      "alternateColor": "#FFCD00",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-3",
+      "rank": 6
+    },
+    {
+      "id": "2483",
+      "abbrev": "ORE",
+      "name": "Oregon",
+      "displayName": "Oregon Ducks",
+      "shortDisplayName": "Oregon",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2483.png",
+      "color": "#007030",
+      "alternateColor": "#fee11a",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "8-1",
+      "rank": 3
+    },
+    {
+      "id": "2509",
+      "abbrev": "PUR",
+      "name": "Purdue",
+      "displayName": "Purdue Boilermakers",
+      "shortDisplayName": "Purdue",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2509.png",
+      "color": "#000000",
+      "alternateColor": "#ceb888",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "0-9",
+      "rank": 18
+    }
+  ],
+  "season": 2025
+}

@@ -1,0 +1,2858 @@
+{
+  "events": [
+    {
+      "_id": "401757218",
+      "id": "401757218",
+      "displayName": "Sam Houston @ Western Kentucky",
+      "date": "2025-08-23T23:00:00.000Z",
+      "week": 1,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Houchens Industries-L.T. Smith Stadium",
+        "city": "Houchens Industries-L.T. Smith Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": -9.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757227",
+      "id": "401757227",
+      "displayName": "Liberty @ Jacksonville State",
+      "date": "2025-09-06T16:00:00.000Z",
+      "week": 2,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "AmFirst Stadium",
+        "city": "AmFirst Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": 6,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757257",
+      "id": "401757257",
+      "displayName": "New Mexico State @ Louisiana Tech",
+      "date": "2025-09-13T23:30:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joe Aillet Stadium",
+        "city": "Joe Aillet Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 49,
+        "rank": null
+      },
+      "away": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": -10,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 49,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757259",
+      "id": "401757259",
+      "displayName": "Delaware @ Florida International",
+      "date": "2025-09-20T22:00:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Pitbull Stadium",
+        "city": "Pitbull Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 38,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2229",
+        "spread": -4,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 38
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757270",
+      "id": "401757270",
+      "displayName": "Middle Tennessee @ Kennesaw State",
+      "date": "2025-09-27T22:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Fifth Third Stadium",
+        "city": "Fifth Third Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 16,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": -7,
+        "overUnder": 54.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 16
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757273",
+      "id": "401757273",
+      "displayName": "Western Kentucky @ Missouri State",
+      "date": "2025-09-27T23:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Plaster Sports Complex",
+        "city": "Plaster Sports Complex",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 22,
+        "rank": null
+      },
+      "away": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": 3.5,
+        "overUnder": 59.5
+      },
+      "predictedScore": {
+        "home": 22,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757272",
+      "id": "401757272",
+      "displayName": "Louisiana Tech @ UTEP",
+      "date": "2025-09-28T01:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sun Bowl",
+        "city": "Sun Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 11,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": 3.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 11,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757275",
+      "id": "401757275",
+      "displayName": "Sam Houston @ New Mexico State",
+      "date": "2025-10-03T01:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Aggie Memorial Stadium",
+        "city": "Aggie Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 37,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2534",
+        "spread": 1.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 37,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757276",
+      "id": "401757276",
+      "displayName": "Western Kentucky @ Delaware",
+      "date": "2025-10-03T23:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Delaware Stadium",
+        "city": "Delaware Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "48",
+        "spread": -2.5,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757278",
+      "id": "401757278",
+      "displayName": "Missouri State @ Middle Tennessee",
+      "date": "2025-10-08T23:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Johnny \"Red\" Floyd Stadium",
+        "city": "Johnny \"Red\" Floyd Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2623",
+        "spread": 2.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757277",
+      "id": "401757277",
+      "displayName": "Liberty @ UTEP",
+      "date": "2025-10-09T00:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sun Bowl",
+        "city": "Sun Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 8,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": 1.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 8,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757280",
+      "id": "401757280",
+      "displayName": "Louisiana Tech @ Kennesaw State",
+      "date": "2025-10-09T23:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Fifth Third Stadium",
+        "city": "Fifth Third Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": 4.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757279",
+      "id": "401757279",
+      "displayName": "Jacksonville State @ Sam Houston",
+      "date": "2025-10-10T00:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "BBVA Compass Stadium",
+        "city": "BBVA Compass Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 29,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "55",
+        "spread": 7,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 29
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757282",
+      "id": "401757282",
+      "displayName": "New Mexico State @ Liberty",
+      "date": "2025-10-14T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams Stadium (VA)",
+        "city": "Williams Stadium (VA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": -10.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757281",
+      "id": "401757281",
+      "displayName": "Florida International @ Western Kentucky",
+      "date": "2025-10-15T00:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Houchens Industries-L.T. Smith Stadium",
+        "city": "Houchens Industries-L.T. Smith Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 6,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 25,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": -9.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 6,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757283",
+      "id": "401757283",
+      "displayName": "Delaware @ Jacksonville State",
+      "date": "2025-10-15T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "AmFirst Stadium",
+        "city": "AmFirst Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 25,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "48",
+        "spread": 3,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757284",
+      "id": "401757284",
+      "displayName": "UTEP @ Sam Houston",
+      "date": "2025-10-15T23:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "BBVA Compass Stadium",
+        "city": "BBVA Compass Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2638",
+        "spread": 3.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757285",
+      "id": "401757285",
+      "displayName": "Kennesaw State @ Florida International",
+      "date": "2025-10-21T23:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Pitbull Stadium",
+        "city": "Pitbull Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": 3,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757286",
+      "id": "401757286",
+      "displayName": "Western Kentucky @ Louisiana Tech",
+      "date": "2025-10-21T23:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joe Aillet Stadium",
+        "city": "Joe Aillet Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": -5.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757287",
+      "id": "401757287",
+      "displayName": "Middle Tennessee @ Delaware",
+      "date": "2025-10-22T23:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Delaware Stadium",
+        "city": "Delaware Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "48",
+        "spread": -9.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757288",
+      "id": "401757288",
+      "displayName": "Missouri State @ New Mexico State",
+      "date": "2025-10-23T01:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Aggie Memorial Stadium",
+        "city": "Aggie Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2623",
+        "spread": 2.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757289",
+      "id": "401757289",
+      "displayName": "UTEP @ Kennesaw State",
+      "date": "2025-10-29T00:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Fifth Third Stadium",
+        "city": "Fifth Third Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 33,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": -12.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 33,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757292",
+      "id": "401757292",
+      "displayName": "Jacksonville State @ Middle Tennessee",
+      "date": "2025-10-29T23:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Johnny \"Red\" Floyd Stadium",
+        "city": "Johnny \"Red\" Floyd Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "55",
+        "spread": 4.5,
+        "overUnder": 54
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757291",
+      "id": "401757291",
+      "displayName": "Florida International @ Missouri State",
+      "date": "2025-10-30T00:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Plaster Sports Complex",
+        "city": "Plaster Sports Complex",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2623",
+        "spread": -3,
+        "overUnder": 50
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757290",
+      "id": "401757290",
+      "displayName": "Sam Houston @ Louisiana Tech",
+      "date": "2025-11-01T00:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joe Aillet Stadium",
+        "city": "Joe Aillet Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 55,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": -16.5,
+        "overUnder": 48
+      },
+      "predictedScore": {
+        "home": 55,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757293",
+      "id": "401757293",
+      "displayName": "Delaware @ Liberty",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams Stadium (VA)",
+        "city": "Williams Stadium (VA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 59,
+        "rank": null
+      },
+      "away": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": -3.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 59,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757294",
+      "id": "401757294",
+      "displayName": "New Mexico State @ Western Kentucky",
+      "date": "2025-11-01T19:30:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Houchens Industries-L.T. Smith Stadium",
+        "city": "Houchens Industries-L.T. Smith Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 16,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": -7.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 16
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757299",
+      "id": "401757299",
+      "displayName": "Missouri State @ Liberty",
+      "date": "2025-11-08T18:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams Stadium (VA)",
+        "city": "Williams Stadium (VA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": -7.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757295",
+      "id": "401757295",
+      "displayName": "Louisiana Tech @ Delaware",
+      "date": "2025-11-08T20:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Delaware Stadium",
+        "city": "Delaware Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 25,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2348",
+        "spread": 5.5,
+        "overUnder": 57.5
+      },
+      "predictedScore": {
+        "home": 25,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757297",
+      "id": "401757297",
+      "displayName": "Jacksonville State @ UTEP",
+      "date": "2025-11-08T20:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sun Bowl",
+        "city": "Sun Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "55",
+        "spread": 1.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757296",
+      "id": "401757296",
+      "displayName": "Florida International @ Middle Tennessee",
+      "date": "2025-11-08T20:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Johnny \"Red\" Floyd Stadium",
+        "city": "Johnny \"Red\" Floyd Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 56,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2393",
+        "spread": -1.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 56
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757298",
+      "id": "401757298",
+      "displayName": "Kennesaw State @ New Mexico State",
+      "date": "2025-11-08T21:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Aggie Memorial Stadium",
+        "city": "Aggie Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": 11.5,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757304",
+      "id": "401757304",
+      "displayName": "UTEP @ Missouri State",
+      "date": "2025-11-15T20:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Plaster Sports Complex",
+        "city": "Plaster Sports Complex",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2623",
+        "spread": -6.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757303",
+      "id": "401757303",
+      "displayName": "Middle Tennessee @ Western Kentucky",
+      "date": "2025-11-15T20:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Houchens Industries-L.T. Smith Stadium",
+        "city": "Houchens Industries-L.T. Smith Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": -13.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757301",
+      "id": "401757301",
+      "displayName": "Liberty @ Florida International",
+      "date": "2025-11-15T22:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Pitbull Stadium",
+        "city": "Pitbull Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": 2.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757300",
+      "id": "401757300",
+      "displayName": "Delaware @ Sam Houston",
+      "date": "2025-11-16T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "BBVA Compass Stadium",
+        "city": "BBVA Compass Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "48",
+        "spread": 11.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757302",
+      "id": "401757302",
+      "displayName": "Kennesaw State @ Jacksonville State",
+      "date": "2025-11-16T01:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "AmFirst Stadium",
+        "city": "AmFirst Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 26,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": 3.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 26
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757306",
+      "id": "401757306",
+      "displayName": "Missouri State @ Kennesaw State",
+      "date": "2025-11-22T19:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Fifth Third Stadium",
+        "city": "Fifth Third Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 41,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": -6.5,
+        "overUnder": 54
+      },
+      "predictedScore": {
+        "home": 41,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757309",
+      "id": "401757309",
+      "displayName": "New Mexico State @ UTEP",
+      "date": "2025-11-22T20:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Sun Bowl",
+        "city": "Sun Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2638",
+        "spread": -4,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757308",
+      "id": "401757308",
+      "displayName": "Sam Houston @ Middle Tennessee",
+      "date": "2025-11-22T20:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Johnny \"Red\" Floyd Stadium",
+        "city": "Johnny \"Red\" Floyd Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2393",
+        "spread": -6.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757307",
+      "id": "401757307",
+      "displayName": "Liberty @ Louisiana Tech",
+      "date": "2025-11-22T20:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Joe Aillet Stadium",
+        "city": "Joe Aillet Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 34,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2335",
+        "spread": 1.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 34,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757305",
+      "id": "401757305",
+      "displayName": "Jacksonville State @ Florida International",
+      "date": "2025-11-22T20:30:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Pitbull Stadium",
+        "city": "Pitbull Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2229",
+        "spread": -2.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757311",
+      "id": "401757311",
+      "displayName": "Florida International @ Sam Houston",
+      "date": "2025-11-29T18:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "BBVA Compass Stadium",
+        "city": "BBVA Compass Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2534",
+        "abbrev": "SHSU",
+        "displayName": "Sam Houston Bearkats",
+        "shortDisplayName": "Sam Houston",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+        "color": "#fe5000",
+        "alternateColor": "#000000",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2229",
+        "abbrev": "FIU",
+        "displayName": "Florida International Panthers",
+        "shortDisplayName": "Florida International",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+        "color": "#001538",
+        "alternateColor": "#c5960c",
+        "score": 56,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2229",
+        "spread": 10.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 56
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757310",
+      "id": "401757310",
+      "displayName": "UTEP @ Delaware",
+      "date": "2025-11-29T18:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Delaware Stadium",
+        "city": "Delaware Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "48",
+        "abbrev": "DEL",
+        "displayName": "Delaware Blue Hens",
+        "shortDisplayName": "Delaware",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+        "color": "#033594",
+        "alternateColor": "#e8ce31",
+        "score": 61,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2638",
+        "abbrev": "UTEP",
+        "displayName": "UTEP Miners",
+        "shortDisplayName": "UTEP",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+        "color": "#ff8200",
+        "alternateColor": "#041e42",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "48",
+        "spread": -4.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 61,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757314",
+      "id": "401757314",
+      "displayName": "Louisiana Tech @ Missouri State",
+      "date": "2025-11-29T19:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Plaster Sports Complex",
+        "city": "Plaster Sports Complex",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2623",
+        "abbrev": "MOST",
+        "displayName": "Missouri State Bears",
+        "shortDisplayName": "Missouri State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+        "color": "#5F0000",
+        "alternateColor": "#e8e8e8",
+        "score": 30,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2348",
+        "abbrev": "LT",
+        "displayName": "Louisiana Tech Bulldogs",
+        "shortDisplayName": "Louisiana Tech",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+        "color": "#002d65",
+        "alternateColor": "#d3313a",
+        "score": 42,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2623",
+        "spread": -2.5,
+        "overUnder": 45
+      },
+      "predictedScore": {
+        "home": 30,
+        "away": 42
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757312",
+      "id": "401757312",
+      "displayName": "Western Kentucky @ Jacksonville State",
+      "date": "2025-11-29T19:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "AmFirst Stadium",
+        "city": "AmFirst Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 37,
+        "rank": null
+      },
+      "away": {
+        "teamId": "98",
+        "abbrev": "WKU",
+        "displayName": "Western Kentucky Hilltoppers",
+        "shortDisplayName": "Western Kentucky",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+        "color": "#F32026",
+        "alternateColor": "#b3b5b8",
+        "score": 34,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "98",
+        "spread": 1.5,
+        "overUnder": 56.5
+      },
+      "predictedScore": {
+        "home": 37,
+        "away": 34
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757315",
+      "id": "401757315",
+      "displayName": "Middle Tennessee @ New Mexico State",
+      "date": "2025-11-29T20:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Aggie Memorial Stadium",
+        "city": "Aggie Memorial Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "166",
+        "abbrev": "NMSU",
+        "displayName": "New Mexico State Aggies",
+        "shortDisplayName": "New Mexico State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+        "color": "#891216",
+        "alternateColor": "#000000",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2393",
+        "abbrev": "MTSU",
+        "displayName": "Middle Tennessee Blue Raiders",
+        "shortDisplayName": "Middle Tennessee",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+        "color": "#006db6",
+        "alternateColor": "#ffffff",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "166",
+        "spread": -3.5,
+        "overUnder": 52
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401757313",
+      "id": "401757313",
+      "displayName": "Kennesaw State @ Liberty",
+      "date": "2025-11-29T20:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Williams Stadium (VA)",
+        "city": "Williams Stadium (VA)",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2335",
+        "abbrev": "LIB",
+        "displayName": "Liberty Flames",
+        "shortDisplayName": "Liberty",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+        "color": "#071740",
+        "alternateColor": "#a61f21",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 48,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": 2.5,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 48
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401777325",
+      "id": "401777325",
+      "displayName": "Kennesaw State @ Jacksonville State",
+      "date": "2025-12-06T00:00:00.000Z",
+      "week": 15,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "AmFirst Stadium",
+        "city": "AmFirst Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "55",
+        "abbrev": "JXST",
+        "displayName": "Jacksonville State Gamecocks",
+        "shortDisplayName": "Jacksonville State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+        "color": "#b50500",
+        "alternateColor": "#b5b7ba",
+        "score": 15,
+        "rank": null
+      },
+      "away": {
+        "teamId": "338",
+        "abbrev": "KENN",
+        "displayName": "Kennesaw State Owls",
+        "shortDisplayName": "Kennesaw State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+        "color": "#fdbb30",
+        "alternateColor": "#000000",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "338",
+        "spread": 3,
+        "overUnder": 62.5
+      },
+      "predictedScore": {
+        "home": 15,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    }
+  ],
+  "teams": [
+    {
+      "id": "48",
+      "abbrev": "DEL",
+      "name": "Delaware",
+      "displayName": "Delaware Blue Hens",
+      "shortDisplayName": "Delaware",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+      "color": "#033594",
+      "alternateColor": "#e8ce31",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 7
+    },
+    {
+      "id": "55",
+      "abbrev": "JXST",
+      "name": "Jacksonville State",
+      "displayName": "Jacksonville State Gamecocks",
+      "shortDisplayName": "Jacksonville State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+      "color": "#b50500",
+      "alternateColor": "#b5b7ba",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "7-2",
+      "rank": 2
+    },
+    {
+      "id": "98",
+      "abbrev": "WKU",
+      "name": "Western Kentucky",
+      "displayName": "Western Kentucky Hilltoppers",
+      "shortDisplayName": "Western Kentucky",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+      "color": "#F32026",
+      "alternateColor": "#b3b5b8",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 3
+    },
+    {
+      "id": "166",
+      "abbrev": "NMSU",
+      "name": "New Mexico State",
+      "displayName": "New Mexico State Aggies",
+      "shortDisplayName": "New Mexico State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+      "color": "#891216",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 10
+    },
+    {
+      "id": "338",
+      "abbrev": "KENN",
+      "name": "Kennesaw State",
+      "displayName": "Kennesaw State Owls",
+      "shortDisplayName": "Kennesaw State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+      "color": "#fdbb30",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "8-1",
+      "rank": 1
+    },
+    {
+      "id": "2229",
+      "abbrev": "FIU",
+      "name": "Florida International",
+      "displayName": "Florida International Panthers",
+      "shortDisplayName": "Florida International",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+      "color": "#001538",
+      "alternateColor": "#c5960c",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 6
+    },
+    {
+      "id": "2335",
+      "abbrev": "LIB",
+      "name": "Liberty",
+      "displayName": "Liberty Flames",
+      "shortDisplayName": "Liberty",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+      "color": "#071740",
+      "alternateColor": "#a61f21",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 8
+    },
+    {
+      "id": "2348",
+      "abbrev": "LT",
+      "name": "Louisiana Tech",
+      "displayName": "Louisiana Tech Bulldogs",
+      "shortDisplayName": "Louisiana Tech",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+      "color": "#002d65",
+      "alternateColor": "#d3313a",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 4
+    },
+    {
+      "id": "2393",
+      "abbrev": "MTSU",
+      "name": "Middle Tennessee",
+      "displayName": "Middle Tennessee Blue Raiders",
+      "shortDisplayName": "Middle Tennessee",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+      "color": "#006db6",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 9
+    },
+    {
+      "id": "2534",
+      "abbrev": "SHSU",
+      "name": "Sam Houston",
+      "displayName": "Sam Houston Bearkats",
+      "shortDisplayName": "Sam Houston",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+      "color": "#fe5000",
+      "alternateColor": "#000000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 12
+    },
+    {
+      "id": "2623",
+      "abbrev": "MOST",
+      "name": "Missouri State",
+      "displayName": "Missouri State Bears",
+      "shortDisplayName": "Missouri State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+      "color": "#5F0000",
+      "alternateColor": "#e8e8e8",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 5
+    },
+    {
+      "id": "2638",
+      "abbrev": "UTEP",
+      "name": "UTEP",
+      "displayName": "UTEP Miners",
+      "shortDisplayName": "UTEP",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+      "color": "#ff8200",
+      "alternateColor": "#041e42",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "1-7",
+      "rank": 11
+    }
+  ],
+  "season": 2025
+}

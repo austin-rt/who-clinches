@@ -1,0 +1,3091 @@
+{
+  "events": [
+    {
+      "_id": "401762817",
+      "id": "401762817",
+      "displayName": "Buffalo @ Kent State",
+      "date": "2025-09-13T16:00:00.000Z",
+      "week": 3,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Dix Stadium",
+        "city": "Dix Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2084",
+        "spread": 23.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762820",
+      "id": "401762820",
+      "displayName": "Toledo @ Western Michigan",
+      "date": "2025-09-20T19:30:00.000Z",
+      "week": 4,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Waldo Stadium",
+        "city": "Waldo Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": 13.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762825",
+      "id": "401762825",
+      "displayName": "Bowling Green @ Ohio",
+      "date": "2025-09-27T16:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Peden Stadium",
+        "city": "Peden Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": -7.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762826",
+      "id": "401762826",
+      "displayName": "Eastern Michigan @ Central Michigan",
+      "date": "2025-09-27T17:00:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kelly/Shorts Stadium",
+        "city": "Kelly/Shorts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2117",
+        "spread": -3,
+        "overUnder": 55.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762824",
+      "id": "401762824",
+      "displayName": "Akron @ Toledo",
+      "date": "2025-09-27T19:30:00.000Z",
+      "week": 5,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Glass Bowl",
+        "city": "Glass Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 3,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": -21.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 3
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762830",
+      "id": "401762830",
+      "displayName": "Ohio @ Ball State",
+      "date": "2025-10-04T16:00:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Scheumann Stadium",
+        "city": "Scheumann Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": 14,
+        "overUnder": 52.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762832",
+      "id": "401762832",
+      "displayName": "Western Michigan @ Massachusetts",
+      "date": "2025-10-04T18:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Warren McGuirk Alumni Stadium",
+        "city": "Warren McGuirk Alumni Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": 12.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762873",
+      "id": "401762873",
+      "displayName": "Miami (OH) @ Northern Illinois",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huskie Stadium",
+        "city": "Huskie Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 25,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": 4.5,
+        "overUnder": 38.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 25
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762831",
+      "id": "401762831",
+      "displayName": "Eastern Michigan @ Buffalo",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "UB Stadium",
+        "city": "UB Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2084",
+        "spread": -9.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762829",
+      "id": "401762829",
+      "displayName": "Central Michigan @ Akron",
+      "date": "2025-10-04T19:30:00.000Z",
+      "week": 6,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "InfoCision Stadium",
+        "city": "InfoCision Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 22,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2117",
+        "spread": 7,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 22
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762833",
+      "id": "401762833",
+      "displayName": "Miami (OH) @ Akron",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "InfoCision Stadium",
+        "city": "InfoCision Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 7,
+        "rank": null
+      },
+      "away": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": 11.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 7,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762835",
+      "id": "401762835",
+      "displayName": "Toledo @ Bowling Green",
+      "date": "2025-10-11T16:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Doyt L. Perry Stadium",
+        "city": "Doyt L. Perry Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 28,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 23,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": 10.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 28,
+        "away": 23
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762836",
+      "id": "401762836",
+      "displayName": "Northern Illinois @ Eastern Michigan",
+      "date": "2025-10-11T17:00:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rynearson Stadium",
+        "city": "Rynearson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2459",
+        "spread": 1.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762837",
+      "id": "401762837",
+      "displayName": "Massachusetts @ Kent State",
+      "date": "2025-10-11T18:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Dix Stadium",
+        "city": "Dix Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 6,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2309",
+        "spread": -1.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 6
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762834",
+      "id": "401762834",
+      "displayName": "Ball State @ Western Michigan",
+      "date": "2025-10-11T19:30:00.000Z",
+      "week": 7,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Waldo Stadium",
+        "city": "Waldo Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 0,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": -9.5,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 0
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762839",
+      "id": "401762839",
+      "displayName": "Central Michigan @ Bowling Green",
+      "date": "2025-10-18T16:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Doyt L. Perry Stadium",
+        "city": "Doyt L. Perry Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 6,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 27,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "189",
+        "spread": -3,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 6,
+        "away": 27
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762841",
+      "id": "401762841",
+      "displayName": "Eastern Michigan @ Miami (OH)",
+      "date": "2025-10-18T16:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Yager Stadium",
+        "city": "Yager Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 44,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 30,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": -12.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 44,
+        "away": 30
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762842",
+      "id": "401762842",
+      "displayName": "Kent State @ Toledo",
+      "date": "2025-10-18T18:00:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Glass Bowl",
+        "city": "Glass Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": -25.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762840",
+      "id": "401762840",
+      "displayName": "Buffalo @ Massachusetts",
+      "date": "2025-10-18T18:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Warren McGuirk Alumni Stadium",
+        "city": "Warren McGuirk Alumni Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2084",
+        "spread": 16.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762838",
+      "id": "401762838",
+      "displayName": "Akron @ Ball State",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Scheumann Stadium",
+        "city": "Scheumann Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2006",
+        "spread": 2.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762843",
+      "id": "401762843",
+      "displayName": "Northern Illinois @ Ohio",
+      "date": "2025-10-18T19:30:00.000Z",
+      "week": 8,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Peden Stadium",
+        "city": "Peden Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 48,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": -10.5,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 48,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762848",
+      "id": "401762848",
+      "displayName": "Ohio @ Eastern Michigan",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rynearson Stadium",
+        "city": "Rynearson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": 11.5,
+        "overUnder": 60.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762846",
+      "id": "401762846",
+      "displayName": "Bowling Green @ Kent State",
+      "date": "2025-10-25T16:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Dix Stadium",
+        "city": "Dix Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "189",
+        "spread": 7.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762844",
+      "id": "401762844",
+      "displayName": "Akron @ Buffalo",
+      "date": "2025-10-25T17:00:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "UB Stadium",
+        "city": "UB Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2084",
+        "spread": -10,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762874",
+      "id": "401762874",
+      "displayName": "Western Michigan @ Miami (OH)",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Yager Stadium",
+        "city": "Yager Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 17,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": -2.5,
+        "overUnder": 40.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 17
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762847",
+      "id": "401762847",
+      "displayName": "Massachusetts @ Central Michigan",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kelly/Shorts Stadium",
+        "city": "Kelly/Shorts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2117",
+        "spread": -16.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762845",
+      "id": "401762845",
+      "displayName": "Ball State @ Northern Illinois",
+      "date": "2025-10-25T19:30:00.000Z",
+      "week": 9,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huskie Stadium",
+        "city": "Huskie Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 7,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2459",
+        "spread": -6.5,
+        "overUnder": 41.5
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 7
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762849",
+      "id": "401762849",
+      "displayName": "Buffalo @ Bowling Green",
+      "date": "2025-11-01T16:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Doyt L. Perry Stadium",
+        "city": "Doyt L. Perry Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "189",
+        "spread": -2.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762850",
+      "id": "401762850",
+      "displayName": "Central Michigan @ Western Michigan",
+      "date": "2025-11-01T20:00:00.000Z",
+      "week": 10,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Waldo Stadium",
+        "city": "Waldo Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": -6,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762851",
+      "id": "401762851",
+      "displayName": "Massachusetts @ Akron",
+      "date": "2025-11-05T00:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "InfoCision Stadium",
+        "city": "InfoCision Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 44,
+        "rank": null
+      },
+      "away": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 10,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2006",
+        "spread": -12.5,
+        "overUnder": 51.5
+      },
+      "predictedScore": {
+        "home": 44,
+        "away": 10
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762852",
+      "id": "401762852",
+      "displayName": "Miami (OH) @ Ohio",
+      "date": "2025-11-05T00:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Peden Stadium",
+        "city": "Peden Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 24,
+        "rank": null
+      },
+      "away": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 20,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": -2.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 24,
+        "away": 20
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762854",
+      "id": "401762854",
+      "displayName": "Northern Illinois @ Toledo",
+      "date": "2025-11-06T00:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Glass Bowl",
+        "city": "Glass Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 3,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": -14.5,
+        "overUnder": 42.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 3
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762853",
+      "id": "401762853",
+      "displayName": "Kent State @ Ball State",
+      "date": "2025-11-06T00:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Scheumann Stadium",
+        "city": "Scheumann Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2050",
+        "spread": -3,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762855",
+      "id": "401762855",
+      "displayName": "Bowling Green @ Eastern Michigan",
+      "date": "2025-11-08T18:00:00.000Z",
+      "week": 11,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rynearson Stadium",
+        "city": "Rynearson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 27,
+        "rank": null
+      },
+      "away": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2199",
+        "spread": -3,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 27,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762856",
+      "id": "401762856",
+      "displayName": "Kent State @ Akron",
+      "date": "2025-11-12T00:30:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "InfoCision Stadium",
+        "city": "InfoCision Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 35,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 42,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2006",
+        "spread": -7.5,
+        "overUnder": 49.5
+      },
+      "predictedScore": {
+        "home": 35,
+        "away": 42
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762857",
+      "id": "401762857",
+      "displayName": "Ohio @ Western Michigan",
+      "date": "2025-11-12T01:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Waldo Stadium",
+        "city": "Waldo Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 17,
+        "rank": null
+      },
+      "away": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": -1.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 17,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762858",
+      "id": "401762858",
+      "displayName": "Buffalo @ Central Michigan",
+      "date": "2025-11-13T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kelly/Shorts Stadium",
+        "city": "Kelly/Shorts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2117",
+        "spread": -2.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762859",
+      "id": "401762859",
+      "displayName": "Northern Illinois @ Massachusetts",
+      "date": "2025-11-13T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Warren McGuirk Alumni Stadium",
+        "city": "Warren McGuirk Alumni Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2459",
+        "spread": 8.5,
+        "overUnder": 43.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762860",
+      "id": "401762860",
+      "displayName": "Toledo @ Miami (OH)",
+      "date": "2025-11-13T00:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Yager Stadium",
+        "city": "Yager Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": 6.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762861",
+      "id": "401762861",
+      "displayName": "Eastern Michigan @ Ball State",
+      "date": "2025-11-15T17:00:00.000Z",
+      "week": 12,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Scheumann Stadium",
+        "city": "Scheumann Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 9,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2199",
+        "spread": 2.5,
+        "overUnder": 48.5
+      },
+      "predictedScore": {
+        "home": 9,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762863",
+      "id": "401762863",
+      "displayName": "Massachusetts @ Ohio",
+      "date": "2025-11-19T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Peden Stadium",
+        "city": "Peden Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 42,
+        "rank": null
+      },
+      "away": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 14,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": -33.5,
+        "overUnder": 53.5
+      },
+      "predictedScore": {
+        "home": 42,
+        "away": 14
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762864",
+      "id": "401762864",
+      "displayName": "Western Michigan @ Northern Illinois",
+      "date": "2025-11-19T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huskie Stadium",
+        "city": "Huskie Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 19,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": 7,
+        "overUnder": 39.5
+      },
+      "predictedScore": {
+        "home": 19,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762862",
+      "id": "401762862",
+      "displayName": "Akron @ Bowling Green",
+      "date": "2025-11-19T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Doyt L. Perry Stadium",
+        "city": "Doyt L. Perry Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2006",
+        "abbrev": "AKR",
+        "displayName": "Akron Zips",
+        "shortDisplayName": "Akron",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+        "color": "#00285e",
+        "alternateColor": "#84754e",
+        "score": 19,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "189",
+        "spread": -2.5,
+        "overUnder": 47.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 19
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762865",
+      "id": "401762865",
+      "displayName": "Miami (OH) @ Buffalo",
+      "date": "2025-11-20T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "UB Stadium",
+        "city": "UB Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 20,
+        "rank": null
+      },
+      "away": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 37,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": 2.5,
+        "overUnder": 38.5
+      },
+      "predictedScore": {
+        "home": 20,
+        "away": 37
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762866",
+      "id": "401762866",
+      "displayName": "Central Michigan @ Kent State",
+      "date": "2025-11-20T00:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Dix Stadium",
+        "city": "Dix Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 16,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 28,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2117",
+        "spread": 7.5,
+        "overUnder": 50.5
+      },
+      "predictedScore": {
+        "home": 16,
+        "away": 28
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762867",
+      "id": "401762867",
+      "displayName": "Ball State @ Toledo",
+      "date": "2025-11-22T19:00:00.000Z",
+      "week": 13,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Glass Bowl",
+        "city": "Glass Bowl",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 38,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 9,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": -29.5,
+        "overUnder": 45.5
+      },
+      "predictedScore": {
+        "home": 38,
+        "away": 9
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762868",
+      "id": "401762868",
+      "displayName": "Bowling Green @ Massachusetts",
+      "date": "2025-11-25T21:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Warren McGuirk Alumni Stadium",
+        "city": "Warren McGuirk Alumni Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "113",
+        "abbrev": "MASS",
+        "displayName": "Massachusetts Minutemen",
+        "shortDisplayName": "Massachusetts",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+        "color": "#971B2F",
+        "alternateColor": "#B1B3B3",
+        "score": 14,
+        "rank": null
+      },
+      "away": {
+        "teamId": "189",
+        "abbrev": "BGSU",
+        "displayName": "Bowling Green Falcons",
+        "shortDisplayName": "Bowling Green",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+        "color": "#2b1000",
+        "alternateColor": "#492000",
+        "score": 45,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "189",
+        "spread": 14,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 14,
+        "away": 45
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762869",
+      "id": "401762869",
+      "displayName": "Western Michigan @ Eastern Michigan",
+      "date": "2025-11-26T00:30:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Rynearson Stadium",
+        "city": "Rynearson Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2199",
+        "abbrev": "EMU",
+        "displayName": "Eastern Michigan Eagles",
+        "shortDisplayName": "Eastern Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+        "color": "#00331b",
+        "alternateColor": "#f0f0f0",
+        "score": 21,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": 10,
+        "overUnder": 49
+      },
+      "predictedScore": {
+        "home": 21,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762871",
+      "id": "401762871",
+      "displayName": "Kent State @ Northern Illinois",
+      "date": "2025-11-28T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Huskie Stadium",
+        "city": "Huskie Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2459",
+        "abbrev": "NIU",
+        "displayName": "Northern Illinois Huskies",
+        "shortDisplayName": "Northern Illinois",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+        "color": "#F1122C",
+        "alternateColor": "#cc0000",
+        "score": 31,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2309",
+        "abbrev": "KENT",
+        "displayName": "Kent State Golden Flashes",
+        "shortDisplayName": "Kent State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+        "color": "#003976",
+        "alternateColor": "#efab00",
+        "score": 35,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2459",
+        "spread": -5,
+        "overUnder": 45
+      },
+      "predictedScore": {
+        "home": 31,
+        "away": 35
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762870",
+      "id": "401762870",
+      "displayName": "Ohio @ Buffalo",
+      "date": "2025-11-28T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "UB Stadium",
+        "city": "UB Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2084",
+        "abbrev": "BUF",
+        "displayName": "Buffalo Bulls",
+        "shortDisplayName": "Buffalo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+        "color": "#041A9B",
+        "alternateColor": "#ebebeb",
+        "score": 26,
+        "rank": null
+      },
+      "away": {
+        "teamId": "195",
+        "abbrev": "OHIO",
+        "displayName": "Ohio Bobcats",
+        "shortDisplayName": "Ohio",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+        "color": "#295A29",
+        "alternateColor": "#e4bb85",
+        "score": 31,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "195",
+        "spread": 7,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 26,
+        "away": 31
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762872",
+      "id": "401762872",
+      "displayName": "Toledo @ Central Michigan",
+      "date": "2025-11-29T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Kelly/Shorts Stadium",
+        "city": "Kelly/Shorts Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2117",
+        "abbrev": "CMU",
+        "displayName": "Central Michigan Chippewas",
+        "shortDisplayName": "Central Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+        "color": "#6a0032",
+        "alternateColor": "#ffc82e",
+        "score": 3,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2649",
+        "abbrev": "TOL",
+        "displayName": "Toledo Rockets",
+        "shortDisplayName": "Toledo",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+        "color": "#0a2240",
+        "alternateColor": "#ffcd00",
+        "score": 21,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2649",
+        "spread": 11.5,
+        "overUnder": 46.5
+      },
+      "predictedScore": {
+        "home": 3,
+        "away": 21
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401762875",
+      "id": "401762875",
+      "displayName": "Ball State @ Miami (OH)",
+      "date": "2025-11-29T17:00:00.000Z",
+      "week": 14,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": false,
+      "venue": {
+        "fullName": "Yager Stadium",
+        "city": "Yager Stadium",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 45,
+        "rank": null
+      },
+      "away": {
+        "teamId": "2050",
+        "abbrev": "BALL",
+        "displayName": "Ball State Cardinals",
+        "shortDisplayName": "Ball State",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+        "color": "#DA0000",
+        "alternateColor": "#ffffff",
+        "score": 24,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "193",
+        "spread": -16.5,
+        "overUnder": 40.5
+      },
+      "predictedScore": {
+        "home": 45,
+        "away": 24
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    },
+    {
+      "_id": "401777329",
+      "id": "401777329",
+      "displayName": "Miami (OH) @ Western Michigan",
+      "date": "2025-12-06T17:00:00.000Z",
+      "week": 15,
+      "season": 2025,
+      "sport": "football",
+      "league": "college-football",
+      "state": "post",
+      "completed": true,
+      "conferenceGame": true,
+      "neutralSite": true,
+      "venue": {
+        "fullName": "Ford Field",
+        "city": "Ford Field",
+        "state": "",
+        "timezone": "America/New_York"
+      },
+      "home": {
+        "teamId": "2711",
+        "abbrev": "WMU",
+        "displayName": "Western Michigan Broncos",
+        "shortDisplayName": "Western Michigan",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+        "color": "#532e1f",
+        "alternateColor": "#8b7f79",
+        "score": 23,
+        "rank": null
+      },
+      "away": {
+        "teamId": "193",
+        "abbrev": "M-OH",
+        "displayName": "Miami (OH) RedHawks",
+        "shortDisplayName": "Miami (OH)",
+        "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+        "color": "#a4000c",
+        "alternateColor": "#f0f0f0",
+        "score": 13,
+        "rank": null
+      },
+      "odds": {
+        "favoriteTeamId": "2711",
+        "spread": -2.5,
+        "overUnder": 44.5
+      },
+      "predictedScore": {
+        "home": 23,
+        "away": 13
+      },
+      "gameType": {
+        "name": "Regular Season",
+        "abbreviation": "reg"
+      }
+    }
+  ],
+  "teams": [
+    {
+      "id": "113",
+      "abbrev": "MASS",
+      "name": "Massachusetts",
+      "displayName": "Massachusetts Minutemen",
+      "shortDisplayName": "Massachusetts",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+      "color": "#971B2F",
+      "alternateColor": "#B1B3B3",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "0-8",
+      "rank": 13
+    },
+    {
+      "id": "189",
+      "abbrev": "BGSU",
+      "name": "Bowling Green",
+      "displayName": "Bowling Green Falcons",
+      "shortDisplayName": "Bowling Green",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+      "color": "#2b1000",
+      "alternateColor": "#492000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 12
+    },
+    {
+      "id": "193",
+      "abbrev": "M-OH",
+      "name": "Miami (OH)",
+      "displayName": "Miami (OH) RedHawks",
+      "shortDisplayName": "Miami (OH)",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+      "color": "#a4000c",
+      "alternateColor": "#f0f0f0",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-3",
+      "rank": 4
+    },
+    {
+      "id": "195",
+      "abbrev": "OHIO",
+      "name": "Ohio",
+      "displayName": "Ohio Bobcats",
+      "shortDisplayName": "Ohio",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+      "color": "#295A29",
+      "alternateColor": "#e4bb85",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 2
+    },
+    {
+      "id": "2006",
+      "abbrev": "AKR",
+      "name": "Akron",
+      "displayName": "Akron Zips",
+      "shortDisplayName": "Akron",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+      "color": "#00285e",
+      "alternateColor": "#84754e",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 8
+    },
+    {
+      "id": "2050",
+      "abbrev": "BALL",
+      "name": "Ball State",
+      "displayName": "Ball State Cardinals",
+      "shortDisplayName": "Ball State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+      "color": "#DA0000",
+      "alternateColor": "#ffffff",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 10
+    },
+    {
+      "id": "2084",
+      "abbrev": "BUF",
+      "name": "Buffalo",
+      "displayName": "Buffalo Bulls",
+      "shortDisplayName": "Buffalo",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+      "color": "#041A9B",
+      "alternateColor": "#ebebeb",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 6
+    },
+    {
+      "id": "2117",
+      "abbrev": "CMU",
+      "name": "Central Michigan",
+      "displayName": "Central Michigan Chippewas",
+      "shortDisplayName": "Central Michigan",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+      "color": "#6a0032",
+      "alternateColor": "#ffc82e",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "5-3",
+      "rank": 5
+    },
+    {
+      "id": "2199",
+      "abbrev": "EMU",
+      "name": "Eastern Michigan",
+      "displayName": "Eastern Michigan Eagles",
+      "shortDisplayName": "Eastern Michigan",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+      "color": "#00331b",
+      "alternateColor": "#f0f0f0",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "3-5",
+      "rank": 9
+    },
+    {
+      "id": "2309",
+      "abbrev": "KENT",
+      "name": "Kent State",
+      "displayName": "Kent State Golden Flashes",
+      "shortDisplayName": "Kent State",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+      "color": "#003976",
+      "alternateColor": "#efab00",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "4-4",
+      "rank": 7
+    },
+    {
+      "id": "2459",
+      "abbrev": "NIU",
+      "name": "Northern Illinois",
+      "displayName": "Northern Illinois Huskies",
+      "shortDisplayName": "Northern Illinois",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+      "color": "#F1122C",
+      "alternateColor": "#cc0000",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "2-6",
+      "rank": 11
+    },
+    {
+      "id": "2649",
+      "abbrev": "TOL",
+      "name": "Toledo",
+      "displayName": "Toledo Rockets",
+      "shortDisplayName": "Toledo",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+      "color": "#0a2240",
+      "alternateColor": "#ffcd00",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "6-2",
+      "rank": 3
+    },
+    {
+      "id": "2711",
+      "abbrev": "WMU",
+      "name": "Western Michigan",
+      "displayName": "Western Michigan Broncos",
+      "shortDisplayName": "Western Michigan",
+      "logo": "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+      "color": "#532e1f",
+      "alternateColor": "#8b7f79",
+      "conferenceStanding": "Tied for 1st",
+      "conferenceRecord": "8-1",
+      "rank": 1
+    }
+  ],
+  "season": 2025
+}
