@@ -6,7 +6,7 @@ import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import type { Conference } from 'cfbd';
-import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
@@ -165,7 +165,7 @@ export const GET = async (
     }
 
     const sport = sportParam as SportSlug;
-    const conf = confParam as ConferenceAbbreviation;
+    const conf = confParam as CFBConferenceAbbreviation;
     const { searchParams } = new URL(request.url);
 
     const season = searchParams.get('season');

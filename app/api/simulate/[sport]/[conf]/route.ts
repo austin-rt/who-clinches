@@ -4,15 +4,15 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
-import { CONFERENCE_CONFIGS } from '@/lib/cfb/tiebreaker-rules/configs';
 import { SimulateResponse } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
 import {
   getConferenceMetadata,
   isValidSport,
+  CFB_CONFERENCE_CONFIGS,
   isValidConference,
   type SportSlug,
-  type ConferenceAbbreviation,
+  type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 
 export const runtime = 'nodejs';
@@ -56,7 +56,7 @@ export const POST = async (
     }
 
     const sport = sportParam as SportSlug;
-    const conf = confParam as ConferenceAbbreviation;
+    const conf = confParam as CFBConferenceAbbreviation;
     const conferenceMeta = getConferenceMetadata(conf);
 
     if (!conferenceMeta) {
@@ -66,7 +66,7 @@ export const POST = async (
       );
     }
 
-    const config = CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
     if (!config) {
       return NextResponse.json(
         { error: `Conference config not found for ${conf}` },

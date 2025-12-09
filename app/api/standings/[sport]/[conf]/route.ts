@@ -4,9 +4,15 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { TeamMetadata, ApiErrorResponse } from '@/app/store/api';
-import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import {
+  getConferenceMetadata,
+  isValidSport,
+  isValidConference,
+  CFB_CONFERENCE_CONFIGS,
+  type SportSlug,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
-import { CONFERENCE_CONFIGS } from '@/lib/cfb/tiebreaker-rules/configs';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
@@ -49,7 +55,7 @@ export const GET = async (
     }
 
     const sport = sportParam as SportSlug;
-    const conf = confParam as ConferenceAbbreviation;
+    const conf = confParam as CFBConferenceAbbreviation;
     const { searchParams } = new URL(request.url);
     const season = searchParams.get('season');
 
@@ -65,7 +71,7 @@ export const GET = async (
       );
     }
 
-    const config = CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
     if (!config) {
       return NextResponse.json<ApiErrorResponse>(
         {

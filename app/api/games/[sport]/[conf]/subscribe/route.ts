@@ -4,7 +4,12 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GamesResponse, TeamMetadata } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
-import { getConferenceMetadata, isValidSport, isValidConference, type ConferenceAbbreviation } from '@/lib/constants';
+import {
+  getConferenceMetadata,
+  isValidSport,
+  isValidConference,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
 import type { Game, Team } from 'cfbd';
 
@@ -25,7 +30,7 @@ export const GET = async (
     return new Response(`Invalid conference: ${confParam}`, { status: 400 });
   }
 
-  const conf = confParam as ConferenceAbbreviation;
+  const conf = confParam as CFBConferenceAbbreviation;
   const { searchParams } = new URL(request.url);
   const season = searchParams.get('season');
 
@@ -88,7 +93,9 @@ export const GET = async (
           season: seasonYear,
           conference: conferenceMeta.cfbdId,
           onUpdate: (subscriptionData) => {
-            const cfbdGames: Array<Game & { spread?: number; overUnder?: number; favoriteId?: number }> = subscriptionData.game.map(
+            const cfbdGames: Array<
+              Game & { spread?: number; overUnder?: number; favoriteId?: number }
+            > = subscriptionData.game.map(
               (game): Game & { spread?: number; overUnder?: number; favoriteId?: number } => ({
                 id: game.id,
                 season: game.year,
@@ -188,4 +195,3 @@ export const GET = async (
     },
   });
 };
-
