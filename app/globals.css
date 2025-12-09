@@ -34,11 +34,11 @@ html:not([data-mode]) {
 @layer components {
   /* Override DaisyUI's .btn class - must come after @tailwind components */
   .btn {
-    @apply flex items-center gap-2 rounded-lg p-4 font-semibold uppercase transition-all;
+    @apply flex items-center justify-center gap-2 rounded-lg p-4 font-semibold uppercase transition-all;
   }
 
   .btn > span {
-    @apply flex w-full;
+    @apply flex w-full justify-center;
   }
 
   /* Match select styling to button */
@@ -76,7 +76,7 @@ html:not([data-mode]) {
 
   html[data-mode='dark'] .select.select-stroke.select-primary option:checked,
   [data-mode='dark'] .select.select-stroke.select-primary option:checked {
-    @apply bg-base-100 text-accent-80;
+    @apply bg-base-100 text-accent;
   }
 
   .select optgroup {
@@ -90,7 +90,7 @@ html:not([data-mode]) {
 
     html[data-mode='dark'] &,
     [data-mode='dark'] & {
-      @apply border-accent-80;
+      @apply border-accent;
     }
   }
 
@@ -100,7 +100,7 @@ html:not([data-mode]) {
 
     html[data-mode='dark'] &,
     [data-mode='dark'] & {
-      @apply border-accent-80;
+      @apply border-accent;
     }
   }
 
