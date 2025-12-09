@@ -10,7 +10,7 @@ import {
   isValidSport,
   isValidConference,
   type SportSlug,
-  type ConferenceAbbreviation,
+  type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
@@ -34,7 +34,7 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
   }
 
   const sport = sportParam as SportSlug;
-  const conf = confParam as ConferenceAbbreviation;
+  const conf = confParam as CFBConferenceAbbreviation;
 
   const handleSimulate = async () => {
     if (!season) {

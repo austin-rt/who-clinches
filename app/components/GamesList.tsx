@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import { isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
@@ -19,7 +19,7 @@ const GamesList = () => {
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
-  const conf = isValid ? (confParam as ConferenceAbbreviation) : null;
+  const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
 
   const { games, isLoading, isError, isUninitialized } = useGamesData({
     sport: sport!,

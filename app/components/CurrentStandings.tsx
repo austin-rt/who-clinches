@@ -3,7 +3,7 @@
 import { useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery, TeamMetadata } from '@/app/store/api';
 import { useParams } from 'next/navigation';
-import { isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import { isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
 import { useAppSelector } from '@/app/store/hooks';
 import LoadingSpinner from './LoadingSpinner';
 import Divider from './Divider';
@@ -21,7 +21,7 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
-  const conf = isValid ? (confParam as ConferenceAbbreviation) : null;
+  const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
 
   const { data, isLoading, refetch } = useGetSeasonGameDataQuery(
     {
