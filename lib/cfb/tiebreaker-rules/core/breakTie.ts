@@ -1,6 +1,6 @@
 import { GameLean } from '../../../types';
 import { TieStep } from '../../../api-types';
-import { ConferenceTiebreakerConfig } from './types';
+import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord, getTeamAbbrev } from '../common/core-helpers';
 import { getTeamAvgPointsFor, getTeamAvgPointsAgainst } from '../sec/rule-e-sec-scoring-margin';
 
@@ -8,7 +8,7 @@ export const breakTie = (
   tiedTeams: string[],
   games: GameLean[],
   allTeams: string[],
-  config: ConferenceTiebreakerConfig,
+  config: CFBConferenceTiebreakerConfig,
   explanations: Map<string, string[]>,
   isRecursive = false
 ): { ranked: string[]; steps: TieStep[] } => {

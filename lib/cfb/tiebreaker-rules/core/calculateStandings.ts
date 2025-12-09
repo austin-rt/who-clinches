@@ -1,13 +1,13 @@
 import { GameLean } from '../../../types';
 import { StandingEntry, TieLog } from '../../../api-types';
-import { ConferenceTiebreakerConfig } from './types';
+import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord } from '../common/core-helpers';
 import { breakTie } from './breakTie';
 
 export const calculateStandings = (
   games: GameLean[],
   allTeams: string[],
-  config: ConferenceTiebreakerConfig
+  config: CFBConferenceTiebreakerConfig
 ): { standings: StandingEntry[]; tieLogs: TieLog[] } => {
   const explanations = new Map<string, string[]>();
   const tieLogs: TieLog[] = [];
