@@ -11,7 +11,7 @@ import Standings from '@/app/components/Standings';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
 import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
-import { SimulateResponse } from '@/app/store/apiSlice';
+import { SimulateResponse } from '@/app/store/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
 import { setStandingsOpen } from '@/app/store/uiSlice';

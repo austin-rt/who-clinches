@@ -1,4 +1,4 @@
-import { TeamMetadata, StandingEntry, GamesResponse } from '@/app/store/apiSlice';
+import { TeamMetadata, StandingEntry, GamesResponse } from '@/app/store/api';
 
 export type ThemeMode = 'light' | 'dark';
 

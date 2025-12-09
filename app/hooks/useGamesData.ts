@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
-import { useGetSeasonGameDataQuery, GameLean, GamesResponse } from '@/app/store/apiSlice';
+import { useGetSeasonGameDataQuery, GameLean, GamesResponse } from '@/app/store/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { type SportSlug } from '@/lib/constants';
 
