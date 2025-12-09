@@ -10,7 +10,13 @@ import SimulateButton from '@/app/components/SimulateButton';
 import Standings from '@/app/components/Standings';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
-import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type ConferenceAbbreviation } from '@/lib/constants';
+import {
+  getConferenceMetadata,
+  isValidSport,
+  isValidConference,
+  type SportSlug,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { SimulateResponse } from '@/app/store/api';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
@@ -29,7 +35,7 @@ const ConferencePage = () => {
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
-  const conf = isValid ? (confParam as ConferenceAbbreviation) : null;
+  const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
 
   useEffect(() => {
     if (season === null) {
@@ -84,7 +90,8 @@ const ConferencePage = () => {
         <div className="flex flex-col gap-2">
           <h1 className="text-4xl font-bold text-error">Conference Not Found</h1>
           <p className="text-base-content/70 text-lg">
-            The conference &quot;{confParam}&quot; for sport &quot;{sportParam}&quot; is not supported.
+            The conference &quot;{confParam}&quot; for sport &quot;{sportParam}&quot; is not
+            supported.
           </p>
         </div>
       </div>

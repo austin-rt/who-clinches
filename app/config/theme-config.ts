@@ -13,6 +13,14 @@ export const conferenceThemes: ConferenceThemes = {
     defaultTheme: 'mac',
     name: 'MAC',
   },
+  acc: {
+    defaultTheme: 'sec',
+    name: 'ACC',
+  },
+  b1g: {
+    defaultTheme: 'sec',
+    name: 'Big Ten',
+  },
 };
 
 export const getDefaultThemeForConference = (conferenceId: string): string => {
