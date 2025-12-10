@@ -1,5 +1,5 @@
 import { CFBConferenceTiebreakerConfig } from '../core/types';
-import { applyRuleAHeadToHead } from '../common/rule-a-head-to-head';
+import { applyRuleAHeadToHead } from './rule-a-head-to-head';
 import { applyRuleBCommonOpponents } from '../common/rule-b-common-opponents';
 import { applyRuleCHighestPlacedOpponent } from '../common/rule-c-highest-placed-opponent';
 import { applyRuleDOpponentWinPercentage } from '../common/rule-d-opponent-win-percentage';
