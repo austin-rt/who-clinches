@@ -9,7 +9,6 @@ export const applyRuleAHeadToHead = (
     return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
-  // Games are already filtered to regular season at API route level
   const h2hGames = games.filter(
     (g) => tiedTeams.includes(g.home.teamId) && tiedTeams.includes(g.away.teamId)
   );
