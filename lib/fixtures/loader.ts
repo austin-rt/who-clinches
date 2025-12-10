@@ -25,10 +25,3 @@ export const loadFixture = async <T = unknown>(path: string): Promise<T> => {
   }
 };
 
-/**
- * Check if fixtures should be used based on environment variable
- */
-export const shouldUseFixtures = (): boolean => {
-  return process.env.USE_FIXTURES === 'true' || process.env.NODE_ENV === 'test';
-};
-
