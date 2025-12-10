@@ -3,7 +3,12 @@
 import { useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery, TeamMetadata } from '@/app/store/api';
 import { useParams } from 'next/navigation';
-import { isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
+import {
+  isValidSport,
+  isValidConference,
+  type SportSlug,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { useAppSelector } from '@/app/store/hooks';
 import LoadingSpinner from './LoadingSpinner';
 import Divider from './Divider';
@@ -53,6 +58,38 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
       .map((item: { team: TeamMetadata }) => item.team);
   }, [data]);
 
+  const groupedStandings = useMemo(() => {
+    const hasDivisions = sortedStandings.some((team) => team.division);
+    if (!hasDivisions) {
+      return { null: sortedStandings };
+    }
+
+    const grouped: Record<string, TeamMetadata[]> = {};
+    for (const team of sortedStandings) {
+      const division = team.division || 'null';
+      if (!grouped[division]) {
+        grouped[division] = [];
+      }
+      grouped[division].push(team);
+    }
+
+    const sortedDivisions = Object.keys(grouped).sort((a, b) => {
+      if (a === 'East') return -1;
+      if (b === 'East') return 1;
+      if (a === 'West') return -1;
+      if (b === 'West') return 1;
+      return a.localeCompare(b);
+    });
+
+    const result: Record<string, TeamMetadata[]> = {};
+    for (const div of sortedDivisions) {
+      result[div] = grouped[div];
+    }
+    return result;
+  }, [sortedStandings]);
+
+  const hasDivisions = sortedStandings.some((team) => team.division);
+
   if (!isValid || !sport || !conf) {
     return null;
   }
@@ -67,27 +104,36 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
         <>
           <Divider className="-mt-4 pb-4" />
           <div className="flex flex-col gap-4">
-            <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
-              {sortedStandings.map((team: TeamMetadata) => {
-                const isTopTwo = team.rank === 1 || team.rank === 2;
-                return (
-                  <div
-                    key={team.id}
-                    className={cn(
-                      'flex items-center gap-1 whitespace-nowrap text-left',
-                      isTopTwo ? 'font-bold' : ''
-                    )}
-                  >
-                    <span>{team.rank}.</span>
-                    <span>{team.shortDisplayName}</span>
-                    <span className="text-base-content/70">
-                      ({team.conferenceRecord})
-                      {isTopTwo && <span className="text-base-content/70">*</span>}
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            {Object.entries(groupedStandings).map(([division, divisionTeams]) => (
+              <div key={division} className="flex flex-col gap-2">
+                {hasDivisions && division !== 'null' && (
+                  <div className="text-base-content/80 text-sm font-bold uppercase">{division}</div>
+                )}
+                <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
+                  {divisionTeams.map((team: TeamMetadata) => {
+                    const isTopTeam = hasDivisions
+                      ? team.rank === 1
+                      : team.rank === 1 || team.rank === 2;
+                    return (
+                      <div
+                        key={team.id}
+                        className={cn(
+                          'flex items-center gap-1 whitespace-nowrap text-left',
+                          isTopTeam ? 'font-bold' : ''
+                        )}
+                      >
+                        <span>{team.rank}.</span>
+                        <span>{team.shortDisplayName}</span>
+                        <span className="text-base-content/70">
+                          ({team.conferenceRecord})
+                          {isTopTeam && <span className="text-base-content/70">*</span>}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
             <Divider />
             <div className="text-base-content/60 w-full text-right text-xxs font-bold">
               * - in Title Game

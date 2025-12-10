@@ -11,7 +11,7 @@ interface ChampionshipCardProps {
 const ChampionshipCard = ({ team1, team2 }: ChampionshipCardProps) => {
   return (
     <div className="flex justify-center">
-      <div className="flex items-center justify-center gap-4 rounded-lg border border-base-300 bg-base-200 p-4 dark:bg-base-300">
+      <div className="flex items-center justify-center gap-4 rounded-lg border-2 border-base-300 bg-base-200 p-4 dark:bg-base-300">
         <div className="flex flex-col items-center gap-2">
           {team1.logo && (
             <Image
