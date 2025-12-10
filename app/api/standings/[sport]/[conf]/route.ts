@@ -14,6 +14,7 @@ import {
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
@@ -90,9 +91,6 @@ export const GET = async (
       conference: conferenceMeta.cfbdId,
     });
 
-    // Filter to only regular season conference games
-    // Must be BOTH: seasonType === 'regular' (or 'both') AND conferenceGame === true
-    // Conference championship games are excluded by filterRegularSeasonGames (checks notes field)
     const completedConferenceGames = cfbdGames.filter(
       (game) =>
         game.conferenceGame === true &&
@@ -131,8 +129,32 @@ export const GET = async (
     );
     const gamesForCalculation = filterRegularSeasonGames(allGames);
 
-    const allTeamIds = teams.map((team) => team._id);
-    const { standings } = calculateStandings(gamesForCalculation, allTeamIds, config);
+    const teamLeanArray: TeamLean[] = teams.map((team) => ({
+      _id: team._id,
+      name: team.name,
+      displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
+      abbreviation: team.abbreviation,
+      logo: team.logo,
+      color: team.color,
+      alternateColor: team.alternateColor,
+      conferenceId: team.conference,
+      division: team.division,
+      record: team.record,
+      conferenceStanding: team.conferenceStanding,
+    }));
+
+    const hasDivisions = teamLeanArray.some(
+      (team) => team.division !== null && team.division !== undefined
+    );
+
+    const { standings } = hasDivisions
+      ? calculateDivisionalStandings(gamesForCalculation, teamLeanArray, config)
+      : calculateStandings(
+          gamesForCalculation,
+          teams.map((team) => team._id),
+          config
+        );
 
     const teamMetadata: Record<string, TeamMetadata> = {};
     for (const team of teams) {
@@ -154,6 +176,7 @@ export const GET = async (
           ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
           : '0-0',
         rank: standing ? standing.rank : null,
+        division: standing?.division ?? team.division ?? null,
       };
     }
 

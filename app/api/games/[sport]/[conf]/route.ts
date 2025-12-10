@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cfbdClient } from '@/lib/cfb/cfbd-client';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
-import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules/sec/tiebreaker-helpers';
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import type { Conference } from 'cfbd';
@@ -11,9 +10,12 @@ import {
   isValidSport,
   isValidConference,
   CFBD_SEASON_TYPE,
+  CFB_CONFERENCE_CONFIGS,
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
+import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
@@ -85,22 +87,48 @@ const fetchGamesFromCfbd = async (
         game.away.score !== null
     );
 
-    const allConferenceTeamIds = teams.map((team) => team._id);
     const standingsMap = new Map<
       string,
-      { rank: number; confRecord: { wins: number; losses: number } }
+      { rank: number; confRecord: { wins: number; losses: number }; division?: string | null }
     >();
 
     if (completedConferenceGames.length > 0) {
-      const { standings } = calculateStandingsFromCompletedGames(
-        completedConferenceGames,
-        allConferenceTeamIds
-      );
-      for (const standing of standings) {
-        standingsMap.set(standing.teamId, {
-          rank: standing.rank,
-          confRecord: standing.confRecord,
-        });
+      const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+      if (config) {
+        const teamLeanArray: TeamLean[] = teams.map((team) => ({
+          _id: team._id,
+          name: team.name,
+          displayName: team.displayName,
+          shortDisplayName: team.shortDisplayName,
+          abbreviation: team.abbreviation,
+          logo: team.logo,
+          color: team.color,
+          alternateColor: team.alternateColor,
+          conferenceId: team.conference,
+          division: team.division,
+          record: team.record,
+          conferenceStanding: team.conferenceStanding,
+        }));
+
+        const hasDivisions = teamLeanArray.some(
+          (team) => team.division !== null && team.division !== undefined
+        );
+
+        const { standings } = hasDivisions
+          ? calculateDivisionalStandings(completedConferenceGames, teamLeanArray, config)
+          : calculateStandings(
+              completedConferenceGames,
+              teams.map((team) => team._id),
+              config
+            );
+
+        for (const standing of standings) {
+          standingsMap.set(standing.teamId, {
+            rank: standing.rank,
+            confRecord: standing.confRecord,
+            division: standing.division ?? null,
+          });
+        }
       }
     }
 
@@ -125,6 +153,7 @@ const fetchGamesFromCfbd = async (
           ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
           : team.record?.conference || '0-0',
         rank: standing ? standing.rank : null,
+        division: standing?.division ?? team.division ?? null,
       };
     }
 

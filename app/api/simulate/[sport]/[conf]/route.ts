@@ -4,6 +4,7 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';
 import { SimulateResponse } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
 import {
@@ -80,9 +81,6 @@ export const POST = async (
       conference: conferenceMeta.cfbdId,
     });
 
-    // Filter to only regular season conference games
-    // Must be BOTH: seasonType === 'regular' (or 'both') AND conferenceGame === true
-    // Conference championship games are excluded by filterRegularSeasonGames (checks notes field)
     const conferenceGamesOnly = cfbdGames.filter(
       (game) =>
         game.conferenceGame === true &&
@@ -118,7 +116,6 @@ export const POST = async (
       ...game,
     }));
 
-    // Games are already filtered to regular season at the CFBD level, but double-check with gameType
     const { filterRegularSeasonGames } = await import(
       '@/lib/cfb/tiebreaker-rules/common/core-helpers'
     );
@@ -141,12 +138,56 @@ export const POST = async (
       (game) => conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
     );
 
-    const { standings, tieLogs } = calculateStandings(filteredConferenceGames, allTeams, config);
+    const teamLeanArray: TeamLean[] = teams.map((team) => ({
+      _id: team._id,
+      name: team.name,
+      displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
+      abbreviation: team.abbreviation,
+      logo: team.logo,
+      color: team.color,
+      alternateColor: team.alternateColor,
+      conferenceId: team.conference,
+      division: team.division,
+      record: team.record,
+      conferenceStanding: team.conferenceStanding,
+    }));
+
+    const hasDivisions = teamLeanArray.some(
+      (team) => team.division !== null && team.division !== undefined
+    );
+
+    const { standings, tieLogs } = hasDivisions
+      ? calculateDivisionalStandings(filteredConferenceGames, teamLeanArray, config)
+      : calculateStandings(filteredConferenceGames, allTeams, config);
+
+    let championship: [string, string];
+    if (hasDivisions) {
+      const divisionChampions = new Map<string, string>();
+      for (const standing of standings) {
+        const game = filteredConferenceGames.find(
+          (g) => g.home.teamId === standing.teamId || g.away.teamId === standing.teamId
+        );
+        const division =
+          game?.home.teamId === standing.teamId ? game.home.division : game?.away.division;
+        if (division && standing.rank === 1 && !divisionChampions.has(division)) {
+          divisionChampions.set(division, standing.teamId);
+        }
+      }
+      const champions = Array.from(divisionChampions.values());
+      if (champions.length === 2) {
+        championship = [champions[0], champions[1]];
+      } else {
+        championship = [standings[0]?.teamId || '', standings[1]?.teamId || ''];
+      }
+    } else {
+      championship = [standings[0].teamId, standings[1].teamId];
+    }
 
     return NextResponse.json<SimulateResponse>(
       {
         standings,
-        championship: [standings[0].teamId, standings[1].teamId],
+        championship,
         tieLogs,
       },
       {
