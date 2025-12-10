@@ -110,6 +110,7 @@ export const reshapeCfbdGames = (
           alternateColor: homeTeam?.alternateColor || '000000',
           score: game.homePoints ?? null,
           rank: null,
+          division: homeTeam?.division || null,
         },
         away: {
           teamId: String(game.awayId),
@@ -121,6 +122,7 @@ export const reshapeCfbdGames = (
           alternateColor: awayTeam?.alternateColor || '000000',
           score: game.awayPoints ?? null,
           rank: null,
+          division: awayTeam?.division || null,
         },
         odds: {
           favoriteTeamId,
