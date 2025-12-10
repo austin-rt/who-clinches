@@ -10,6 +10,7 @@ export interface GameTeam {
   alternateColor?: string | null;
   score: number | null;
   rank: number | null;
+  division?: string | null;
 }
 
 export interface GameVenue {
@@ -84,6 +85,7 @@ export interface ReshapedTeam {
   color: string;
   alternateColor: string;
   conference: string;
+  division?: string | null;
   record: ReshapedTeamRecord;
   conferenceStanding: string;
 }
@@ -125,6 +127,7 @@ export interface TeamLean {
   color: string;
   alternateColor: string;
   conferenceId: string;
+  division?: string | null;
   record: TeamRecord;
   conferenceStanding: string;
 }

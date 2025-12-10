@@ -9,6 +9,7 @@ import { CFB_PAC12_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/pac12/co
 import { CFB_CUSA_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/cusa/config';
 import { CFB_MWC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mwc/config';
 import { CFB_AAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/aac/config';
+import { CFB_SUNBELT_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sunbelt/config';
 
 export type SportSlug = 'cfb';
 
@@ -30,48 +31,59 @@ export const isValidSport = (sport: string): sport is SportSlug => {
 export interface CFBConferenceMetadata {
   cfbdId: NonNullable<Conference['abbreviation']>;
   name: string;
+  theme: string;
 }
 
 export const CFB_CONFERENCE_METADATA = {
   sec: {
     cfbdId: 'SEC',
     name: 'SEC',
+    theme: 'sec',
   },
   acc: {
     cfbdId: 'ACC',
     name: 'ACC',
+    theme: 'acc',
   },
   b1g: {
     cfbdId: 'B1G',
     name: 'Big Ten',
+    theme: 'b1g',
   },
   big12: {
     cfbdId: 'B12',
     name: 'Big 12',
+    theme: 'big12',
   },
   pac: {
     cfbdId: 'PAC',
     name: 'Pac-12',
+    theme: 'pac12',
   },
   aac: {
     cfbdId: 'AAC',
     name: 'American Athletic',
+    theme: 'aac',
   },
   mac: {
     cfbdId: 'MAC',
     name: 'MAC',
+    theme: 'mac',
   },
   cusa: {
     cfbdId: 'CUSA',
     name: 'Conference USA',
+    theme: 'cusa',
   },
   mwc: {
     cfbdId: 'MWC',
     name: 'Mountain West',
+    theme: 'mw',
   },
   sunbelt: {
     cfbdId: 'SBC',
     name: 'Sun Belt',
+    theme: 'sunbelt',
   },
 } as const satisfies Record<string, CFBConferenceMetadata>;
 
@@ -101,6 +113,7 @@ export const CFB_CONFERENCE_CONFIGS: Record<string, CFBConferenceTiebreakerConfi
   CUSA: CFB_CUSA_TIEBREAKER_CONFIG,
   MWC: CFB_MWC_TIEBREAKER_CONFIG,
   AAC: CFB_AAC_TIEBREAKER_CONFIG,
+  SBC: CFB_SUNBELT_TIEBREAKER_CONFIG,
 };
 
 export const CFB_AVAILABLE_CONFERENCES = CFB_CONFERENCE_ABBREVIATIONS.filter(

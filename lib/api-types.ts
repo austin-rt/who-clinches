@@ -8,7 +8,6 @@ export interface ApiErrorResponse extends BaseError {
   code: string;
 }
 
-
 export interface TeamMetadata {
   id: string;
   abbrev: string;
@@ -28,7 +27,6 @@ export interface GamesResponse {
   teams: TeamMetadata[];
   season?: number;
 }
-
 
 export interface SimulateRequest {
   overrides: {
@@ -55,6 +53,7 @@ export interface StandingEntry {
   record: { wins: number; losses: number };
   confRecord: { wins: number; losses: number };
   explainPosition: string;
+  division?: string | null;
 }
 
 export interface TieLog {
