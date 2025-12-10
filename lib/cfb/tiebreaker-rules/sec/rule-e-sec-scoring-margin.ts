@@ -46,6 +46,7 @@ export const applyRuleESecScoringMargin = (
     return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
+  // Games are already filtered to regular season at API route level
   const margins = tiedTeams.map((teamId) => {
     const teamGames = games.filter(
       (g) => g.home.teamId === teamId || g.away.teamId === teamId
