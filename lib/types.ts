@@ -112,6 +112,7 @@ export interface GameLean {
   odds: GameOdds;
   predictedScore: PredictedScore;
   gameType?: GameType;
+  notes?: string | null;
 }
 
 export interface TeamLean {

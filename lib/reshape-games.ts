@@ -6,7 +6,9 @@ import {
   getDefaultPredictedScore,
 } from './cfb/helpers/prefill-helpers';
 
-const getGameState = (game: Game & { spread?: number; overUnder?: number; favoriteId?: number }): 'pre' | 'in' | 'post' => {
+const getGameState = (
+  game: Game & { spread?: number; overUnder?: number; favoriteId?: number }
+): 'pre' | 'in' | 'post' => {
   if (game.completed) {
     return 'post';
   }
@@ -18,7 +20,9 @@ const getGameState = (game: Game & { spread?: number; overUnder?: number; favori
   return 'pre';
 };
 
-const getGameType = (seasonType: Game['seasonType']): { name: string; abbreviation: string } | undefined => {
+const getGameType = (
+  seasonType: Game['seasonType']
+): { name: string; abbreviation: string } | undefined => {
   const typeMap: Record<string, { name: string; abbreviation: string }> = {
     regular: { name: 'Regular Season', abbreviation: 'reg' },
     postseason: { name: 'Postseason', abbreviation: 'post' },
@@ -124,7 +128,12 @@ export const reshapeCfbdGames = (
           overUnder,
         },
         predictedScore: (() => {
-          if (game.homePoints !== null && game.homePoints !== undefined && game.awayPoints !== null && game.awayPoints !== undefined) {
+          if (
+            game.homePoints !== null &&
+            game.homePoints !== undefined &&
+            game.awayPoints !== null &&
+            game.awayPoints !== undefined
+          ) {
             return { home: game.homePoints, away: game.awayPoints };
           }
           const oddsScore = calculatePredictedScoreFromOdds(
@@ -136,6 +145,7 @@ export const reshapeCfbdGames = (
           return oddsScore || getDefaultPredictedScore();
         })(),
         gameType,
+        notes: game.notes || null,
       };
     })
     .filter((game) => game !== null);
