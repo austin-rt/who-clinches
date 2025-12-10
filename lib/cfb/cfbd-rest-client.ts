@@ -16,11 +16,26 @@ import {
   type DivisionClassification,
   type UserInfo,
 } from 'cfbd';
+import { shouldUseFixtures } from '@/lib/fixtures/should-use-fixtures';
 
+const getBaseUrl = (): string | undefined => {
+  if (shouldUseFixtures()) {
+    const url = process.env.JSON_SERVER_URL || 'http://localhost:3001';
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.log('[CFBD] Using fixtures via json-server at:', url);
+    }
+    return url;
+  }
+  return undefined;
+};
+
+const baseUrl = getBaseUrl();
 client.setConfig({
   headers: {
     Authorization: `Bearer ${process.env.CFBD_API_KEY}`,
   },
+  ...(baseUrl && { baseUrl }),
 });
 
 let lastUserInfoCheck: { info: UserInfo; timestamp: number } | null = null;
@@ -28,7 +43,7 @@ const USER_INFO_CACHE_MS = 60000;
 
 const logRemainingCalls = async (info: UserInfo) => {
   const { patronLevel, remainingCalls } = info;
-  
+
   const TIER_LIMITS: Record<number, number> = {
     0: 1000, // Free tier
     1: 5000, // Patreon Tier 1 ($1/month)
@@ -100,31 +115,45 @@ export const getGamesFromCfbd = async (params: {
   conference?: string;
   id?: number;
 }): Promise<Game[]> => {
-  const result = await getGames({
-    query: {
-      year: params.year,
-      week: params.week,
-      seasonType: params.seasonType as Game['seasonType'] | undefined,
-      home: params.team,
-      away: params.team,
-      conference: params.conference,
-      gameId: params.id,
-    },
-  });
+  try {
+    const result = await getGames({
+      query: {
+        year: params.year,
+        week: params.week,
+        seasonType: params.seasonType as Game['seasonType'] | undefined,
+        home: params.team,
+        away: params.team,
+        conference: params.conference,
+        gameId: params.id,
+      },
+    });
 
-  void getUserInfoFromCfbd();
-  return result.data ?? [];
+    void getUserInfoFromCfbd();
+    return result.data ?? [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Failed to fetch games: ${String(error)}`);
+  }
 };
 
 export const getTeamsFromCfbd = async (params?: { conference?: string }): Promise<Team[]> => {
-  const result = await getTeams({
-    query: {
-      conference: params?.conference,
-    },
-  });
+  try {
+    const result = await getTeams({
+      query: {
+        conference: params?.conference,
+      },
+    });
 
-  void getUserInfoFromCfbd();
-  return result.data ?? [];
+    void getUserInfoFromCfbd();
+    return result.data ?? [];
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`Failed to fetch teams: ${String(error)}`);
+  }
 };
 
 export const getLinesFromCfbd = async (params: {
