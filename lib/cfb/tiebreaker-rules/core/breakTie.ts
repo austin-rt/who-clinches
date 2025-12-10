@@ -18,7 +18,7 @@ export const breakTie = (
 
   const steps: TieStep[] = [];
   const ranked: string[] = [];
-  let remaining = [...tiedTeams];
+  const remaining = [...tiedTeams];
 
   while (remaining.length > 0) {
     if (remaining.length === 1) {
@@ -81,6 +81,28 @@ export const breakTie = (
 
       if (ruleA.winners.length === 1) {
         ranked.push(ruleA.winners[0]);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
+      if (ruleA.winners.length > 1) {
+        const advancingResult = breakTie(ruleA.winners, games, allTeams, config, explanations, false);
+        ranked.push(...advancingResult.ranked);
+        steps.push(...advancingResult.steps);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
       }
 
       if (eliminated.length > 1) {
@@ -90,13 +112,7 @@ export const breakTie = (
       } else if (eliminated.length === 1) {
         ranked.push(eliminated[0]);
       }
-
-      if (ruleA.winners.length > 1) {
-        remaining = ruleA.winners;
-        continue;
-      } else {
-        break;
-      }
+      break;
     }
 
     const ruleB = config.rules[1].apply(remaining, games, allTeams);
@@ -141,16 +157,40 @@ export const breakTie = (
         });
       }
 
+      if (ruleB.winners.length === 1) {
+        ranked.push(ruleB.winners[0]);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
+      if (ruleB.winners.length > 1) {
+        const advancingResult = breakTie(ruleB.winners, games, allTeams, config, explanations, false);
+        ranked.push(...advancingResult.ranked);
+        steps.push(...advancingResult.steps);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
       if (eliminated.length > 1) {
         const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
-      } else {
-        ranked.push(...eliminated);
+      } else if (eliminated.length === 1) {
+        ranked.push(eliminated[0]);
       }
-
-      remaining = ruleB.winners;
-      continue;
+      break;
     }
 
     const ruleC = config.rules[2].apply(remaining, games, allTeams);
@@ -176,16 +216,40 @@ export const breakTie = (
         });
       }
 
+      if (ruleC.winners.length === 1) {
+        ranked.push(ruleC.winners[0]);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
+      if (ruleC.winners.length > 1) {
+        const advancingResult = breakTie(ruleC.winners, games, allTeams, config, explanations, false);
+        ranked.push(...advancingResult.ranked);
+        steps.push(...advancingResult.steps);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
       if (eliminated.length > 1) {
         const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
-      } else {
-        ranked.push(...eliminated);
+      } else if (eliminated.length === 1) {
+        ranked.push(eliminated[0]);
       }
-
-      remaining = ruleC.winners;
-      continue;
+      break;
     }
 
     const ruleD = config.rules[3].apply(remaining, games, allTeams);
@@ -225,6 +289,28 @@ export const breakTie = (
 
       if (ruleD.winners.length === 1) {
         ranked.push(ruleD.winners[0]);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
+      if (ruleD.winners.length > 1) {
+        const advancingResult = breakTie(ruleD.winners, games, allTeams, config, explanations, false);
+        ranked.push(...advancingResult.ranked);
+        steps.push(...advancingResult.steps);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
       }
 
       if (eliminated.length > 1) {
@@ -234,13 +320,7 @@ export const breakTie = (
       } else if (eliminated.length === 1) {
         ranked.push(eliminated[0]);
       }
-
-      if (ruleD.winners.length > 1) {
-        remaining = ruleD.winners;
-        continue;
-      } else {
-        break;
-      }
+      break;
     }
 
     const ruleE = config.rules[4].apply(remaining, games, allTeams);
@@ -294,16 +374,40 @@ export const breakTie = (
         }
       }
 
+      if (ruleE.winners.length === 1) {
+        ranked.push(ruleE.winners[0]);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
+      if (ruleE.winners.length > 1) {
+        const advancingResult = breakTie(ruleE.winners, games, allTeams, config, explanations, false);
+        ranked.push(...advancingResult.ranked);
+        steps.push(...advancingResult.steps);
+        if (eliminated.length > 1) {
+          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          ranked.push(...eliminatedResult.ranked);
+          steps.push(...eliminatedResult.steps);
+        } else if (eliminated.length === 1) {
+          ranked.push(eliminated[0]);
+        }
+        break;
+      }
+
       if (eliminated.length > 1) {
         const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
-      } else {
-        ranked.push(...eliminated);
+      } else if (eliminated.length === 1) {
+        ranked.push(eliminated[0]);
       }
-
-      remaining = ruleE.winners;
-      continue;
+      break;
     }
 
     steps.push({
