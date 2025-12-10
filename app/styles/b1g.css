@@ -35,19 +35,19 @@
   --color-base-400: #172023;
   --color-base-content: #eaeff1;
 
-  --color-primary: #33bbff;
-  --color-primary-content: #33bbff33;
+  --color-primary: #66686b;
+  --color-primary-content: #66686b33;
   --color-secondary: #15516f;
   --color-secondary-content: #15516f33;
-  --color-accent: #66686b;
-  --color-accent-content: #66686b33;
+  --color-accent: #33bbff;
+  --color-accent-content: #33bbff33;
 
   /* Map to DaisyUI theme variables for component compatibility */
-  --p: 200 100% 60%; /* primary */
+  --p: 210 3% 42%; /* primary */
   --pc: 0 0% 10%; /* primary-content */
   --s: 200 66% 25%; /* secondary */
   --sc: 0 0% 100%; /* secondary-content */
-  --a: 210 3% 42%; /* accent */
+  --a: 200 100% 60%; /* accent */
   --ac: 0 0% 100%; /* accent-content */
 
   --toggle-border-color: var(--color-accent);
