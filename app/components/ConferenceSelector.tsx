@@ -13,7 +13,6 @@ import {
 } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
-import { getDefaultThemeForConference } from '@/app/config/theme-config';
 
 const ConferenceSelector = () => {
   const router = useRouter();
@@ -30,21 +29,26 @@ const ConferenceSelector = () => {
       : null;
 
   const handleConferenceSelect = (conf: CFBConferenceAbbreviation) => {
-    const theme = getDefaultThemeForConference(conf);
+    const theme = CFB_CONFERENCE_METADATA[conf]?.theme || 'sec';
     setTheme(theme);
     router.push(`/cfb/${conf}`);
     setIsOpen(false);
   };
 
-  // Set theme when conference changes
+  const prevConfRef = useRef<string | null>(null);
   useEffect(() => {
     if (currentConf && isValidConference(currentConf)) {
-      const theme = getDefaultThemeForConference(currentConf);
+      const theme = CFB_CONFERENCE_METADATA[currentConf]?.theme || 'sec';
       setTheme(theme);
     }
+    if (prevConfRef.current !== null && prevConfRef.current !== currentConf) {
+      requestAnimationFrame(() => {
+        setIsOpen(false);
+      });
+    }
+    prevConfRef.current = currentConf;
   }, [currentConf, setTheme]);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {

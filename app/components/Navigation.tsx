@@ -11,7 +11,6 @@ import {
 } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
-import { getDefaultThemeForConference } from '@/app/config/theme-config';
 
 const Navigation = () => {
   const router = useRouter();
@@ -19,10 +18,9 @@ const Navigation = () => {
   const currentConf = params.conf as string;
   const { setTheme } = useUIState();
 
-  // Set theme when conference changes
   useEffect(() => {
     if (currentConf && isValidConference(currentConf)) {
-      const theme = getDefaultThemeForConference(currentConf);
+      const theme = CFB_CONFERENCE_METADATA[currentConf]?.theme || 'sec';
       setTheme(theme);
     }
   }, [currentConf, setTheme]);
