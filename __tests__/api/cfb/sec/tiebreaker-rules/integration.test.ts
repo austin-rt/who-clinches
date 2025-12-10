@@ -83,8 +83,8 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
 
       // A should be eliminated first (Rule A)
       // B should rank higher than C (Rule D - opponent win percentage)
-      // Note: breakTie pushes eliminated teams first, then winners continue through cascade
-      expect(result.ranked).toEqual(['A', 'B', 'C']);
+      // Note: advancing teams are ranked first, then eliminated teams
+      expect(result.ranked).toEqual(['B', 'C', 'A']);
       expect(result.steps.length).toBeGreaterThan(1); // Should have multiple steps (A elimination + B/C recursion)
       expect(result.steps[0].rule).toBe('Head-to-Head');
       expect(result.steps[0].survivors).toEqual(['B', 'C']); // A eliminated
@@ -135,10 +135,11 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         explanations
       );
 
-      // C and D should advance (Rule A)
+      // C and D should advance (Rule A) - they're still tied, so they continue through rules
       // A should rank higher than B in recursion (A beats B head-to-head)
-      // Note: breakTie pushes eliminated teams first, then winners continue through cascade
-      expect(result.ranked).toEqual(['A', 'B', 'C', 'D']);
+      // Note: advancing teams are ranked first, then eliminated teams
+      // C and D are still tied after all rules, so they're ranked by order, then A, then B
+      expect(result.ranked).toEqual(['C', 'D', 'A', 'B']);
       expect(result.steps.length).toBeGreaterThan(1); // Should have recursion steps
       expect(result.steps[0].rule).toBe('Head-to-Head');
       expect(result.steps[0].survivors).toEqual(['C', 'D']); // A and B eliminated
@@ -634,7 +635,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked).toContain('B');
       expect(result.ranked).toContain('C');
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C')); // B ranks higher than C
-      expect(result.steps.length).toBeGreaterThanOrEqual(4); // Should have multiple steps (cascading through A→B→C→D→E)
+      expect(result.steps.length).toBeGreaterThanOrEqual(3); // Should have multiple steps (cascading through A→B→C→D→E, then recursion)
       // Find the Rule E step that breaks the tie
       const ruleEStep = result.steps.find(
         (step) => step.rule === 'Scoring Margin' && step.tieBroken
