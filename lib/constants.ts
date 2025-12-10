@@ -4,8 +4,22 @@ import { CFB_SEC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sec/config
 import { CFB_MAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mac/config';
 import { CFB_ACC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/acc/config';
 import { CFB_B1G_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/b1g/config';
+import { CFB_BIG12_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/big12/config';
+import { CFB_PAC12_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/pac12/config';
+import { CFB_CUSA_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/cusa/config';
+import { CFB_MWC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mwc/config';
+import { CFB_AAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/aac/config';
 
 export type SportSlug = 'cfb';
+
+export const CFBD_SEASON_TYPE = {
+  REGULAR: 'regular',
+  POSTSEASON: 'postseason',
+  BOTH: 'both',
+  ALLSTAR: 'allstar',
+  SPRING_REGULAR: 'spring_regular',
+  SPRING_POSTSEASON: 'spring_postseason',
+} as const;
 
 const VALID_SPORTS: SportSlug[] = ['cfb'];
 
@@ -82,6 +96,11 @@ export const CFB_CONFERENCE_CONFIGS: Record<string, CFBConferenceTiebreakerConfi
   MAC: CFB_MAC_TIEBREAKER_CONFIG,
   ACC: CFB_ACC_TIEBREAKER_CONFIG,
   B1G: CFB_B1G_TIEBREAKER_CONFIG,
+  B12: CFB_BIG12_TIEBREAKER_CONFIG,
+  PAC: CFB_PAC12_TIEBREAKER_CONFIG,
+  CUSA: CFB_CUSA_TIEBREAKER_CONFIG,
+  MWC: CFB_MWC_TIEBREAKER_CONFIG,
+  AAC: CFB_AAC_TIEBREAKER_CONFIG,
 };
 
 export const CFB_AVAILABLE_CONFERENCES = CFB_CONFERENCE_ABBREVIATIONS.filter(
