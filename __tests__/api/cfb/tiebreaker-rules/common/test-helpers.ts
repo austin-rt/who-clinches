@@ -6,11 +6,13 @@ interface GameForTiebreaker {
     teamId: string;
     score: number | null;
     abbrev: string;
+    division?: string | null;
   };
   away: {
     teamId: string;
     score: number | null;
     abbrev: string;
+    division?: string | null;
   };
 }
 
@@ -43,6 +45,7 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     logo: '',
     color: '000000',
     alternateColor: '000000',
+    division: game.home.division ?? null,
   },
   away: {
     teamId: game.away.teamId,
@@ -54,6 +57,7 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
     logo: '',
     color: '000000',
     alternateColor: '000000',
+    division: game.away.division ?? null,
   },
   predictedScore: { home: 28, away: 24 },
   gameType: {
