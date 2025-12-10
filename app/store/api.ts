@@ -156,6 +156,7 @@ export type TeamMetadata = {
   conferenceStanding: string;
   conferenceRecord: string;
   rank: number | null;
+  division?: string | null;
 };
 export type GamesResponse = {
   events: GameLean[];
@@ -183,6 +184,7 @@ export type StandingEntry = {
   record: TeamRecord;
   confRecord: TeamRecord;
   explainPosition: string;
+  division?: string | null;
 };
 export type TieStep = {
   rule: string;
