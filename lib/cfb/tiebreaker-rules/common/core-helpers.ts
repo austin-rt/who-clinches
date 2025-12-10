@@ -4,6 +4,25 @@ const EPSILON = 0.0001;
 
 export const EPSILON_CONSTANT = EPSILON;
 
+/**
+ * Regular season game type abbreviation.
+ * Matches the abbreviation used in GameType from reshape-games.ts
+ */
+export const REGULAR_SEASON_GAME_TYPE = 'reg' as const;
+
+/**
+ * Filters games to include only regular season games.
+ * This tool is for regular season standings, so only games with abbreviation 'reg' are included.
+ * Excludes conference championship games (identified by notes containing "Championship").
+ */
+export const filterRegularSeasonGames = (games: GameLean[]): GameLean[] => {
+  return games.filter(
+    (g) =>
+      g.gameType?.abbreviation === REGULAR_SEASON_GAME_TYPE &&
+      !g.notes?.toLowerCase().includes('championship')
+  );
+};
+
 export const applyOverrides = (
   games: GameLean[],
   overrides: { [gameId: string]: { homeScore: number; awayScore: number } }
@@ -56,9 +75,7 @@ export const getTeamRecord = (
   teamId: string,
   games: GameLean[]
 ): { wins: number; losses: number; winPct: number } => {
-  const teamGames = games.filter(
-    (g) => g.home.teamId === teamId || g.away.teamId === teamId
-  );
+  const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
   let wins = 0;
   let losses = 0;
@@ -77,4 +94,3 @@ export const getTeamRecord = (
   const winPct = wins + losses === 0 ? 0 : wins / (wins + losses);
   return { wins, losses, winPct };
 };
-
