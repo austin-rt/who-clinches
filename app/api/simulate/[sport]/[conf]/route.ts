@@ -11,6 +11,7 @@ import {
   isValidSport,
   CFB_CONFERENCE_CONFIGS,
   isValidConference,
+  CFBD_SEASON_TYPE,
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
@@ -79,7 +80,15 @@ export const POST = async (
       conference: conferenceMeta.cfbdId,
     });
 
-    const conferenceGamesOnly = cfbdGames.filter((game) => game.conferenceGame);
+    // Filter to only regular season conference games
+    // Must be BOTH: seasonType === 'regular' (or 'both') AND conferenceGame === true
+    // Conference championship games are excluded by filterRegularSeasonGames (checks notes field)
+    const conferenceGamesOnly = cfbdGames.filter(
+      (game) =>
+        game.conferenceGame === true &&
+        (game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.REGULAR ||
+          game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.BOTH)
+    );
 
     if (conferenceGamesOnly.length === 0) {
       return NextResponse.json(
@@ -104,12 +113,17 @@ export const POST = async (
     );
 
     const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
-    const games: GameLean[] = reshaped.games.map((game) => ({
+    const allGames: GameLean[] = reshaped.games.map((game) => ({
       _id: game.id,
       ...game,
     }));
 
-    const finalGames = applyOverrides(games, overrides);
+    // Games are already filtered to regular season at the CFBD level, but double-check with gameType
+    const { filterRegularSeasonGames } = await import(
+      '@/lib/cfb/tiebreaker-rules/common/core-helpers'
+    );
+    const filteredGames = filterRegularSeasonGames(allGames);
+    const finalGames = applyOverrides(filteredGames, overrides);
 
     const conferenceTeamIds = new Set(teams.map((team) => team._id));
     const teamSet = new Set<string>();

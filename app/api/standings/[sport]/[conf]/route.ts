@@ -3,18 +3,18 @@ import { cfbdClient } from '@/lib/cfb/cfbd-client';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
-import { TeamMetadata, ApiErrorResponse, StandingsResponse } from '@/app/store/api';
+import { TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import {
   getConferenceMetadata,
   isValidSport,
   isValidConference,
   CFB_CONFERENCE_CONFIGS,
+  CFBD_SEASON_TYPE,
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
-import { loadFixture, shouldUseFixtures } from '@/lib/fixtures/loader';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -85,25 +85,19 @@ export const GET = async (
 
     const seasonYear = season ? parseInt(season, 10) : await getDefaultSeasonFromCfbd();
 
-    // Check if we should use fixtures
-    if (shouldUseFixtures()) {
-      const fixturePath = `api/standings/${sport}/${conf}/${seasonYear}.json`;
-      const fixture = await loadFixture<StandingsResponse>(fixturePath);
-      return NextResponse.json(fixture, {
-        headers: {
-          'Cache-Control': 'public, s-maxage=60',
-        },
-      });
-    }
-
     const cfbdGames = await cfbdClient.getGames({
       year: seasonYear,
       conference: conferenceMeta.cfbdId,
     });
 
+    // Filter to only regular season conference games
+    // Must be BOTH: seasonType === 'regular' (or 'both') AND conferenceGame === true
+    // Conference championship games are excluded by filterRegularSeasonGames (checks notes field)
     const completedConferenceGames = cfbdGames.filter(
       (game) =>
-        game.conferenceGame &&
+        game.conferenceGame === true &&
+        (game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.REGULAR ||
+          game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.BOTH) &&
         game.completed &&
         game.homePoints !== null &&
         game.homePoints !== undefined &&
@@ -127,10 +121,15 @@ export const GET = async (
     );
 
     const reshaped = reshapeCfbdGames(completedConferenceGames, teamMap);
-    const gamesForCalculation: GameLean[] = reshaped.games.map((game) => ({
+    const allGames: GameLean[] = reshaped.games.map((game) => ({
       _id: game.id,
       ...game,
     }));
+
+    const { filterRegularSeasonGames } = await import(
+      '@/lib/cfb/tiebreaker-rules/common/core-helpers'
+    );
+    const gamesForCalculation = filterRegularSeasonGames(allGames);
 
     const allTeamIds = teams.map((team) => team._id);
     const { standings } = calculateStandings(gamesForCalculation, allTeamIds, config);

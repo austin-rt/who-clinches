@@ -6,9 +6,15 @@ import { calculateStandingsFromCompletedGames } from '@/lib/cfb/tiebreaker-rules
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import type { Conference } from 'cfbd';
-import { getConferenceMetadata, isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
+import {
+  getConferenceMetadata,
+  isValidSport,
+  isValidConference,
+  CFBD_SEASON_TYPE,
+  type SportSlug,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
-import { loadFixture, shouldUseFixtures } from '@/lib/fixtures/loader';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -38,7 +44,12 @@ const fetchGamesFromCfbd = async (
       conference: conferenceMeta.cfbdId,
     });
 
-    const conferenceGamesOnly = cfbdGames.filter((game) => game.conferenceGame);
+    const conferenceGamesOnly = cfbdGames.filter(
+      (game) =>
+        game.conferenceGame === true &&
+        (game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.REGULAR ||
+          game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.BOTH)
+    );
 
     const cfbdTeams = await cfbdClient.getTeams({
       conference: conferenceMeta.cfbdId,
@@ -56,12 +67,17 @@ const fetchGamesFromCfbd = async (
     );
 
     const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
-    const games: GameLean[] = reshaped.games.map((game) => ({
+    const allGames: GameLean[] = reshaped.games.map((game) => ({
       _id: game.id,
       ...game,
     }));
 
-    const completedConferenceGames = games.filter(
+    const { filterRegularSeasonGames } = await import(
+      '@/lib/cfb/tiebreaker-rules/common/core-helpers'
+    );
+    const filteredGames = filterRegularSeasonGames(allGames);
+
+    const completedConferenceGames = filteredGames.filter(
       (game) =>
         game.completed &&
         game.conferenceGame &&
@@ -112,12 +128,12 @@ const fetchGamesFromCfbd = async (
       };
     }
 
-    const hasLiveGames = games.some((game) => game.state === 'in');
+    const hasLiveGames = filteredGames.some((game) => game.state === 'in');
     const cacheMaxAge = hasLiveGames ? 10 : 60;
 
     return NextResponse.json<GamesResponse>(
       {
-        events: games,
+        events: filteredGames,
         teams: Object.values(teamMetadata),
         season,
       },
@@ -182,13 +198,6 @@ export const GET = async (
         },
         { status: 400 }
       );
-    }
-
-    // Check if we should use fixtures
-    if (shouldUseFixtures()) {
-      const fixturePath = `api/games/${sport}/${conf}/${seasonYear}${week ? `-week${week}` : ''}.json`;
-      const fixture = await loadFixture<GamesResponse>(fixturePath);
-      return NextResponse.json<GamesResponse>(fixture);
     }
 
     return await fetchGamesFromCfbd(sport, conf, seasonYear, week ? parseInt(week, 10) : undefined);
