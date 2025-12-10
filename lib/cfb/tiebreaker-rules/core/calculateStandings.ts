@@ -38,18 +38,14 @@ export const calculateStandings = (
       orderedTeams.push(...tieResult.ranked);
 
       const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {
-        const game = games.find(
-          (g) => g.home.teamId === teamId || g.away.teamId === teamId
-        );
+        const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
         return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
       });
 
       const stepsWithAbbrevs = tieResult.steps.map((step) => ({
         ...step,
         survivors: step.survivors.map((teamId) => {
-          const game = games.find(
-            (g) => g.home.teamId === teamId || g.away.teamId === teamId
-          );
+          const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
           return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
         }),
       }));
@@ -100,9 +96,7 @@ export const calculateStandings = (
       const findTieLog = () => {
         return tieLogs.find((log) => {
           const teamAbbrevs = teamsWithSameRecord.map((t) => {
-            const g = games.find(
-              (g) => g.home.teamId === t.teamId || g.away.teamId === t.teamId
-            );
+            const g = games.find((g) => g.home.teamId === t.teamId || g.away.teamId === t.teamId);
             return g?.home.teamId === t.teamId ? g.home.abbrev : g?.away.abbrev || t.teamId;
           });
           return teamAbbrevs.every((abbrev) => log.teams.includes(abbrev));
@@ -246,19 +240,22 @@ export const calculateStandings = (
       explainPosition = parts.join(' ');
     }
 
+    // Get division from game data
+    const division = team.division || null;
+
     return {
       rank: index + 1,
       teamId,
       abbrev: team.abbrev,
-      displayName: team.displayName || team.abbrev || 'Unknown',
+      displayName: team.shortDisplayName || team.displayName || team.abbrev || 'Unknown',
       logo: team.logo || '',
       color: team.color || '000000',
       record: { wins: record.wins, losses: record.losses },
       confRecord: { wins: record.wins, losses: record.losses },
       explainPosition,
+      division,
     };
   });
 
   return { standings, tieLogs };
 };
-

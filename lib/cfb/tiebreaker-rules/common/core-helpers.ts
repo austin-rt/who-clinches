@@ -4,17 +4,8 @@ const EPSILON = 0.0001;
 
 export const EPSILON_CONSTANT = EPSILON;
 
-/**
- * Regular season game type abbreviation.
- * Matches the abbreviation used in GameType from reshape-games.ts
- */
 export const REGULAR_SEASON_GAME_TYPE = 'reg' as const;
 
-/**
- * Filters games to include only regular season games.
- * This tool is for regular season standings, so only games with abbreviation 'reg' are included.
- * Excludes conference championship games (identified by notes containing "Championship").
- */
 export const filterRegularSeasonGames = (games: GameLean[]): GameLean[] => {
   return games.filter(
     (g) =>

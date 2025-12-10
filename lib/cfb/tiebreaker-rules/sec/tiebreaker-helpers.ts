@@ -991,7 +991,7 @@ export const calculateStandings = (
       rank: index + 1,
       teamId,
       abbrev: team.abbrev,
-      displayName: team.displayName || team.abbrev || 'Unknown',
+      displayName: team.shortDisplayName || team.displayName || team.abbrev || 'Unknown',
       logo: team.logo || '',
       color: team.color || '000000',
       record: { wins: record.wins, losses: record.losses },

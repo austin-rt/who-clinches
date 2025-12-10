@@ -1,15 +1,6 @@
 import { GameLean } from '../../../types';
 import { getTeamAbbrev } from './core-helpers';
 
-/**
- * Total Wins Rule
- * Counts total wins in a season with the following conditions:
- * - Only one win against FCS/lower division counted annually
- * - Games exempted per NCAA 17.10.5.2.1 not included
- *
- * Note: Currently counts all wins. FCS/exempt filtering will be added
- * when classification data is available in GameLean.
- */
 export const applyRuleTotalWins = (
   tiedTeams: string[],
   games: GameLean[]
@@ -45,13 +36,10 @@ export const applyRuleTotalWins = (
   });
 
   const maxWins = Math.max(...winCounts.map((r) => r.totalWins));
-  const winners = winCounts
-    .filter((r) => r.totalWins === maxWins)
-    .map((r) => r.teamId);
+  const winners = winCounts.filter((r) => r.totalWins === maxWins).map((r) => r.teamId);
 
   const abbrevs = winners.map((tid) => getTeamAbbrev(tid, games));
   const detail = `${maxWins} wins${winners.length > 1 ? ` (${abbrevs.join(', ')})` : ''}`;
 
   return { winners, detail };
 };
-

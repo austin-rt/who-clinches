@@ -1,15 +1,6 @@
 import { GameLean } from '../../../types';
 import { getTeamAbbrev } from './core-helpers';
 
-/**
- * Overall Win Percentage Rule
- * Calculates overall winning percentage with the following conditions:
- * - Maximum one win against FCS included
- * - Exempt games excluded (when exempt game data is available)
- *
- * Note: Currently calculates from all games. FCS/exempt filtering will be added
- * when classification and exempt game data is available in GameLean.
- */
 export const applyRuleOverallWinPercentage = (
   tiedTeams: string[],
   games: GameLean[]
