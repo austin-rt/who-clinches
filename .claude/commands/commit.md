@@ -134,18 +134,7 @@ Check exit code. If failure:
 
 ### Step 6: Cleanup
 
-**CRITICAL: Always kill the development server after commits are complete.**
-
-If a development server was started in Step 1 (or was already running), kill it now:
-
-```
-run_terminal_cmd(
-  command: "npm run kill",
-  required_permissions: ["all"]
-)
-```
-
-**Note:** This cleanup step is mandatory. The dev server should not be left running after commit operations complete.
+**Note:** Server cleanup is no longer required. Tests do not require a running server, so the dev server should not be killed after commits.
 
 ### Step 7: Report
 
