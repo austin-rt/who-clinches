@@ -1,0 +1,472 @@
+[
+  {
+    "id": 2006,
+    "school": "Akron",
+    "mascot": "Zips",
+    "abbreviation": "AKR",
+    "alternateNames": [
+      "AKR",
+      "Akron"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00285e",
+    "alternateColor": "#84754e",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2006.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2006.png"
+    ],
+    "twitter": "@ZipsFB",
+    "location": {
+      "id": 3768,
+      "name": "InfoCision Stadium",
+      "city": "Akron",
+      "state": "OH",
+      "zip": "44399",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 41.0725534,
+      "longitude": -81.5083408,
+      "elevation": "321.2875061",
+      "capacity": 30000,
+      "constructionYear": 2009,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2050,
+    "school": "Ball State",
+    "mascot": "Cardinals",
+    "abbreviation": "BALL",
+    "alternateNames": [
+      "BALL",
+      "Ball State"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#DA0000",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2050.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2050.png"
+    ],
+    "twitter": "@BallStateFB",
+    "location": {
+      "id": 3919,
+      "name": "Scheumann Stadium",
+      "city": "Muncie",
+      "state": "IN",
+      "zip": "47306",
+      "countryCode": "US",
+      "timezone": "America/Indiana/Indianapolis",
+      "latitude": 40.2159422,
+      "longitude": -85.4161148,
+      "elevation": "285.481781",
+      "capacity": 22500,
+      "constructionYear": 1967,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 189,
+    "school": "Bowling Green",
+    "mascot": "Falcons",
+    "abbreviation": "BGSU",
+    "alternateNames": [
+      "Bowling Green State",
+      "BGSU",
+      "Bowling Green"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#2b1000",
+    "alternateColor": "#492000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/189.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/189.png"
+    ],
+    "twitter": "@BG_Football",
+    "location": {
+      "id": 3700,
+      "name": "Doyt L. Perry Stadium",
+      "city": "Bowling Green",
+      "state": "OH",
+      "zip": "43403",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 41.3780114,
+      "longitude": -83.6225,
+      "elevation": "205.9057465",
+      "capacity": 24000,
+      "constructionYear": 1966,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2084,
+    "school": "Buffalo",
+    "mascot": "Bulls",
+    "abbreviation": "BUF",
+    "alternateNames": [
+      "BUF",
+      "Buffalo"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#041A9B",
+    "alternateColor": "#ebebeb",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2084.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2084.png"
+    ],
+    "twitter": "@UBFootball",
+    "location": {
+      "id": 3965,
+      "name": "UB Stadium",
+      "city": "Amherst",
+      "state": "NY",
+      "zip": "14260",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 42.9991334,
+      "longitude": -78.7775113,
+      "elevation": "181.5759735",
+      "capacity": 30270,
+      "constructionYear": 1993,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2117,
+    "school": "Central Michigan",
+    "mascot": "Chippewas",
+    "abbreviation": "CMU",
+    "alternateNames": [
+      "CMU",
+      "C Michigan"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#6a0032",
+    "alternateColor": "#ffc82e",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2117.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2117.png"
+    ],
+    "twitter": "@CMU_Football",
+    "location": {
+      "id": 3786,
+      "name": "Kelly/Shorts Stadium",
+      "city": "Mount Pleasant",
+      "state": "MI",
+      "zip": "48859",
+      "countryCode": "US",
+      "timezone": "America/Detroit",
+      "latitude": 43.5777313,
+      "longitude": -84.7709904,
+      "elevation": "240.9007721",
+      "capacity": 30255,
+      "constructionYear": 1972,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2199,
+    "school": "Eastern Michigan",
+    "mascot": "Eagles",
+    "abbreviation": "EMU",
+    "alternateNames": [
+      "EMU",
+      "E Michigan"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00331b",
+    "alternateColor": "#f0f0f0",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2199.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2199.png"
+    ],
+    "twitter": "@EMUFB",
+    "location": {
+      "id": 3912,
+      "name": "Rynearson Stadium",
+      "city": "Ypsilanti",
+      "state": "MI",
+      "zip": "48197",
+      "countryCode": "US",
+      "timezone": "America/Detroit",
+      "latitude": 42.256126,
+      "longitude": -83.647285,
+      "elevation": "241.248764",
+      "capacity": 30200,
+      "constructionYear": 1969,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2309,
+    "school": "Kent State",
+    "mascot": "Golden Flashes",
+    "abbreviation": "KENT",
+    "alternateNames": [
+      "KENT",
+      "Kent State"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#003976",
+    "alternateColor": "#efab00",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2309.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2309.png"
+    ],
+    "twitter": "@KentStFootball",
+    "location": {
+      "id": 3696,
+      "name": "Dix Stadium",
+      "city": "Kent",
+      "state": "OH",
+      "zip": "44242",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 41.1390935,
+      "longitude": -81.31346,
+      "elevation": "321.3641663",
+      "capacity": 25319,
+      "constructionYear": 1969,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 113,
+    "school": "Massachusetts",
+    "mascot": "Minutemen",
+    "abbreviation": "MASS",
+    "alternateNames": [
+      "UMass",
+      "MASS",
+      "UMass"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#971B2F",
+    "alternateColor": "#B1B3B3",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/113.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/113.png"
+    ],
+    "twitter": "@UMassFootball",
+    "location": {
+      "id": 3985,
+      "name": "Warren McGuirk Alumni Stadium",
+      "city": "Hadley",
+      "state": "MA",
+      "zip": "1003 ",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 42.3773244,
+      "longitude": -72.5360595,
+      "elevation": "46.58664703",
+      "capacity": 17000,
+      "constructionYear": 1965,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 193,
+    "school": "Miami (OH)",
+    "mascot": "RedHawks",
+    "abbreviation": "M-OH",
+    "alternateNames": [
+      "M-OH",
+      "Miami OH"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#a4000c",
+    "alternateColor": "#f0f0f0",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/193.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/193.png"
+    ],
+    "twitter": "@MiamiOHFootball",
+    "location": {
+      "id": 3996,
+      "name": "Yager Stadium",
+      "city": "Oxford",
+      "state": "OH",
+      "zip": "45056",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 39.5197009,
+      "longitude": -84.7330255,
+      "elevation": "242.2643585",
+      "capacity": 24286,
+      "constructionYear": 1983,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2459,
+    "school": "Northern Illinois",
+    "mascot": "Huskies",
+    "abbreviation": "NIU",
+    "alternateNames": [
+      "NIU",
+      "N Illinois"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#F1122C",
+    "alternateColor": "#cc0000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2459.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2459.png"
+    ],
+    "twitter": "@NIU_Football",
+    "location": {
+      "id": 3764,
+      "name": "Huskie Stadium",
+      "city": "DeKalb",
+      "state": "IL",
+      "zip": "60115",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 41.9339586,
+      "longitude": -88.7778357,
+      "elevation": "267.4530029",
+      "capacity": 23595,
+      "constructionYear": 1965,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 195,
+    "school": "Ohio",
+    "mascot": "Bobcats",
+    "abbreviation": "OHIO",
+    "alternateNames": [
+      "OHIO",
+      "Ohio"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#295A29",
+    "alternateColor": "#e4bb85",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/195.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/195.png"
+    ],
+    "twitter": "@OhioFootball",
+    "location": {
+      "id": 3876,
+      "name": "Peden Stadium",
+      "city": "Athens",
+      "state": "OH",
+      "zip": "45701",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 39.3212794,
+      "longitude": -82.1034315,
+      "elevation": "194.230896",
+      "capacity": 24000,
+      "constructionYear": 1929,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2649,
+    "school": "Toledo",
+    "mascot": "Rockets",
+    "abbreviation": "TOL",
+    "alternateNames": [
+      "TOL",
+      "Toledo"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#0a2240",
+    "alternateColor": "#ffcd00",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2649.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2649.png"
+    ],
+    "twitter": "@ToledoFB",
+    "location": {
+      "id": 3739,
+      "name": "Glass Bowl",
+      "city": "Toledo",
+      "state": "OH",
+      "zip": "43606",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 41.6574777,
+      "longitude": -83.6135652,
+      "elevation": "181.4839783",
+      "capacity": 26038,
+      "constructionYear": 1937,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2711,
+    "school": "Western Michigan",
+    "mascot": "Broncos",
+    "abbreviation": "WMU",
+    "alternateNames": [
+      "WMU",
+      "W Michigan"
+    ],
+    "conference": "Mid-American",
+    "division": null,
+    "classification": "fbs",
+    "color": "#532e1f",
+    "alternateColor": "#8b7f79",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2711.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2711.png"
+    ],
+    "twitter": "@WMU_Football",
+    "location": {
+      "id": 3980,
+      "name": "Waldo Stadium",
+      "city": "Kalamazoo",
+      "state": "MI",
+      "zip": "49008",
+      "countryCode": "US",
+      "timezone": "America/Detroit",
+      "latitude": 42.2860064,
+      "longitude": -85.6007573,
+      "elevation": "243.8211212",
+      "capacity": 30200,
+      "constructionYear": 1939,
+      "grass": false,
+      "dome": false
+    }
+  }
+]

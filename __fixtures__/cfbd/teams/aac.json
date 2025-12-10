@@ -1,0 +1,508 @@
+[
+  {
+    "id": 349,
+    "school": "Army",
+    "mascot": "Black Knights",
+    "abbreviation": "ARMY",
+    "alternateNames": [
+      "ARMY",
+      "Army"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#ce9c00",
+    "alternateColor": "#231f20",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/349.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/349.png"
+    ],
+    "twitter": "@ArmyWP_Football",
+    "location": {
+      "id": 3841,
+      "name": "Michie Stadium",
+      "city": "West Point",
+      "state": "NY",
+      "zip": "10996",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 41.3874924,
+      "longitude": -73.9640891,
+      "elevation": "99.21277618",
+      "capacity": 38000,
+      "constructionYear": 1924,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2429,
+    "school": "Charlotte",
+    "mascot": "49ers",
+    "abbreviation": "CLT",
+    "alternateNames": [
+      "CLT",
+      "Charlotte"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#046A38",
+    "alternateColor": "#B9975B",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2429.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2429.png"
+    ],
+    "twitter": "@CharlotteFTBL",
+    "location": {
+      "id": 4418,
+      "name": "Jerry Richardson Stadium",
+      "city": "Charlotte",
+      "state": "NC",
+      "zip": "28223",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 35.3105033,
+      "longitude": -80.7401194,
+      "elevation": "190.365509",
+      "capacity": 15300,
+      "constructionYear": 2013,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 151,
+    "school": "East Carolina",
+    "mascot": "Pirates",
+    "abbreviation": "ECU",
+    "alternateNames": [
+      "ECU",
+      "East Carolina"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#4b1869",
+    "alternateColor": "#f0907b",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/151.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/151.png"
+    ],
+    "twitter": "@ECUPiratesFB",
+    "location": {
+      "id": 3699,
+      "name": "Dowdy-Ficklen Stadium",
+      "city": "Greenville",
+      "state": "NC",
+      "zip": "27858",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 35.5968486,
+      "longitude": -77.364564,
+      "elevation": "19.0564537",
+      "capacity": 50000,
+      "constructionYear": 1963,
+      "grass": true,
+      "dome": false
+    }
+  },
+  {
+    "id": 2226,
+    "school": "Florida Atlantic",
+    "mascot": "Owls",
+    "abbreviation": "FAU",
+    "alternateNames": [
+      "FAU",
+      "FAU"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00447c",
+    "alternateColor": "#d31245",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2226.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2226.png"
+    ],
+    "twitter": "@FAUFootball",
+    "location": {
+      "id": 3715,
+      "name": "FAU Stadium",
+      "city": "Boca Raton",
+      "state": "FL",
+      "zip": "33499",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 26.3763763,
+      "longitude": -80.1015759,
+      "elevation": "3.613628864",
+      "capacity": 29419,
+      "constructionYear": 2011,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 235,
+    "school": "Memphis",
+    "mascot": "Tigers",
+    "abbreviation": "MEM",
+    "alternateNames": [
+      "MEM",
+      "Memphis"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#004991",
+    "alternateColor": "#8e908f",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/235.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/235.png"
+    ],
+    "twitter": "@MemphisFB",
+    "location": {
+      "id": 3805,
+      "name": "Simmons Bank Liberty Stadium",
+      "city": "Memphis",
+      "state": "TN",
+      "zip": "38152",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 35.1209429,
+      "longitude": -89.977147,
+      "elevation": "90.62445831",
+      "capacity": 58325,
+      "constructionYear": 1965,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2426,
+    "school": "Navy",
+    "mascot": "Midshipmen",
+    "abbreviation": "NAVY",
+    "alternateNames": [
+      "NAVY",
+      "Navy"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00225b",
+    "alternateColor": "#b5a67c",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2426.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2426.png"
+    ],
+    "twitter": "@NavyFB",
+    "location": {
+      "id": 3852,
+      "name": "Navy-Marine Corps Memorial Stadium",
+      "city": "Annapolis",
+      "state": "MD",
+      "zip": "21402",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 38.9846985,
+      "longitude": -76.5076335,
+      "elevation": "10.74990082",
+      "capacity": 34000,
+      "constructionYear": 1959,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 249,
+    "school": "North Texas",
+    "mascot": "Mean Green",
+    "abbreviation": "UNT",
+    "alternateNames": [
+      "UNT",
+      "North Texas"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00853E",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/249.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/249.png"
+    ],
+    "twitter": "@MeanGreenFB",
+    "location": {
+      "id": 3825,
+      "name": "DATCU Stadium",
+      "city": "Denton",
+      "state": "TX",
+      "zip": "76210",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 33.203899,
+      "longitude": -97.159245,
+      "elevation": "198.6871948",
+      "capacity": 30850,
+      "constructionYear": 2011,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 242,
+    "school": "Rice",
+    "mascot": "Owls",
+    "abbreviation": "RICE",
+    "alternateNames": [
+      "RICE",
+      "Rice"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#d1d5d8",
+    "alternateColor": "#003d7d",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/242.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/242.png"
+    ],
+    "twitter": "@RiceFootball",
+    "location": {
+      "id": 3895,
+      "name": "Rice Stadium",
+      "city": "Houston",
+      "state": "TX",
+      "zip": "77251",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 29.7163297,
+      "longitude": -95.4093261,
+      "elevation": "7.148301601",
+      "capacity": 47000,
+      "constructionYear": 1950,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 58,
+    "school": "South Florida",
+    "mascot": "Bulls",
+    "abbreviation": "USF",
+    "alternateNames": [
+      "USF",
+      "South Florida"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#004A36",
+    "alternateColor": "#231f20",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/58.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/58.png"
+    ],
+    "twitter": "@USFFootball",
+    "location": {
+      "id": 3886,
+      "name": "Raymond James Stadium",
+      "city": "Tampa",
+      "state": "FL",
+      "zip": "33620",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 27.9758691,
+      "longitude": -82.5033344,
+      "elevation": "11.07972908",
+      "capacity": 65828,
+      "constructionYear": 1998,
+      "grass": true,
+      "dome": false
+    }
+  },
+  {
+    "id": 218,
+    "school": "Temple",
+    "mascot": "Owls",
+    "abbreviation": "TEM",
+    "alternateNames": [
+      "TEM",
+      "Temple"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#A80532",
+    "alternateColor": "#a7a9ac",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/218.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/218.png"
+    ],
+    "twitter": "@Temple_FB",
+    "location": {
+      "id": 3806,
+      "name": "Lincoln Financial Field",
+      "city": "Philadelphia",
+      "state": "PA",
+      "zip": "19122",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 39.9007995,
+      "longitude": -75.1675414,
+      "elevation": "3.198706865",
+      "capacity": 69879,
+      "constructionYear": 2003,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2655,
+    "school": "Tulane",
+    "mascot": "Green Wave",
+    "abbreviation": "TULN",
+    "alternateNames": [
+      "TULN",
+      "Tulane"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#006547",
+    "alternateColor": "#468ac9",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2655.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2655.png"
+    ],
+    "twitter": "@GreenWaveFB",
+    "location": {
+      "id": 4729,
+      "name": "Yulman Stadium",
+      "city": "New Orleans",
+      "state": "LA",
+      "zip": "70118",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 29.944616,
+      "longitude": -90.116692,
+      "elevation": "0.0000000000000000000000000000000000000118",
+      "capacity": 30000,
+      "constructionYear": 2014,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 202,
+    "school": "Tulsa",
+    "mascot": "Golden Hurricane",
+    "abbreviation": "TLSA",
+    "alternateNames": [
+      "TLSA",
+      "Tulsa"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#003595",
+    "alternateColor": "#d0b787",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/202.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/202.png"
+    ],
+    "twitter": "@TulsaFootball",
+    "location": {
+      "id": 3674,
+      "name": "Chapman Stadium",
+      "city": "Tulsa",
+      "state": "OK",
+      "zip": "74194",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 36.1489175,
+      "longitude": -95.9437853,
+      "elevation": "235.5928345",
+      "capacity": 30000,
+      "constructionYear": 1930,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 5,
+    "school": "UAB",
+    "mascot": "Blazers",
+    "abbreviation": "UAB",
+    "alternateNames": [
+      "Alabama-Birmingham",
+      "UAB",
+      "UAB"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#003b28",
+    "alternateColor": "#ffc845",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/5.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/5.png"
+    ],
+    "twitter": "@UAB_FB",
+    "location": {
+      "id": 7221,
+      "name": "Protective Stadium",
+      "city": "Birmingham",
+      "state": "AL",
+      "zip": "35203",
+      "countryCode": "US",
+      "timezone": null,
+      "latitude": 33.5206824,
+      "longitude": -86.8024326,
+      "elevation": null,
+      "capacity": 0,
+      "constructionYear": null,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2636,
+    "school": "UTSA",
+    "mascot": "Roadrunners",
+    "abbreviation": "UTSA",
+    "alternateNames": [
+      "Texas-San Antonio",
+      "UTSA",
+      "UTSA"
+    ],
+    "conference": "American Athletic",
+    "division": null,
+    "classification": "fbs",
+    "color": "#002A5C",
+    "alternateColor": "#f47321",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2636.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2636.png"
+    ],
+    "twitter": null,
+    "location": {
+      "id": 3604,
+      "name": "Alamodome",
+      "city": "San Antonio",
+      "state": "TX",
+      "zip": "78299",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 29.4169834,
+      "longitude": -98.4788143,
+      "elevation": "201.5526886",
+      "capacity": 36582,
+      "constructionYear": 1993,
+      "grass": false,
+      "dome": true
+    }
+  }
+]

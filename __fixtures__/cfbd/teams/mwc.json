@@ -1,0 +1,436 @@
+[
+  {
+    "id": 2005,
+    "school": "Air Force",
+    "mascot": "Falcons",
+    "abbreviation": "AF",
+    "alternateNames": [
+      "AF",
+      "Air Force"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#004a7b",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2005.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2005.png"
+    ],
+    "twitter": "@AF_Football",
+    "location": {
+      "id": 3713,
+      "name": "Falcon Stadium",
+      "city": "Colorado Springs",
+      "state": "CO",
+      "zip": "80840",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 38.9969701,
+      "longitude": -104.8436165,
+      "elevation": "2024.875732",
+      "capacity": 46692,
+      "constructionYear": 1962,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 68,
+    "school": "Boise State",
+    "mascot": "Broncos",
+    "abbreviation": "BOIS",
+    "alternateNames": [
+      "BOIS",
+      "Boise St"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#0033a0",
+    "alternateColor": "#fa4616",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/68.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/68.png"
+    ],
+    "twitter": "@BroncoSportsFB",
+    "location": {
+      "id": 3653,
+      "name": "Albertsons Stadium",
+      "city": "Boise",
+      "state": "ID",
+      "zip": "83725",
+      "countryCode": "US",
+      "timezone": "America/Boise",
+      "latitude": 43.6028839,
+      "longitude": -116.1958882,
+      "elevation": "823.2221069",
+      "capacity": 36387,
+      "constructionYear": 1970,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 36,
+    "school": "Colorado State",
+    "mascot": "Rams",
+    "abbreviation": "CSU",
+    "alternateNames": [
+      "CSU",
+      "Colorado St"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#1e4d2b",
+    "alternateColor": "#c8c372",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/36.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/36.png"
+    ],
+    "twitter": "@CSUFootball",
+    "location": {
+      "id": 5388,
+      "name": "Canvas Stadium",
+      "city": "Fort Collins",
+      "state": "CO",
+      "zip": "80521",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 40.570015,
+      "longitude": -105.088435,
+      "elevation": "1528.4",
+      "capacity": 36500,
+      "constructionYear": 2017,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 278,
+    "school": "Fresno State",
+    "mascot": "Bulldogs",
+    "abbreviation": "FRES",
+    "alternateNames": [
+      "FRES",
+      "Fresno St"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#db0032",
+    "alternateColor": "#002e6d",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/278.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/278.png"
+    ],
+    "twitter": "@FresnoStateFB",
+    "location": {
+      "id": 3660,
+      "name": "Valley Children's Stadium",
+      "city": "Fresno",
+      "state": "CA",
+      "zip": "93740",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 36.8143527,
+      "longitude": -119.7580092,
+      "elevation": "102.564064",
+      "capacity": 41031,
+      "constructionYear": 1980,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 62,
+    "school": "Hawai'i",
+    "mascot": "Rainbow Warriors",
+    "abbreviation": "HAW",
+    "alternateNames": [
+      "HAW",
+      "Hawai’i"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#003420",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/62.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/62.png"
+    ],
+    "twitter": "@HawaiiFootball",
+    "location": {
+      "id": 7220,
+      "name": "Clarence T.C. Ching Athletics Complex",
+      "city": "Honolulu",
+      "state": "HI",
+      "zip": "96822",
+      "countryCode": null,
+      "timezone": null,
+      "latitude": 21.294294,
+      "longitude": -157.819338,
+      "elevation": "20",
+      "capacity": 9000,
+      "constructionYear": null,
+      "grass": true,
+      "dome": false
+    }
+  },
+  {
+    "id": 2440,
+    "school": "Nevada",
+    "mascot": "Wolf Pack",
+    "abbreviation": "NEV",
+    "alternateNames": [
+      "NEV",
+      "Nevada"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#002d62",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2440.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2440.png"
+    ],
+    "twitter": "@NevadaFootball",
+    "location": {
+      "id": 3816,
+      "name": "Mackay Stadium",
+      "city": "Reno",
+      "state": "NV",
+      "zip": "89557",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 39.5469459,
+      "longitude": -119.8175435,
+      "elevation": "1406.57605",
+      "capacity": 27000,
+      "constructionYear": 1966,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 167,
+    "school": "New Mexico",
+    "mascot": "Lobos",
+    "abbreviation": "UNM",
+    "alternateNames": [
+      "UNM",
+      "New Mexico"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#BA0C2F",
+    "alternateColor": "#a7a8aa",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/167.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/167.png"
+    ],
+    "twitter": "@UNMLoboFB",
+    "location": {
+      "id": 3971,
+      "name": "University Stadium (NM)",
+      "city": "Albuquerque",
+      "state": "NM",
+      "zip": "87131",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 35.0669479,
+      "longitude": -106.6283225,
+      "elevation": "1554.471924",
+      "capacity": 39224,
+      "constructionYear": 1960,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 21,
+    "school": "San Diego State",
+    "mascot": "Aztecs",
+    "abbreviation": "SDSU",
+    "alternateNames": [
+      "SDSU",
+      "San Diego St"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#c41230",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/21.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/21.png"
+    ],
+    "twitter": "@AztecFB",
+    "location": {
+      "id": 7311,
+      "name": "Snapdragon Stadium",
+      "city": "San Diego",
+      "state": "CA",
+      "zip": "92093",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 32.784444,
+      "longitude": -117.122833,
+      "elevation": "62",
+      "capacity": 35000,
+      "constructionYear": 2022,
+      "grass": true,
+      "dome": false
+    }
+  },
+  {
+    "id": 23,
+    "school": "San José State",
+    "mascot": "Spartans",
+    "abbreviation": "SJSU",
+    "alternateNames": [
+      "San Jose St.",
+      "SJSU",
+      "San José St"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#005893",
+    "alternateColor": "#fdba31",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/23.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/23.png"
+    ],
+    "twitter": "@SanJoseStateFB",
+    "location": {
+      "id": 3935,
+      "name": "CEFCU Stadium",
+      "city": "San Jose",
+      "state": "CA",
+      "zip": "95112",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 37.3196675,
+      "longitude": -121.8682962,
+      "elevation": "28.30708694",
+      "capacity": 30456,
+      "constructionYear": 1933,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2439,
+    "school": "UNLV",
+    "mascot": "Rebels",
+    "abbreviation": "UNLV",
+    "alternateNames": [
+      "Nevada-Las Vegas",
+      "UNLV",
+      "UNLV"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#b10202",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2439.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2439.png"
+    ],
+    "twitter": "@UNLVFootball",
+    "location": {
+      "id": 6501,
+      "name": "Allegiant Stadium",
+      "city": "Las Vegas",
+      "state": "NV",
+      "zip": "89154",
+      "countryCode": "US",
+      "timezone": null,
+      "latitude": 36.1672559,
+      "longitude": -115.1485163,
+      "elevation": null,
+      "capacity": 65000,
+      "constructionYear": null,
+      "grass": false,
+      "dome": true
+    }
+  },
+  {
+    "id": 328,
+    "school": "Utah State",
+    "mascot": "Aggies",
+    "abbreviation": "USU",
+    "alternateNames": [
+      "USU",
+      "Utah State"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#00263a",
+    "alternateColor": "#949ca1",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/328.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/328.png"
+    ],
+    "twitter": "@USUFootball",
+    "location": {
+      "id": 3905,
+      "name": "Maverik Stadium",
+      "city": "Logan",
+      "state": "UT",
+      "zip": "84322",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 41.7517394,
+      "longitude": -111.8116007,
+      "elevation": "1427.914429",
+      "capacity": 25513,
+      "constructionYear": 1968,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2751,
+    "school": "Wyoming",
+    "mascot": "Cowboys",
+    "abbreviation": "WYO",
+    "alternateNames": [
+      "WYO",
+      "Wyoming"
+    ],
+    "conference": "Mountain West",
+    "division": null,
+    "classification": "fbs",
+    "color": "#492f24",
+    "alternateColor": "#ffc425",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2751.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2751.png"
+    ],
+    "twitter": "@Wyo_Football",
+    "location": {
+      "id": 3984,
+      "name": "War Memorial Stadium",
+      "city": "Laramie",
+      "state": "WY",
+      "zip": "82071",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 41.31161,
+      "longitude": -105.5681384,
+      "elevation": "2200.153564",
+      "capacity": 29181,
+      "constructionYear": 1950,
+      "grass": false,
+      "dome": false
+    }
+  }
+]

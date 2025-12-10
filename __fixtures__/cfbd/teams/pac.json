@@ -1,0 +1,74 @@
+[
+  {
+    "id": 204,
+    "school": "Oregon State",
+    "mascot": "Beavers",
+    "abbreviation": "ORST",
+    "alternateNames": [
+      "ORST",
+      "Oregon St"
+    ],
+    "conference": "Pac-12",
+    "division": null,
+    "classification": "fbs",
+    "color": "#231f20",
+    "alternateColor": "#d73f09",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/204.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/204.png"
+    ],
+    "twitter": "@BeaverFootball",
+    "location": {
+      "id": 3893,
+      "name": "Reser Stadium",
+      "city": "Corvallis",
+      "state": "OR",
+      "zip": "97331",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 44.5594559,
+      "longitude": -123.2814341,
+      "elevation": "66.90744781",
+      "capacity": 43363,
+      "constructionYear": 1953,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 265,
+    "school": "Washington State",
+    "mascot": "Cougars",
+    "abbreviation": "WSU",
+    "alternateNames": [
+      "WSU",
+      "Washington St"
+    ],
+    "conference": "Pac-12",
+    "division": null,
+    "classification": "fbs",
+    "color": "#981e32",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/265.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/265.png"
+    ],
+    "twitter": "@WSUCougarFB",
+    "location": {
+      "id": 3820,
+      "name": "Gesa Field",
+      "city": "Pullman",
+      "state": "WA",
+      "zip": "99164",
+      "countryCode": "US",
+      "timezone": "America/Los_Angeles",
+      "latitude": 46.731831,
+      "longitude": -117.1604991,
+      "elevation": "773.9526367",
+      "capacity": 32952,
+      "constructionYear": 1972,
+      "grass": false,
+      "dome": false
+    }
+  }
+]

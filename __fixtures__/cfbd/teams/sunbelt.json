@@ -1,0 +1,510 @@
+[
+  {
+    "id": 2026,
+    "school": "App State",
+    "mascot": "Mountaineers",
+    "abbreviation": "APP",
+    "alternateNames": [
+      "Appalachian State",
+      "APP",
+      "App State"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#ffcc00",
+    "alternateColor": "#222222",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2026.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2026.png"
+    ],
+    "twitter": "@AppState_FB",
+    "location": {
+      "id": 3792,
+      "name": "Kidd Brewer Stadium",
+      "city": "Boone",
+      "state": "NC",
+      "zip": "28608",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 36.2114267,
+      "longitude": -81.6854278,
+      "elevation": "991.3414307",
+      "capacity": 30000,
+      "constructionYear": 1962,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2032,
+    "school": "Arkansas State",
+    "mascot": "Red Wolves",
+    "abbreviation": "ARST",
+    "alternateNames": [
+      "ARST",
+      "Arkansas St"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#e81018",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2032.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2032.png"
+    ],
+    "twitter": "@AStateFB",
+    "location": {
+      "id": 3625,
+      "name": "Centennial Bank Stadium",
+      "city": "Jonesboro",
+      "state": "AR",
+      "zip": "72404",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 35.8488977,
+      "longitude": -90.6677436,
+      "elevation": "89.52690887",
+      "capacity": 30382,
+      "constructionYear": 1974,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 324,
+    "school": "Coastal Carolina",
+    "mascot": "Chanticleers",
+    "abbreviation": "CCU",
+    "alternateNames": [
+      "CCU",
+      "Coastal"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#007073",
+    "alternateColor": "#876447",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/324.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/324.png"
+    ],
+    "twitter": "@CoastalFootball",
+    "location": {
+      "id": 3654,
+      "name": "Brooks Stadium (SC)",
+      "city": "Conway",
+      "state": "SC",
+      "zip": "29528",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 33.7928506,
+      "longitude": -79.0166946,
+      "elevation": "13.74894905",
+      "capacity": 21000,
+      "constructionYear": 2003,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 290,
+    "school": "Georgia Southern",
+    "mascot": "Eagles",
+    "abbreviation": "GASO",
+    "alternateNames": [
+      "GASO",
+      "GA Southern"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#003775",
+    "alternateColor": "#f0f0f0",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/290.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/290.png"
+    ],
+    "twitter": "@GSAthletics_FB",
+    "location": {
+      "id": 3608,
+      "name": "Allen E. Paulson Stadium",
+      "city": "Statesboro",
+      "state": "GA",
+      "zip": "30460",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 32.4122471,
+      "longitude": -81.7849296,
+      "elevation": "61.25376892",
+      "capacity": 25000,
+      "constructionYear": 1984,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2247,
+    "school": "Georgia State",
+    "mascot": "Panthers",
+    "abbreviation": "GAST",
+    "alternateNames": [
+      "GAST",
+      "Georgia St"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#1e539a",
+    "alternateColor": "#ebebeb",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2247.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2247.png"
+    ],
+    "twitter": "@GeorgiaStateFB",
+    "location": {
+      "id": 4246,
+      "name": "Center Parc Stadium",
+      "city": "Atlanta",
+      "state": "GA",
+      "zip": "30315",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 33.735267,
+      "longitude": -84.389949,
+      "elevation": "287",
+      "capacity": 25000,
+      "constructionYear": 2017,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 256,
+    "school": "James Madison",
+    "mascot": "Dukes",
+    "abbreviation": "JMU",
+    "alternateNames": [
+      "JMU",
+      "James Madison"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#450084",
+    "alternateColor": "#b5a068",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/256.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/256.png"
+    ],
+    "twitter": "@JMUFootball",
+    "location": {
+      "id": 3651,
+      "name": "Bridgeforth Stadium",
+      "city": "Harrisonburg",
+      "state": "VA",
+      "zip": "22807",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 38.4352919,
+      "longitude": -78.8729349,
+      "elevation": "399.303009",
+      "capacity": 24877,
+      "constructionYear": 1975,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 309,
+    "school": "Louisiana",
+    "mascot": "Ragin' Cajuns",
+    "abbreviation": "UL",
+    "alternateNames": [
+      "UL Lafayette",
+      "UL",
+      "Louisiana"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#ce181e",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/309.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/309.png"
+    ],
+    "twitter": "@RaginCajunsFB",
+    "location": {
+      "id": 3666,
+      "name": "Cajun Field",
+      "city": "Lafayette",
+      "state": "LA",
+      "zip": "70506",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 30.2158434,
+      "longitude": -92.0417371,
+      "elevation": "3.556508303",
+      "capacity": 41426,
+      "constructionYear": 1971,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 276,
+    "school": "Marshall",
+    "mascot": "Thundering Herd",
+    "abbreviation": "MRSH",
+    "alternateNames": [
+      "MRSH",
+      "Marshall"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#00ae42",
+    "alternateColor": "#be854c",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/276.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/276.png"
+    ],
+    "twitter": "@HerdFB",
+    "location": {
+      "id": 3775,
+      "name": "Joan C. Edwards Stadium",
+      "city": "Huntington",
+      "state": "WV",
+      "zip": "25755",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 38.4247042,
+      "longitude": -82.4214412,
+      "elevation": "163.7328186",
+      "capacity": 38016,
+      "constructionYear": 1991,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 295,
+    "school": "Old Dominion",
+    "mascot": "Monarchs",
+    "abbreviation": "ODU",
+    "alternateNames": [
+      "ODU",
+      "Old Dominion"
+    ],
+    "conference": "Sun Belt",
+    "division": "East",
+    "classification": "fbs",
+    "color": "#00507d",
+    "alternateColor": "#a1d2f1",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/295.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/295.png"
+    ],
+    "twitter": "@ODUFootball",
+    "location": {
+      "id": 3918,
+      "name": "S.B. Ballard Stadium",
+      "city": "Norfolk",
+      "state": "VA",
+      "zip": "23551",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 36.8889533,
+      "longitude": -76.3049175,
+      "elevation": "3.147987843",
+      "capacity": 20118,
+      "constructionYear": 1936,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 6,
+    "school": "South Alabama",
+    "mascot": "Jaguars",
+    "abbreviation": "USA",
+    "alternateNames": [
+      "USA",
+      "South Alabama"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#00205B",
+    "alternateColor": "#BF0D3E",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/6.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/6.png"
+    ],
+    "twitter": "@SouthAlabamaFB",
+    "location": {
+      "id": 6526,
+      "name": "Hancock Whitney Stadium",
+      "city": "Mobile",
+      "state": "AL",
+      "zip": "85329",
+      "countryCode": "US",
+      "timezone": null,
+      "latitude": 30.6943566,
+      "longitude": -88.0430541,
+      "elevation": null,
+      "capacity": 25450,
+      "constructionYear": null,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2572,
+    "school": "Southern Miss",
+    "mascot": "Golden Eagles",
+    "abbreviation": "USM",
+    "alternateNames": [
+      "Southern Mississippi",
+      "USM",
+      "Southern Miss"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#FFAA3C",
+    "alternateColor": "#ffc423",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2572.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2572.png"
+    ],
+    "twitter": "@SouthernMissFB",
+    "location": {
+      "id": 3815,
+      "name": "M. M. Roberts Stadium",
+      "city": "Hattiesburg",
+      "state": "MS",
+      "zip": "39402",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 31.3289321,
+      "longitude": -89.3318118,
+      "elevation": "64.52726746",
+      "capacity": 36000,
+      "constructionYear": 1932,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 326,
+    "school": "Texas State",
+    "mascot": "Bobcats",
+    "abbreviation": "TXST",
+    "alternateNames": [
+      "TXST",
+      "Texas St"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#4e1719",
+    "alternateColor": "#b4975a",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/326.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/326.png"
+    ],
+    "twitter": "@TXStateFootball",
+    "location": {
+      "id": 3644,
+      "name": "Bobcat Stadium (TX)",
+      "city": "San Marcos",
+      "state": "TX",
+      "zip": "78666",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 29.8910008,
+      "longitude": -97.9255735,
+      "elevation": "177.8676453",
+      "capacity": 30000,
+      "constructionYear": 1981,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2653,
+    "school": "Troy",
+    "mascot": "Trojans",
+    "abbreviation": "TROY",
+    "alternateNames": [
+      "TROY",
+      "Troy"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#AE0210",
+    "alternateColor": "#88898c",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2653.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2653.png"
+    ],
+    "twitter": "@TroyTrojansFB",
+    "location": {
+      "id": 3975,
+      "name": "Veterans Memorial Stadium (AL)",
+      "city": "Troy",
+      "state": "AL",
+      "zip": "36082",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 31.7995565,
+      "longitude": -85.9518328,
+      "elevation": "154.7746277",
+      "capacity": 30000,
+      "constructionYear": 1950,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2433,
+    "school": "UL Monroe",
+    "mascot": "Warhawks",
+    "abbreviation": "ULM",
+    "alternateNames": [
+      "La.-Monroe",
+      "ULM",
+      "UL Monroe"
+    ],
+    "conference": "Sun Belt",
+    "division": "West",
+    "classification": "fbs",
+    "color": "#231F20",
+    "alternateColor": "#b18445",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2433.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2433.png"
+    ],
+    "twitter": "@ULM_FB",
+    "location": {
+      "id": 3817,
+      "name": "Malone Stadium",
+      "city": "Monroe",
+      "state": "LA",
+      "zip": "71209",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 32.5308089,
+      "longitude": -92.0660602,
+      "elevation": "22.998209",
+      "capacity": 27617,
+      "constructionYear": 1978,
+      "grass": false,
+      "dome": false
+    }
+  }
+]

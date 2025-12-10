@@ -1,0 +1,439 @@
+[
+  {
+    "id": 48,
+    "school": "Delaware",
+    "mascot": "Blue Hens",
+    "abbreviation": "DEL",
+    "alternateNames": [
+      "DEL",
+      "Delaware"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#033594",
+    "alternateColor": "#e8ce31",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/48.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/48.png"
+    ],
+    "twitter": "@DelawareFB",
+    "location": {
+      "id": 3695,
+      "name": "Delaware Stadium",
+      "city": "Newark",
+      "state": "DE",
+      "zip": "19713",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 39.6617428,
+      "longitude": -75.7488224,
+      "elevation": "28.74350357",
+      "capacity": 22000,
+      "constructionYear": 1952,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2229,
+    "school": "Florida International",
+    "mascot": "Panthers",
+    "abbreviation": "FIU",
+    "alternateNames": [
+      "Florida Intl",
+      "FIU",
+      "FIU"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#001538",
+    "alternateColor": "#c5960c",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2229.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2229.png"
+    ],
+    "twitter": "@FIUFootball",
+    "location": {
+      "id": 2031,
+      "name": "Pitbull Stadium",
+      "city": "Miami",
+      "state": "FL",
+      "zip": null,
+      "countryCode": "US",
+      "timezone": null,
+      "latitude": null,
+      "longitude": null,
+      "elevation": null,
+      "capacity": null,
+      "constructionYear": null,
+      "grass": null,
+      "dome": false
+    }
+  },
+  {
+    "id": 55,
+    "school": "Jacksonville State",
+    "mascot": "Gamecocks",
+    "abbreviation": "JXST",
+    "alternateNames": [
+      "JXST",
+      "Jax State"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#b50500",
+    "alternateColor": "#b5b7ba",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/55.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/55.png"
+    ],
+    "twitter": "@JSUGamecocksFB",
+    "location": {
+      "id": 3662,
+      "name": "AmFirst Stadium",
+      "city": "Jacksonville",
+      "state": "AL",
+      "zip": "36265",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 33.8201052,
+      "longitude": -85.76647,
+      "elevation": "198.0679016",
+      "capacity": 24000,
+      "constructionYear": 1947,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 338,
+    "school": "Kennesaw State",
+    "mascot": "Owls",
+    "abbreviation": "KENN",
+    "alternateNames": [
+      "Kennesaw",
+      "KENN",
+      "Kennesaw St"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#fdbb30",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/338.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/338.png"
+    ],
+    "twitter": "@KennesawStFB",
+    "location": {
+      "id": 4899,
+      "name": "Fifth Third Stadium",
+      "city": "Kennesaw",
+      "state": "GA",
+      "zip": "48187",
+      "countryCode": "US",
+      "timezone": null,
+      "latitude": 34.0289318,
+      "longitude": -84.5676234,
+      "elevation": "296.9589844",
+      "capacity": 8318,
+      "constructionYear": 2010,
+      "grass": null,
+      "dome": false
+    }
+  },
+  {
+    "id": 2335,
+    "school": "Liberty",
+    "mascot": "Flames",
+    "abbreviation": "LIB",
+    "alternateNames": [
+      "LIB",
+      "Liberty"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#071740",
+    "alternateColor": "#a61f21",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2335.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2335.png"
+    ],
+    "twitter": "@LibertyFootball",
+    "location": {
+      "id": 3992,
+      "name": "Williams Stadium (VA)",
+      "city": "Lynchburg",
+      "state": "VA",
+      "zip": "24502",
+      "countryCode": "US",
+      "timezone": "America/New_York",
+      "latitude": 37.3544305,
+      "longitude": -79.1750239,
+      "elevation": "272.9237061",
+      "capacity": 25000,
+      "constructionYear": 1989,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2348,
+    "school": "Louisiana Tech",
+    "mascot": "Bulldogs",
+    "abbreviation": "LT",
+    "alternateNames": [
+      "LT",
+      "Louisiana Tech"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#002d65",
+    "alternateColor": "#d3313a",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2348.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2348.png"
+    ],
+    "twitter": "@LATechFB",
+    "location": {
+      "id": 3776,
+      "name": "Joe Aillet Stadium",
+      "city": "Ruston",
+      "state": "LA",
+      "zip": "71272",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 32.5321487,
+      "longitude": -92.6560019,
+      "elevation": "72.87982941",
+      "capacity": 28019,
+      "constructionYear": 1968,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2393,
+    "school": "Middle Tennessee",
+    "mascot": "Blue Raiders",
+    "abbreviation": "MTSU",
+    "alternateNames": [
+      "Middle Tennessee State",
+      "MTSU",
+      "MTSU"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#006db6",
+    "alternateColor": "#ffffff",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2393.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2393.png"
+    ],
+    "twitter": "@MT_FB",
+    "location": {
+      "id": 3725,
+      "name": "Johnny \"Red\" Floyd Stadium",
+      "city": "Murfreesboro",
+      "state": "TN",
+      "zip": "37132",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 35.8511463,
+      "longitude": -86.3681649,
+      "elevation": "191.7279816",
+      "capacity": 30788,
+      "constructionYear": 1933,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2623,
+    "school": "Missouri State",
+    "mascot": "Bears",
+    "abbreviation": "MOST",
+    "alternateNames": [
+      "MOST",
+      "Missouri St"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#5F0000",
+    "alternateColor": "#e8e8e8",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2623.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2623.png"
+    ],
+    "twitter": "@MOStateFootball",
+    "location": {
+      "id": 3878,
+      "name": "Plaster Sports Complex",
+      "city": "Springfield",
+      "state": "MO",
+      "zip": "65897",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 37.1976229,
+      "longitude": -93.2798119,
+      "elevation": "402.368103",
+      "capacity": 17337,
+      "constructionYear": 1941,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 166,
+    "school": "New Mexico State",
+    "mascot": "Aggies",
+    "abbreviation": "NMSU",
+    "alternateNames": [
+      "NMSU",
+      "New Mexico St"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#891216",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/166.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/166.png"
+    ],
+    "twitter": "@NMStateFootball",
+    "location": {
+      "id": 3601,
+      "name": "Aggie Memorial Stadium",
+      "city": "Las Cruces",
+      "state": "NM",
+      "zip": "88003",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 32.2796202,
+      "longitude": -106.7411148,
+      "elevation": "1208.201294",
+      "capacity": 28853,
+      "constructionYear": 1978,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2534,
+    "school": "Sam Houston",
+    "mascot": "Bearkats",
+    "abbreviation": "SHSU",
+    "alternateNames": [
+      "Sam Houston State",
+      "SHSU",
+      "Sam Houston"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#fe5000",
+    "alternateColor": "#000000",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2534.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2534.png"
+    ],
+    "twitter": "@BearkatsFB",
+    "location": {
+      "id": 3647,
+      "name": "Elliott T. Bowers Stadium",
+      "city": "Huntsville",
+      "state": "TX",
+      "zip": "77340",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 30.713926,
+      "longitude": -95.5419802,
+      "elevation": "127.6225204",
+      "capacity": 14000,
+      "constructionYear": 1986,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 2638,
+    "school": "UTEP",
+    "mascot": "Miners",
+    "abbreviation": "UTEP",
+    "alternateNames": [
+      "Texas-El Paso",
+      "UTEP",
+      "UTEP"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#ff8200",
+    "alternateColor": "#041e42",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/2638.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/2638.png"
+    ],
+    "twitter": "@UTEPFB",
+    "location": {
+      "id": 3946,
+      "name": "Sun Bowl",
+      "city": "El Paso",
+      "state": "TX",
+      "zip": "79968",
+      "countryCode": "US",
+      "timezone": "America/Denver",
+      "latitude": 31.7733353,
+      "longitude": -106.507957,
+      "elevation": "1183.697876",
+      "capacity": 51500,
+      "constructionYear": 1963,
+      "grass": false,
+      "dome": false
+    }
+  },
+  {
+    "id": 98,
+    "school": "Western Kentucky",
+    "mascot": "Hilltoppers",
+    "abbreviation": "WKU",
+    "alternateNames": [
+      "WKU",
+      "Western KY"
+    ],
+    "conference": "Conference USA",
+    "division": null,
+    "classification": "fbs",
+    "color": "#F32026",
+    "alternateColor": "#b3b5b8",
+    "logos": [
+      "http://a.espncdn.com/i/teamlogos/ncaa/500/98.png",
+      "http://a.espncdn.com/i/teamlogos/ncaa/500-dark/98.png"
+    ],
+    "twitter": "@WKUFootball",
+    "location": {
+      "id": 3796,
+      "name": "Houchens Industries-L.T. Smith Stadium",
+      "city": "Bowling Green",
+      "state": "KY",
+      "zip": "42101",
+      "countryCode": "US",
+      "timezone": "America/Chicago",
+      "latitude": 36.9847901,
+      "longitude": -86.4594041,
+      "elevation": "154.4346619",
+      "capacity": 22113,
+      "constructionYear": 1968,
+      "grass": false,
+      "dome": false
+    }
+  }
+]
