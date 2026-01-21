@@ -44,13 +44,11 @@ const fetchGamesFromCfbd = async (
       year: season,
       week,
       conference: conferenceMeta.cfbdId,
+      seasonType: CFBD_SEASON_TYPE.REGULAR,
     });
 
     const conferenceGamesOnly = cfbdGames.filter(
-      (game) =>
-        game.conferenceGame === true &&
-        (game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.REGULAR ||
-          game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.BOTH)
+      (game) => game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
     );
 
     const cfbdTeams = await cfbdClient.getTeams({
@@ -115,11 +113,12 @@ const fetchGamesFromCfbd = async (
         );
 
         const { standings } = hasDivisions
-          ? calculateDivisionalStandings(completedConferenceGames, teamLeanArray, config)
-          : calculateStandings(
+          ? await calculateDivisionalStandings(completedConferenceGames, teamLeanArray, config)
+          : await calculateStandings(
               completedConferenceGames,
               teams.map((team) => team._id),
-              config
+              config,
+              teamLeanArray
             );
 
         for (const standing of standings) {
@@ -173,6 +172,11 @@ const fetchGamesFromCfbd = async (
       }
     );
   } catch (error) {
+    const { logError } = await import('@/lib/errorLogger');
+    await logError(error, {
+      endpoint: '/api/games/[sport]/[conf]',
+      action: 'fetch-games',
+    });
     return NextResponse.json<ApiErrorResponse>(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
@@ -231,6 +235,11 @@ export const GET = async (
 
     return await fetchGamesFromCfbd(sport, conf, seasonYear, week ? parseInt(week, 10) : undefined);
   } catch (error) {
+    const { logError } = await import('@/lib/errorLogger');
+    await logError(error, {
+      endpoint: '/api/games/[sport]/[conf]',
+      action: 'get-games',
+    });
     return NextResponse.json<ApiErrorResponse>(
       {
         error: error instanceof Error ? error.message : 'Internal server error',

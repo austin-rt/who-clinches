@@ -89,13 +89,13 @@ export const GET = async (
     const cfbdGames = await cfbdClient.getGames({
       year: seasonYear,
       conference: conferenceMeta.cfbdId,
+      seasonType: CFBD_SEASON_TYPE.REGULAR,
     });
 
     const completedConferenceGames = cfbdGames.filter(
       (game) =>
         game.conferenceGame === true &&
-        (game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.REGULAR ||
-          game.seasonType?.toLowerCase() === CFBD_SEASON_TYPE.BOTH) &&
+        !game.notes?.toLowerCase().includes('championship') &&
         game.completed &&
         game.homePoints !== null &&
         game.homePoints !== undefined &&
@@ -148,16 +148,37 @@ export const GET = async (
       (team) => team.division !== null && team.division !== undefined
     );
 
+    // Fetch rankings, advanced stats, SP+ ratings, and FPI (for SOR) for the season
+    const [rankingsResponse, advancedStatsResponse, spRatingsResponse, fpiRatingsResponse] =
+      await Promise.all([
+        cfbdClient.getRankings({ year: seasonYear }),
+        cfbdClient.getAdvancedSeasonStats({ year: seasonYear }),
+        cfbdClient.getSp({ year: seasonYear }),
+        cfbdClient.getFpi({ year: seasonYear }),
+      ]);
+
+    // Attach rankings and stats to teams
+    const { attachCfpRankingsToTeams } = await import('@/lib/cfb/helpers/attach-rankings');
+    const { attachAdvancedStatsToTeams } = await import('@/lib/cfb/helpers/attach-advanced-stats');
+    const { attachSpPlusToTeams } = await import('@/lib/cfb/helpers/attach-sp-plus');
+    const { attachSorToTeams } = await import('@/lib/cfb/helpers/attach-sor');
+
+    let teamsWithData = attachCfpRankingsToTeams(teamLeanArray, rankingsResponse);
+    teamsWithData = attachAdvancedStatsToTeams(teamsWithData, advancedStatsResponse);
+    teamsWithData = attachSpPlusToTeams(teamsWithData, spRatingsResponse);
+    teamsWithData = attachSorToTeams(teamsWithData, fpiRatingsResponse);
+
     const { standings } = hasDivisions
-      ? calculateDivisionalStandings(gamesForCalculation, teamLeanArray, config)
-      : calculateStandings(
+      ? await calculateDivisionalStandings(gamesForCalculation, teamsWithData, config)
+      : await calculateStandings(
           gamesForCalculation,
-          teams.map((team) => team._id),
-          config
+          teamsWithData.map((team) => team._id),
+          config,
+          teamsWithData
         );
 
     const teamMetadata: Record<string, TeamMetadata> = {};
-    for (const team of teams) {
+    for (const team of teamsWithData) {
       const standing = standings.find((s) => s.teamId === team._id);
 
       teamMetadata[team._id] = {
@@ -191,6 +212,11 @@ export const GET = async (
       }
     );
   } catch (error) {
+    const { logError } = await import('@/lib/errorLogger');
+    await logError(error, {
+      endpoint: '/api/standings/[sport]/[conf]',
+      action: 'get-standings',
+    });
     return NextResponse.json<ApiErrorResponse>(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
