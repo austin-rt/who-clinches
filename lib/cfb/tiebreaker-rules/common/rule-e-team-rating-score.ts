@@ -1,23 +1,25 @@
-import { GameLean } from '../../../types';
+import { GameLean, TeamLean } from '../../../types';
 import { calculateTeamRatingScore } from './team-rating-score';
 import { EPSILON_CONSTANT } from './core-helpers';
 
 export const applyRuleETeamRatingScore = (
   tiedTeams: string[],
   games: GameLean[],
-  allTeams?: string[]
+  allTeams?: string[],
+  teams?: TeamLean[],
+  useCfpFirst?: boolean
 ): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
   }
 
-  if (!allTeams) {
-    return { winners: tiedTeams, detail: 'All teams required for Team Rating Score' };
+  if (!teams) {
+    return { winners: tiedTeams, detail: 'Teams data required for Team Rating Score' };
   }
 
   const ratings = tiedTeams.map((teamId) => ({
     teamId,
-    rating: calculateTeamRatingScore(teamId, games, allTeams, tiedTeams),
+    rating: calculateTeamRatingScore(teamId, teams, tiedTeams, useCfpFirst ?? false),
   }));
 
   const maxRating = Math.max(...ratings.map((r) => r.rating));
@@ -29,4 +31,3 @@ export const applyRuleETeamRatingScore = (
 
   return { winners, detail };
 };
-
