@@ -5,11 +5,29 @@ import {
   getCalendarFromCfbd,
   getScoreboardFromCfbd,
   getRecordsFromCfbd,
+  getTeamStatsFromCfbd,
+  getRankingsFromCfbd,
+  getAdvancedSeasonStatsFromCfbd,
+  getSpFromCfbd,
+  getConferenceSpFromCfbd,
+  getFpiFromCfbd,
   getUserInfoFromCfbd,
 } from './cfbd-rest-client';
 import { cfbdGraphQLClient } from './cfbd-graphql-client';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
-import type { Game, BettingGame, Team, UserInfo } from 'cfbd';
+import { logError } from '../errorLogger';
+import type {
+  Game,
+  BettingGame,
+  Team,
+  UserInfo,
+  TeamStat,
+  PollWeek,
+  AdvancedSeasonStat,
+  TeamSP,
+  ConferenceSP,
+  TeamFPI,
+} from 'cfbd';
 
 const allowGraphQL = (): boolean => {
   return typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
@@ -76,7 +94,15 @@ export class CFBDClient {
           overUnder: node.overUnder,
           favoriteId: node.favoriteId,
         }));
-      } catch {
+      } catch (error) {
+        await logError(
+          error,
+          {
+            action: 'get-games-graphql-fallback',
+            params,
+          },
+          false
+        );
         const games = await getGamesFromCfbd(params);
         return this.enrichGamesWithLines(games, params);
       }
@@ -131,7 +157,15 @@ export class CFBDClient {
         }
         return game;
       });
-    } catch {
+    } catch (error) {
+      await logError(
+        error,
+        {
+          action: 'enrich-games-with-lines',
+          params,
+        },
+        false
+      );
       return games;
     }
   }
@@ -160,7 +194,15 @@ export class CFBDClient {
           twitter: null,
           location: null,
         }));
-      } catch {
+      } catch (error) {
+        await logError(
+          error,
+          {
+            action: 'get-teams-graphql-fallback',
+            params,
+          },
+          false
+        );
         return getTeamsFromCfbd(params);
       }
     }
@@ -183,8 +225,109 @@ export class CFBDClient {
     return getRecordsFromCfbd(params);
   }
 
+  /**
+   * Get team stats for all teams or filtered by conference/team.
+   *
+   * @param params.year - Required: Season year
+   * @param params.conference - Optional: Filter by conference (e.g., 'SEC', 'B1G')
+   * @param params.team - Optional: Filter by specific team
+   * @param params.startWeek - Optional: Start week filter
+   * @param params.endWeek - Optional: End week filter
+   *
+   * @example
+   * // Get stats for ALL teams in one call
+   * const allStats = await cfbdClient.getTeamStats({ year: 2025 });
+   *
+   * @example
+   * // Get stats for one conference
+   * const secStats = await cfbdClient.getTeamStats({ year: 2025, conference: 'SEC' });
+   */
+  getTeamStats(params: {
+    year: number;
+    conference?: string;
+    team?: string;
+    startWeek?: number;
+    endWeek?: number;
+  }): Promise<TeamStat[]> {
+    return getTeamStatsFromCfbd(params);
+  }
+
   getRemainingCalls(forceRefresh = false): Promise<UserInfo | null> {
     return getUserInfoFromCfbd(forceRefresh);
+  }
+
+  /**
+   * Get CFP rankings for a season.
+   *
+   * @param params.year - Required: Season year
+   * @param params.week - Optional: Week number (null/undefined for latest)
+   * @param params.seasonType - Optional: Season type filter
+   *
+   * @example
+   * const rankings = await cfbdClient.getRankings({ year: 2025 });
+   */
+  getRankings(params: { year: number; week?: number; seasonType?: string }): Promise<PollWeek[]> {
+    return getRankingsFromCfbd(params);
+  }
+
+  /**
+   * Get advanced season statistics for all teams or filtered by conference.
+   *
+   * @param params.year - Required: Season year
+   * @param params.conference - Optional: Filter by conference
+   *
+   * @example
+   * // Get stats for ALL teams in one call
+   * const allStats = await cfbdClient.getAdvancedSeasonStats({ year: 2025 });
+   *
+   * @example
+   * // Get stats for one conference
+   * const secStats = await cfbdClient.getAdvancedSeasonStats({ year: 2025, conference: 'SEC' });
+   */
+  getAdvancedSeasonStats(params: {
+    year: number;
+    conference?: string;
+  }): Promise<AdvancedSeasonStat[]> {
+    return getAdvancedSeasonStatsFromCfbd(params);
+  }
+
+  /**
+   * Get SP+ ratings for teams.
+   *
+   * @param params.year - Required: Season year
+   * @param params.team - Optional: Filter by specific team
+   *
+   * @example
+   * const spRatings = await cfbdClient.getSp({ year: 2025 });
+   */
+  getSp(params: { year: number; team?: string }): Promise<TeamSP[]> {
+    return getSpFromCfbd(params);
+  }
+
+  /**
+   * Get SP+ ratings by conference.
+   *
+   * @param params.year - Required: Season year
+   * @param params.conference - Optional: Filter by conference
+   *
+   * @example
+   * const confSp = await cfbdClient.getConferenceSp({ year: 2025, conference: 'SEC' });
+   */
+  getConferenceSp(params: { year: number; conference?: string }): Promise<ConferenceSP[]> {
+    return getConferenceSpFromCfbd(params);
+  }
+
+  /**
+   * Get FPI ratings (includes ESPN's SOR in resumeRanks.strengthOfRecord).
+   *
+   * @param params.year - Required: Season year
+   * @param params.team - Optional: Filter by specific team
+   *
+   * @example
+   * const fpiRatings = await cfbdClient.getFpi({ year: 2025 });
+   */
+  getFpi(params: { year: number; team?: string }): Promise<TeamFPI[]> {
+    return getFpiFromCfbd(params);
   }
 }
 

@@ -1,5 +1,6 @@
 import { fetchWithTimeout } from '../fetch-with-timeout';
 import { createClient, Client } from 'graphql-ws';
+import { logError } from '../errorLogger';
 
 const REQUEST_TIMEOUT_MS = 60000;
 const GRAPHQL_ENDPOINT = 'https://graphqldocs.collegefootballdata.com/v1/graphql';
@@ -8,7 +9,11 @@ const GRAPHQL_WS_ENDPOINT = 'wss://graphql.collegefootballdata.com/v1/graphql';
 const getAuthHeaders = () => {
   const apiKey = process.env.CFBD_API_KEY;
   if (!apiKey) {
-    throw new Error('CFBD_API_KEY environment variable is required');
+    const error = new Error('CFBD_API_KEY environment variable is required');
+    void logError(error, {
+      action: 'get-auth-headers',
+    });
+    throw error;
   }
   return {
     Authorization: `Bearer ${apiKey}`,
@@ -90,7 +95,11 @@ export class CFBDGraphQLClient {
     if (!this.wsClient) {
       const apiKey = process.env.CFBD_API_KEY;
       if (!apiKey) {
-        throw new Error('CFBD_API_KEY environment variable is required');
+        const error = new Error('CFBD_API_KEY environment variable is required');
+        void logError(error, {
+          action: 'get-ws-client',
+        });
+        throw error;
       }
 
       this.wsClient = createClient({
@@ -121,21 +130,43 @@ export class CFBDGraphQLClient {
 
     if (!response.ok) {
       if (response.status === 404) {
-        throw new Error(
+        const error = new Error(
           `CFBD GraphQL API not available (404). This may indicate you need to upgrade your API tier or the season has ended. Use REST API instead.`
         );
+        await logError(error, {
+          action: 'graphql-query',
+          status: response.status,
+        });
+        throw error;
       }
-      throw new Error(`CFBD GraphQL API error: ${response.status} ${response.statusText}`);
+      const error = new Error(`CFBD GraphQL API error: ${response.status} ${response.statusText}`);
+      await logError(error, {
+        action: 'graphql-query',
+        status: response.status,
+        statusText: response.statusText,
+      });
+      throw error;
     }
 
     const result: GraphQLResponse<T> = await response.json();
 
     if (result.errors && result.errors.length > 0) {
-      throw new Error(`CFBD GraphQL errors: ${result.errors.map((e) => e.message).join(', ')}`);
+      const error = new Error(
+        `CFBD GraphQL errors: ${result.errors.map((e) => e.message).join(', ')}`
+      );
+      await logError(error, {
+        action: 'graphql-query',
+        errors: result.errors,
+      });
+      throw error;
     }
 
     if (!result.data) {
-      throw new Error('CFBD GraphQL response missing data');
+      const error = new Error('CFBD GraphQL response missing data');
+      await logError(error, {
+        action: 'graphql-query',
+      });
+      throw error;
     }
 
     return result.data;
@@ -280,8 +311,7 @@ export class CFBDGraphQLClient {
             params.onError(error);
           }
         },
-        complete: () => {
-        },
+        complete: () => {},
       }
     );
 
