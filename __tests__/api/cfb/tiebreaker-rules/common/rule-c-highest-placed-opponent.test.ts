@@ -43,7 +43,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -74,7 +74,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -120,7 +120,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -161,7 +161,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -209,7 +209,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -245,7 +245,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E'];
-      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams, []);
 
       expect(result.winners).toContain('A');
       expect(result.winners).toContain('B');
@@ -282,7 +282,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E'];
-      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['A']);
       expect(result.winners).not.toContain('B');
@@ -328,7 +328,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['A', 'B', 'C'], games, allTeams, []);
 
       expect(result.winners).toEqual(['A']);
       expect(result.winners).not.toContain('B');
@@ -392,7 +392,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -434,7 +434,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');
@@ -476,7 +476,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams, []);
 
       expect(result.winners).toContain('B');
       expect(result.winners).toContain('C');
@@ -537,7 +537,7 @@ describe('Common Tiebreaker Rules - Rule C: Highest Placed Common Opponent', () 
       ];
 
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
-      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams);
+      const result = applyRuleCHighestPlacedOpponent(['B', 'C', 'D'], games, allTeams, []);
 
       expect(result.winners).toEqual(['B']);
       expect(result.winners).not.toContain('C');

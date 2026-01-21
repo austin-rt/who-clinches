@@ -1,10 +1,11 @@
 import { breakTie } from '@/lib/cfb/tiebreaker-rules/core/breakTie';
 import { CFB_SEC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sec/config';
 import { createGameLean } from './test-helpers';
+import type { TieStep } from '@/lib/api-types';
 
 describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', () => {
   describe('Recursion at Rule A Level', () => {
-    it('Three-team tie: Rule A eliminates one team, remaining two recurse through full cascade', () => {
+    it('Three-team tie: Rule A eliminates one team, remaining two recurse through full cascade', async () => {
       // Scenario: A, B, C tied
       // Rule A: A loses to both B and C → A eliminated, B and C advance
       // Recursion: B and C need to be ranked (they don't play each other, so cascade through B→C→D→E)
@@ -73,12 +74,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should be eliminated first (Rule A)
@@ -90,7 +93,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps[0].survivors).toEqual(['B', 'C']); // A eliminated
     });
 
-    it('Four-team tie: Rule A eliminates two teams, remaining two recurse', () => {
+    it('Four-team tie: Rule A eliminates two teams, remaining two recurse', async () => {
       // Scenario: A, B, C, D tied
       // Rule A: A and B lose to both C and D → A and B eliminated, C and D advance
       // Recursion: A and B need to be ranked
@@ -127,12 +130,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C', 'D'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // C and D should advance (Rule A) - they're still tied, so they continue through rules
@@ -147,7 +152,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Recursion at Rule B Level', () => {
-    it('Three-team tie: Rule A fails, Rule B eliminates one team, remaining two recurse', () => {
+    it('Three-team tie: Rule A fails, Rule B eliminates one team, remaining two recurse', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head games → fails
       // Rule B: A 2-0 vs common, B 1-1, C 0-2 → A advances, B and C eliminated
@@ -198,12 +203,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule B)
@@ -216,7 +223,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps.length).toBeGreaterThan(1); // Should have multiple steps (recursion)
       // Find Rule B step that breaks the tie
       const ruleBStep = result.steps.find(
-        (step) => step.rule === 'Common Opponents' && step.tieBroken
+        (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
       );
       expect(ruleBStep).toBeDefined();
       expect(ruleBStep?.survivors).toContain('A'); // A advances
@@ -224,7 +231,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Recursion at Rule C Level', () => {
-    it('Three-team tie: Rules A and B fail, Rule C eliminates one team, remaining two recurse', () => {
+    it('Three-team tie: Rules A and B fail, Rule C eliminates one team, remaining two recurse', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head → fails
       // Rule B: All play D and E, but all have same record (1-1) → fails
@@ -294,12 +301,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule C)
@@ -312,13 +321,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps.length).toBeGreaterThan(2); // Should have multiple steps (cascading through A→B→C)
       // Find which rule broke the tie (could be B, C, D, or E depending on test setup)
       const ruleCStep = result.steps.find(
-        (step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
+        (step: TieStep) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
       );
       const ruleBStep = result.steps.find(
-        (step) => step.rule === 'Common Opponents' && step.tieBroken
+        (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
       );
       const ruleDStep = result.steps.find(
-        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+        (step: TieStep) => step.rule === 'Opponent Win Percentage' && step.tieBroken
       );
       const ruleEStep = result.steps.find(
         (step) => step.rule === 'Scoring Margin' && step.tieBroken
@@ -331,7 +340,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Recursion at Rule D Level', () => {
-    it('Three-team tie: Rules A, B, C fail, Rule D eliminates one team, remaining two recurse', () => {
+    it('Three-team tie: Rules A, B, C fail, Rule D eliminates one team, remaining two recurse', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head → fails
       // Rule B: No common opponents → fails
@@ -415,12 +424,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule D)
@@ -433,7 +444,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps.length).toBeGreaterThan(3); // Should have multiple steps (cascading through A→B→C→D)
       // Find Rule D step that breaks the tie
       const ruleDStep = result.steps.find(
-        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+        (step: TieStep) => step.rule === 'Opponent Win Percentage' && step.tieBroken
       );
       expect(ruleDStep).toBeDefined();
       expect(ruleDStep?.survivors).toContain('A'); // A advances
@@ -441,7 +452,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Recursion at Rule E Level (SEC-specific)', () => {
-    it('Three-team tie: Rules A-D fail, Rule E eliminates one team, remaining two recurse', () => {
+    it('Three-team tie: Rules A-D fail, Rule E eliminates one team, remaining two recurse', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head → fails
       // Rule B: No common opponents → fails
@@ -620,12 +631,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule E)
@@ -651,7 +664,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Cascading Through Multiple Rules', () => {
-    it('Three-team tie: Rule A fails, Rule B fails, Rule C breaks the tie', () => {
+    it('Three-team tie: Rule A fails, Rule B fails, Rule C breaks the tie', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head → fails
       // Rule B: All play D and E, but all have same record (1-1) → fails
@@ -707,12 +720,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule C)
@@ -725,13 +740,13 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps[1].tieBroken).toBe(false);
       // Find the Rule C step that breaks the tie (may be at different index due to recursion)
       const ruleCStep = result.steps.find(
-        (step) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
+        (step: TieStep) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
       );
       // If Rule C doesn't break, check if Rule B or another rule did
       if (!ruleCStep) {
         // Rule B might have broken it if records differ
         const ruleBStep = result.steps.find(
-          (step) => step.rule === 'Common Opponents' && step.tieBroken
+          (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
         );
         if (ruleBStep) {
           expect(ruleBStep.survivors).toContain('A');
@@ -748,7 +763,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
   });
 
   describe('Early Exit Paths', () => {
-    it('Rule A breaks tie with single winner (early exit)', () => {
+    it('Rule A breaks tie with single winner (early exit)', async () => {
       // Scenario: A, B, C tied
       // Rule A: A beats both B and C → A advances, early exit
       const games = [
@@ -773,12 +788,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule A, early exit)
@@ -790,7 +807,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps[0].survivors).toEqual(['A']); // Single winner, early exit
     });
 
-    it('Rule D breaks tie with single winner (early exit)', () => {
+    it('Rule D breaks tie with single winner (early exit)', async () => {
       // Scenario: A, B, C tied
       // Rule A: No head-to-head → fails
       // Rule B: No common opponents → fails
@@ -873,12 +890,14 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       const allTeams = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
       const explanations = new Map<string, string[]>();
 
-      const result = breakTie(
+      const result = await breakTie(
         ['A', 'B', 'C'],
         games,
         allTeams,
         CFB_SEC_TIEBREAKER_CONFIG,
-        explanations
+        explanations,
+        false,
+        []
       );
 
       // A should advance (Rule D, early exit)
@@ -891,7 +910,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.ranked.indexOf('B')).toBeLessThan(result.ranked.indexOf('C'));
       // Find the Rule D step that breaks the tie
       const ruleDStep = result.steps.find(
-        (step) => step.rule === 'Opponent Win Percentage' && step.tieBroken
+        (step: TieStep) => step.rule === 'Opponent Win Percentage' && step.tieBroken
       );
       expect(ruleDStep).toBeDefined();
       expect(ruleDStep?.survivors).toEqual(['A']); // Single winner, early exit
