@@ -1,4 +1,5 @@
-import type { Conference } from 'cfbd';
+import type { Conference, SeasonType } from 'cfbd';
+import type { GameTypeMap } from './types';
 import { CFBConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 import { CFB_SEC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sec/config';
 import { CFB_MAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mac/config';
@@ -11,9 +12,20 @@ import { CFB_MWC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mwc/config
 import { CFB_AAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/aac/config';
 import { CFB_SUNBELT_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sunbelt/config';
 
+// Map CFBD SeasonType to GameType with display names and abbreviations
+export const GAME_TYPE: GameTypeMap = {
+  regular: { name: 'Regular Season', abbreviation: 'reg' },
+  postseason: { name: 'Postseason', abbreviation: 'post' },
+  both: { name: 'Regular Season', abbreviation: 'reg' },
+  allstar: { name: 'All-Star', abbreviation: 'allstar' },
+  spring_regular: { name: 'Spring Regular', abbreviation: 'spring_reg' },
+  spring_postseason: { name: 'Spring Postseason', abbreviation: 'spring_post' },
+} as const;
+
 export type SportSlug = 'cfb';
 
-export const CFBD_SEASON_TYPE = {
+// Re-export CFBD SeasonType values as constants for convenience
+export const CFBD_SEASON_TYPE: Record<Uppercase<SeasonType>, SeasonType> = {
   REGULAR: 'regular',
   POSTSEASON: 'postseason',
   BOTH: 'both',
@@ -32,6 +44,7 @@ export interface CFBConferenceMetadata {
   cfbdId: NonNullable<Conference['abbreviation']>;
   name: string;
   theme: string;
+  simulationDisclaimer?: string;
 }
 
 export const CFB_CONFERENCE_METADATA = {
@@ -44,46 +57,62 @@ export const CFB_CONFERENCE_METADATA = {
     cfbdId: 'ACC',
     name: 'ACC',
     theme: 'acc',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   b1g: {
     cfbdId: 'B1G',
     name: 'Big Ten',
     theme: 'b1g',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   big12: {
     cfbdId: 'B12',
     name: 'Big 12',
     theme: 'big12',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   pac: {
     cfbdId: 'PAC',
     name: 'Pac-12',
     theme: 'pac12',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   aac: {
     cfbdId: 'AAC',
     name: 'American Athletic',
     theme: 'aac',
+    simulationDisclaimer: 'there is a 3+ way tie with no head-to-head results',
   },
   mac: {
     cfbdId: 'MAC',
     name: 'MAC',
     theme: 'mac',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   cusa: {
     cfbdId: 'CUSA',
     name: 'Conference USA',
     theme: 'cusa',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
   mwc: {
     cfbdId: 'MWC',
     name: 'Mountain West',
     theme: 'mw',
+    simulationDisclaimer: 'there is a 3+ way tie with no head-to-head results',
   },
   sunbelt: {
     cfbdId: 'SBC',
     name: 'Sun Belt',
     theme: 'sunbelt',
+    simulationDisclaimer:
+      'there is a tie that cannot be broken by head-to-head or common opponents',
   },
 } as const satisfies Record<string, CFBConferenceMetadata>;
 
