@@ -1,17 +1,18 @@
-import { GameLean } from '../../../types';
+import { GameLean, TeamLean } from '../../../types';
 import { TieStep } from '../../../api-types';
 import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord, getTeamAbbrev } from '../common/core-helpers';
 import { getTeamAvgPointsFor, getTeamAvgPointsAgainst } from '../sec/rule-e-sec-scoring-margin';
 
-export const breakTie = (
+export const breakTie = async (
   tiedTeams: string[],
   games: GameLean[],
   allTeams: string[],
   config: CFBConferenceTiebreakerConfig,
   explanations: Map<string, string[]>,
-  isRecursive = false
-): { ranked: string[]; steps: TieStep[] } => {
+  isRecursive: boolean,
+  teams: TeamLean[]
+): Promise<{ ranked: string[]; steps: TieStep[] }> => {
   if (tiedTeams.length <= 1) {
     return { ranked: tiedTeams, steps: [] };
   }
@@ -33,18 +34,18 @@ export const breakTie = (
       break;
     }
 
-    const ruleA = config.rules[0].apply(remaining, games, allTeams);
-    const ruleATieBroken = ruleA.winners.length < remaining.length;
+    const ruleAResult = await config.rules[0].apply(remaining, games);
+    const ruleATieBroken = ruleAResult.winners.length < remaining.length;
     steps.push({
       rule: config.rules[0].name,
-      detail: ruleA.detail,
-      survivors: ruleA.winners,
+      detail: ruleAResult.detail,
+      survivors: ruleAResult.winners,
       tieBroken: ruleATieBroken,
       label: ruleATieBroken ? 'Advances' : 'Remaining',
     });
 
-    if (ruleA.winners.length < remaining.length) {
-      const eliminated = remaining.filter((t) => !ruleA.winners.includes(t));
+    if (ruleAResult.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleAResult.winners.includes(t));
 
       if (!isRecursive) {
         const h2hGames = games.filter(
@@ -79,10 +80,18 @@ export const breakTie = (
         });
       }
 
-      if (ruleA.winners.length === 1) {
-        ranked.push(ruleA.winners[0]);
+      if (ruleAResult.winners.length === 1) {
+        ranked.push(ruleAResult.winners[0]);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -91,12 +100,28 @@ export const breakTie = (
         break;
       }
 
-      if (ruleA.winners.length > 1) {
-        const advancingResult = breakTie(ruleA.winners, games, allTeams, config, explanations, false);
+      if (ruleAResult.winners.length > 1) {
+        const advancingResult = await breakTie(
+          ruleAResult.winners,
+          games,
+          allTeams,
+          config,
+          explanations,
+          false,
+          teams
+        );
         ranked.push(...advancingResult.ranked);
         steps.push(...advancingResult.steps);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -106,7 +131,15 @@ export const breakTie = (
       }
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+        const eliminatedResult = await breakTie(
+          eliminated,
+          games,
+          allTeams,
+          config,
+          explanations,
+          true,
+          teams
+        );
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else if (eliminated.length === 1) {
@@ -115,30 +148,34 @@ export const breakTie = (
       break;
     }
 
-    const ruleB = config.rules[1].apply(remaining, games, allTeams);
-    const ruleBTieBroken = ruleB.winners.length < remaining.length;
+    const ruleBResult = config.rules[1].name.includes('Team Rating Score')
+      ? await config.rules[1].apply(
+          remaining,
+          games,
+          allTeams,
+          teams,
+          config.useCfpRankingsFirst ?? false
+        )
+      : await config.rules[1].apply(remaining, games);
+    const ruleBTieBroken = ruleBResult.winners.length < remaining.length;
     steps.push({
       rule: config.rules[1].name,
-      detail: ruleB.detail,
-      survivors: ruleB.winners,
+      detail: ruleBResult.detail,
+      survivors: ruleBResult.winners,
       tieBroken: ruleBTieBroken,
       label: ruleBTieBroken ? 'Advances' : 'Remaining',
     });
 
-    if (ruleB.winners.length < remaining.length) {
-      const eliminated = remaining.filter((t) => !ruleB.winners.includes(t));
+    if (ruleBResult.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleBResult.winners.includes(t));
 
       if (!isRecursive) {
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
             const opponentSets = remaining.map((t) => {
-              const teamGames = games.filter(
-                (g) => g.home.teamId === t || g.away.teamId === t
-              );
+              const teamGames = games.filter((g) => g.home.teamId === t || g.away.teamId === t);
               return new Set(
-                teamGames.map((g) =>
-                  g.home.teamId === t ? g.away.teamId : g.home.teamId
-                )
+                teamGames.map((g) => (g.home.teamId === t ? g.away.teamId : g.home.teamId))
               );
             });
             const commonOpponents = [...opponentSets[0]].filter((opp) =>
@@ -157,10 +194,18 @@ export const breakTie = (
         });
       }
 
-      if (ruleB.winners.length === 1) {
-        ranked.push(ruleB.winners[0]);
+      if (ruleBResult.winners.length === 1) {
+        ranked.push(ruleBResult.winners[0]);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -169,12 +214,28 @@ export const breakTie = (
         break;
       }
 
-      if (ruleB.winners.length > 1) {
-        const advancingResult = breakTie(ruleB.winners, games, allTeams, config, explanations, false);
+      if (ruleBResult.winners.length > 1) {
+        const advancingResult = await breakTie(
+          ruleBResult.winners,
+          games,
+          allTeams,
+          config,
+          explanations,
+          false,
+          teams
+        );
         ranked.push(...advancingResult.ranked);
         steps.push(...advancingResult.steps);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -184,7 +245,15 @@ export const breakTie = (
       }
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+        const eliminatedResult = await breakTie(
+          eliminated,
+          games,
+          allTeams,
+          config,
+          explanations,
+          true,
+          teams
+        );
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else if (eliminated.length === 1) {
@@ -193,33 +262,51 @@ export const breakTie = (
       break;
     }
 
-    const ruleC = config.rules[2].apply(remaining, games, allTeams);
-    const ruleCTieBroken = ruleC.winners.length < remaining.length;
+    const ruleCResult =
+      config.rules[2].name.includes('Highest Placed') ||
+      config.rules[2].name.includes('Team Rating Score')
+        ? await config.rules[2].apply(
+            remaining,
+            games,
+            allTeams,
+            teams,
+            config.useCfpRankingsFirst ?? false
+          )
+        : await config.rules[2].apply(remaining, games);
+    const ruleCTieBroken = ruleCResult.winners.length < remaining.length;
     steps.push({
       rule: config.rules[2].name,
-      detail: ruleC.detail,
-      survivors: ruleC.winners,
+      detail: ruleCResult.detail,
+      survivors: ruleCResult.winners,
       tieBroken: ruleCTieBroken,
       label: ruleCTieBroken ? 'Advances' : 'Remaining',
     });
 
-    if (ruleC.winners.length < remaining.length) {
-      const eliminated = remaining.filter((t) => !ruleC.winners.includes(t));
+    if (ruleCResult.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleCResult.winners.includes(t));
 
       if (!isRecursive) {
         eliminated.forEach((teamId) => {
           if (!explanations.has(teamId)) {
-            const oppMatch = ruleC.detail.match(/Record vs (\w+)/);
+            const oppMatch = ruleCResult.detail.match(/Record vs (\w+)/);
             const oppAbbrev = oppMatch ? oppMatch[1] : 'common opponent';
             explanations.set(teamId, [`Lost to highest-placed common opponent (${oppAbbrev})`]);
           }
         });
       }
 
-      if (ruleC.winners.length === 1) {
-        ranked.push(ruleC.winners[0]);
+      if (ruleCResult.winners.length === 1) {
+        ranked.push(ruleCResult.winners[0]);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -228,12 +315,28 @@ export const breakTie = (
         break;
       }
 
-      if (ruleC.winners.length > 1) {
-        const advancingResult = breakTie(ruleC.winners, games, allTeams, config, explanations, false);
+      if (ruleCResult.winners.length > 1) {
+        const advancingResult = await breakTie(
+          ruleCResult.winners,
+          games,
+          allTeams,
+          config,
+          explanations,
+          false,
+          teams
+        );
         ranked.push(...advancingResult.ranked);
         steps.push(...advancingResult.steps);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -243,7 +346,15 @@ export const breakTie = (
       }
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+        const eliminatedResult = await breakTie(
+          eliminated,
+          games,
+          allTeams,
+          config,
+          explanations,
+          true,
+          teams
+        );
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else if (eliminated.length === 1) {
@@ -252,18 +363,18 @@ export const breakTie = (
       break;
     }
 
-    const ruleD = config.rules[3].apply(remaining, games, allTeams);
-    const ruleDTieBroken = ruleD.winners.length < remaining.length;
+    const ruleDResult = await config.rules[3].apply(remaining, games);
+    const ruleDTieBroken = ruleDResult.winners.length < remaining.length;
     steps.push({
       rule: config.rules[3].name,
-      detail: ruleD.detail,
-      survivors: ruleD.winners,
+      detail: ruleDResult.detail,
+      survivors: ruleDResult.winners,
       tieBroken: ruleDTieBroken,
       label: ruleDTieBroken ? 'Advances' : 'Remaining',
     });
 
-    if (ruleD.winners.length < remaining.length) {
-      const eliminated = remaining.filter((t) => !ruleD.winners.includes(t));
+    if (ruleDResult.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleDResult.winners.includes(t));
 
       if (!isRecursive) {
         eliminated.forEach((teamId) => {
@@ -287,10 +398,18 @@ export const breakTie = (
         });
       }
 
-      if (ruleD.winners.length === 1) {
-        ranked.push(ruleD.winners[0]);
+      if (ruleDResult.winners.length === 1) {
+        ranked.push(ruleDResult.winners[0]);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -299,12 +418,28 @@ export const breakTie = (
         break;
       }
 
-      if (ruleD.winners.length > 1) {
-        const advancingResult = breakTie(ruleD.winners, games, allTeams, config, explanations, false);
+      if (ruleDResult.winners.length > 1) {
+        const advancingResult = await breakTie(
+          ruleDResult.winners,
+          games,
+          allTeams,
+          config,
+          explanations,
+          false,
+          teams
+        );
         ranked.push(...advancingResult.ranked);
         steps.push(...advancingResult.steps);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -314,7 +449,15 @@ export const breakTie = (
       }
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+        const eliminatedResult = await breakTie(
+          eliminated,
+          games,
+          allTeams,
+          config,
+          explanations,
+          true,
+          teams
+        );
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else if (eliminated.length === 1) {
@@ -323,18 +466,26 @@ export const breakTie = (
       break;
     }
 
-    const ruleE = config.rules[4].apply(remaining, games, allTeams);
-    const ruleETieBroken = ruleE.winners.length < remaining.length;
+    const ruleEResult = config.rules[4].name.includes('Team Rating Score')
+      ? await config.rules[4].apply(
+          remaining,
+          games,
+          allTeams,
+          teams,
+          config.useCfpRankingsFirst ?? false
+        )
+      : await config.rules[4].apply(remaining, games);
+    const ruleETieBroken = ruleEResult.winners.length < remaining.length;
     steps.push({
       rule: config.rules[4].name,
-      detail: ruleE.detail,
-      survivors: ruleE.winners,
+      detail: ruleEResult.detail,
+      survivors: ruleEResult.winners,
       tieBroken: ruleETieBroken,
       label: ruleETieBroken ? 'Advances' : 'Remaining',
     });
 
-    if (ruleE.winners.length < remaining.length) {
-      const eliminated = remaining.filter((t) => !ruleE.winners.includes(t));
+    if (ruleEResult.winners.length < remaining.length) {
+      const eliminated = remaining.filter((t) => !ruleEResult.winners.includes(t));
 
       if (!isRecursive) {
         for (const teamId of eliminated) {
@@ -366,7 +517,7 @@ export const breakTie = (
               const avgMargin = teamGames.length > 0 ? totalMargin / teamGames.length : 0;
               explanations.set(teamId, [`Lower scoring margin (${avgMargin.toFixed(1)})`]);
             } else if (config.rules[4].name.includes('Team Rating Score')) {
-              const ratingMatch = ruleE.detail.match(/Best Team Rating Score: ([\d.]+)/);
+              const ratingMatch = ruleEResult.detail.match(/Best Team Rating Score: ([\d.]+)/);
               const ratingValue = ratingMatch ? ratingMatch[1] : '0.0';
               explanations.set(teamId, [`Lower Team Rating Score (${ratingValue})`]);
             }
@@ -374,10 +525,18 @@ export const breakTie = (
         }
       }
 
-      if (ruleE.winners.length === 1) {
-        ranked.push(ruleE.winners[0]);
+      if (ruleEResult.winners.length === 1) {
+        ranked.push(ruleEResult.winners[0]);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -386,12 +545,28 @@ export const breakTie = (
         break;
       }
 
-      if (ruleE.winners.length > 1) {
-        const advancingResult = breakTie(ruleE.winners, games, allTeams, config, explanations, false);
+      if (ruleEResult.winners.length > 1) {
+        const advancingResult = await breakTie(
+          ruleEResult.winners,
+          games,
+          allTeams,
+          config,
+          explanations,
+          false,
+          teams
+        );
         ranked.push(...advancingResult.ranked);
         steps.push(...advancingResult.steps);
         if (eliminated.length > 1) {
-          const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+          const eliminatedResult = await breakTie(
+            eliminated,
+            games,
+            allTeams,
+            config,
+            explanations,
+            true,
+            teams
+          );
           ranked.push(...eliminatedResult.ranked);
           steps.push(...eliminatedResult.steps);
         } else if (eliminated.length === 1) {
@@ -401,7 +576,15 @@ export const breakTie = (
       }
 
       if (eliminated.length > 1) {
-        const eliminatedResult = breakTie(eliminated, games, allTeams, config, explanations, true);
+        const eliminatedResult = await breakTie(
+          eliminated,
+          games,
+          allTeams,
+          config,
+          explanations,
+          true,
+          teams
+        );
         ranked.push(...eliminatedResult.ranked);
         steps.push(...eliminatedResult.steps);
       } else if (eliminated.length === 1) {

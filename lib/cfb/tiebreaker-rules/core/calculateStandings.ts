@@ -1,14 +1,15 @@
-import { GameLean } from '../../../types';
+import { GameLean, TeamLean } from '../../../types';
 import { StandingEntry, TieLog } from '../../../api-types';
 import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord } from '../common/core-helpers';
 import { breakTie } from './breakTie';
 
-export const calculateStandings = (
+export const calculateStandings = async (
   games: GameLean[],
   allTeams: string[],
-  config: CFBConferenceTiebreakerConfig
-): { standings: StandingEntry[]; tieLogs: TieLog[] } => {
+  config: CFBConferenceTiebreakerConfig,
+  teams: TeamLean[]
+): Promise<{ standings: StandingEntry[]; tieLogs: TieLog[] }> => {
   const explanations = new Map<string, string[]>();
   const tieLogs: TieLog[] = [];
 
@@ -34,7 +35,15 @@ export const calculateStandings = (
     if (tiedTeams.length === 1) {
       orderedTeams.push(tiedTeams[0]);
     } else {
-      const tieResult = breakTie(tiedTeams, games, allTeams, config, explanations);
+      const tieResult = await breakTie(
+        tiedTeams,
+        games,
+        allTeams,
+        config,
+        explanations,
+        false,
+        teams
+      );
       orderedTeams.push(...tieResult.ranked);
 
       const tiedTeamAbbrevs = tieResult.ranked.map((teamId) => {

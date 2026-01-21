@@ -3,11 +3,11 @@ import { StandingEntry, TieLog } from '../../../api-types';
 import { CFBConferenceTiebreakerConfig } from './types';
 import { calculateStandings } from './calculateStandings';
 
-export const calculateDivisionalStandings = (
+export const calculateDivisionalStandings = async (
   games: GameLean[],
   teams: TeamLean[],
   config: CFBConferenceTiebreakerConfig
-): { standings: StandingEntry[]; tieLogs: TieLog[] } => {
+): Promise<{ standings: StandingEntry[]; tieLogs: TieLog[] }> => {
   const teamsByDivision = new Map<string, TeamLean[]>();
   const teamsWithoutDivision: TeamLean[] = [];
 
@@ -30,10 +30,11 @@ export const calculateDivisionalStandings = (
   for (const [division, divisionTeams] of teamsByDivision.entries()) {
     const divisionTeamIds = divisionTeams.map((t) => t._id);
 
-    const { standings: divisionStandings, tieLogs: divisionTieLogs } = calculateStandings(
+    const { standings: divisionStandings, tieLogs: divisionTieLogs } = await calculateStandings(
       games,
       divisionTeamIds,
-      config
+      config,
+      teams
     );
 
     const standingsWithDivision = divisionStandings.map((standing) => ({
@@ -47,10 +48,11 @@ export const calculateDivisionalStandings = (
 
   if (teamsWithoutDivision.length > 0) {
     const noDivisionTeamIds = teamsWithoutDivision.map((t) => t._id);
-    const { standings: noDivisionStandings, tieLogs: noDivisionTieLogs } = calculateStandings(
+    const { standings: noDivisionStandings, tieLogs: noDivisionTieLogs } = await calculateStandings(
       games,
       noDivisionTeamIds,
-      config
+      config,
+      teams
     );
 
     allStandings.push(...noDivisionStandings);
