@@ -8,6 +8,7 @@ import HideCompletedButton from '@/app/components/HideCompletedButton';
 import ResetButton from '@/app/components/ResetButton';
 import SimulateButton from '@/app/components/SimulateButton';
 import Standings from '@/app/components/Standings';
+import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
 import {
@@ -115,6 +116,8 @@ const ConferencePage = () => {
       <div className="flex w-full sm:hidden">
         <ViewModeButton />
       </div>
+
+      {simulateResponse && <SimulationDisclaimer />}
 
       <Standings ref={standingsRef} simulateResponse={simulateResponse} />
 
