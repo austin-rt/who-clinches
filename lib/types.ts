@@ -1,3 +1,5 @@
+import type { SeasonType } from 'cfbd';
+
 export type GameState = 'pre' | 'in' | 'post';
 
 export interface GameTeam {
@@ -30,6 +32,9 @@ export interface GameType {
   name: string;
   abbreviation: string;
 }
+
+// Type for the GAME_TYPE constant mapping
+export type GameTypeMap = Record<SeasonType, GameType>;
 
 export interface PredictedScore {
   home: number;
@@ -130,4 +135,22 @@ export interface TeamLean {
   division?: string | null;
   record: TeamRecord;
   conferenceStanding: string;
+  cfpRank?: number | null;
+  spPlusRating?: number | null;
+  sor?: number | null;
+  advancedStats?: {
+    offense: {
+      ppa: number;
+      successRate: number;
+      explosiveness?: number;
+      pointsPerOpportunity?: number;
+    };
+    defense: {
+      ppa: number;
+      successRate: number;
+      explosiveness?: number;
+      pointsPerOpportunity?: number;
+    };
+  };
+  turnoverMargin?: number | null;
 }

@@ -172,6 +172,11 @@ export const GET = async (
           },
         });
       } catch (error) {
+        const { logError } = await import('@/lib/errorLogger');
+        await logError(error, {
+          endpoint: '/api/games/[sport]/[conf]/subscribe',
+          action: 'subscribe-to-games',
+        });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         const errorData = `data: ${JSON.stringify({ error: errorMessage })}\n\n`;
         controller.enqueue(encoder.encode(errorData));

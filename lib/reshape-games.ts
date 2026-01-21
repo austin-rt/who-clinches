@@ -1,6 +1,7 @@
 import type { Game } from 'cfbd';
-import { ReshapedGame, ReshapeResult, TeamLean } from './types';
+import { ReshapedGame, ReshapeResult, TeamLean, GameType } from './types';
 import cityTimezones from 'city-timezones';
+import { GAME_TYPE } from './constants';
 import {
   calculatePredictedScoreFromOdds,
   getDefaultPredictedScore,
@@ -20,15 +21,9 @@ const getGameState = (
   return 'pre';
 };
 
-const getGameType = (
-  seasonType: Game['seasonType']
-): { name: string; abbreviation: string } | undefined => {
-  const typeMap: Record<string, { name: string; abbreviation: string }> = {
-    regular: { name: 'Regular Season', abbreviation: 'reg' },
-    postseason: { name: 'Postseason', abbreviation: 'post' },
-    both: { name: 'Regular Season', abbreviation: 'reg' },
-  };
-  return typeMap[seasonType?.toLowerCase() ?? ''];
+const getGameType = (seasonType: Game['seasonType']): GameType | undefined => {
+  if (!seasonType) return undefined;
+  return GAME_TYPE[seasonType];
 };
 
 export const reshapeCfbdGames = (

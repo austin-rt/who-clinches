@@ -1,5 +1,12 @@
 import { apiSlice as api } from './baseApi';
-export const addTagTypes = ['Games', 'Standings', 'Simulation', 'Status', 'Monitoring'] as const;
+export const addTagTypes = [
+  'Games',
+  'Standings',
+  'Simulation',
+  'Status',
+  'Monitoring',
+  'Stats',
+] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -52,6 +59,27 @@ const injectedRtkApi = api
         }),
         invalidatesTags: ['Monitoring'],
       }),
+      getRankings: build.query<GetRankingsApiResponse, GetRankingsApiArg>({
+        query: (queryArg) => ({
+          url: `/stats/rankings`,
+          params: {
+            season: queryArg.season,
+            week: queryArg.week,
+            seasonType: queryArg.seasonType,
+          },
+        }),
+        providesTags: ['Stats'],
+      }),
+      getAdvancedStats: build.query<GetAdvancedStatsApiResponse, GetAdvancedStatsApiArg>({
+        query: (queryArg) => ({
+          url: `/stats/advanced`,
+          params: {
+            season: queryArg.season,
+            conference: queryArg.conference,
+          },
+        }),
+        providesTags: ['Stats'],
+      }),
     }),
     overrideExisting: false,
   });
@@ -92,6 +120,23 @@ export type PostCfbdAlertHandlerApiResponse =
   /** status 200 Successful response */ CfbdAlertResponse;
 export type PostCfbdAlertHandlerApiArg = {
   cfbdAlertRequest: CfbdAlertRequest;
+};
+export type GetRankingsApiResponse = /** status 200 Successful response */ RankingsResponse;
+export type GetRankingsApiArg = {
+  /** Season year */
+  season: number;
+  /** Week number (optional, defaults to latest) */
+  week?: number;
+  /** Season type (regular, postseason, etc.) */
+  seasonType?: string;
+};
+export type GetAdvancedStatsApiResponse =
+  /** status 200 Successful response */ AdvancedStatsResponse;
+export type GetAdvancedStatsApiArg = {
+  /** Season year */
+  season: number;
+  /** Conference abbreviation (optional, defaults to all teams) */
+  conference?: string;
 };
 export type GameState = 'pre' | 'in' | 'post';
 export type GameVenue = {
@@ -240,6 +285,45 @@ export type CfbdAlertRequest = {
   message?: string | null;
   timestamp?: string | null;
 };
+export type PollRank = {
+  rank?: number;
+  teamId?: number;
+  school?: string;
+  conference?: string | null;
+  firstPlaceVotes?: number | null;
+  points?: number | null;
+};
+export type Poll = {
+  poll?: string;
+  ranks?: PollRank[];
+};
+export type PollWeek = {
+  season?: number;
+  seasonType?: string;
+  week?: number | null;
+  polls?: Poll[] | null;
+};
+export type RankingsResponse = {
+  rankings: PollWeek[] | null;
+};
+export type AdvancedSeasonStat = {
+  season?: number;
+  team?: string;
+  conference?: string | null;
+  offense?: {
+    ppa?: number;
+    successRate?: number;
+    [key: string]: unknown;
+  };
+  defense?: {
+    ppa?: number;
+    successRate?: number;
+    [key: string]: unknown;
+  };
+};
+export type AdvancedStatsResponse = {
+  stats: AdvancedSeasonStat[];
+};
 export const {
   useGetSeasonGameDataQuery,
   useGetStandingsQuery,
@@ -247,4 +331,6 @@ export const {
   useGetSeasonStatusQuery,
   useGetCfbdMonitorQuery,
   usePostCfbdAlertHandlerMutation,
+  useGetRankingsQuery,
+  useGetAdvancedStatsQuery,
 } = injectedRtkApi;

@@ -1,3 +1,5 @@
+import { logError } from './errorLogger';
+
 const DEFAULT_TIMEOUT_MS = 60000;
 
 export const fetchWithTimeout = async (
@@ -37,9 +39,20 @@ export const fetchWithTimeout = async (
     clearTimeout(timeoutId);
 
     if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error(`Request timeout: ${url} did not complete within ${timeoutMs}ms`);
+      const timeoutError = new Error(`Request timeout: ${url} did not complete within ${timeoutMs}ms`);
+      await logError(timeoutError, {
+        action: 'fetch-with-timeout',
+        url: String(url),
+        timeoutMs,
+      });
+      throw timeoutError;
     }
 
+    await logError(error, {
+      action: 'fetch-with-timeout',
+      url: String(url),
+      timeoutMs,
+    });
     throw error;
   }
 };

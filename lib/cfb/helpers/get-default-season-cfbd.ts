@@ -1,4 +1,5 @@
 import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { logError } from '../../errorLogger';
 
 export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
   try {
@@ -17,7 +18,14 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
     }
 
     return currentYear;
-  } catch {
+  } catch (error) {
+    await logError(
+      error,
+      {
+        action: 'get-default-season',
+      },
+      false
+    );
     return new Date().getFullYear();
   }
 };

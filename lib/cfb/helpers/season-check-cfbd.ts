@@ -1,4 +1,5 @@
 import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { logError } from '../../errorLogger';
 
 export const isInSeasonFromCfbd = async (): Promise<boolean> => {
   try {
@@ -16,7 +17,14 @@ export const isInSeasonFromCfbd = async (): Promise<boolean> => {
     };
 
     return (await checkYear(currentYear)) || (await checkYear(currentYear - 1));
-  } catch {
+  } catch (error) {
+    await logError(
+      error,
+      {
+        action: 'check-season-status',
+      },
+      false
+    );
     return false;
   }
 };

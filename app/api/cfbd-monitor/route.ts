@@ -14,7 +14,7 @@ export const GET = async () => {
     }
 
     const { patronLevel, remainingCalls } = userInfo;
-    
+
     const TIER_LIMITS: Record<number, number> = {
       0: 1000, // Free tier
       1: 5000, // Patreon Tier 1 ($1/month)
@@ -45,6 +45,11 @@ export const GET = async () => {
       timestamp: new Date().toISOString(),
     });
   } catch (error) {
+    const { logError } = await import('@/lib/errorLogger');
+    await logError(error, {
+      endpoint: '/api/cfbd-monitor',
+      action: 'get-monitor-status',
+    });
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',

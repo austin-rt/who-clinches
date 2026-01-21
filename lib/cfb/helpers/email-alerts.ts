@@ -1,4 +1,5 @@
 import type { UserInfo } from 'cfbd';
+import { logError } from '@/lib/errorLogger';
 
 const ALERT_COOLDOWN_MS = 60 * 60 * 1000;
 
@@ -37,14 +38,14 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
   if (!targetUrl) {
     const errorMsg =
       '[CFBD Alert] No alert URL configured. Set CFBD_ALERT_WEBHOOK_URL, CFBD_ALERT_HANDLER_URL, or ensure VERCEL_URL is set.';
-    // eslint-disable-next-line no-console
-    console.error(errorMsg, {
+    const error = new Error(errorMsg);
+    await logError(error, {
+      action: 'send-alert-via-webhook',
       hasWebhookUrl: !!webhookUrl,
       hasAlertHandlerUrl: !!process.env.CFBD_ALERT_HANDLER_URL,
       vercelUrl: process.env.VERCEL_URL,
-      nodeEnv: process.env.NODE_ENV,
     });
-    throw new Error(errorMsg);
+    throw error;
   }
 
   const { patronLevel, remainingCalls } = userInfo;
@@ -79,16 +80,19 @@ const sendAlertViaWebhook = async (userInfo: UserInfo): Promise<void> => {
     });
 
     if (!response.ok) {
-      throw new Error(`Alert handler error: ${response.status} ${response.statusText}`);
+      const error = new Error(`Alert handler error: ${response.status} ${response.statusText}`);
+      await logError(error, {
+        action: 'send-alert-via-webhook',
+        targetUrl,
+        status: response.status,
+        statusText: response.statusText,
+      });
+      throw error;
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    // eslint-disable-next-line no-console
-    console.error('[CFBD Alert] Failed to send alert:', errorMessage, {
+    await logError(error, {
+      action: 'send-alert-via-webhook',
       targetUrl,
-      hasWebhookUrl: !!webhookUrl,
-      hasAlertHandlerUrl: !!alertHandlerUrl,
-      vercelUrl: process.env.VERCEL_URL,
     });
     throw error;
   }
@@ -104,27 +108,15 @@ export const sendLowCallsAlert = async (userInfo: UserInfo): Promise<void> => {
 
   const now = Date.now();
   if (lastAlertTimestamp !== null && now - lastAlertTimestamp < ALERT_COOLDOWN_MS) {
-    const remainingCooldownMs = ALERT_COOLDOWN_MS - (now - lastAlertTimestamp);
-    const remainingCooldownMinutes = Math.ceil(remainingCooldownMs / (60 * 1000));
-    // eslint-disable-next-line no-console
-    console.log('[CFBD Alert] Alert skipped due to cooldown', {
-      remainingCalls,
-      threshold,
-      patronLevel,
-      remainingCooldownMinutes,
-    });
     return;
   }
 
   try {
     await sendAlertViaWebhook(userInfo);
     lastAlertTimestamp = now;
-    // eslint-disable-next-line no-console
-    console.log('[CFBD Alert] Alert sent successfully', { remainingCalls, threshold, patronLevel });
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    // eslint-disable-next-line no-console
-    console.error('[CFBD Alert] Failed to send alert:', errorMessage, {
+    await logError(error, {
+      action: 'send-low-calls-alert',
       remainingCalls,
       threshold,
       patronLevel,

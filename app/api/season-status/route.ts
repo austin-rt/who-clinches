@@ -9,6 +9,11 @@ export const GET = async () => {
     const inSeason = await isInSeasonFromCfbd();
     return NextResponse.json({ inSeason });
   } catch (error) {
+    const { logError } = await import('@/lib/errorLogger');
+    await logError(error, {
+      endpoint: '/api/season-status',
+      action: 'get-season-status',
+    });
     return NextResponse.json(
       {
         error: error instanceof Error ? error.message : 'Internal server error',
@@ -18,4 +23,3 @@ export const GET = async () => {
     );
   }
 };
-

@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    linterOptions: {
+      noInlineConfig: true,
+    },
     rules: {
       'no-console': 'error',
       'no-debugger': 'error',
@@ -48,7 +51,7 @@ const eslintConfig = defineConfig([
       'no-console': 'off', // Allow console in test files and scripts
     },
   },
-  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**']),
+  globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**', 'lib/consoleLogger.ts', 'lib/errorLogger.ts']),
 ]);
 
 export default eslintConfig;
