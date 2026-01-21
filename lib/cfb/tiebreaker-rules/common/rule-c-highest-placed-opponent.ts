@@ -1,14 +1,18 @@
-import { GameLean } from '../../../types';
+import { GameLean, TeamLean } from '../../../types';
 import { getTeamRecord, EPSILON_CONSTANT } from './core-helpers';
 import { applyRuleAHeadToHead } from './rule-a-head-to-head';
 
 export const applyRuleCHighestPlacedOpponent = (
   tiedTeams: string[],
   games: GameLean[],
-  allTeams?: string[]
+  allTeams?: string[],
+  teams?: TeamLean[]
 ): { winners: string[]; detail: string } => {
-  if (!allTeams) {
-    return { winners: tiedTeams, detail: 'No tie to break' };
+  if (!allTeams || !teams) {
+    return {
+      winners: tiedTeams,
+      detail: 'All teams data required for Highest Placed Common Opponent',
+    };
   }
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
@@ -25,9 +29,7 @@ export const applyRuleCHighestPlacedOpponent = (
     });
 
   const opponentSets = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamId === teamId || g.away.teamId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     return new Set(
       teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
@@ -95,9 +97,7 @@ export const applyRuleCHighestPlacedOpponent = (
           .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON_CONSTANT)
           .map((r) => r.teamId);
 
-        const oppGame = games.find(
-          (g) => g.home.teamId === oppId || g.away.teamId === oppId
-        );
+        const oppGame = games.find((g) => g.home.teamId === oppId || g.away.teamId === oppId);
         const oppAbbrev =
           oppGame?.home.teamId === oppId ? oppGame.home.abbrev : oppGame?.away.abbrev || oppId;
 
@@ -152,9 +152,7 @@ export const applyRuleCHighestPlacedOpponent = (
           .map((r) => r.teamId);
 
         const oppAbbrevs = opponentsToUse.map((oppId) => {
-          const oppGame = games.find(
-            (g) => g.home.teamId === oppId || g.away.teamId === oppId
-          );
+          const oppGame = games.find((g) => g.home.teamId === oppId || g.away.teamId === oppId);
           return oppGame?.home.teamId === oppId
             ? oppGame.home.abbrev
             : oppGame?.away.abbrev || oppId;
@@ -172,4 +170,3 @@ export const applyRuleCHighestPlacedOpponent = (
 
   return { winners: tiedTeams, detail: 'Tied vs all common opponents' };
 };
-

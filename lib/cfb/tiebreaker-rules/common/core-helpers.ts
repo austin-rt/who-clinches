@@ -1,17 +1,20 @@
 import { GameLean } from '../../../types';
+import { logError } from '../../../errorLogger';
 
 const EPSILON = 0.0001;
 
 export const EPSILON_CONSTANT = EPSILON;
 
-export const REGULAR_SEASON_GAME_TYPE = 'reg' as const;
-
 export const filterRegularSeasonGames = (games: GameLean[]): GameLean[] => {
-  return games.filter(
-    (g) =>
-      g.gameType?.abbreviation === REGULAR_SEASON_GAME_TYPE &&
-      !g.notes?.toLowerCase().includes('championship')
-  );
+  return games.filter((g) => {
+    if (!g.gameType) return false;
+    // Filter by abbreviation - 'reg' and 'spring_reg' are regular season
+    const abbrev = g.gameType.abbreviation;
+    if (abbrev === 'post' || abbrev === 'spring_post') return false;
+    if (abbrev !== 'reg' && abbrev !== 'spring_reg') return false;
+    if (g.notes?.toLowerCase().includes('championship')) return false;
+    return true;
+  });
 };
 
 export const applyOverrides = (
@@ -23,13 +26,46 @@ export const applyOverrides = (
 
     if (override) {
       if (override.homeScore === override.awayScore) {
-        throw new Error(`Tie scores not allowed for game ${game.id}`);
+        const error = new Error(`Tie scores not allowed for game ${game.id}`);
+        void logError(
+          error,
+          {
+            action: 'apply-overrides',
+            gameId: game.id,
+            homeScore: override.homeScore,
+            awayScore: override.awayScore,
+          },
+          false
+        );
+        throw error;
       }
       if (override.homeScore < 0 || override.awayScore < 0) {
-        throw new Error('Scores cannot be negative');
+        const error = new Error('Scores cannot be negative');
+        void logError(
+          error,
+          {
+            action: 'apply-overrides',
+            gameId: game.id,
+            homeScore: override.homeScore,
+            awayScore: override.awayScore,
+          },
+          false
+        );
+        throw error;
       }
       if (!Number.isInteger(override.homeScore) || !Number.isInteger(override.awayScore)) {
-        throw new Error('Scores must be whole numbers');
+        const error = new Error('Scores must be whole numbers');
+        void logError(
+          error,
+          {
+            action: 'apply-overrides',
+            gameId: game.id,
+            homeScore: override.homeScore,
+            awayScore: override.awayScore,
+          },
+          false
+        );
+        throw error;
       }
 
       return {
@@ -51,9 +87,18 @@ export const applyOverrides = (
       };
     }
 
-    throw new Error(
+    const error = new Error(
       `Game ${game.id} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
     );
+    void logError(
+      error,
+      {
+        action: 'apply-overrides',
+        gameId: game.id,
+      },
+      false
+    );
+    throw error;
   });
 };
 

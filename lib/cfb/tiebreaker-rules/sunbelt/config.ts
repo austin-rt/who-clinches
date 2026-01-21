@@ -7,6 +7,7 @@ import { applyRuleETeamRatingScore } from '../common/rule-e-team-rating-score';
 import { applyRuleFbsWinPercentage } from '../common/rule-fbs-win-percentage';
 
 export const CFB_SUNBELT_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
+  useCfpRankingsFirst: true,
   rules: [
     {
       name: 'Head-to-Head',

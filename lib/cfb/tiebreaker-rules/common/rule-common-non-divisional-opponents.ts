@@ -70,9 +70,7 @@ export const applyRuleCommonNonDivisionalOpponents = (
     .filter((r) => Math.abs(r.winPct - maxWinPct) < EPSILON_CONSTANT)
     .map((r) => r.teamId);
 
-  const oppAbbrevs = commonOpponents
-    .map((oppId) => getTeamAbbrev(oppId, games))
-    .slice(0, 3);
+  const oppAbbrevs = commonOpponents.map((oppId) => getTeamAbbrev(oppId, games)).slice(0, 3);
   const detail = `Common non-divisional: ${commonOpponents.length} opponent${commonOpponents.length !== 1 ? 's' : ''}${oppAbbrevs.length > 0 ? ` (${oppAbbrevs.join(', ')}${commonOpponents.length > 3 ? '...' : ''})` : ''}`;
 
   return { winners, detail };

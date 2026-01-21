@@ -10,9 +10,7 @@ export const applyRuleBCommonOpponents = (
   }
 
   const opponentSets = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamId === teamId || g.away.teamId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     return new Set(
       teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
@@ -47,4 +45,3 @@ export const applyRuleBCommonOpponents = (
 
   return { winners, detail };
 };
-

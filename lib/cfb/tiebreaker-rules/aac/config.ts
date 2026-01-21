@@ -5,6 +5,7 @@ import { applyRuleBCommonOpponents } from '../common/rule-b-common-opponents';
 import { applyRuleOverallWinPercentage } from '../common/rule-overall-win-percentage';
 
 export const CFB_AAC_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
+  useCfpRankingsFirst: true,
   rules: [
     {
       name: 'Head-to-Head',
