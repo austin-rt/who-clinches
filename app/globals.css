@@ -27,7 +27,7 @@ html:not([data-mode]) {
   --color-loser: #de350b; /* Error red for loser */
 }
 
-/* Team themes will be dynamically injected in Phase 5 from database */
+/* Team themes will be dynamically injected in Phase 5 from CFBD API data */
 /* Each team theme only defines primary, secondary, accent colors */
 /* Base colors inherited from light/dark mode */
 

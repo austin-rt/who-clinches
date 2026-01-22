@@ -44,7 +44,6 @@ const eslintConfig = defineConfig([
       'scripts/**/*.ts',
       '__tests__/**/*.ts',
       '__tests__/**/*.tsx',
-      'app/api/cron/run-reshape-tests/**/*.ts',
     ],
     rules: {
       'func-style': 'off', // Allow function declarations in TypeScript scripts

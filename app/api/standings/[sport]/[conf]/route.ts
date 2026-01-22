@@ -151,11 +151,11 @@ export const GET = async (
     // Fetch rankings, advanced stats, SP+ ratings, and FPI (for SOR) for the season
     const [rankingsResponse, advancedStatsResponse, spRatingsResponse, fpiRatingsResponse] =
       await Promise.all([
-        cfbdClient.getRankings({ year: seasonYear }),
-        cfbdClient.getAdvancedSeasonStats({ year: seasonYear }),
+      cfbdClient.getRankings({ year: seasonYear }),
+      cfbdClient.getAdvancedSeasonStats({ year: seasonYear }),
         cfbdClient.getSp({ year: seasonYear }),
         cfbdClient.getFpi({ year: seasonYear }),
-      ]);
+    ]);
 
     // Attach rankings and stats to teams
     const { attachCfpRankingsToTeams } = await import('@/lib/cfb/helpers/attach-rankings');
