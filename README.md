@@ -4,11 +4,11 @@ A web application that simulates game outcomes to show who clinches playoff spot
 
 ## Overview
 
-This application allows users to simulate "what-if" scenarios for SEC Football conference standings by:
+This application allows users to simulate "what-if" scenarios for college football conference standings by:
 
 - Fetching live game data from CFBD API (REST when out of season, GraphQL when in season)
 - Allowing users to override game outcomes
-- Calculating standings using official SEC tiebreaker rules (A-E)
+- Calculating standings using official conference tiebreaker rules (supports multiple conferences including SEC, MWC, ACC, MAC, Big Ten, AAC, CUSA, Pac-12, Sun Belt)
 - Visualizing potential playoff and bowl game scenarios
 
 ## Tech Stack
@@ -57,7 +57,6 @@ who-clinches/
 
 - Node.js 18+ and npm
 - CFBD API key ([Get one here](https://collegefootballdata.com/))
-- Environment variables (see `.env.local.example`)
 
 ### Installation
 
@@ -66,8 +65,7 @@ who-clinches/
 npm install
 
 # Set up environment variables
-cp .env.local.example .env.local
-# Edit .env.local with your CFBD API key
+# Create .env.local file with your CFBD API key (see Environment Variables section below)
 
 # Run development server (includes TypeScript checking)
 npm run dev
@@ -192,7 +190,6 @@ npm run lint
 - **Getting Started**: See [docs/ai-guide.md](docs/ai-guide.md) for AI development guidelines
 - **Documentation Loading**: See [docs/ai-loading-manifest.md](docs/ai-loading-manifest.md) for documentation structure
 - **API Reference**: [docs/guides/api-reference.md](docs/guides/api-reference.md) - Complete endpoint documentation
-- **Technical Spec**: [docs/plans/tech-spec.md](docs/plans/tech-spec.md) - Comprehensive technical specification
 - **AI Development Guide**: [docs/ai-guide.md](docs/ai-guide.md) - AI assistant development guidelines
 
 ## Current Status
@@ -206,10 +203,13 @@ npm run lint
 
 ✅ **Complete**: Tiebreaker Engine
 
-- SEC rules implementation (Rules A-E)
+- Multi-conference support (SEC, MWC, ACC, MAC, Big Ten, AAC, CUSA, Pac-12, Sun Belt)
+- Conference-specific tiebreaker rules (e.g., SEC Rules A-E, MWC team rating score)
+- Async tiebreaker rules that fetch external data on demand (SP+, FPI ratings)
 - Simulation endpoint (`/api/simulate/[sport]/[conf]`)
 - User score overrides
 - Standings calculation
+- Simulation disclaimer for conferences using external data
 
 ✅ **Complete**: Frontend UI
 

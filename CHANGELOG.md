@@ -5,13 +5,15 @@ All notable changes to the Who Clinches project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+> **⚠️ HISTORICAL NOTE**: This changelog contains historical entries from earlier versions of the application. Many entries reference features that no longer exist (MongoDB, ESPN API, cron jobs, database models). The current implementation uses only the CFBD API with no database persistence. See [README.md](./README.md) and [docs/ai-guide.md](./docs/ai-guide.md) for current architecture.
+
 ## [Unreleased]
 
 ### Added
 
 #### New Features
 
-- **Game Display Name**: Added `displayName` field to Game model with format `"{away abbrev} @ {home abbrev}"` (e.g., "UGA @ TEX")
+- **Game Display Name**: Added `displayName` field to Game model with format `"{away abbrev} @ {home abbrev}"` (e.g., "UGA @ TEX") (historical - no database models exist)
 - **Predicted Score Logic**: Implemented `predictedScore` field for all conference games
   - Completed games: Uses real scores
   - Incomplete games: Calculates from spread + team season averages
@@ -26,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Accepts optional game outcome overrides
   - Returns full standings with explanations
   - Implements SEC Rules A-E
-- **Cron Jobs**: 4 endpoints for automated data updates
+- **Cron Jobs**: 4 endpoints for automated data updates (historical - these endpoints no longer exist, all data is fetched on-demand from CFBD API)
   - `/api/cron/update-games`: Updates scores and states for games (supports allGames parameter)
   - `/api/cron/update-spreads`: Updates betting odds (Pro mode)
   - `/api/cron/update-rankings`: Updates team rankings and statistics
@@ -59,20 +61,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Score Detection**: Changed from null checks to state-based checks for determining real vs predicted scores
 - **Spread Application**: Incomplete games now use spread + averages until game starts scoring
-- **Dynamic Week Fetching**: `/api/pull-games` now uses ESPN calendar API to determine season weeks (no hardcoded week numbers)
+- **Dynamic Week Fetching**: `/api/pull-games` now uses ESPN calendar API to determine season weeks (no hardcoded week numbers) (historical - endpoint no longer exists)
 - **Override Validation**: Added input validation for negative and non-integer scores in simulate endpoint
 - **Missing Overrides**: Simulate endpoint now defaults to empty object if `overrides` field is omitted
 
 #### Data Integrity
 
 - **PredictedScore Consistency**: Cron jobs now always recalculate `predictedScore` and only update DB if values changed
-- **Team Display Fields**: Made `displayName`, `logo`, `color` optional in Game model to allow graceful updates
+- **Team Display Fields**: Made `displayName`, `logo`, `color` optional in Game model to allow graceful updates (historical - no database models exist)
 
 ### Changed
 
 #### Breaking Changes
 
-- Game model schema updated - requires database drop and re-seed for existing installations
+- Game model schema updated - requires database drop and re-seed for existing installations (historical - no database exists)
 - `calculatePredictedScore` function signature changed to accept minimal team interface instead of `ITeam`
 
 #### Configuration
@@ -88,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Technical Details
 
-#### Database Schema Changes
+#### Database Schema Changes (Historical - No Database Exists)
 
 **Game Model:**
 
@@ -99,6 +101,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 **Team Model:**
 
 - Existing fields: `record.stats.avgPointsFor`, `record.stats.avgPointsAgainst` now actively used by prefill logic
+
+> **Note**: These schema changes are historical. The current implementation uses CFBD API data directly with no database persistence.
 
 #### Dependencies
 
@@ -119,54 +123,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Migration Instructions (From Previous Version)
 
-1. **Database Reset Required**
-
-   ```bash
-   # Drop all collections
-   mongosh "YOUR_MONGODB_URI" --eval "db.dropDatabase()"
-   ```
-
-2. **Reseed Data**
-
-   ```bash
-   # Pull teams
-   curl -X POST http://localhost:3000/api/pull-teams \
-     -H "Content-Type: application/json" \
-     -d '{"sport": "football", "league": "college-football", "conferenceId": 8}'
-
-   # Run rankings cron to populate team stats
-   curl -X GET "http://localhost:3000/api/cron/update-rankings" \
-     -H "Authorization: Bearer YOUR_CRON_SECRET"
-
-   # Pull all games
-   curl -X POST http://localhost:3000/api/pull-games \
-     -H "Content-Type: application/json" \
-     -d '{"sport": "football", "league": "college-football", "season": 2025, "conferenceId": 8}'
-   ```
-
-3. **Verify New Fields**
-
-   ```bash
-   # Check game displayName
-   mongosh "YOUR_MONGODB_URI" --eval 'db.games.findOne({}, {displayName: 1, predictedScore: 1})'
-
-   # Check team averages
-   mongosh "YOUR_MONGODB_URI" --eval 'db.teams.findOne({}, {"record.stats.avgPointsFor": 1})'
-   ```
+> **⚠️ NO LONGER APPLICABLE**: The application no longer uses MongoDB or database persistence. All data is fetched directly from the CFBD API on each request. No migration is needed - simply ensure your `CFBD_API_KEY` environment variable is set. See [README.md](./README.md) for current setup instructions.
 
 ### Vercel Deployment
 
-**For Hobby Plan:**
-
-- Use `vercel.json` as-is (already configured)
-- Set `CRON_SECRET` environment variable
-
-**For Pro Plan:**
-
-1. Rename `vercel.json` to `vercel.hobby.json` (backup)
-2. Rename `vercel.pro.json` to `vercel.json`
-3. Deploy to Vercel
-4. Verify 6 cron jobs appear in Vercel dashboard
+> **⚠️ HISTORICAL**: The application no longer uses cron jobs. All data is fetched on-demand from the CFBD API. For current deployment instructions, see [README.md](./README.md).
 
 ---
 
@@ -185,7 +146,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [ ] Add unit tests for helper functions
 - [ ] Add integration tests for API endpoints
 - [ ] Implement caching for simulate endpoint
-- [ ] Add database indexes for common queries
 - [ ] Implement request rate limiting
 
 ---
