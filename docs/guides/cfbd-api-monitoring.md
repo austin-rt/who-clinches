@@ -11,7 +11,7 @@ Returns current API usage status:
 {
   "patronLevel": 1,
   "remainingCalls": 450,
-  "threshold": 1000,
+  "threshold": 500,
   "isLow": true,
   "timestamp": "2025-12-06T03:30:00.000Z"
 }
@@ -19,58 +19,33 @@ Returns current API usage status:
 
 ## Alert Configuration
 
-Alerts are sent when remaining calls fall below the threshold:
-- **Threshold**: 1,000 calls (applies to all patron levels)
+Alerts are sent when remaining calls fall below tier-based thresholds:
+- **Free tier (0)**: 100 calls (10% of 1,000 limit)
+- **Tier 1 ($1/month)**: 500 calls (10% of 5,000 limit)
+- **Tier 2 ($5/month)**: 1,500 calls (5% of 30,000 limit)
+- **Tier 3 ($10/month)**: 1,875 calls (2.5% of 75,000 limit)
 
-### Setting Up Email Alerts
+### Setting Up Alerts
 
-Configure a webhook URL that will receive alert notifications. The webhook can be:
-- A Zapier/Make.com webhook that sends emails (easiest, free)
-- A custom API endpoint that sends emails via SendGrid, Resend, etc.
-- Any service that accepts POST requests with JSON payloads
-
-**Environment Variable:**
-```bash
-CFBD_ALERT_WEBHOOK_URL=https://your-webhook-url.com/alerts
-```
-
-**For detailed setup instructions:** See the examples below for Zapier webhook setup.
+**Environment Variables:**
+- `CFBD_ALERT_WEBHOOK_URL` - Webhook URL (Zapier, Make.com, custom endpoint)
+- `CFBD_ALERT_HANDLER_URL` - Alternative alert handler URL (auto-detected from VERCEL_URL if not set)
+- `CFBD_ALERT_EMAIL` - Email address for alerts (required if using email alerts)
+- `RESEND_API_KEY` - Resend API key (required if using email alerts)
+- `RESEND_FROM_EMAIL` - From email address (optional)
 
 **Webhook Payload:**
 ```json
 {
   "patronLevel": 1,
   "remainingCalls": 450,
-  "threshold": 1000,
+  "threshold": 500,
   "isLow": true,
   "timestamp": "2025-12-06T03:30:00.000Z",
   "environment": "production",
   "message": "CFBD API remaining calls are low: 450 (Patron Level: 1)"
 }
 ```
-
-### Example: Zapier Webhook
-
-1. Create a Zapier webhook trigger
-2. Add an email action (Gmail, Outlook, etc.)
-3. Use the webhook URL as `CFBD_ALERT_WEBHOOK_URL`
-4. Map the `message` field to the email body
-
-### Example: Vercel Cron Job
-
-Add to `vercel.json`:
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cfbd-monitor",
-      "schedule": "0 */6 * * *"
-    }
-  ]
-}
-```
-
-This checks every 6 hours and sends alerts if calls are low.
 
 ## Alert Cooldown
 

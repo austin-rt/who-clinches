@@ -6,13 +6,7 @@
 
 ## What It Does
 
-Pre-commit hook automatically runs entire test suite before allowing commits: No broken commits, code quality (ESLint + TypeScript + Tests), quick feedback, team protection
-
----
-
-## Pre-Commit Workflow
-
-When you run `git commit`, hook executes: Branch Protection (prevents commits to main), ESLint Disable Check (blocks file-level eslint-disable), Linting + TypeScript (format, ESLint, type check), Run All Tests. If ANY step fails: Commit blocked with clear error messages
+Pre-commit hook runs test suite before allowing commits. Executes: Branch protection, ESLint disable check, linting + TypeScript, tests. Commit blocked if any step fails.
 
 ---
 
@@ -30,19 +24,11 @@ When you run `git commit`, hook executes: Branch Protection (prevents commits to
 
 ## How to Use
 
-**Normal Commit**: `git add . && git commit -m "feat: add new feature"` (hook runs automatically)
+**Normal Commit**: `git commit -m "message"` (hook runs automatically)
 
-**If Tests Fail**: Debug with `npm run test:all`, fix code, try commit again
+**If Tests Fail**: Run `npm run test:all` locally, fix code, try commit again
 
-**Bypass** (Not Recommended): `git commit --no-verify -m "message"` (emergencies only)
-
----
-
-## Test Suite Details
-
-**Test Coverage**: All tests must pass. Test suite includes API integration, reshape functions, tiebreaker logic, and other core functionality.
-
-**Execution Time**: Varies based on test suite size
+**Bypass** (Not Recommended): `git commit --no-verify` (emergencies only)
 
 ---
 
@@ -50,21 +36,7 @@ When you run `git commit`, hook executes: Branch Protection (prevents commits to
 
 **"Tests failed. Commit blocked."**: Run `npm run test:all` locally, fix code, try again
 
-**"npm command not found"**: Run `npm install`
-
-**"Tests failed"**: Run `npm run test:all` locally to see detailed error messages
-
 **"Hook is not running at all"**: Reinstall hooks (`npx husky install`)
-
-**"Slow commit"**: Normal - test suite ensures quality, run `npm run test:watch` while developing
-
----
-
-## Workflow Recommendations
-
-**Best Practice**: Test as you develop - Terminal 1: `npm run dev`, Terminal 2: `npm run test:watch` (tests run automatically, commit when passing)
-
-**Quick Test Before Commit**: `git add . && npm run test:all && git commit -m "message"`
 
 ## Quick Reference
 

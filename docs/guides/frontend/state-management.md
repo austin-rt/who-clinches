@@ -21,7 +21,8 @@ Redux store structure, slices, and persistence patterns.
 
 ```typescript
 {
-  ui: UIState,              // Theme, mode, view, hideCompletedGames, lastUpdated
+  ui: UIState,              // Theme, mode, view, hideCompletedGames, standingsOpen
+  app: AppState,            // Season, isInSeason, allowGraphQL
   gamePicks: GamePicksState, // User game selections
   api: ApiState             // RTK Query cache
 }
@@ -39,7 +40,6 @@ interface UIState {
   mode: ThemeMode; // 'light' | 'dark'
   view: ViewMode; // 'picks' | 'scores'
   hideCompletedGames: boolean; // Hide completed games in picks mode
-  lastUpdated: string | null; // ISO timestamp from API
   standingsOpen: boolean; // Whether standings panel is open
 }
 ```
@@ -50,7 +50,6 @@ interface UIState {
 - `setMode(mode: ThemeMode)`
 - `setView(view: ViewMode)`
 - `setHideCompletedGames(hide: boolean)`
-- `setLastUpdated(timestamp: string)`
 - `setStandingsOpen(open: boolean)`
 
 **Usage:** `useUIState()` hook provides state and actions.
@@ -89,12 +88,13 @@ interface GamePicksState {
 
 **Persistence Config** (`app/store/store.ts`):
 
-- `uiPersistConfig`: key `'ui'`, blacklist `['lastUpdated', 'standingsOpen']` (server data)
+- `uiPersistConfig`: key `'ui'`, blacklist `['standingsOpen']` (UI state only)
+- `appPersistConfig`: key `'app'`, blacklist `['isInSeason']` (server data)
 - `gamePicksPersistConfig`: key `'gamePicks'`, includes `redux-persist-expire` transform
   - Expires after 1 hour (3600 seconds) of inactivity
   - Automatically clears picks when expired
   - Expiration timer resets on each state update
-- localStorage keys: `persist:ui`, `persist:gamePicks`
+- localStorage keys: `persist:ui`, `persist:app`, `persist:gamePicks`
 - Middleware: redux-persist actions ignored in serializableCheck
 
 **Usage:** Components dispatch Redux actions normally - persistence is automatic.

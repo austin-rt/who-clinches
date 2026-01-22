@@ -12,15 +12,9 @@ Follows **[Keep a Changelog](https://keepachangelog.com/)** standard: one file t
 
 ## Workflow
 
-### 1. During Development (on `develop` branch)
-
 Add changes to `[Unreleased]` section as you work. **Change Types**: `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed`, `Security`
 
-### 2. Before Merging to `main` (Production Release)
-
-1. Create version section: Move "Unreleased" content to new version section, add version number and date, leave "Unreleased" empty
-2. Commit: `git add CHANGELOG.md && git commit -m "chore: prepare v0.1.0 release"`
-3. Merge to main: `git checkout main && git merge develop && git push origin main`
+Before production release: Move "Unreleased" content to new version section, add version number and date, leave "Unreleased" empty.
 
 ---
 
@@ -56,28 +50,8 @@ Before 1.0.0: Use `0.x.x` versions, breaking changes OK in MINOR versions (0.1.0
 ## [0.1.0] - 2025-11-12
 ### Added
 - Initial API: Teams, games, simulate endpoints
-- Tiebreaker Logic: Rules A-E implementation
+- Tiebreaker Logic: Conference-specific tiebreaker rules implementation (e.g., SEC Rules A-E, MWC team rating score)
 ```
-
----
-
-## Tips
-
-**Daily Development**: Update `[Unreleased]` as you code, group related changes
-
-**Before Production Deploy**: Review unreleased changes, choose version number, move to versioned section, add date
-
-**After Production Deploy**: Tag commit and push tag, GitHub Releases can auto-populate
-
----
-
-## Long-Term Management
-
-**File Size**: One file fine for years (even 1000+ lines), most projects never split, if needed create `CHANGELOG-ARCHIVE.md`
-
-**Search/Navigation**: Use Markdown anchors (`[0.1.0](#010---2025-11-12)`), GitHub auto-generates TOC, use Cmd+F to search
-
-**Automation (Future)**: Tools like `semantic-release` can auto-generate from commits, use conventional commits (`feat:`, `fix:`, `docs:`), manual updates for now
 
 ---
 
@@ -91,10 +65,7 @@ head -20 CHANGELOG.md
 sed -n '/## \[Unreleased\]/,/## \[/p' CHANGELOG.md | head -n -1
 ```
 
----
-
 ## Resources
 
 - [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - [Semantic Versioning](https://semver.org/spec/v2.0.0.html)
-- [Conventional Commits](https://www.conventionalcommits.org/) (optional, for automation)
