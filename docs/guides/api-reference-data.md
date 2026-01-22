@@ -21,9 +21,9 @@ Fetches game data from CFBD API and returns reshaped data with team metadata.
 
 **Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "season": number }`
 
-**GameLean** (in `events` array): Game object with `id`, `_id`, `home` and `away` objects containing `teamId`, `abbrev`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `score`, `rank`. All team metadata is included in game objects.
+**GameLean** (in `events` array): Game object with `id`, `_id`, `home` and `away` objects containing `teamId`, `abbrev`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `score`, `rank`.
 
-**TeamMetadata** (in `teams` array): Team metadata with `id` (matches `teamId`), `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord` (string, e.g., "7-1" - calculated from completed conference games), `rank` (number | null)
+**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord` (string, e.g., "7-1"), `rank` (number | null)
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
@@ -43,11 +43,11 @@ Fetches current conference standings calculated from completed conference games.
 
 **Response**: `{ "teams": [TeamMetadata[]] }`
 
-**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding` (string, e.g., "1st", "2nd"), `conferenceRecord` (string, e.g., "7-1"), `rank` (number | null)
+**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding` (string, e.g., "1st"), `conferenceRecord` (string, e.g., "7-1"), `rank` (number | null)
 
 **Caching**: 60s
 
-**Notes**: Calculates standings from completed conference games using the modular tiebreaker system. Uses conference-specific tiebreaker configuration (currently supports SEC). Returns all teams in the conference with their current standings.
+**Notes**: Calculates standings from completed conference games using the modular tiebreaker system. Supports multiple conferences (SEC, MWC, ACC, MAC, Big Ten, AAC, CUSA, Pac-12, Sun Belt).
 
 ---
 
@@ -85,9 +85,9 @@ See `lib/api-types.ts` for full type definitions.
 - `404` - No conference games found for season
 - `500` - CFBD API error or tiebreaker calculation error
 
-**Tiebreaker Rules**: Uses modular tiebreaker system with conference-specific configuration. SEC rules: A (head-to-head, min 2 games), B (common opponents, min 4), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin - relative %-based, offensive cap 200%, defensive min 0%)
+**Tiebreaker Rules**: Uses modular async tiebreaker system. Rules can fetch external data on demand (e.g., SP+ and FPI ratings for MWC). SEC rules: A (head-to-head), B (common opponents), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin). MWC includes team rating score.
 
-**Notes**: Fetches games from CFBD API for the specified season. Uses `predictedScore` for games without overrides (calculated from CFBD data). Validates all scores (non-negative integers, no ties). Handles ties recursively using the modular tiebreaker system. Returns all teams in the conference with their final standings.
+**Notes**: Fetches games from CFBD API. Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
 
 ## Data Model Notes
 
@@ -97,5 +97,5 @@ See `lib/api-types.ts` for full type definitions.
 
 ---
 
-**See also:** [Main API Reference](./api-reference.md)
+**See also:** [Main API Reference](./api-reference.md) | [Stats Endpoints](./api-reference-stats.md)
 

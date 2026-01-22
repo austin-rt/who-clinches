@@ -6,7 +6,8 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf] (CFBD fetch), GET /api/standings/[sport]/[conf] (standings calculation), POST /api/simulate/[sport]/[conf] (dynamic endpoint)
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], GET /api/standings/[sport]/[conf], POST /api/simulate/[sport]/[conf]
+- **[Stats Endpoints](./api-reference-stats.md)** - GET /api/stats/rankings, GET /api/stats/advanced
 
 **Note**: All endpoints fetch data directly from the CFBD API on each request. No database persistence or scheduled jobs are used.
 
@@ -41,9 +42,12 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | --------------------- | -------- | ------------------------------------ |
 | `CFBD_API_KEY`        | Yes      | CFBD API key (get from https://collegefootballdata.com/) |
 | `CFBD_ALERT_WEBHOOK_URL` | No    | Webhook URL for low API call alerts  |
-| `CFBD_ALERT_EMAIL`    | No       | Email address for low API call alerts |
-| `RESEND_API_KEY`      | No       | Resend API key for email alerts      |
-| `RESEND_FROM_EMAIL`   | No       | From email address for alerts         |
+| `CFBD_ALERT_HANDLER_URL` | No    | Alternative alert handler URL (auto-detected from VERCEL_URL if not set) |
+| `CFBD_ALERT_EMAIL`    | No       | Email address for low API call alerts (required if using email alerts) |
+| `RESEND_API_KEY`      | No       | Resend API key for email alerts (required if using email alerts) |
+| `RESEND_FROM_EMAIL`   | No       | From email address for alerts (optional, defaults to 'alerts@yourdomain.com') |
+| `VERCEL_AUTOMATION_BYPASS_SECRET` | No | Bypass token for protected Vercel deployments |
+| `USE_FIXTURES` | No | Set to 'true' to use local fixture data instead of CFBD API (development/testing) |
 
 ---
 
@@ -53,6 +57,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 - Conference identifiers use CFBD format (e.g., "SEC" for SEC)
 - Frontend uses RTK Query with GraphQL subscriptions for live updates (when in season)
 - REST API used when out of season or GraphQL disabled
+- Tiebreaker rules are async and may fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule)
 
 **API Route Pattern**: `export const GET = async (request: NextRequest) => { ... }`
 

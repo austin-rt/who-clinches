@@ -8,13 +8,12 @@ Domain-specific content locations for common tasks.
 - **API testing procedures**: `docs/tests/comprehensive-api-testing.md`
 - **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
-- **Unit tests plan**: `docs/plans/unit-tests.md`
-- **Integration tests plan**: `docs/plans/integration-tests-plan.md`
 
 ## API Development
 
 - **Endpoint reference**: `docs/guides/api-reference.md`
-- **API architecture**: `docs/plans/api-foundation.md`
+- **Data endpoints**: `docs/guides/api-reference-data.md`
+- **Stats endpoints**: `docs/guides/api-reference-stats.md`
 - **Request/response types**: `lib/api-types.ts`
 
 ## CFBD Integration
@@ -29,7 +28,6 @@ Domain-specific content locations for common tasks.
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
 - **Implementation**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
-- **Planning doc**: `docs/plans/tiebreaker-logic.md`
 - **Testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (dynamic endpoint supporting multiple conferences)
 
@@ -48,9 +46,13 @@ Domain-specific content locations for common tasks.
 ## Frontend Development
 
 - **Frontend documentation**: `docs/guides/frontend/` - Complete frontend patterns and architecture
-- **Phase plans**: `docs/plans/frontend/`
+- **Future plans**: `docs/plans/frontend/phase5.md` - Team theme selector (planned)
 - **Components**: `app/components/`
 - **Store**: `app/store/`
+
+## Analysis
+
+- **Conference implementation ranking**: `docs/analysis/conference-implementation-ranking.md` - Analysis of conference tiebreaker implementation ease
 
 ## Project Setup
 
@@ -58,7 +60,6 @@ Domain-specific content locations for common tasks.
 - **AI loading manifest**: `docs/ai-loading-manifest.md`
 - **Changelog guide**: `docs/guides/changelog-guide.md`
 - **Pre-commit testing**: `docs/guides/pre-commit-testing.md`
-- **Tech spec**: `docs/plans/tech-spec.md`
 
 ## Common Commands
 
