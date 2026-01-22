@@ -42,15 +42,16 @@
 
 ### POST /api/simulate/[sport]/[conf]
 
-**Note**: Dynamic endpoint supporting multiple conferences.
+**Note**: Dynamic endpoint supporting multiple conferences (e.g., `/api/simulate/cfb/SEC`, `/api/simulate/cfb/MWC`).
 
 **Example**: `/api/simulate/cfb/SEC`
-- Path: `sport` (e.g., "cfb"), `conf` (e.g., "SEC")
+- Path: `sport` (e.g., "cfb"), `conf` (e.g., "SEC", "MWC", "ACC", etc.)
 - Input: `{ season: number, overrides?: { [gameId: string]: { homeScore: number, awayScore: number } } }`
 - Game IDs in overrides match the `id` field from GameLean objects
-- Verify: All teams in conference, rankings 1-N, tiebreaker rules (A-E), championship array (top 2)
+- Verify: All teams in conference, rankings 1-N, tiebreaker rules (varies by conference), championship array (top 2)
 - Validation: Non-negative integers, no ties, required fields (season)
 - Response: `{ standings: StandingEntry[], championship: [string, string], tieLogs: TieLog[] }`
+- **Note**: Some conferences use async tiebreaker rules that fetch external data (SP+ and FPI ratings) on demand. Some conferences may display a simulation disclaimer when external data (e.g., KPI, SportSource) is not available.
 
 
 ---

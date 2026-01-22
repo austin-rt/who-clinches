@@ -29,7 +29,7 @@ BYPASS_TOKEN=$(grep VERCEL_AUTOMATION_BYPASS_SECRET .env.local | cut -d '=' -f2)
 
 **GET /api/standings/[sport]/[conf]**: Fetches current conference standings calculated from completed conference games. Query params: `season` (optional, defaults to current season). Expected: Status 200, `teams` array (TeamMetadata with `conferenceStanding`, `conferenceRecord`, `rank`). Example: `GET /api/standings/cfb/SEC?season=2025`
 
-**POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (all teams in conference, ranks 1-N), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score (negative/non-integer/tie) → Status 400. Dynamic endpoint supporting multiple conferences (e.g., `/api/simulate/cfb/SEC`). Game IDs in overrides match the `id` field from GameLean objects.
+**POST /api/simulate/[sport]/[conf]**: Expected: Status 200, `standings` (all teams in conference, ranks 1-N), `championship` (length 2), `tieLogs`. Invalid: Missing `season`, invalid score (negative/non-integer/tie) → Status 400. Dynamic endpoint supporting multiple conferences (e.g., `/api/simulate/cfb/SEC`, `/api/simulate/cfb/MWC`). Game IDs in overrides match the `id` field from GameLean objects. **Note**: Some conferences use async tiebreaker rules that fetch external data (SP+ and FPI ratings) on demand. Some conferences may display a simulation disclaimer when external data (e.g., KPI, SportSource) is not available.
 
 **GET /api/games/[sport]/[conf]/subscribe**: GraphQL subscription for live score updates (Server-Sent Events). Only available when in season and GraphQL is enabled. Example: `GET /api/games/cfb/SEC/subscribe`
 

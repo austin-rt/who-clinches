@@ -23,36 +23,31 @@ Load additional docs based on your specific task:
 
 ### Scenario 1: Adding API Endpoint
 **Additional Load (~5-8K tokens):**
-- `docs/plans/api-foundation.md` - API architecture decisions
 - `docs/tests/api-testing-quick-ref.md` - Quick API testing patterns
 - `docs/guides/api-reference-data.md` - Data endpoint patterns (if needed)
 
-**Total:** ~25-28K tokens
+**Total:** ~20-23K tokens
 
 ### Scenario 2: Testing Changes
 **Additional Load (~5-8K tokens):**
 - `docs/tests/api-testing-quick-ref.md` - Quick API testing patterns
 - `docs/tests/comprehensive-api-testing.md` - Complete API testing guide (if detailed work needed)
-- `docs/plans/testing-strategy-summary.md` - Testing strategy overview
 
-**Total:** ~25-28K tokens
+**Total:** ~20-23K tokens
 
 ### Scenario 3: CFBD API Integration Work
 **Additional Load (~5-8K tokens):**
 - `docs/guides/cfbd-api-monitoring.md` - CFBD API monitoring and alerting
 - `docs/guides/api-reference-data.md` - Data endpoint patterns
-- `docs/plans/api-foundation.md` - API architecture (if adding endpoints)
 
-**Total:** ~25-28K tokens
+**Total:** ~20-23K tokens
 
 ### Scenario 4: Frontend Work
 **Additional Load (~5-8K tokens):**
-- `docs/plans/frontend.md` - Frontend summary and phase status
 - `docs/guides/frontend/index.md` - Frontend documentation overview
 - `docs/guides/frontend/[domain].md` - Specific frontend domain (state-management, components, etc.) as needed
-- `docs/plans/frontend/phase3.md` (or current phase) - Current phase details
 
-**Total:** ~25-28K tokens
+**Total:** ~20-23K tokens
 
 ---
 
@@ -79,10 +74,10 @@ Load additional docs based on your specific task:
 | Task Type | Essential | Task-Specific | Total |
 |-----------|-----------|---------------|-------|
 | General Development | ✅ | None | ~4.5K |
-| API Endpoint | ✅ | api-foundation.md, api-testing-quick-ref.md | ~9-12K |
-| Testing | ✅ | api-testing-quick-ref.md, testing-strategy-summary.md | ~9-12K |
+| API Endpoint | ✅ | api-testing-quick-ref.md | ~9-12K |
+| Testing | ✅ | api-testing-quick-ref.md | ~9-12K |
 | CFBD API Work | ✅ | cfbd-api-monitoring.md, api-reference-data.md | ~9-12K |
-| Frontend | ✅ | frontend.md, frontend/index.md | ~9-12K |
+| Frontend | ✅ | frontend/index.md | ~9-12K |
 
 ---
 

@@ -43,20 +43,20 @@ npm run test:all
 ## Test Structure
 
 - `__tests__/api/cfb/` - API endpoint tests (simulate, standings)
-- `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration)
+- `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration tests including async rules)
 - `__tests__/lib/` - Unit tests (reshape-games, reshape-teams-from-cfbd) using mocks
 - `__tests__/setup.ts` - Test helpers (fetchAPI)
-- `__tests__/mocks/` - Mock data for CFBD API responses
+- `__tests__/mocks/` - Mock data for CFBD API responses (including SP+ and FPI mocks)
 
 ---
 
 ## Test Coverage
 
-- API endpoints: Business logic and behavior tests (simulate, standings)
+- API endpoints: Business logic and behavior tests (simulate, standings, multi-conference support)
 - Reshape functions: Edge cases and transformation logic
-- Tiebreaker rules: Comprehensive Rules A-E tests
+- Tiebreaker rules: Comprehensive rule tests including async rules (e.g., SP+ and FPI fetching for MWC)
 - **Coverage threshold:** 80% minimum (branches, functions, lines, statements)
-- **What's tested:** Business logic, edge cases, error handling, API contracts, data integrity
+- **What's tested:** Business logic, edge cases, error handling, API contracts, data integrity, async tiebreaker rules
 
 ---
 

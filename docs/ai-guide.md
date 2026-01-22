@@ -8,20 +8,17 @@ This is a specialized college football application built for simulating conferen
 
 ### **Core Principles**
 
-- **Build After Code Changes**: Always run `npm run build` after code changes to catch build errors
-- **No Automated npm Commands**: Don't run npm commands without explicit request, except `npm run build` after code changes
-- **NEVER Disable ESLint Rules**: ESLint rules are intentionally configured and must be followed. NEVER use `eslint-disable` comments. If code violates lint rules, fix the code to comply with the rules instead. This includes `no-console` - use proper logging or remove console statements entirely.
-- **NEVER Run Destructive Commands Without Explicit Confirmation**: NEVER run commands that delete, drop, or destroy data (e.g., `drop-database.js`, `rm -rf`, database drops, etc.) without explicit user confirmation. If a destructive operation is needed, explain what will happen and ask for explicit confirmation before proceeding.
-- **NEVER Use Inline Type Imports**: NEVER use inline `import()` syntax in type annotations (e.g., `Promise<import('./path').Type>`). Always import types at the top of the file and use them directly. Inline imports are hard to read, break IDE navigation, and violate TypeScript best practices.
-- **Pre-Commit Hooks**: Use `--no-verify` flag after validation passes to skip redundant hook checks.
-- **File Deletions Are Last**: NEVER delete files until the very end of a refactor, after ALL changes are complete, tested, and validated. File deletions must be the absolute final step, only after: (1) all code changes are implemented, (2) `npm run lint` passes, (3) `npx tsc --noEmit` passes, (4) all tests pass (`npm run test:all`), and (5) all functionality is verified working. Only then may files be deleted. This prevents accidental loss of code and ensures the refactor is complete before cleanup.
-- **No Code Comments**: Do not add comments to code files, including JSDoc comments. Write self-documenting code instead. Existing comments should remain, but do not add new ones.
-- **NEVER Edit Tiebreaker Rules Files**: The official conference tiebreaker rules are stored in `docs/tiebreaker-rules/*.txt`. These files are the SINGULAR SOURCE OF TRUTH for tiebreaker procedures. AI agents MUST NEVER edit, modify, or delete these files. The modular tiebreaker system (`lib/cfb/tiebreaker-rules/common/`, `lib/cfb/tiebreaker-rules/core/`, `lib/cfb/tiebreaker-rules/{conf}/config.ts`) must enforce these rules exactly as specified in the rules files. If tiebreaker logic needs to be updated, the rules files are updated by running extraction scripts (e.g., `scripts/extract-sec-rules.py`) to fetch the latest official PDFs from conference sources.
+- **NEVER Disable ESLint Rules**: Fix code to comply with rules. Never use `eslint-disable` comments. Remove console statements or use proper logging.
+- **NEVER Run Destructive Commands Without Explicit Confirmation**: Never run destructive commands (delete, drop, destroy data) without explicit user confirmation.
+- **NEVER Use Inline Type Imports**: Always import types at the top of the file. Never use `Promise<import('./path').Type>` syntax.
+- **File Deletions Are Last**: Delete files only after all changes are complete, tested, and validated. Final step after: code changes, lint passes, type check passes, tests pass, functionality verified.
+- **No Code Comments**: Write self-documenting code. Do not add new comments. Existing comments remain.
+- **NEVER Edit Tiebreaker Rules Files**: `docs/tiebreaker-rules/*.txt` are the SINGULAR SOURCE OF TRUTH. Never edit, modify, or delete these files. Only extraction scripts update them.
 
 ## Application Overview
 
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
-- **Tiebreaker Resolution**: Implements official conference tiebreaker rules (A-E) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by a modular system: common rules in `lib/cfb/tiebreaker-rules/common/`, core engine in `lib/cfb/tiebreaker-rules/core/`, and conference-specific configs in `lib/cfb/tiebreaker-rules/{conf}/config.ts`
+- **Tiebreaker Resolution**: Implements official conference tiebreaker rules (varies by conference, e.g., SEC Rules A-E, MWC team rating score) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by a modular system: common rules in `lib/cfb/tiebreaker-rules/common/`, core engine in `lib/cfb/tiebreaker-rules/core/`, and conference-specific configs in `lib/cfb/tiebreaker-rules/{conf}/config.ts`. Some rules are async and fetch external data (SP+ and FPI ratings) on demand.
 - **Standings Calculation**: Generates complete conference standings with explanations
 - **Real-Time Data**: Automatically updates from CFBD API via frontend polling with conditional logic
 
@@ -33,7 +30,7 @@ This is a specialized college football application built for simulating conferen
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
 - `lib/cfb/` - CFBD API clients (cfbd-client, cfbd-rest-client, cfbd-graphql-client)
-- `lib/` - Core utilities (reshape-*, tiebreaker-helpers)
+- `lib/` - Core utilities (reshape-*, tiebreaker-rules modular system)
 
 ## Documentation Navigation
 
@@ -66,7 +63,7 @@ This is a specialized college football application built for simulating conferen
 
 **Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. All data is fetched directly from CFBD API on each request - no database persistence.
 
-**Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and SEC config (`lib/cfb/tiebreaker-rules/sec/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`
+**Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
 **Frontend State**: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
 
@@ -74,9 +71,7 @@ This is a specialized college football application built for simulating conferen
 
 ## Quick Start
 
-1. **Read Documentation**: Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading
-2. **After Code Changes**: Run `npm run build` to catch build errors
-3. **Navigate**: Use the documentation structure above to find specific information
+Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading. Use the documentation structure above to find specific information.
 
 ## Constraints
 
