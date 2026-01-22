@@ -12,7 +12,7 @@ Audit and update project documentation to ensure accuracy after code changes. Us
 4. **Update outdated info** - Fix discrepancies between docs and code
 5. **Naming conventions** - All markdown files must be kebab-case except `README.md` and `CHANGELOG.md`
 6. **Reference accuracy** - Update links and cross-references when files are renamed or moved
-7. **Follow structure** - Adhere to documentation structure defined in `docs/navigation-hub.md`
+7. **Follow structure** - Adhere to existing documentation structure in `docs/` directory
 
 ## Source of Truth Hierarchy
 
@@ -32,12 +32,12 @@ Audit and update project documentation to ensure accuracy after code changes. Us
 
 ### Structure and Organization
 
-Follow structure defined in `docs/navigation-hub.md`:
+Follow existing documentation structure:
 
 - **Reference docs** → `/docs/` (e.g., `ai-guide.md`)
 - **How-to guides** → `/docs/guides/` (e.g., `api-reference.md`)
 - **Testing docs** → `/docs/tests/` (e.g., `comprehensive-api-testing.md`)
-- **Planning docs** → `/docs/plans/` (e.g., `tech-spec.md`)
+- **Planning docs** → `/docs/plans/` (e.g., `phase5.md`)
 - **Project-level** → Root (only `README.md`, `CHANGELOG.md`)
 
 ### Content Accuracy
@@ -129,11 +129,12 @@ Analyze recent code changes to determine what documentation may be affected:
 
 ### Step 2: Locate Relevant Documentation
 
-Use `docs/navigation-hub.md` to find documentation that references changed code:
+Find documentation that references changed code:
 
 - Search for endpoint names, function names, or feature names
 - Check API reference, testing guides, and planning documents
 - Review `docs/ai-guide.md` for patterns that may need updates
+- Use `docs/guides/quick-reference.md` to locate relevant documentation
 
 ### Step 3: Verify Accuracy
 
@@ -167,7 +168,7 @@ Verify all markdown files follow kebab-case naming:
 - Scan for uppercase markdown filenames (except README/CHANGELOG)
 - Rename files to kebab-case if needed
 - Update all references to renamed files
-- Verify links in `docs/navigation-hub.md` are correct
+- Verify all internal documentation links are correct
 
 ### Step 6: Update Cross-References
 
@@ -182,19 +183,19 @@ Ensure all documentation links are accurate:
 
 ### Step 7: Verify Structure Compliance
 
-Confirm documentation follows structure in `docs/navigation-hub.md`:
+Confirm documentation follows existing structure:
 
 - Files are in correct directories
 - Naming matches conventions
 - Links follow relative path patterns
-- Structure matches documented organization
+- Structure is consistent with existing organization
 
 ## Key Files to Review
 
 ### Always Check
 
 - `docs/ai-guide.md` - Core AI development patterns and principles
-- `docs/navigation-hub.md` - Documentation structure and organization
+- `docs/guides/quick-reference.md` - Documentation structure and organization
 - `docs/guides/api-reference.md` - API endpoint documentation
 - `lib/api-types.ts` - Type definitions for API requests/responses
 - `lib/types.ts` - Internal application types
@@ -228,7 +229,7 @@ Confirm documentation follows structure in `docs/navigation-hub.md`:
 - Links to renamed or moved files
 - Incorrect relative paths
 - References to non-existent files
-- Outdated navigation hub entries
+- Outdated cross-references
 
 **Note:** For historical planning documents, fix broken links but preserve historical content. Do not update links to reflect current implementation if the original reference was to a historical state.
 
@@ -245,7 +246,7 @@ After updates, verify:
 - [ ] Commands and scripts match `package.json`
 - [ ] All markdown files are kebab-case (except README/CHANGELOG)
 - [ ] All internal links work correctly
-- [ ] Navigation hub reflects current structure
+- [ ] Documentation structure is consistent
 - [ ] AI guide patterns are followed
 - [ ] No broken references or outdated information
 - [ ] No drift between documented state and actual code state

@@ -105,6 +105,6 @@ If file still exceeds 125 lines after Steps 3-4:
 ## Notes
 - Prioritize keeping related content together
 - When splitting, ensure each file can be understood independently
-- Update any navigation files (e.g., `navigation-hub.md`) if file structure changes
+- Update cross-references in documentation if file structure changes
 - Maintain consistency with existing documentation patterns and style
 
