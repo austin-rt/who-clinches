@@ -4,9 +4,9 @@
 
 **Dependencies:** Phase 4 (all features working)
 
-**Approach:** Dynamic team themes from database
+**Approach:** Dynamic team themes from CFBD API data
 
-- Fetch teams from `/api/teams` endpoint (to be created in this phase - team data is currently available via `/api/games` endpoint's `teams` array)
+- Fetch teams from `/api/games/[sport]/[conf]` endpoint's `teams` array (team data is already available in games endpoint response)
 - Dynamically inject CSS for each team theme
 - Build custom dropdown (DaisyUI's theme controller won't work with dynamic themes)
 - Full scalability for future conferences
@@ -14,7 +14,7 @@
 
 **Files to Create/Modify:**
 
-- `app/api/teams/route.ts` (new - GET endpoint to fetch all teams from DB, or use teams array from `/api/games` response)
+- Use existing `/api/games/[sport]/[conf]` endpoint's `teams` array (no new endpoint needed)
 - `app/components/TeamThemeSelector.tsx` (new)
 - `app/components/Header.tsx` (update to include theme selector)
 - `app/hooks/useTeams.ts` (new - fetch teams and inject themes)
@@ -26,20 +26,20 @@
 // app/components/TeamThemeSelector.tsx
 // Custom dropdown component (not DaisyUI's theme controller)
 // Props: none
-// Fetches teams from /api/teams
+// Fetches teams from /api/games/[sport]/[conf] endpoint's teams array
 // Dynamically injects CSS for each team theme
-// Renders: dropdown with all teams from database + "[Conference] Default"
+// Renders: dropdown with all teams from CFBD API + "[Conference] Default"
 // On selection: sets data-theme attribute and dispatches Redux action (persisted via redux-persist)
 
 // app/hooks/useTeams.ts
-// Fetches teams from /api/teams
+// Fetches teams from /api/games/[sport]/[conf] endpoint's teams array
 // Injects CSS for each team theme dynamically
 // Returns teams array and loading state
 ```
 
 **Implementation Checklist:**
 
-- [ ] Create `/api/teams` endpoint (GET, returns all teams with colors)
+- [ ] Use existing `/api/games/[sport]/[conf]` endpoint's `teams` array (no new endpoint needed)
 - [ ] Create `useTeams` hook to fetch teams and inject themes
 - [ ] Implement dynamic CSS injection function
 - [ ] Create TeamThemeSelector component with custom dropdown
@@ -62,7 +62,7 @@
 
 1. Run `npm run dev`
 2. Look for theme selector in Header
-3. Click selector - should show dropdown with all teams from database + "[Conference] Default"
+3. Click selector - should show dropdown with all teams from CFBD API + "[Conference] Default"
 4. Select a team - page colors change to team theme
 5. Select different team - colors change immediately
 6. Check Redux state (or redux-persist localStorage key `persist:ui`) - should show selected team
