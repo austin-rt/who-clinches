@@ -36,8 +36,8 @@ Follow existing documentation structure:
 
 - **Reference docs** → `/docs/` (e.g., `ai-guide.md`)
 - **How-to guides** → `/docs/guides/` (e.g., `api-reference.md`)
-- **Testing docs** → `/docs/tests/` (e.g., `comprehensive-api-testing.md`)
-- **Planning docs** → `/docs/plans/` (e.g., `phase5.md`)
+- **Testing docs** → `/docs/guides/` (e.g., `testing-quick-reference.md`)
+- **Planning docs** → `/docs/plans/`
 - **Project-level** → Root (only `README.md`, `CHANGELOG.md`)
 
 ### Content Accuracy
@@ -82,7 +82,7 @@ Follow existing documentation structure:
 - Do NOT correct outdated information about features or APIs
 - Do NOT modify historical records to reflect current state
 
-**Rationale:** Historical planning documents preserve what was planned and when. For current implementation details, refer to active documentation in `/docs/guides/`, `/docs/tests/`, and the codebase itself.
+**Rationale:** Historical planning documents preserve what was planned and when. For current implementation details, refer to active documentation in `/docs/guides/` and the codebase itself.
 
 ## Execution Protocol
 
@@ -263,7 +263,7 @@ After updates, verify:
    - Compare against current code: `app/api/simulate/route.ts` has new parameter not in docs
    - Identify gap: Documentation doesn't reflect new parameter added in recent code commit
 1. Identify changed code: `app/api/simulate/route.ts` modified
-2. Locate relevant docs: `docs/guides/api-reference.md`, `docs/tests/comprehensive-api-testing.md`
+2. Locate relevant docs: `docs/guides/api-reference.md`
 3. Verify accuracy: Check documented request body against `lib/api-types.ts`
 4. Update documentation: Add new parameter to API reference and test examples
 5. Check naming: Verify all referenced files are kebab-case

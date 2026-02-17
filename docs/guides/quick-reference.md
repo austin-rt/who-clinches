@@ -5,8 +5,6 @@ Domain-specific content locations for common tasks.
 ## Testing
 
 - **Quick commands**: `docs/guides/testing-quick-reference.md`
-- **API testing procedures**: `docs/tests/comprehensive-api-testing.md`
-- **Tiebreaker testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Pre-commit setup**: `docs/guides/pre-commit-testing.md`
 
 ## API Development
@@ -28,7 +26,6 @@ Domain-specific content locations for common tasks.
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
 - **Implementation**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
-- **Testing**: `docs/tests/tiebreaker-and-simulate.md`
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (dynamic endpoint supporting multiple conferences)
 
 ## Data Updates
@@ -46,13 +43,8 @@ Domain-specific content locations for common tasks.
 ## Frontend Development
 
 - **Frontend documentation**: `docs/guides/frontend/` - Complete frontend patterns and architecture
-- **Future plans**: `docs/plans/frontend/phase5.md` - Team theme selector (planned)
 - **Components**: `app/components/`
 - **Store**: `app/store/`
-
-## Analysis
-
-- **Conference implementation ranking**: `docs/analysis/conference-implementation-ranking.md` - Analysis of conference tiebreaker implementation ease
 
 ## Project Setup
 
@@ -65,8 +57,7 @@ Domain-specific content locations for common tasks.
 
 ```bash
 # Testing
-npm run test:all              # All tests
-npm run test:api              # API tests only
+npm run test                  # All tests
 
 # Development
 npm run dev                   # Start dev server

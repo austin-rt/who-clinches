@@ -2,9 +2,7 @@
 
 ## Testing Guide
 
-Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
-
-**Important:** Use the provided **Response Type Verification** commands in the guide to confirm responses match `lib/api-types.ts` type definitions (especially `TeamMetadata` which includes `color` and `alternateColor` fields, and `StandingEntry` which includes `color` field).
+**Important:** Use the provided **Response Type Verification** commands to confirm responses match `lib/api-types.ts` type definitions (especially `TeamMetadata` which includes `color` and `alternateColor` fields, and `StandingEntry` which includes `color` field).
 
 ## Environment Configuration
 

@@ -10,8 +10,6 @@
 
 ## Testing Guide
 
-Follow all testing procedures in `docs/tests/comprehensive-api-testing.md`
-
 **Important:**
 
 - Start conservative with single team/week tests before full data loads

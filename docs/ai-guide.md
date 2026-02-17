@@ -49,7 +49,6 @@ This is a specialized college football application built for simulating conferen
 
 **Testing Documentation:**
 - **[Testing Quick Reference](./guides/testing-quick-reference.md)** - Quick testing commands and procedures
-- **[Comprehensive API Testing](./tests/comprehensive-api-testing.md)** - Complete API testing guide
 
 **Tiebreaker Rules:**
 - **Location**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`

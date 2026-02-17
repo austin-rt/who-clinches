@@ -23,19 +23,11 @@ Load additional docs based on your specific task:
 
 ### Scenario 1: Adding API Endpoint
 **Additional Load (~5-8K tokens):**
-- `docs/tests/api-testing-quick-ref.md` - Quick API testing patterns
 - `docs/guides/api-reference-data.md` - Data endpoint patterns (if needed)
 
-**Total:** ~20-23K tokens
+**Total:** ~9-12K tokens
 
-### Scenario 2: Testing Changes
-**Additional Load (~5-8K tokens):**
-- `docs/tests/api-testing-quick-ref.md` - Quick API testing patterns
-- `docs/tests/comprehensive-api-testing.md` - Complete API testing guide (if detailed work needed)
-
-**Total:** ~20-23K tokens
-
-### Scenario 3: CFBD API Integration Work
+### Scenario 2: CFBD API Integration Work
 **Additional Load (~5-8K tokens):**
 - `docs/guides/cfbd-api-monitoring.md` - CFBD API monitoring and alerting
 - `docs/guides/api-reference-data.md` - Data endpoint patterns
@@ -55,7 +47,7 @@ Load additional docs based on your specific task:
 
 1. **Always start with Essential docs** (~4.5K tokens)
 2. **Add task-specific docs** based on scenario (~5-8K tokens)
-3. **Load full detailed guides** only when needed during execution (e.g., `comprehensive-api-testing.md` when writing tests)
+3. **Load full detailed guides** only when needed during execution
 
 ---
 
@@ -74,12 +66,11 @@ Load additional docs based on your specific task:
 | Task Type | Essential | Task-Specific | Total |
 |-----------|-----------|---------------|-------|
 | General Development | ✅ | None | ~4.5K |
-| API Endpoint | ✅ | api-testing-quick-ref.md | ~9-12K |
-| Testing | ✅ | api-testing-quick-ref.md | ~9-12K |
+| API Endpoint | ✅ | api-reference-data.md | ~9-12K |
 | CFBD API Work | ✅ | cfbd-api-monitoring.md, api-reference-data.md | ~9-12K |
 | Frontend | ✅ | frontend/index.md | ~9-12K |
 
 ---
 
-**Remember:** Load full detailed guides (e.g., `comprehensive-api-testing.md`) only when you need comprehensive procedures during execution, not during initial context loading.
+**Remember:** Load full detailed guides only when you need comprehensive procedures during execution, not during initial context loading.
 
