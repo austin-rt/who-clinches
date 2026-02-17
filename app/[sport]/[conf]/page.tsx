@@ -23,7 +23,6 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
 import { setStandingsOpen } from '@/app/store/uiSlice';
 import { setSeason } from '@/app/store/appSlice';
-import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 const ConferencePage = () => {
   const params = useParams();
@@ -40,11 +39,9 @@ const ConferencePage = () => {
 
   useEffect(() => {
     if (season === null) {
-      void getDefaultSeasonFromCfbd().then((defaultSeason) => {
-        dispatch(setSeason(defaultSeason));
-      });
+      dispatch(setSeason(new Date().getFullYear()));
     }
-  }, [sportParam, confParam, season, dispatch]);
+  }, [season, dispatch]);
 
   useGamesData({
     sport: sport!,
