@@ -1,0 +1,61 @@
+name: Feature
+description: Feature request or enhancement
+title: "[BRIEF_TITLE]"
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: "## Description"
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What needs to be done and why
+      value: |
+        [SYSTEM_OR_COMPONENT] requires [CAPABILITY] so that [BUSINESS_VALUE].
+
+        **Business Value:** [WHY_THIS_MATTERS]
+
+        **Technical Constraints:**
+        - [LIMITATION_1]
+        - [LIMITATION_2]
+        - [LIMITATION_3]
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "## Acceptance Criteria"
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Testable outcomes that define done
+      value: |
+        - [ ] [TESTABLE_OUTCOME_1]
+        - [ ] [TESTABLE_OUTCOME_2]
+        - [ ] [TESTABLE_OUTCOME_3]
+        - [ ] [TESTABLE_OUTCOME_4]
+        - [ ] [TESTABLE_OUTCOME_5]
+        - [ ] AI documentation in docs/ai/ is updated to reflect any changes from this work
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: "## Dependencies"
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Issues that must be completed before this one (use #number to link)
+      value: |
+        - None
+    validations:
+      required: false
+  - type: textarea
+    id: parent
+    attributes:
+      label: Parent
+      description: Parent issue or epic (use #number to link)
+      placeholder: "None"
+    validations:
+      required: false
