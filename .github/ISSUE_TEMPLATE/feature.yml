@@ -38,7 +38,7 @@ body:
         - [ ] [TESTABLE_OUTCOME_5]
         - [ ] AI documentation in docs/ai/ is updated to reflect any changes from this work
     validations:
-      required: true
+      required: false
   - type: markdown
     attributes:
       value: "## Dependencies"
