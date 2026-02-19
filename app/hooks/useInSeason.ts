@@ -15,7 +15,7 @@ export const useInSeason = () => {
           if (data.inSeason !== undefined) {
             dispatch(setIsInSeason(data.inSeason));
           }
-          if (data.season !== undefined && season === null) {
+          if (data.season !== undefined) {
             dispatch(setSeason(data.season));
           }
         })

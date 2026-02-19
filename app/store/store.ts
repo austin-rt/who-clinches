@@ -16,7 +16,7 @@ const uiPersistConfig = {
 const appPersistConfig = {
   key: 'app',
   storage,
-  blacklist: ['isInSeason'],
+  blacklist: ['isInSeason', 'season'],
 };
 
 const gamePicksPersistConfig = {

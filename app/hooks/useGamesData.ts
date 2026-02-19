@@ -10,14 +10,14 @@ interface UseGamesDataParams {
 
 interface UseGamesDataReturn {
   games: GameLean[];
-  season: number;
+  season: number | null;
   isLoading: boolean;
   isError: boolean;
   isUninitialized: boolean;
 }
 
 export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataReturn => {
-  const season = useAppSelector((state) => state.app.season) ?? new Date().getFullYear();
+  const season = useAppSelector((state) => state.app.season);
 
   const queryArgs = useMemo(
     () => ({

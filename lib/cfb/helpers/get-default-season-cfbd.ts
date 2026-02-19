@@ -10,14 +10,7 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
       return currentYear;
     }
 
-    const previousYear = currentYear - 1;
-    const previousCalendar = await getCalendarFromCfbd(previousYear);
-
-    if (previousCalendar && previousCalendar.length > 0) {
-      return previousYear;
-    }
-
-    return currentYear;
+    return currentYear - 1;
   } catch (error) {
     await logError(
       error,
@@ -26,6 +19,6 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
       },
       false
     );
-    return new Date().getFullYear();
+    return new Date().getFullYear() - 1;
   }
 };

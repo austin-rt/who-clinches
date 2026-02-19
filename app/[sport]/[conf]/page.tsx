@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import GamesList from '@/app/components/GamesList';
 import ViewModeButton from '@/app/components/ViewModeButton';
@@ -19,29 +19,20 @@ import {
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { SimulateResponse } from '@/app/store/api';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { useAppDispatch } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
 import { setStandingsOpen } from '@/app/store/uiSlice';
-import { setSeason } from '@/app/store/appSlice';
-
 const ConferencePage = () => {
   const params = useParams();
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
   const dispatch = useAppDispatch();
   const standingsRef = useRef<HTMLDivElement>(null);
-  const season = useAppSelector((state) => state.app.season);
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
   const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
-
-  useEffect(() => {
-    if (season === null) {
-      dispatch(setSeason(new Date().getFullYear()));
-    }
-  }, [season, dispatch]);
 
   useGamesData({
     sport: sport!,
