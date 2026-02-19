@@ -17,25 +17,31 @@ const Score = ({ game }: ScoreProps) => {
   const gamePick = useAppSelector((state) => state.gamePicks.picks[game.id]);
 
   const getCurrentScores = useMemo(() => {
+    if (gamePick) {
+      const actualScores =
+        game.completed || (view === 'scores' && game.state === 'in')
+          ? { away: game.away.score ?? 0, home: game.home.score ?? 0 }
+          : null;
+      const predictedScores = game.predictedScore
+        ? { away: game.predictedScore.away, home: game.predictedScore.home }
+        : null;
+      const defaultScores = actualScores || predictedScores;
+      const pickMatchesDefault =
+        defaultScores &&
+        gamePick.awayScore === defaultScores.away &&
+        gamePick.homeScore === defaultScores.home;
+      if (!pickMatchesDefault) {
+        return { away: gamePick.awayScore, home: gamePick.homeScore };
+      }
+    }
     if (game.completed) {
       return { away: game.away.score ?? 0, home: game.home.score ?? 0 };
     }
     if (view === 'scores' && game.state === 'in') {
       return { away: game.away.score ?? 0, home: game.home.score ?? 0 };
     }
-    if (gamePick && game.predictedScore) {
-      const pickMatchesPredicted =
-        gamePick.awayScore === game.predictedScore.away &&
-        gamePick.homeScore === game.predictedScore.home;
-      if (!pickMatchesPredicted) {
-        return { away: gamePick.awayScore, home: gamePick.homeScore };
-      }
-    }
     if (game.predictedScore) {
       return { away: game.predictedScore.away, home: game.predictedScore.home };
-    }
-    if (gamePick) {
-      return { away: gamePick.awayScore, home: gamePick.homeScore };
     }
     return { away: 0, home: 0 };
   }, [
