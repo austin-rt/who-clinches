@@ -15,8 +15,9 @@ Fetches game data from CFBD API and returns reshaped data with team metadata.
 **Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "SEC")  
 **Example**: `GET /api/games/cfb/SEC?season=2025&week=11`
 
-**Query Parameters**: 
-- `season` (string, optional) - Season year. Defaults to current season from CFBD if not provided.
+**Query Parameters**:
+
+- `season` (string, optional) - Season year (2024 or later). Defaults to current season detected from CFBD calendar, or previous year if current year's calendar doesn't exist yet.
 - `week` (string, optional) - Week number. Requires `season` parameter if provided.
 
 **Response**: `{ "events": [GameLean[]], "teams": [TeamMetadata[]], "season": number }`
@@ -38,8 +39,9 @@ Fetches current conference standings calculated from completed conference games.
 **Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "SEC")  
 **Example**: `GET /api/standings/cfb/SEC?season=2025`
 
-**Query Parameters**: 
-- `season` (string, optional) - Season year. Defaults to current season from CFBD if not provided.
+**Query Parameters**:
+
+- `season` (string, optional) - Season year (2024 or later). Defaults to current season detected from CFBD calendar, or previous year if current year's calendar doesn't exist yet.
 
 **Response**: `{ "teams": [TeamMetadata[]] }`
 
@@ -60,11 +62,13 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 
 **Request Body**: `{ "season": 2025, "overrides": { "gameId": { "homeScore": 45, "awayScore": 10 } } }`
 
-**Parameters**: 
+**Parameters**:
+
 - `season` (number, required) - Season year
 - `overrides` (object, optional) - Game ID → score overrides, defaults to `{}`. Game IDs match the `id` field from GameLean objects.
 
-**Override Format**: 
+**Override Format**:
+
 - Game ID (string) → `{ "homeScore": number, "awayScore": number }`
 - `homeScore` (number, non-negative integer, required)
 - `awayScore` (number, non-negative integer, required)
@@ -73,14 +77,16 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 
 **Response**: `{ "standings": [StandingEntry[]], "championship": [string, string], "tieLogs": [TieLog[]] }`
 
-**Response Fields**: 
+**Response Fields**:
+
 - `standings` (StandingEntry[] sorted by rank) - All teams with their final standings
 - `championship` ([string, string]) - Top 2 team IDs for championship game
 - `tieLogs` (TieLog[]) - Detailed tiebreaker explanations showing which rules were applied
 
 See `lib/api-types.ts` for full type definitions.
 
-**Error Responses**: 
+**Error Responses**:
+
 - `400` - Missing required fields, invalid score (negative/non-integer), tie scores not allowed, or conference config error
 - `404` - No conference games found for season
 - `500` - CFBD API error or tiebreaker calculation error
@@ -98,4 +104,3 @@ See `lib/api-types.ts` for full type definitions.
 ---
 
 **See also:** [Main API Reference](./api-reference.md) | [Stats Endpoints](./api-reference-stats.md)
-

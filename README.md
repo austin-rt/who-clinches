@@ -6,10 +6,12 @@ A web application that simulates game outcomes to show who clinches conference c
 
 This application allows users to simulate "what-if" scenarios for college football conference standings by:
 
-- Fetching live game data from CFBD API (REST when out of season, GraphQL when in season)
-- Allowing users to override game outcomes
-- Calculating standings using official conference tiebreaker rules (supports multiple conferences including SEC, MWC, ACC, MAC, Big Ten, Big 12, AAC, CUSA, Pac-12, Sun Belt)
-- Visualizing potential conference championship scenarios
+- **Automatic Season Detection**: Checks the CFBD API calendar to automatically default to the current season. Falls back to the previous year if the current year's calendar doesn't exist yet.
+- **Season Selection**: Browse and compare standings from any season from 2024 onwards.
+- **Live Game Data**: Fetches live game data from CFBD API (REST when out of season, GraphQL when in season)
+- **Game Override Simulation**: Override game outcomes to simulate potential championship scenarios
+- **Standings Calculations**: Calculate standings using official conference tiebreaker rules (supports SEC, MWC, ACC, MAC, Big Ten, Big 12, AAC, CUSA, Pac-12, and Sun Belt)
+- **Conference Championship Visualization**: Visualize potential conference championship scenarios based on simulated outcomes
 
 ## Tech Stack
 
@@ -39,7 +41,13 @@ sec-tiebreaker/
 │   │   ├── cfbd-alert-handler/route.ts # POST: Alert webhook handler
 │   │   └── season-status/route.ts # GET: Check if currently in season
 │   ├── components/              # React components (UI, standings, games, etc.)
+│   │   ├── SeasonSelector.tsx       # Season year selector dropdown (2024+)
+│   │   ├── ConferenceSelector.tsx   # Conference selector dropdown
+│   │   └── ...other components
 │   ├── hooks/                   # Custom React hooks
+│   │   ├── useGamesData.ts      # Hook for fetching and managing game data
+│   │   ├── useInSeason.ts       # Hook for checking season status and setting default year
+│   │   └── ...other hooks
 │   ├── store/                   # Redux store (state management, RTK Query)
 │   ├── styles/                  # Conference-specific CSS themes
 │   ├── page.tsx                 # Root page (redirects to default conference)
@@ -104,6 +112,7 @@ CFBD_API_KEY=your_cfbd_api_key  # Required: Get from https://collegefootballdata
 ```
 
 **API Rate Limits:**
+
 - Free tier: 1,000 calls/month (sufficient for development)
 - Tier 2: $1/month (recommended for normal use)
 - Tier 3+: Higher limits for in-season usage
@@ -116,7 +125,33 @@ CFBD_API_KEY=your_cfbd_api_key  # Required: Get from https://collegefootballdata
 - `RESEND_API_KEY` - Resend API key for email alerts (optional)
 - `RESEND_FROM_EMAIL` - From email address for alerts (optional)
 - `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token for protected Vercel deployments (optional)
-- `USE_FIXTURES` - Set to 'true' to use local fixture data instead of CFBD API (development/testing)
+- `USE_FIXTURES` - Set to 'true' to use local fixture data instead of CFBD API (development/testing only). When true, only 2025 season data is available. Set to 'false' (default) to use the real CFBD API and enable browsing all available seasons via the season selector.
+
+## Features
+
+### Default Season Detection
+
+The app automatically determines which season to display on load:
+
+1. **Checks the current year's CFBD calendar**
+   - If the calendar exists, defaults to the current year
+   - If it doesn't exist yet (typically when the season hasn't been published), falls back to the previous year
+
+2. **Example (March 2026)**
+   - The 2026 CFBD calendar hasn't been published yet
+   - App defaults to 2025 season
+   - Once the 2026 calendar is published (typically mid-2026), app will default to 2026
+
+### Season Selection
+
+Users can browse standings and games from any available season using the **Season Selector** dropdown in the header:
+
+- Located in the header next to the conference selector
+- Shows seasons from 2024 onwards
+- Season resets to the default on page refresh
+- Season selection persists while exploring during the current session
+
+To use the season selector, ensure `USE_FIXTURES=false` in your `.env.local` file to enable the real CFBD API.
 
 ## Development Workflow
 
