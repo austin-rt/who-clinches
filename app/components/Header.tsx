@@ -2,6 +2,8 @@
 
 import DarkModeToggle from './DarkModeToggle';
 import Navigation from './Navigation';
+import ConferenceSelector from './ConferenceSelector';
+import SeasonSelector from './SeasonSelector';
 
 const Header = () => {
   return (
@@ -10,6 +12,8 @@ const Header = () => {
         <div className="flex-1 text-xl font-bold">Who Clinches</div>
         <div className="flex items-center gap-4">
           <Navigation />
+          <ConferenceSelector />
+          <SeasonSelector />
           <DarkModeToggle />
         </div>
       </div>
