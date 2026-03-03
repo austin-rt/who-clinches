@@ -7,7 +7,7 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { setSeason } from '@/app/store/appSlice';
 import { cn } from '@/lib/utils';
 
-const CFBD_DATA_START_YEAR = 2014;
+const CFBD_DATA_START_YEAR = 2024;
 
 const SeasonSelector = () => {
   const dispatch = useAppDispatch();
