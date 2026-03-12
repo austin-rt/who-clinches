@@ -84,12 +84,7 @@ export const POST = async (
 
     const conferenceGamesOnly = cfbdGames.filter(
       (game) =>
-        game.conferenceGame === true &&
-        !game.notes?.toLowerCase().includes('championship') &&
-        game.homePoints !== null &&
-        game.homePoints !== undefined &&
-        game.awayPoints !== null &&
-        game.awayPoints !== undefined
+        game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
     );
 
     if (conferenceGamesOnly.length === 0) {
