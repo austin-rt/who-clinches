@@ -12,8 +12,9 @@ Complete reference for statistics endpoints.
 
 Fetches College Football Playoff (CFP) rankings from CFBD API.
 
-**Query Parameters**: 
-- `season` (string, required) - Season year
+**Query Parameters**:
+
+- `season` (string, required) - Season year (2024 or later)
 - `week` (string, optional) - Week number (if invalid, returns 400 error)
 
 **Response**: `{ "rankings": PollWeek[] | null }`
@@ -22,7 +23,8 @@ Fetches College Football Playoff (CFP) rankings from CFBD API.
 
 **Caching**: No caching (rankings update at different times throughout the week). Response includes `Cache-Control: no-store` header.
 
-**Error Responses**: 
+**Error Responses**:
+
 - `400` - Missing or invalid season/week parameter
 - `500` - CFBD API error
 
@@ -34,8 +36,9 @@ Fetches College Football Playoff (CFP) rankings from CFBD API.
 
 Fetches advanced season statistics from CFBD API.
 
-**Query Parameters**: 
-- `season` (string, required) - Season year (if invalid, returns 400 error)
+**Query Parameters**:
+
+- `season` (string, required) - Season year (2024 or later. If invalid, returns 400 error)
 
 **Response**: `{ "stats": AdvancedSeasonStat[] }`
 
@@ -43,7 +46,8 @@ Fetches advanced season statistics from CFBD API.
 
 **Caching**: Cached until next Monday at 5 AM ET (revalidates weekly after all games complete). Uses Next.js `unstable_cache` with dynamic revalidation.
 
-**Error Responses**: 
+**Error Responses**:
+
 - `400` - Missing or invalid season parameter
 - `500` - CFBD API error
 
