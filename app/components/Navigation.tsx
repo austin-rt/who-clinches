@@ -37,10 +37,7 @@ const Navigation = () => {
       <label tabIndex={0} className="btn btn-ghost btn-sm font-semibold uppercase">
         College Football
       </label>
-      <ul
-        tabIndex={0}
-        className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-primary bg-base-100 p-2 shadow-lg dark:border-accent"
-      >
+      <ul className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-primary bg-base-100 p-2 shadow-lg dark:border-accent">
         {CFB_AVAILABLE_CONFERENCES.map((key) => {
           const metadata = CFB_CONFERENCE_METADATA[key];
           return (
