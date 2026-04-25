@@ -48,7 +48,7 @@ const Navigation = () => {
                   handleConferenceSelect(key);
                 }}
                 className={cn(
-                  'flex items-center gap-2 rounded-md py-2 pl-[calc(0.75rem+1rem+0.5rem)] pr-3 font-semibold uppercase',
+                  'dropdown-close flex items-center gap-2 rounded-md py-2 pl-[calc(0.75rem+1rem+0.5rem)] pr-3 font-semibold uppercase',
                   key === currentConf && 'bg-base-200 text-primary dark:text-accent'
                 )}
               >
