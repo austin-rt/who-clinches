@@ -38,17 +38,6 @@ if [ -n "$FILE_LEVEL_IGNORES" ]; then
   exit 1
 fi
 
-# 4. Run ESLint + TypeScript checks (via lint-staged)
-# This enforces: no console.log, no debugger, no 'any', no unused vars, etc.
+# 4. Run ESLint + Prettier + related Jest tests (via lint-staged) on staged files only
+# Full tsc --noEmit runs on pre-push (see .husky/pre-push)
 npx lint-staged
-
-# 5. Run all tests (unit + API integration)
-printf "${YELLOW}Running test suite...${NC}\n"
-npm run test:all
-if [ $? -ne 0 ]; then
-  printf "${RED}ERROR: Tests failed. Commit blocked.${NC}\n"
-  printf "${YELLOW}Fix test failures and try again.${NC}\n"
-  printf "${YELLOW}Run 'npm run test:all' locally to debug.${NC}\n"
-  exit 1
-fi
-printf "${YELLOW}✓ All tests passed${NC}\n"

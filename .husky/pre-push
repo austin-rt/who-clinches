@@ -1,0 +1,25 @@
+#!/bin/sh
+
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+printf "${YELLOW}Running full TypeScript type check...${NC}\n"
+npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: TypeScript errors found. Push blocked.${NC}\n"
+  printf "${YELLOW}Fix the errors above and try again.${NC}\n"
+  printf "${YELLOW}Run 'npx tsc --noEmit' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${GREEN}✓ TypeScript check passed${NC}\n"
+
+printf "${YELLOW}Running full test suite...${NC}\n"
+npm run test:all
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: Tests failed. Push blocked.${NC}\n"
+  printf "${YELLOW}Run 'npm run test:all' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${GREEN}✓ All tests passed${NC}\n"

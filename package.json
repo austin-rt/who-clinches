@@ -27,10 +27,10 @@
     "prepare": "husky"
   },
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "*.{ts,tsx,js,jsx}": [
       "prettier --write",
       "eslint --max-warnings 0",
-      "bash -c 'tsc --noEmit'"
+      "jest --bail --findRelatedTests --passWithNoTests"
     ],
     "*.{json,md,css}": [
       "prettier --write"
