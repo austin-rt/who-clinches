@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import StoreProvider from './components/StoreProvider';
 import ThemeSync from './components/ThemeSync';
 import LogRocketInit from './components/LogRocketInit';
+import HotjarInit from './components/HotjarInit';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './globals.css';
@@ -35,6 +36,7 @@ export default function RootLayout({
       >
         <StoreProvider>
           <LogRocketInit />
+          <HotjarInit />
           <ThemeSync />
           <Header />
           <main className="flex-1">{children}</main>
