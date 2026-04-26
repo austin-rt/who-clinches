@@ -33,7 +33,7 @@ const Navigation = () => {
   );
 
   return (
-    <div className="dropdown dropdown-hover dropdown-end">
+    <div className="dropdown dropdown-end">
       <label tabIndex={0} className="btn btn-ghost btn-sm font-semibold uppercase">
         College Football
       </label>
