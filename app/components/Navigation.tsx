@@ -2,7 +2,7 @@
 
 import { useRouter, useParams } from 'next/navigation';
 import { HiCheck } from 'react-icons/hi2';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useSyncExternalStore } from 'react';
 import {
   CFB_CONFERENCE_METADATA,
   CFB_AVAILABLE_CONFERENCES,
@@ -17,6 +17,15 @@ const Navigation = () => {
   const params = useParams();
   const currentConf = params.conf as string;
   const { setTheme } = useUIState();
+  const hoverable = useSyncExternalStore(
+    (cb) => {
+      const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+      mq.addEventListener('change', cb);
+      return () => mq.removeEventListener('change', cb);
+    },
+    () => window.matchMedia('(hover: hover) and (pointer: fine)').matches,
+    () => false
+  );
 
   useEffect(() => {
     if (currentConf && isValidConference(currentConf)) {
@@ -33,7 +42,7 @@ const Navigation = () => {
   );
 
   return (
-    <div className="dropdown dropdown-end">
+    <div className={cn('dropdown dropdown-end', hoverable && 'dropdown-hover')}>
       <label tabIndex={0} className="btn btn-ghost btn-sm font-semibold uppercase">
         College Football
       </label>
