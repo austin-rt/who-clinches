@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 
 const BuyMeACoffeeWidget = () => {
   useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') return;
+
     const script = document.createElement('script');
     script.setAttribute('data-name', 'BMC-Widget');
     script.setAttribute('data-cfasync', 'false');
