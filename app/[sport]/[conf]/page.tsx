@@ -114,7 +114,7 @@ const ConferencePage = () => {
         <ResetButton onReset={handleReset} className="w-fit" />
       </div>
 
-      <GamesList />
+      <GamesList onReset={handleReset} />
 
       <div className="flex w-full flex-row justify-center gap-4 sm:w-auto sm:justify-between">
         <ResetButton onReset={handleReset} className="w-1/2 sm:w-fit" />

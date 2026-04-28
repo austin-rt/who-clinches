@@ -1,18 +1,15 @@
 'use client';
 
-import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
-import { groupGamesByDay } from '@/lib/utils/gameGrouping';
-import DaySection from './DaySection';
+import ExpandedWeekGroup from './ExpandedWeekGroup';
 
 interface RemainingWeeksProps {
   weeks: GameLean[][];
+  onReset?: () => void;
 }
 
-const RemainingWeeks = ({ weeks }: RemainingWeeksProps) => {
-  const weekDays = useMemo(() => groupGamesByDay(weeks), [weeks]);
-
-  if (weekDays.length === 0) {
+const RemainingWeeks = ({ weeks, onReset }: RemainingWeeksProps) => {
+  if (weeks.length === 0) {
     return null;
   }
 
@@ -25,12 +22,11 @@ const RemainingWeeks = ({ weeks }: RemainingWeeksProps) => {
       </div>
       <div className="collapse-content">
         <div className="space-y-6 pt-2">
-          {weekDays.map((weekDay) => (
-            <DaySection
-              key={`${weekDay.weekNumber}-${weekDay.dayOfWeek}`}
-              weekNumber={weekDay.weekNumber}
-              games={weekDay.games}
-              dayLabel={weekDay.dayLabel}
+          {weeks.map((weekGames) => (
+            <ExpandedWeekGroup
+              key={weekGames[0]?.id ?? weekGames[0]?.week}
+              weekGames={weekGames}
+              onReset={onReset}
             />
           ))}
         </div>

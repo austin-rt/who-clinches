@@ -4,14 +4,16 @@ import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
 import CompactGameButton from './CompactGameButton';
 import Divider from './Divider';
+import WeekResetButton from './WeekResetButton';
 import { useUIState } from '@/app/store/useUI';
 
 interface CompactWeekGridProps {
   finalWeeks: GameLean[][];
   remainingWeeks: GameLean[][];
+  onReset?: () => void;
 }
 
-const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) => {
+const CompactWeekGrid = ({ finalWeeks, remainingWeeks, onReset }: CompactWeekGridProps) => {
   const { hideCompletedGames } = useUIState();
 
   const weeksData = useMemo(() => {
@@ -47,12 +49,15 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks }: CompactWeekGridProps) =
       {weeksData.map((week) => (
         <div
           key={week.weekNumber}
-          className="flex flex-col gap-3 rounded-lg border border-base-400 p-2 dark:border-accent"
+          className="flex flex-col gap-3 rounded-lg border border-base-400 px-2 dark:border-accent"
         >
           <div className="flex flex-col gap-1">
-            <h3 className="text-base font-semibold">
-              Week {week.weekNumber} - <span className="font-normal">{week.dateRange}</span>
-            </h3>
+            <div className="flex items-center justify-between gap-3 p-2">
+              <h3 className="text-base font-semibold">
+                Week {week.weekNumber} - <span className="font-normal">{week.dateRange}</span>
+              </h3>
+              <WeekResetButton weekGames={week.games} onReset={onReset} />
+            </div>
             <Divider />
           </div>
           <div className="flex flex-wrap gap-2 px-5 py-2">

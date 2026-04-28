@@ -1,7 +1,12 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { isValidSport, isValidConference, type SportSlug, type CFBConferenceAbbreviation } from '@/lib/constants';
+import {
+  isValidSport,
+  isValidConference,
+  type SportSlug,
+  type CFBConferenceAbbreviation,
+} from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
@@ -11,7 +16,11 @@ import RemainingWeeks from './RemainingWeeks';
 import CompactWeekGrid from './CompactWeekGrid';
 import LoadingSpinner from './LoadingSpinner';
 
-const GamesList = () => {
+interface GamesListProps {
+  onReset?: () => void;
+}
+
+const GamesList = ({ onReset }: GamesListProps) => {
   const params = useParams();
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
@@ -59,13 +68,15 @@ const GamesList = () => {
   }
 
   if (view === 'picks') {
-    return <CompactWeekGrid finalWeeks={finalWeeks} remainingWeeks={remainingWeeks} />;
+    return (
+      <CompactWeekGrid finalWeeks={finalWeeks} remainingWeeks={remainingWeeks} onReset={onReset} />
+    );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <FinalWeeks weeks={finalWeeks} />
-      <RemainingWeeks weeks={remainingWeeks} />
+      <FinalWeeks weeks={finalWeeks} onReset={onReset} />
+      <RemainingWeeks weeks={remainingWeeks} onReset={onReset} />
     </div>
   );
 };
