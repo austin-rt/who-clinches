@@ -1,15 +1,16 @@
 'use client';
 
+import BuyMeACoffeeButton from './BuyMeACoffeeButton';
+
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer footer-center mt-auto bg-base-200 p-6 text-base-content">
       <div className="container mx-auto">
-        <div className="grid grid-flow-col gap-4">
-          <div>
-            <p className="text-sm">© {currentYear} Who Clinches</p>
-          </div>
+        <div className="flex flex-col items-center gap-3">
+          <BuyMeACoffeeButton />
+          <p className="text-sm">© {currentYear} Who Clinches</p>
         </div>
       </div>
     </footer>
