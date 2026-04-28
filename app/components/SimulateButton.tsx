@@ -1,11 +1,7 @@
 'use client';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
-import {
-  SimulateResponse,
-  SimulateRequestBody,
-  useSimulateMutation,
-} from '../store/api';
+import { SimulateResponse, SimulateRequestBody, useSimulateMutation } from '../store/api';
 import {
   isValidSport,
   isValidConference,
@@ -67,7 +63,7 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
         onSimulateComplete(response);
       }
     } catch {
-      // Error handled silently
+      // Mutation error is surfaced via RTK Query state; nothing else to do here.
     }
   };
 
@@ -78,7 +74,7 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
       size="md"
       color={mode === 'dark' ? 'accent' : 'primary'}
       onClick={handleSimulate}
-      disabled={!hasPicks || isLoading || season === null}
+      disabled={!hasPicks || season === null}
       loading={isLoading}
       className="w-1/2 text-xs sm:w-fit"
     >

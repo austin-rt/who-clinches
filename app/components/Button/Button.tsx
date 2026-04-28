@@ -3,7 +3,6 @@
 import { forwardRef, type ForwardRefExoticComponent } from 'react';
 import { cn } from '@/lib/utils';
 import { type BaseButtonProps } from './BaseButtonProps';
-import LoadingSpinner from '../LoadingSpinner';
 
 const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
   HTMLButtonElement,
@@ -23,7 +22,7 @@ const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
     ref
   ) => {
     const buttonClasses = cn(
-      'btn',
+      'btn relative',
       {
         'btn-primary': color === 'primary',
         'btn-secondary': color === 'secondary',
@@ -56,7 +55,6 @@ const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
         className={buttonClasses}
         {...props}
       >
-        {loading && !disabled && <LoadingSpinner className="inline-flex py-0" size="loading-sm" />}
         <span
           className={cn({
             'opacity-0': loading && !disabled,
@@ -64,6 +62,11 @@ const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
         >
           {children}
         </span>
+        {loading && !disabled && (
+          <span className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <span className="loading loading-spinner h-2/3 w-auto text-current"></span>
+          </span>
+        )}
       </button>
     );
   }
