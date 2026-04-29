@@ -136,7 +136,7 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
             ))}
             <Divider />
             <div className="text-base-content/60 w-full text-right text-xxs font-bold">
-              * - in Title Game
+              * - Clinched Title Bid
             </div>
           </div>
         </>
