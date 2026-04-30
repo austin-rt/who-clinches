@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cfbdClient } from '@/lib/cfb/cfbd-client';
+import {
+  getCachedGames,
+  getCachedTeams,
+  getCachedRankings,
+  getCachedSp,
+  getCachedFpi,
+} from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
@@ -16,6 +22,14 @@ import {
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
+import { describeRequiredCfbdRatingFeeds } from '@/lib/cfb/tiebreaker-cfbd-requirements';
+import { checkSameOrigin } from '@/lib/api/same-origin-gate';
+import { hashPayload } from '@/lib/api/payload-hash';
+import { unstable_cache } from 'next/cache';
+
+type PipelineResult =
+  | { ok: true; data: SimulateResponse }
+  | { ok: false; status: number; error: string };
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +38,9 @@ export const POST = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: string; conf: string }> }
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
+  const originCheck = checkSameOrigin(request);
+  if (originCheck) return originCheck;
+
   try {
     const body = await request.json();
     const { season, overrides = {} } = body;
@@ -76,154 +93,161 @@ export const POST = async (
       );
     }
 
-    const cfbdGames = await cfbdClient.getGames({
-      year: season,
-      conference: conferenceMeta.cfbdId,
-      seasonType: CFBD_SEASON_TYPE.REGULAR,
-    });
+    const bodyHash = hashPayload(sport, conf, body);
 
-    const conferenceGamesOnly = cfbdGames.filter(
-      (game) =>
-        game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
-    );
+    const runPipeline = async (): Promise<PipelineResult> => {
+      const cfbdGames = await getCachedGames({
+        year: season,
+        conference: conferenceMeta.cfbdId,
+        seasonType: CFBD_SEASON_TYPE.REGULAR,
+      });
 
-    if (conferenceGamesOnly.length === 0) {
-      return NextResponse.json(
-        { error: `No ${conferenceMeta.name} conference games found for season ${season}` },
-        { status: 404 }
+      const conferenceGamesOnly = cfbdGames.filter(
+        (game) =>
+          game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
       );
-    }
 
-    const cfbdTeams = await cfbdClient.getTeams({
-      conference: conferenceMeta.cfbdId,
-    });
-
-    const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
-    const teamMap = new Map<string, TeamLean>(
-      teams.map((team) => [
-        team._id,
-        {
-          ...team,
-          conferenceId: team.conference,
-        } as TeamLean,
-      ])
-    );
-
-    const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
-    const allGames: GameLean[] = reshaped.games.map((game) => ({
-      _id: game.id,
-      ...game,
-    }));
-
-    const { filterRegularSeasonGames } = await import(
-      '@/lib/cfb/tiebreaker-rules/common/core-helpers'
-    );
-    const filteredGames = filterRegularSeasonGames(allGames);
-    const finalGames = applyOverrides(filteredGames, overrides);
-
-    const conferenceTeamIds = new Set(teams.map((team) => team._id));
-    const teamSet = new Set<string>();
-    for (const game of finalGames) {
-      if (conferenceTeamIds.has(game.home.teamId)) {
-        teamSet.add(game.home.teamId);
+      if (conferenceGamesOnly.length === 0) {
+        return {
+          ok: false,
+          status: 404,
+          error: `No ${conferenceMeta.name} conference games found for season ${season}`,
+        };
       }
-      if (conferenceTeamIds.has(game.away.teamId)) {
-        teamSet.add(game.away.teamId);
-      }
-    }
-    const allTeams = Array.from(teamSet);
 
-    const filteredConferenceGames = finalGames.filter(
-      (game) => conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
-    );
+      const cfbdTeams = await getCachedTeams({
+        conference: conferenceMeta.cfbdId,
+      });
 
-    const teamLeanArray: TeamLean[] = teams.map((team) => ({
-      _id: team._id,
-      name: team.name,
-      displayName: team.displayName,
-      shortDisplayName: team.shortDisplayName,
-      abbreviation: team.abbreviation,
-      logo: team.logo,
-      color: team.color,
-      alternateColor: team.alternateColor,
-      conferenceId: team.conference,
-      division: team.division,
-      record: team.record,
-      conferenceStanding: team.conferenceStanding,
-    }));
+      const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
+      const teamMap = new Map<string, TeamLean>(
+        teams.map((team) => [
+          team._id,
+          {
+            ...team,
+            conferenceId: team.conference,
+          } as TeamLean,
+        ])
+      );
 
-    const hasDivisions = teamLeanArray.some(
-      (team) => team.division !== null && team.division !== undefined
-    );
+      const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
+      const allGames: GameLean[] = reshaped.games.map((game) => ({
+        _id: game.id,
+        ...game,
+      }));
 
-    // Fetch rankings, advanced stats, team stats, SP+ ratings, and FPI (for SOR) for the season
-    const [
-      rankingsResponse,
-      advancedStatsResponse,
-      teamStatsResponse,
-      spRatingsResponse,
-      fpiRatingsResponse,
-    ] = await Promise.all([
-      cfbdClient.getRankings({ year: season }),
-      cfbdClient.getAdvancedSeasonStats({ year: season }),
-      cfbdClient.getTeamStats({ year: season, conference: conferenceMeta.cfbdId }),
-      cfbdClient.getSp({ year: season }),
-      cfbdClient.getFpi({ year: season }),
-    ]);
+      const { filterRegularSeasonGames } = await import(
+        '@/lib/cfb/tiebreaker-rules/common/core-helpers'
+      );
+      const filteredGames = filterRegularSeasonGames(allGames);
+      const finalGames = applyOverrides(filteredGames, overrides);
 
-    // Attach rankings and stats to teams
-    const { attachCfpRankingsToTeams } = await import('@/lib/cfb/helpers/attach-rankings');
-    const { attachAdvancedStatsToTeams } = await import('@/lib/cfb/helpers/attach-advanced-stats');
-    const { attachTurnoverMarginToTeams } = await import(
-      '@/lib/cfb/helpers/attach-turnover-margin'
-    );
-    const { attachSpPlusToTeams } = await import('@/lib/cfb/helpers/attach-sp-plus');
-    const { attachSorToTeams } = await import('@/lib/cfb/helpers/attach-sor');
-
-    let teamsWithData = attachCfpRankingsToTeams(teamLeanArray, rankingsResponse);
-    teamsWithData = attachAdvancedStatsToTeams(teamsWithData, advancedStatsResponse);
-    teamsWithData = attachTurnoverMarginToTeams(teamsWithData, teamStatsResponse);
-    teamsWithData = attachSpPlusToTeams(teamsWithData, spRatingsResponse);
-    teamsWithData = attachSorToTeams(teamsWithData, fpiRatingsResponse);
-
-    const { standings, tieLogs } = hasDivisions
-      ? await calculateDivisionalStandings(filteredConferenceGames, teamsWithData, config)
-      : await calculateStandings(filteredConferenceGames, allTeams, config, teamsWithData);
-
-    let championship: [string, string];
-    if (hasDivisions) {
-      const divisionChampions = new Map<string, string>();
-      for (const standing of standings) {
-        const game = filteredConferenceGames.find(
-          (g) => g.home.teamId === standing.teamId || g.away.teamId === standing.teamId
-        );
-        const division =
-          game?.home.teamId === standing.teamId ? game.home.division : game?.away.division;
-        if (division && standing.rank === 1 && !divisionChampions.has(division)) {
-          divisionChampions.set(division, standing.teamId);
+      const conferenceTeamIds = new Set(teams.map((team) => team._id));
+      const teamSet = new Set<string>();
+      for (const game of finalGames) {
+        if (conferenceTeamIds.has(game.home.teamId)) {
+          teamSet.add(game.home.teamId);
+        }
+        if (conferenceTeamIds.has(game.away.teamId)) {
+          teamSet.add(game.away.teamId);
         }
       }
-      const champions = Array.from(divisionChampions.values());
-      if (champions.length === 2) {
-        championship = [champions[0], champions[1]];
-      } else {
-        championship = [standings[0]?.teamId || '', standings[1]?.teamId || ''];
+      const allTeams = Array.from(teamSet);
+
+      const filteredConferenceGames = finalGames.filter(
+        (game) =>
+          conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
+      );
+
+      const teamLeanArray: TeamLean[] = teams.map((team) => ({
+        _id: team._id,
+        name: team.name,
+        displayName: team.displayName,
+        shortDisplayName: team.shortDisplayName,
+        abbreviation: team.abbreviation,
+        logo: team.logo,
+        color: team.color,
+        alternateColor: team.alternateColor,
+        conferenceId: team.conference,
+        division: team.division,
+        record: team.record,
+        conferenceStanding: team.conferenceStanding,
+      }));
+
+      const hasDivisions = teamLeanArray.some(
+        (team) => team.division !== null && team.division !== undefined
+      );
+
+      const ratingReqs = describeRequiredCfbdRatingFeeds(config);
+
+      let teamsWithData = teamLeanArray;
+
+      if (ratingReqs.needsRatings) {
+        const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] =
+          await Promise.all([
+            ratingReqs.needsCfpRankings
+              ? getCachedRankings({ year: season })
+              : Promise.resolve(null),
+            getCachedSp({ year: season }),
+            getCachedFpi({ year: season }),
+          ] as const);
+
+        if (ratingReqs.needsCfpRankings && rankingsResponse) {
+          const { attachCfpRankingsToTeams } = await import('@/lib/cfb/helpers/attach-rankings');
+          teamsWithData = attachCfpRankingsToTeams(teamsWithData, rankingsResponse);
+        }
+
+        const { attachSpPlusToTeams } = await import('@/lib/cfb/helpers/attach-sp-plus');
+        const { attachSorToTeams } = await import('@/lib/cfb/helpers/attach-sor');
+        teamsWithData = attachSpPlusToTeams(teamsWithData, spRatingsResponse);
+        teamsWithData = attachSorToTeams(teamsWithData, fpiRatingsResponse);
       }
-    } else {
-      championship = [standings[0].teamId, standings[1].teamId];
+
+      const { standings, tieLogs } = hasDivisions
+        ? await calculateDivisionalStandings(filteredConferenceGames, teamsWithData, config)
+        : await calculateStandings(filteredConferenceGames, allTeams, config, teamsWithData);
+
+      let championship: [string, string];
+      if (hasDivisions) {
+        const divisionChampions = new Map<string, string>();
+        for (const standing of standings) {
+          const game = filteredConferenceGames.find(
+            (g) => g.home.teamId === standing.teamId || g.away.teamId === standing.teamId
+          );
+          const division =
+            game?.home.teamId === standing.teamId ? game.home.division : game?.away.division;
+          if (division && standing.rank === 1 && !divisionChampions.has(division)) {
+            divisionChampions.set(division, standing.teamId);
+          }
+        }
+        const champions = Array.from(divisionChampions.values());
+        if (champions.length === 2) {
+          championship = [champions[0], champions[1]];
+        } else {
+          championship = [standings[0]?.teamId || '', standings[1]?.teamId || ''];
+        }
+      } else {
+        championship = [standings[0].teamId, standings[1].teamId];
+      }
+
+      return { ok: true, data: { standings, championship, tieLogs } };
+    };
+
+    const DEDUP_TTL_SECONDS = 60;
+    const result = await unstable_cache(
+      runPipeline,
+      ['simulate-dedup', bodyHash],
+      { revalidate: DEDUP_TTL_SECONDS }
+    )();
+
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: result.status });
     }
 
-    return NextResponse.json<SimulateResponse>(
-      {
-        standings,
-        championship,
-        tieLogs,
-      },
-      {
-        status: 200,
-        headers: { 'Cache-Control': 'no-store' },
-      }
-    );
+    return NextResponse.json<SimulateResponse>(result.data, {
+      status: 200,
+      headers: { 'Cache-Control': 'no-store' },
+    });
   } catch (error) {
     const { logError } = await import('@/lib/errorLogger');
     await logError(error, {
