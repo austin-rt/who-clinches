@@ -1,7 +1,13 @@
 'use client';
+import { useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
-import { SimulateResponse, SimulateRequestBody, useSimulateMutation } from '../store/api';
+import {
+  SimulateResponse,
+  SimulateRequestBody,
+  useSimulateMutation,
+  GameLean,
+} from '../store/api';
 import {
   isValidSport,
   isValidConference,
@@ -11,12 +17,14 @@ import {
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { useUIState } from '../store/useUI';
+import { buildSimulateInputKey } from '@/lib/client/input-hash';
 
 interface SimulateButtonProps {
+  games: GameLean[];
   onSimulateComplete?: (response: SimulateResponse) => void;
 }
 
-const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
+const SimulateButton = ({ games, onSimulateComplete }: SimulateButtonProps) => {
   const params = useParams();
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
@@ -24,6 +32,10 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
   const season = useAppSelector((state) => state.app.season);
   const { mode } = useUIState();
   const [simulate, { isLoading }] = useSimulateMutation();
+  const lastSimulateRef = useRef<{
+    inputKey: string;
+    result: SimulateResponse;
+  } | null>(null);
 
   if (!isValidSport(sportParam) || !isValidConference(confParam)) {
     return null;
@@ -47,6 +59,13 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
       };
     });
 
+    const inputKey = buildSimulateInputKey(games, overrides, season);
+
+    if (lastSimulateRef.current?.inputKey === inputKey) {
+      onSimulateComplete?.(lastSimulateRef.current.result);
+      return;
+    }
+
     const simulateRequestBody: SimulateRequestBody = {
       season,
       overrides,
@@ -58,6 +77,8 @@ const SimulateButton = ({ onSimulateComplete }: SimulateButtonProps) => {
         conf,
         simulateRequestBody,
       }).unwrap();
+
+      lastSimulateRef.current = { inputKey, result: response };
 
       if (onSimulateComplete) {
         onSimulateComplete(response);
