@@ -4,32 +4,25 @@ import {
   getTeams,
   getLines,
   getCalendar,
-  getRecords,
-  getScoreboard,
   getUserInfo,
   getTeamStats,
   getRankings,
   getAdvancedSeasonStats,
   getSp,
-  getConferenceSp,
   getFpi,
   type Game,
   type BettingGame,
   type Team,
   type CalendarWeek,
-  type TeamRecords,
-  type ScoreboardGame,
-  type DivisionClassification,
   type UserInfo,
   type TeamStat,
   type PollWeek,
   type AdvancedSeasonStat,
   type TeamSP,
-  type ConferenceSP,
   type TeamFPI,
 } from 'cfbd';
-import { shouldUseFixtures } from '@/lib/fixtures/should-use-fixtures';
 import { logError } from '@/lib/errorLogger';
+import { JSON_SERVER_URL } from '@/lib/constants';
 
 const ROTATION_THRESHOLD = 5;
 const DEV_KEY_PREFIX = 'DEV_CFBD_API_KEY';
@@ -86,9 +79,8 @@ const rotateDevKeyIfNeeded = (remainingCalls: number): void => {
 };
 
 const getBaseUrl = (): string | undefined => {
-  if (shouldUseFixtures()) {
-    const url = process.env.JSON_SERVER_URL || 'http://localhost:3001';
-    return url;
+  if (process.env.USE_FIXTURES === 'true' || process.env.NODE_ENV === 'test') {
+    return JSON_SERVER_URL;
   }
   return undefined;
 };
@@ -254,34 +246,6 @@ export const getCalendarFromCfbd = async (year: number): Promise<CalendarWeek[]>
   return result.data ?? [];
 };
 
-export const getScoreboardFromCfbd = async (params?: {
-  classification?: string;
-  conference?: string;
-}): Promise<ScoreboardGame[]> => {
-  const result = await getScoreboard({
-    query: {
-      classification: params?.classification as DivisionClassification | undefined,
-      conference: params?.conference,
-    },
-  });
-  return result.data ?? [];
-};
-
-export const getRecordsFromCfbd = async (params: {
-  year?: number;
-  team?: string;
-  conference?: string;
-}): Promise<TeamRecords[]> => {
-  const result = await getRecords({
-    query: {
-      year: params.year,
-      team: params.team,
-      conference: params.conference,
-    },
-  });
-  return result.data ?? [];
-};
-
 export const getTeamStatsFromCfbd = async (params: {
   year: number;
   conference?: string;
@@ -334,20 +298,6 @@ export const getAdvancedSeasonStatsFromCfbd = async (params: {
 
 export const getSpFromCfbd = async (params: { year: number; team?: string }): Promise<TeamSP[]> => {
   try {
-    const useFixtures = shouldUseFixtures();
-    const originalBaseUrl = useFixtures ? getBaseUrl() : undefined;
-    const originalHeaders = {
-      Authorization: `Bearer ${getActiveApiKey()}`,
-    };
-
-    if (useFixtures) {
-      // Set baseUrl to real API URL (not undefined, which might cause issues)
-      client.setConfig({
-        baseUrl: 'https://api.collegefootballdata.com',
-        headers: originalHeaders, // Preserve headers (including API key)
-      });
-    }
-
     const result = await getSp({
       query: {
         year: params.year,
@@ -355,17 +305,8 @@ export const getSpFromCfbd = async (params: { year: number; team?: string }): Pr
       },
     });
 
-    // Restore original baseUrl
-    if (useFixtures) {
-      client.setConfig({
-        baseUrl: originalBaseUrl,
-        headers: originalHeaders,
-      });
-    }
-
     void getUserInfoFromCfbd();
 
-    // Type guard to check for error response
     interface ErrorResponse {
       error: unknown;
       response?: {
@@ -379,7 +320,6 @@ export const getSpFromCfbd = async (params: { year: number; team?: string }): Pr
       data: TeamSP[];
     }
 
-    // Check for error response first - the SDK returns { error, request, response } on error
     if (result && typeof result === 'object' && 'error' in result && result.error) {
       const errorResult = result as ErrorResponse;
       const errorMessage = String(errorResult.error);
@@ -398,7 +338,6 @@ export const getSpFromCfbd = async (params: { year: number; team?: string }): Pr
       return [];
     }
 
-    // The CFBD SDK returns { data: TeamSP[] } on success
     if (result && typeof result === 'object' && 'data' in result) {
       const successResult = result as SuccessResponse;
       if (Array.isArray(successResult.data)) {
@@ -406,7 +345,6 @@ export const getSpFromCfbd = async (params: { year: number; team?: string }): Pr
       }
     }
 
-    // Some SDK versions might return the array directly
     if (Array.isArray(result)) {
       return result;
     }
@@ -421,39 +359,11 @@ export const getSpFromCfbd = async (params: { year: number; team?: string }): Pr
   }
 };
 
-export const getConferenceSpFromCfbd = async (params: {
-  year: number;
-  conference?: string;
-}): Promise<ConferenceSP[]> => {
-  const result = await getConferenceSp({
-    query: {
-      year: params.year,
-      ...(params.conference && { conference: params.conference }),
-    },
-  });
-  void getUserInfoFromCfbd();
-  return result.data ?? [];
-};
-
 export const getFpiFromCfbd = async (params: {
   year: number;
   team?: string;
 }): Promise<TeamFPI[]> => {
   try {
-    const useFixtures = shouldUseFixtures();
-    const originalBaseUrl = useFixtures ? getBaseUrl() : undefined;
-    const originalHeaders = {
-      Authorization: `Bearer ${getActiveApiKey()}`,
-    };
-
-    if (useFixtures) {
-      // Set baseUrl to real API URL (not undefined, which might cause issues)
-      client.setConfig({
-        baseUrl: 'https://api.collegefootballdata.com',
-        headers: originalHeaders, // Preserve headers (including API key)
-      });
-    }
-
     const result = await getFpi({
       query: {
         year: params.year,
@@ -461,17 +371,8 @@ export const getFpiFromCfbd = async (params: {
       },
     });
 
-    // Restore original baseUrl
-    if (useFixtures) {
-      client.setConfig({
-        baseUrl: originalBaseUrl,
-        headers: originalHeaders,
-      });
-    }
-
     void getUserInfoFromCfbd();
 
-    // Type guard to check for error response
     interface ErrorResponse {
       error: unknown;
       response?: {
@@ -485,7 +386,6 @@ export const getFpiFromCfbd = async (params: {
       data: TeamFPI[];
     }
 
-    // Check for error response first - the SDK returns { error, request, response } on error
     if (result && typeof result === 'object' && 'error' in result && result.error) {
       const errorResult = result as ErrorResponse;
       const errorMessage = String(errorResult.error);
@@ -504,7 +404,6 @@ export const getFpiFromCfbd = async (params: {
       return [];
     }
 
-    // The CFBD SDK returns { data: TeamFPI[] } on success
     if (result && typeof result === 'object' && 'data' in result) {
       const successResult = result as SuccessResponse;
       if (Array.isArray(successResult.data)) {
@@ -512,7 +411,6 @@ export const getFpiFromCfbd = async (params: {
       }
     }
 
-    // Some SDK versions might return the array directly
     if (Array.isArray(result)) {
       return result;
     }

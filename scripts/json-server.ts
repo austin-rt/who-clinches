@@ -2,7 +2,9 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'http';
 import { join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { parse } from 'url';
-import { CFB_CONFERENCE_METADATA } from '../lib/constants';
+import { CFB_CONFERENCE_METADATA, JSON_SERVER_URL } from '../lib/constants';
+
+const FIXTURES_ROOT = join(process.cwd(), '__fixtures__', 'cfbd');
 
 const getConfSlug = (cfbdId: string): string => {
   for (const [slug, meta] of Object.entries(CFB_CONFERENCE_METADATA)) {
@@ -18,148 +20,63 @@ const sendJSON = (res: ServerResponse, status: number, data: unknown) => {
   res.end(JSON.stringify(data));
 };
 
+const resolveFixturePath = (
+  pathname: string,
+  query: Record<string, string | string[] | undefined>
+): string => {
+  const dir = pathname.replace(/^\//, '');
+  const year = query.year ? String(query.year) : undefined;
+  const week = query.week ? String(query.week) : undefined;
+  const conference = query.conference ? getConfSlug(String(query.conference)) : undefined;
+  const filename = week && year ? `${year}-week${week}.json` : year ? `${year}.json` : undefined;
+
+  const segments: string[] = [FIXTURES_ROOT, dir];
+
+  if (conference && filename) {
+    segments.push(conference, filename);
+  } else if (filename) {
+    segments.push(filename);
+  } else if (conference) {
+    segments.push(`${conference}.json`);
+  } else {
+    segments.push('index.json');
+  }
+
+  return join(...segments);
+};
+
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   const parsedUrl = parse(req.url || '', true);
   const { pathname, query } = parsedUrl;
 
-  if (pathname === '/games') {
-    const { year, week, conference } = query;
-    if (!year || !conference) {
-      return sendJSON(res, 400, { error: 'year and conference are required' });
-    }
-
-    const confSlug = getConfSlug(conference as string);
-    const yearStr = String(year);
-    const weekStr = week ? String(week) : undefined;
-    const fixturePath = join(
-      process.cwd(),
-      '__fixtures__',
-      'cfbd',
-      'games',
-      confSlug,
-      `${yearStr}${weekStr ? `-week${weekStr}` : ''}.json`
-    );
-
-    if (existsSync(fixturePath)) {
-      const data = JSON.parse(readFileSync(fixturePath, 'utf-8'));
-      sendJSON(res, 200, data);
-    } else {
-      console.error(`[JSON Server] Fixture not found: ${fixturePath}`);
-      sendJSON(res, 404, {
-        error: 'Fixture not found',
-        path: fixturePath,
-        message: `Run 'npm run capture-fixtures ${confSlug} ${yearStr}${weekStr ? ` ${weekStr}` : ''}' to generate this fixture.`,
-      });
-    }
-  } else if (pathname === '/teams') {
-    const { conference } = query;
-    if (!conference) {
-      return sendJSON(res, 400, { error: 'conference is required' });
-    }
-
-    const confSlug = getConfSlug(conference as string);
-    const fixturePath = join(process.cwd(), '__fixtures__', 'cfbd', 'teams', `${confSlug}.json`);
-
-    if (existsSync(fixturePath)) {
-      const data = JSON.parse(readFileSync(fixturePath, 'utf-8'));
-      sendJSON(res, 200, data);
-    } else {
-      console.error(`[JSON Server] Fixture not found: ${fixturePath}`);
-      sendJSON(res, 404, {
-        error: 'Fixture not found',
-        path: fixturePath,
-        message: `Run 'npm run capture-fixtures ${confSlug}' to generate this fixture.`,
-      });
-    }
-  } else if (pathname === '/rankings') {
-    const { year, week } = query;
-    if (!year) {
-      return sendJSON(res, 400, { error: 'year is required' });
-    }
-
-    const yearStr = String(year);
-    const weekStr = week ? String(week) : 'latest';
-    const fixturePath = join(
-      process.cwd(),
-      '__fixtures__',
-      'cfbd',
-      'rankings',
-      `${yearStr}${weekStr !== 'latest' ? `-week${weekStr}` : ''}.json`
-    );
-
-    if (existsSync(fixturePath)) {
-      const data = JSON.parse(readFileSync(fixturePath, 'utf-8'));
-      sendJSON(res, 200, data);
-    } else {
-      // Try without week if week-specific not found
-      const fallbackPath = join(process.cwd(), '__fixtures__', 'cfbd', 'rankings', `${yearStr}.json`);
-      if (existsSync(fallbackPath)) {
-        const data = JSON.parse(readFileSync(fallbackPath, 'utf-8'));
-        sendJSON(res, 200, data);
-      } else {
-        console.error(`[JSON Server] Fixture not found: ${fixturePath}`);
-        sendJSON(res, 404, {
-          error: 'Fixture not found',
-          path: fixturePath,
-          message: `Run 'npm run capture-fixtures rankings ${yearStr}${weekStr !== 'latest' ? ` ${weekStr}` : ''}' to generate this fixture.`,
-        });
-      }
-    }
-  } else if (pathname === '/stats/season/advanced') {
-    const { year } = query;
-    if (!year) {
-      return sendJSON(res, 400, { error: 'year is required' });
-    }
-
-    const yearStr = String(year);
-    // Advanced stats fixture is per-season (all teams), conference filter is handled client-side
-    const fixturePath = join(
-      process.cwd(),
-      '__fixtures__',
-      'cfbd',
-      'stats',
-      'season',
-      'advanced',
-      `${yearStr}.json`
-    );
-
-    if (existsSync(fixturePath)) {
-      const data = JSON.parse(readFileSync(fixturePath, 'utf-8'));
-      sendJSON(res, 200, data);
-    } else {
-      console.error(`[JSON Server] Fixture not found: ${fixturePath}`);
-      sendJSON(res, 404, {
-        error: 'Fixture not found',
-        path: fixturePath,
-        message: `Run 'npm run capture-fixtures advanced-stats ${yearStr}' to generate this fixture.`,
-      });
-    }
-  } else if (pathname === '/ratings/sp') {
-    // SP+ ratings - proxy to real API if fixture not available
-    const { year } = query;
-    if (!year) {
-      return sendJSON(res, 400, { error: 'year is required' });
-    }
-    
-    // For now, return 404 to let it fall through to real API
-    // TODO: Add fixture support for SP+ ratings
-    sendJSON(res, 404, { error: 'SP+ ratings not available in fixtures - use real API' });
-  } else if (pathname === '/ratings/fpi') {
-    // FPI ratings - proxy to real API if fixture not available
-    const { year } = query;
-    if (!year) {
-      return sendJSON(res, 400, { error: 'year is required' });
-    }
-    
-    // For now, return 404 to let it fall through to real API
-    // TODO: Add fixture support for FPI ratings
-    sendJSON(res, 404, { error: 'FPI ratings not available in fixtures - use real API' });
-  } else {
-    sendJSON(res, 404, { error: 'Not found' });
+  if (!pathname || pathname === '/') {
+    return sendJSON(res, 404, { error: 'Not found' });
   }
+
+  const fixturePath = resolveFixturePath(pathname, query);
+
+  if (existsSync(fixturePath)) {
+    const data = JSON.parse(readFileSync(fixturePath, 'utf-8'));
+    return sendJSON(res, 200, data);
+  }
+
+  if (query.week) {
+    const fallbackPath = resolveFixturePath(pathname, { ...query, week: undefined });
+    if (existsSync(fallbackPath)) {
+      const data = JSON.parse(readFileSync(fallbackPath, 'utf-8'));
+      return sendJSON(res, 200, data);
+    }
+  }
+
+  console.error(`[JSON Server] Fixture not found: ${fixturePath}`);
+  sendJSON(res, 404, {
+    error: 'Fixture not found',
+    path: fixturePath,
+    message: `Capture this fixture and place it at: ${fixturePath}`,
+  });
 });
 
-const PORT = process.env.JSON_SERVER_PORT || 3001;
-server.listen(PORT, () => {
-  console.log(`JSON Server is running on http://localhost:${PORT}`);
+const port = new URL(JSON_SERVER_URL).port;
+server.listen(Number(port), () => {
+  console.log(`JSON Server is running on ${JSON_SERVER_URL}`);
 });

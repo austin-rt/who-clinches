@@ -3,13 +3,10 @@ import {
   getTeamsFromCfbd,
   getLinesFromCfbd,
   getCalendarFromCfbd,
-  getScoreboardFromCfbd,
-  getRecordsFromCfbd,
   getTeamStatsFromCfbd,
   getRankingsFromCfbd,
   getAdvancedSeasonStatsFromCfbd,
   getSpFromCfbd,
-  getConferenceSpFromCfbd,
   getFpiFromCfbd,
   getUserInfoFromCfbd,
 } from './cfbd-rest-client';
@@ -25,7 +22,6 @@ import type {
   PollWeek,
   AdvancedSeasonStat,
   TeamSP,
-  ConferenceSP,
   TeamFPI,
 } from 'cfbd';
 
@@ -217,14 +213,6 @@ export class CFBDClient {
     return getCalendarFromCfbd(year);
   }
 
-  getScoreboard(params?: { classification?: string; conference?: string }) {
-    return getScoreboardFromCfbd(params);
-  }
-
-  getRecords(params: { year?: number; team?: string; conference?: string }) {
-    return getRecordsFromCfbd(params);
-  }
-
   /**
    * Get team stats for all teams or filtered by conference/team.
    *
@@ -302,19 +290,6 @@ export class CFBDClient {
    */
   getSp(params: { year: number; team?: string }): Promise<TeamSP[]> {
     return getSpFromCfbd(params);
-  }
-
-  /**
-   * Get SP+ ratings by conference.
-   *
-   * @param params.year - Required: Season year
-   * @param params.conference - Optional: Filter by conference
-   *
-   * @example
-   * const confSp = await cfbdClient.getConferenceSp({ year: 2025, conference: 'SEC' });
-   */
-  getConferenceSp(params: { year: number; conference?: string }): Promise<ConferenceSP[]> {
-    return getConferenceSpFromCfbd(params);
   }
 
   /**

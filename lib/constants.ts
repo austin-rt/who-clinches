@@ -12,6 +12,8 @@ import { CFB_MWC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/mwc/config
 import { CFB_AAC_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/aac/config';
 import { CFB_SUNBELT_TIEBREAKER_CONFIG } from '@/lib/cfb/tiebreaker-rules/sunbelt/config';
 
+export const JSON_SERVER_URL = 'http://localhost:3001';
+
 // Map CFBD SeasonType to GameType with display names and abbreviations
 export const GAME_TYPE: GameTypeMap = {
   regular: { name: 'Regular Season', abbreviation: 'reg' },
