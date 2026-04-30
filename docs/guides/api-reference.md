@@ -40,7 +40,9 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 | Variable              | Required | Description                          |
 | --------------------- | -------- | ------------------------------------ |
-| `CFBD_API_KEY`        | Yes      | CFBD API key (get from https://collegefootballdata.com/) |
+| `CFBD_API_KEY`        | Yes (prod) | CFBD API key for production (get from https://collegefootballdata.com/) |
+| `DEV_CFBD_API_KEY`    | Yes (dev/preview) | Primary dev CFBD API key; rotation pool scanned by prefix |
+| `DEV_CFBD_API_KEY_2`  | No       | Additional dev CFBD API key for rotation (add more with `_3`, `_4`, etc.) |
 | `CFBD_ALERT_WEBHOOK_URL` | No    | Webhook URL for low API call alerts  |
 | `CFBD_ALERT_HANDLER_URL` | No    | Alternative alert handler URL (auto-detected from VERCEL_URL if not set) |
 | `CFBD_ALERT_EMAIL`    | No       | Email address for low API call alerts (required if using email alerts) |

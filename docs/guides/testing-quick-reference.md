@@ -29,7 +29,7 @@ npm run test:all
 
 ## Environment Files
 
-- **`.env.local`** - Local dev (default): `CFBD_API_KEY`, `VERCEL_AUTOMATION_BYPASS_SECRET` (for protected Vercel deployments)
+- **`.env.local`** - Local dev (default): `DEV_CFBD_API_KEY`, `DEV_CFBD_API_KEY_2`, `VERCEL_AUTOMATION_BYPASS_SECRET` (for protected Vercel deployments)
 - **`.env.preview`** - Preview/staging environment variables
 - **`.env.production`** - Production environment variables
 

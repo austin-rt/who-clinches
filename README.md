@@ -100,7 +100,9 @@ The application will be available at [http://localhost:3000](http://localhost:30
 ### Environment Variables
 
 ```bash
-CFBD_API_KEY=your_cfbd_api_key  # Required: Get from https://collegefootballdata.com/
+CFBD_API_KEY=your_prod_key        # Production (also used as fallback in dev if no DEV_ keys set)
+DEV_CFBD_API_KEY=your_dev_key     # Dev/preview: primary key with auto-rotation
+DEV_CFBD_API_KEY_2=another_key    # Dev/preview: additional key for rotation pool
 ```
 
 **API Rate Limits:**

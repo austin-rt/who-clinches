@@ -7,9 +7,16 @@ import {
   type CFBConferenceAbbreviation,
 } from '../lib/constants';
 
+const resolveApiKey = (): string => {
+  for (const [name, value] of Object.entries(process.env)) {
+    if (name.startsWith('DEV_CFBD_API_KEY') && value) return value;
+  }
+  return process.env.CFBD_API_KEY ?? '';
+};
+
 client.setConfig({
   headers: {
-    Authorization: `Bearer ${process.env.CFBD_API_KEY}`,
+    Authorization: `Bearer ${resolveApiKey()}`,
   },
 });
 
@@ -104,8 +111,8 @@ const main = async () => {
   const year = args[1] ? parseInt(args[1], 10) : new Date().getFullYear();
   const week = args[2] ? parseInt(args[2], 10) : undefined;
 
-  if (!process.env.CFBD_API_KEY) {
-    console.error('CFBD_API_KEY environment variable is required');
+  if (!resolveApiKey()) {
+    console.error('No CFBD API key found. Set DEV_CFBD_API_KEY, PROD_CFBD_API_KEY, or CFBD_API_KEY');
     process.exit(1);
   }
 
