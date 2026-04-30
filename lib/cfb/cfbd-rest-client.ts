@@ -42,7 +42,7 @@ let activeDevKeyIndex = 0;
 const devKeyUsage = new Map<number, { remainingCalls: number; timestamp: number }>();
 
 export const getActiveApiKey = (): string => {
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.VERCEL_ENV === 'production') {
     return process.env.CFBD_API_KEY ?? '';
   }
   if (devKeys.length === 0) return process.env.CFBD_API_KEY ?? '';
@@ -50,7 +50,7 @@ export const getActiveApiKey = (): string => {
 };
 
 const rotateDevKeyIfNeeded = (remainingCalls: number): void => {
-  if (process.env.NODE_ENV === 'production') return;
+  if (process.env.VERCEL_ENV === 'production') return;
   if (devKeys.length <= 1) return;
 
   devKeyUsage.set(activeDevKeyIndex, { remainingCalls, timestamp: Date.now() });
