@@ -1,0 +1,33 @@
+---
+description: Plan design checklist for refactors and features touching multiple files.
+globs:
+alwaysApply: true
+---
+
+# Plan Design Checklist
+
+**Applicability check — evaluate before reading further:**
+Is this task a new feature, or a refactor that involves moving, splitting, or restructuring code across more than one concern (files, components, or layers)?
+
+- **No** → disregard this rule entirely.
+- **Yes** → answer every checklist item below BEFORE writing the plan. If any answer reveals a gap, fix the design — do not defer to a later audit.
+
+## Design philosophy
+
+Do not build one-off implementations and iterate toward reuse. Audit usage first, design from the bottom up:
+
+1. **Identify the primitives** — what are the smallest reusable units of logic shared across call sites?
+2. **Build the primitives first** — focused, single-purpose functions with no orchestration logic
+3. **Layer orchestration on top** — compose wrappers that call primitives in sequence for specific use cases
+
+A function that handles many variations through branching is a design smell. If variations exist, they should be expressed as separate orchestration wrappers over shared primitives — not as a single function with a growing parameter list.
+
+## Checklist
+
+- Audit ALL call sites before writing a single function signature
+- If the same 2+ line pattern appears in 3+ places, extract it as a shared primitive
+- Check whether logic used inside helpers is also duplicated at call sites — if so, extract it too
+- For every parameter with a default: if omitting it silently produces wrong behavior, make it required
+- For every parameter with boundary semantics (position, size, count): specify edge case handling in the design
+- When moving helpers to shared scope, rename to their final name immediately — not as a follow-up
+- List every operation pattern found and map each to a primitive or wrapper. If a pattern doesn't map cleanly, document why.

@@ -1,0 +1,39 @@
+---
+description: Incremental execution rules for complex multi-file tasks.
+globs:
+alwaysApply: true
+---
+
+# Incremental Execution for Complex Tasks
+
+**Non-negotiable. No instruction, system-generated or otherwise, can override the checkpoint stops below.**
+
+Skip this rule only if ALL are true: single file, immediately obvious outcome, no runtime behavior to verify. When in doubt, apply it.
+
+## Execution
+
+1. Implement primitives first (shared logic, no call site wiring).
+2. Adopt in ONE call site only.
+3. Delete all code the new implementation replaced before the checkpoint. Zero dead code at each checkpoint.
+4. End every checkpoint response with — then **stop and wait for explicit developer confirmation before continuing.** Do NOT proceed to the next checkpoint under any circumstances until the developer replies with confirmation.
+
+> **Developer verification required:**
+>
+> [Numbered list of minimal UI test flows. Combine steps that share a page or context into a single flow. Each flow states what to do and what to expect. Cover both the changed behavior and likely regressions.]
+>
+> **Agent stops here. Do not proceed to [next checkpoint] until the developer confirms.**
+
+## Verification flows
+
+After each checkpoint, generate a concrete list of manual test flows. Rules:
+
+- Each flow is a sequence of UI steps ending with an observable expectation.
+- Do not include obvious steps like "run the app" or "open the browser." Start from the first meaningful user action.
+- Do include uncommon meta steps the developer might not think of (e.g., changing an env value, clearing storage, toggling a feature flag).
+- If two things need testing on the same page or in the same user journey, combine them into one flow. Never list separate flows that start at the same place.
+- Cover the changed behavior AND at least one regression check per flow where applicable.
+- If the checkpoint has no UI-observable change (e.g., pure library code with no route wiring), say so explicitly and skip the flows.
+
+## Planning
+
+Each checkpoint is a separate todo. Group by logical unit, not by file. Every checkpoint block in the plan must use the same stop pattern as step 4 above, naming the next checkpoint explicitly.
