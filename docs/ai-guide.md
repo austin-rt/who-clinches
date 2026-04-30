@@ -58,13 +58,15 @@ This is a specialized college football application built for simulating conferen
 
 **Types**: `lib/types.ts`
 
-**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (server-side `unstable_cache` wrappers with weekly TTL), `lib/cfb/cfbd-rest-client.ts`, `lib/cfb/cfbd-graphql-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration)
+**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (server-side `unstable_cache` wrappers with weekly TTL), `lib/cfb/cfbd-rest-client.ts` (REST client with API key rotation via `VERCEL_ENV`), `lib/cfb/cfbd-graphql-client.ts`, `lib/cfb/tiebreaker-cfbd-requirements.ts` (conditional rating fetches per conference config), `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration, `JSON_SERVER_URL`)
+
+**API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication), `lib/client/input-hash.ts` (client-side request deduplication)
 
 **Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached server-side via `unstable_cache` (weekly TTL, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
-**Frontend State**: `app/store/` - Redux (uiSlice, gamePicksSlice, apiSlice) with redux-persist
+**Frontend State**: `app/store/` - Redux (uiSlice, appSlice, gamePicksSlice, apiSlice) with redux-persist for ui and app slices only
 
 **Frontend Data Hook**: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query
 

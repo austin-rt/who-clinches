@@ -30,7 +30,6 @@ sec-tiebreaker/
 │   │   ├── games/[sport]/[conf]/
 │   │   │   ├── route.ts         # GET: Fetch games from CFBD API
 │   │   │   └── subscribe/route.ts # GET: GraphQL subscription for live updates
-│   │   ├── standings/[sport]/[conf]/route.ts # GET: Calculate standings from CFBD data
 │   │   ├── simulate/[sport]/[conf]/route.ts  # POST: Tiebreaker simulation endpoint
 │   │   ├── stats/
 │   │   │   ├── rankings/route.ts # GET: CFP rankings from CFBD API
@@ -47,8 +46,10 @@ sec-tiebreaker/
 ├── lib/
 │   ├── cfb/
 │   │   ├── cfbd-client.ts       # Unified CFBD API client (switches REST/GraphQL)
-│   │   ├── cfbd-rest-client.ts  # CFBD REST API client
+│   │   ├── cfbd-rest-client.ts  # CFBD REST API client (with API key rotation)
+│   │   ├── cfbd-cached.ts      # Server-side unstable_cache wrappers (weekly TTL)
 │   │   ├── cfbd-graphql-client.ts # CFBD GraphQL API client
+│   │   ├── tiebreaker-cfbd-requirements.ts # Conditional rating fetches per conference
 │   │   ├── tiebreaker-rules/
 │   │   │   ├── core/            # Core tiebreaker engine (calculateStandings, breakTie)
 │   │   │   ├── common/          # Common tiebreaker rules (A-F)
@@ -63,6 +64,8 @@ sec-tiebreaker/
 │   │   │   ├── cusa/            # CUSA-specific rules and config
 │   │   │   └── sunbelt/         # Sun Belt-specific rules and config
 │   │   └── helpers/             # Helper functions (season detection, prefill, stats attachment)
+│   ├── api/                     # API utilities (same-origin-gate, payload-hash)
+│   ├── client/                  # Client-side utilities (input-hash)
 │   ├── fixtures/                # Fixture data loader for testing
 │   ├── utils/                   # Utility functions (game grouping, organization)
 │   ├── reshape-games.ts         # Game data transformation
@@ -158,7 +161,6 @@ CFBD API → reshape functions → API response → Frontend
 
 - `GET /api/games/[sport]/[conf]` - Fetch games and teams from CFBD API, reshape, return data
 - `GET /api/games/[sport]/[conf]/subscribe` - GraphQL subscription for live score updates (Server-Sent Events)
-- `GET /api/standings/[sport]/[conf]` - Calculate current conference standings from completed games
 - `GET /api/stats/rankings` - Fetch CFP rankings from CFBD API
 - `GET /api/stats/advanced` - Fetch advanced season statistics (SP+, FPI, SOR, etc.) from CFBD API
 

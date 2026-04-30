@@ -82,23 +82,17 @@ interface GamePicksState {
 
 **Important**: All localStorage access in this codebase is through redux-persist. There is no direct `localStorage.getItem()` or `localStorage.setItem()` usage. Components interact with Redux state only; persistence is handled automatically by redux-persist.
 
-**Implementation** (`app/store/store.ts`): Uses `persistReducer` to wrap ui and gamePicks slices. Automatically reads from localStorage on app load and writes on state changes. SSR-safe via `PersistGate` component. Single source of truth (Redux).
+**Implementation** (`app/store/store.ts`): Uses `persistReducer` to wrap ui and app slices. Automatically reads from localStorage on app load and writes on state changes. SSR-safe via `PersistGate` component. Single source of truth (Redux).
 
 **Configuration:**
 
 **Persistence Config** (`app/store/store.ts`):
 
 - `uiPersistConfig`: key `'ui'`, blacklist `['standingsOpen']` (UI state only)
-- `appPersistConfig`: key `'app'`, blacklist `['isInSeason']` (server data)
-- `gamePicksPersistConfig`: key `'gamePicks'`, includes `redux-persist-expire` transform
-  - Expires after 1 hour (3600 seconds) of inactivity
-  - Automatically clears picks when expired
-  - Expiration timer resets on each state update
-- localStorage keys: `persist:ui`, `persist:app`, `persist:gamePicks`
+- `appPersistConfig`: key `'app'`, blacklist `['isInSeason', 'season']` (server data)
+- localStorage keys: `persist:ui`, `persist:app`
 - Middleware: redux-persist actions ignored in serializableCheck
 
 **Usage:** Components dispatch Redux actions normally - persistence is automatic.
 
-**Game Picks Expiration:** Game picks are automatically cleared from localStorage after 1 hour of inactivity. The expiration timer resets whenever picks are updated, ensuring active users retain their selections. This prevents stale simulation data from persisting across sessions.
-
-**Notes:** API slice (RTK Query) is NOT persisted. State restored on app load via `PersistGate`.
+**Notes:** Game picks (`gamePicksSlice`) and the API slice (RTK Query) are NOT persisted. State restored on app load via `PersistGate`.

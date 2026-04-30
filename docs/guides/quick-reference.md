@@ -26,6 +26,7 @@ Domain-specific content locations for common tasks.
 - **Official Rules (SINGULAR SOURCE OF TRUTH)**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official Conference sources.
 - **Implementation**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified in the rules files
 - **Extraction Script**: `scripts/extract-sec-rules.py` - Example script that fetches latest PDF from conference sources and extracts text
+- **External Analytics**: `docs/guides/external-analytics-by-conference.md` - What each conference requires vs. what CFBD provides
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (dynamic endpoint supporting multiple conferences)
 
 ## Data Updates

@@ -42,7 +42,7 @@ npm run test:all
 
 ## Test Structure
 
-- `__tests__/api/cfb/` - API endpoint tests (simulate, standings)
+- `__tests__/api/cfb/` - API endpoint tests (simulate, predicted scores)
 - `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration tests including async rules)
 - `__tests__/lib/` - Unit tests (reshape-games, reshape-teams-from-cfbd) using mocks
 - `__tests__/setup.ts` - Test helpers (fetchAPI)
@@ -52,7 +52,7 @@ npm run test:all
 
 ## Test Coverage
 
-- API endpoints: Business logic and behavior tests (simulate, standings, multi-conference support)
+- API endpoints: Business logic and behavior tests (simulate, multi-conference support)
 - Reshape functions: Edge cases and transformation logic
 - Tiebreaker rules: Comprehensive rule tests including async rules (e.g., SP+ and FPI fetching for MWC)
 - **Coverage threshold:** 80% minimum (branches, functions, lines, statements)
@@ -78,3 +78,39 @@ npm run test:all
 - **Tests hanging**: Check logs for teardown issues. `forceExit: true` in Jest config prevents hanging
 - **Timeouts**: Test timeout is 120s per test
 - **Empty coverage**: Run `npm run test:coverage`, open `coverage/index.html`
+
+---
+
+## Preview Deployment Testing
+
+The preview deployment at `preview.whoclinches.com` has Vercel Protection enabled. API-only testing works with a query parameter, but browser testing requires a cookie.
+
+### API testing (curl)
+
+Append the bypass token as a query parameter:
+
+```bash
+curl -s "https://preview.whoclinches.com/api/games/cfb/sec?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3"
+```
+
+### Browser testing (agent or manual)
+
+Static assets (JS, CSS, fonts) are blocked unless the bypass token is set as a cookie. Navigate to this URL first to set the cookie, then all subsequent page loads work:
+
+```
+https://preview.whoclinches.com/?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3&x-vercel-set-bypass-cookie=samesitenone
+```
+
+The `x-vercel-set-bypass-cookie=samesitenone` parameter tells Vercel to persist the token as a `SameSite=None` cookie, which applies to all asset requests on the domain.
+
+### POST endpoints
+
+POST endpoints (e.g., simulate) require both the bypass token and a same-origin header:
+
+```bash
+curl -s "https://preview.whoclinches.com/api/simulate/cfb/sec?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3" \
+  -X POST \
+  -H "Content-Type: application/json" \
+  -H "Origin: https://preview.whoclinches.com" \
+  -d '{"overrides":{},"season":2026}'
+```

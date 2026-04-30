@@ -55,10 +55,7 @@ Alerts are rate-limited to prevent spam:
 
 ## Automatic Monitoring
 
-The monitoring system automatically checks remaining calls after each API request:
-- `getGames()`
-- `getTeams()`
-- `getLines()`
+The monitoring system automatically checks remaining calls after every CFBD API call (games, teams, lines, team stats, rankings, advanced stats, SP+, FPI).
 
-In production, alerts are sent via webhook. In development, warnings are logged to console.
+In production, alerts are sent via webhook or email. In development, no alerts are sent.
 

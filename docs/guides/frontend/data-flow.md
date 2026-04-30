@@ -55,8 +55,7 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 2. `CompactGameButton` calculates scores
 3. Dispatches `setGamePick` to Redux
 4. Redux state updates
-5. redux-persist automatically persists to localStorage
-6. Component re-renders with new selection
+5. Component re-renders with new selection
 
 ---
 
@@ -65,7 +64,7 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 1. User edits score input in scores mode
 2. `Score` component validates on blur
 3. If valid: Dispatches `setGamePick` to Redux
-4. Redux state updates → redux-persist automatically persists
+4. Redux state updates
 5. Component re-renders with new score
 
 ---
@@ -75,7 +74,7 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 **State Management:**
 - `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
 - `useUIState()` hook from `app/store/useUI.ts`
-- redux-persist automatically persists ui and gamePicks slices to localStorage (keys: `persist:ui`, `persist:gamePicks`)
+- redux-persist automatically persists ui and app slices to localStorage (keys: `persist:ui`, `persist:app`)
 
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 
