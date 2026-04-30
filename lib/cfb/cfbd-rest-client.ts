@@ -31,6 +31,60 @@ import {
 import { shouldUseFixtures } from '@/lib/fixtures/should-use-fixtures';
 import { logError } from '@/lib/errorLogger';
 
+const ROTATION_THRESHOLD = 5;
+const DEV_KEY_PREFIX = 'DEV_CFBD_API_KEY';
+
+const collectDevKeys = (): string[] => {
+  const keys: string[] = [];
+  for (const [name, value] of Object.entries(process.env)) {
+    if (name.startsWith(DEV_KEY_PREFIX) && value) {
+      keys.push(value);
+    }
+  }
+  return keys;
+};
+
+const devKeys = collectDevKeys();
+let activeDevKeyIndex = 0;
+const devKeyUsage = new Map<number, { remainingCalls: number; timestamp: number }>();
+
+export const getActiveApiKey = (): string => {
+  if (process.env.NODE_ENV === 'production') {
+    return process.env.CFBD_API_KEY ?? '';
+  }
+  if (devKeys.length === 0) return process.env.CFBD_API_KEY ?? '';
+  return devKeys[activeDevKeyIndex] ?? devKeys[0];
+};
+
+const rotateDevKeyIfNeeded = (remainingCalls: number): void => {
+  if (process.env.NODE_ENV === 'production') return;
+  if (devKeys.length <= 1) return;
+
+  devKeyUsage.set(activeDevKeyIndex, { remainingCalls, timestamp: Date.now() });
+
+  if (remainingCalls >= ROTATION_THRESHOLD) return;
+
+  for (let i = 0; i < devKeys.length; i++) {
+    if (i === activeDevKeyIndex) continue;
+    const usage = devKeyUsage.get(i);
+    if (!usage || usage.remainingCalls >= ROTATION_THRESHOLD) {
+      activeDevKeyIndex = i;
+      const baseUrl = getBaseUrl();
+      client.setConfig({
+        headers: { Authorization: `Bearer ${devKeys[i]}` },
+        ...(baseUrl && { baseUrl }),
+      });
+      return;
+    }
+  }
+
+  void logError(new Error('All dev CFBD API keys below rotation threshold'), {
+    action: 'cfbd-key-rotation',
+    devKeyCount: devKeys.length,
+    usageSnapshot: Object.fromEntries(devKeyUsage),
+  });
+};
+
 const getBaseUrl = (): string | undefined => {
   if (shouldUseFixtures()) {
     const url = process.env.JSON_SERVER_URL || 'http://localhost:3001';
@@ -42,7 +96,7 @@ const getBaseUrl = (): string | undefined => {
 const baseUrl = getBaseUrl();
 client.setConfig({
   headers: {
-    Authorization: `Bearer ${process.env.CFBD_API_KEY}`,
+    Authorization: `Bearer ${getActiveApiKey()}`,
   },
   ...(baseUrl && { baseUrl }),
 });
@@ -101,6 +155,7 @@ export const getUserInfoFromCfbd = async (forceRefresh = false): Promise<UserInf
     if (info) {
       lastUserInfoCheck = { info, timestamp: now };
       void logRemainingCalls(info);
+      rotateDevKeyIfNeeded(info.remainingCalls);
       return info;
     }
 
@@ -279,12 +334,10 @@ export const getAdvancedSeasonStatsFromCfbd = async (params: {
 
 export const getSpFromCfbd = async (params: { year: number; team?: string }): Promise<TeamSP[]> => {
   try {
-    // Always use real API for SP+ ratings (not available in fixtures)
-    // Temporarily override baseUrl to use real API, preserving headers
     const useFixtures = shouldUseFixtures();
     const originalBaseUrl = useFixtures ? getBaseUrl() : undefined;
     const originalHeaders = {
-      Authorization: `Bearer ${process.env.CFBD_API_KEY}`,
+      Authorization: `Bearer ${getActiveApiKey()}`,
     };
 
     if (useFixtures) {
@@ -387,12 +440,10 @@ export const getFpiFromCfbd = async (params: {
   team?: string;
 }): Promise<TeamFPI[]> => {
   try {
-    // Always use real API for FPI ratings (not available in fixtures)
-    // Temporarily override baseUrl to use real API, preserving headers
     const useFixtures = shouldUseFixtures();
     const originalBaseUrl = useFixtures ? getBaseUrl() : undefined;
     const originalHeaders = {
-      Authorization: `Bearer ${process.env.CFBD_API_KEY}`,
+      Authorization: `Bearer ${getActiveApiKey()}`,
     };
 
     if (useFixtures) {

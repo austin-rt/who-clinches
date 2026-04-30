@@ -1,15 +1,16 @@
 import { fetchWithTimeout } from '../fetch-with-timeout';
 import { createClient, Client } from 'graphql-ws';
 import { logError } from '../errorLogger';
+import { getActiveApiKey } from './cfbd-rest-client';
 
 const REQUEST_TIMEOUT_MS = 60000;
 const GRAPHQL_ENDPOINT = 'https://graphqldocs.collegefootballdata.com/v1/graphql';
 const GRAPHQL_WS_ENDPOINT = 'wss://graphql.collegefootballdata.com/v1/graphql';
 
 const getAuthHeaders = () => {
-  const apiKey = process.env.CFBD_API_KEY;
+  const apiKey = getActiveApiKey();
   if (!apiKey) {
-    const error = new Error('CFBD_API_KEY environment variable is required');
+    const error = new Error('No CFBD API key configured');
     void logError(error, {
       action: 'get-auth-headers',
     });
@@ -93,9 +94,9 @@ export class CFBDGraphQLClient {
 
   private getWsClient(): Client {
     if (!this.wsClient) {
-      const apiKey = process.env.CFBD_API_KEY;
+      const apiKey = getActiveApiKey();
       if (!apiKey) {
-        const error = new Error('CFBD_API_KEY environment variable is required');
+        const error = new Error('No CFBD API key configured');
         void logError(error, {
           action: 'get-ws-client',
         });
