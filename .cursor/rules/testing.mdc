@@ -1,0 +1,64 @@
+---
+alwaysApply: true
+---
+
+# Testing Rules
+
+## What to Test
+
+Test behavior this application owns — the rules, constraints, and decisions that live in our code. A test has value only if it can catch a bug that would affect real users.
+
+The distinguishing question: _does this application own this behavior, or does the runtime/framework guarantee it?_ If the behavior would be correct in any reasonable implementation, it is not worth testing.
+
+**Do not test:**
+
+- Argument passthrough — that a value passed in is forwarded to a dependency
+- Constant propagation — that a hardcoded option is included in a call
+- Return value forwarding — that a function returns what its dependency returned
+- Existence checks — that output is not null or undefined without asserting its content
+- That a component renders without crashing
+- That JavaScript works (const assignment, arithmetic, sort stability)
+- That third-party libraries behave correctly
+
+**Do test:**
+
+- Conditional logic and branching this application is responsible for
+- What a function deliberately ignores, not just what it handles — boundary exclusions are business decisions
+- Error paths where the application has explicit handling logic
+- Behavior that changes based on domain input
+
+If the source file contains a defensive guard, test it — the author judged it necessary.
+
+If a hook is a one-line wrapper over a third-party hook, it has no testable logic of its own. Test the pure functions extracted from it instead.
+
+If a test would still pass after deleting the specific branch it claims to cover, it is not a useful test. Apply this per branch, not per function. A test that appears to assert JavaScript behavior (ordering, arithmetic) is still valid if it is tied to a specific application branch — use the deletion test to distinguish the two.
+
+## Test Quality Over Quantity
+
+Prefer fewer high-value tests. Before writing each case, ask: what production bug would this catch? Before adding a test case, also ask whether an existing test would already fail if the same bug were introduced. If yes, the new case is redundant. Stop adding cases when you can no longer name a specific bug each new case would catch that no existing test already covers.
+
+## Writing Tests
+
+- List required test cases before writing any code — evaluate each for business value before implementing.
+- Test observable behavior, not implementation details.
+- Use exported constants from the source in both assertions and test descriptions. When referencing or updating a constant, update every assertion value and every description string that names it in the same edit — doing one without the other is incomplete.
+- Do not suppress or work around test failures — fix the root cause. If two consecutive attempts to fix the same error each produce a different error, stop and present the situation rather than attempting a third approach. Do not modify project config files to resolve test environment issues without first reading the official docs and finding proven solutions recommended by the maintainers.
+- Before adopting any import, verify it is not deprecated. If the non-deprecated alternative is unavailable in this environment, document why with an inline comment on the import line and flag it to the user.
+
+## Mocking
+
+- Only mock external dependencies (network, third-party libs, time/randomness).
+- Do not mock business logic, pure functions, or the unit under test.
+- Reset mocks between tests. Only mock what the test actually uses.
+
+## Completeness Checklist
+
+Before marking a test file done:
+
+- [ ] Each test targets behavior this application owns — not JS, framework, or library behavior
+- [ ] Each test would fail if the specific branch it covers were deleted or inverted
+- [ ] Success, failure, and edge case paths are covered
+- [ ] Every assertion value and description string that references a constant uses the exported name — no old literals remain anywhere in the file
+- [ ] No skipped or stubbed tests without an explicit comment explaining why
+- [ ] Mocks are reset between tests
+- [ ] Each test covers at least one failure scenario no other test in the file would catch
