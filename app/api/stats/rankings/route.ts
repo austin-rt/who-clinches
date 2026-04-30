@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { cfbdClient } from '@/lib/cfb/cfbd-client';
+import { getCachedRankings } from '@/lib/cfb/cfbd-cached';
 import type { PollWeek } from 'cfbd';
 import { ApiErrorResponse } from '@/app/store/api';
 
@@ -44,8 +44,7 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
-    // Always fetch fresh - no caching (rankings update at different times throughout the week)
-    const pollWeeks = await cfbdClient.getRankings({
+    const pollWeeks = await getCachedRankings({
       year: seasonYear,
       week: weekNumber,
     });

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { unstable_cache } from 'next/cache';
 import { cfbdClient } from '@/lib/cfb/cfbd-client';
-import { calculateNextMondayRevalidate } from '@/lib/cfb/helpers/calculate-next-monday-revalidate';
+import { calculateNextSaturdayRevalidate } from '@/lib/cfb/helpers/calculate-next-weekday-revalidate';
 import { ApiErrorResponse } from '@/app/store/api';
 
 export const runtime = 'nodejs';
@@ -33,10 +33,7 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
-    // Calculate revalidation time: next Monday at 5 AM ET
-    // This gives buffer after latest games finish (Hawai'i games can end as late as 3:59 AM ET Sunday)
-    // and allows time for CFBD API to update stats
-    const REVALIDATE_SECONDS = calculateNextMondayRevalidate(5, 'America/New_York');
+    const REVALIDATE_SECONDS = calculateNextSaturdayRevalidate();
 
     const getCachedAdvancedStats = unstable_cache(
       async () => {
