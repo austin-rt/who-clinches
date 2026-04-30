@@ -79,6 +79,7 @@ const rotateDevKeyIfNeeded = (remainingCalls: number): void => {
 };
 
 const getBaseUrl = (): string | undefined => {
+  if (process.env.VERCEL_ENV === 'production') return undefined;
   if (process.env.USE_FIXTURES === 'true' || process.env.NODE_ENV === 'test') {
     return JSON_SERVER_URL;
   }
