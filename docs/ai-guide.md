@@ -25,7 +25,7 @@ This is a specialized college football application built for simulating conferen
 ## Repository Structure
 
 **Key Directories:**
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/standings/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
@@ -58,9 +58,9 @@ This is a specialized college football application built for simulating conferen
 
 **Types**: `lib/types.ts`
 
-**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-rest-client.ts`, `lib/cfb/cfbd-graphql-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration)
+**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (server-side `unstable_cache` wrappers with weekly TTL), `lib/cfb/cfbd-rest-client.ts`, `lib/cfb/cfbd-graphql-client.ts`, `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration)
 
-**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. All data is fetched directly from CFBD API on each request - no database persistence.
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached server-side via `unstable_cache` (weekly TTL, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
@@ -77,7 +77,7 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 - **Vercel Timeouts**: 60s Pro, 10s Hobby
 - **CFBD API**: Rate limits based on tier (Free: 1,000/month, Tier 2: $1/month, Tier 3+: higher limits for in-season)
 - **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
-- **No Database**: All data is fetched directly from CFBD API on each request. No MongoDB/Mongoose persistence.
+- **No Database**: CFBD data cached server-side via `unstable_cache` (weekly TTL). No MongoDB/Mongoose persistence.
 
 ---
 

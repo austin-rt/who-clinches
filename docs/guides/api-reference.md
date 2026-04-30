@@ -6,10 +6,10 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Endpoint Documentation
 
-- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], GET /api/standings/[sport]/[conf], POST /api/simulate/[sport]/[conf]
+- **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
 - **[Stats Endpoints](./api-reference-stats.md)** - GET /api/stats/rankings, GET /api/stats/advanced
 
-**Note**: All endpoints fetch data directly from the CFBD API on each request. No database persistence or scheduled jobs are used.
+**Note**: CFBD data is cached server-side via `unstable_cache` with a weekly TTL (expires Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional based on conference tiebreaker config. No database persistence or scheduled jobs are used.
 
 ---
 
@@ -53,7 +53,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 ## Notes
 
-- All endpoints fetch data directly from CFBD API on each request
+- CFBD data is cached server-side (`unstable_cache`, weekly TTL anchored to Saturday 11 AM ET)
 - Conference identifiers use CFBD format (e.g., "SEC" for SEC)
 - Frontend uses RTK Query with GraphQL subscriptions for live updates (when in season)
 - REST API used when out of season or GraphQL disabled

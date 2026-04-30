@@ -4,7 +4,7 @@ Complete reference for data query endpoints.
 
 **Related:** [Main API Reference](./api-reference.md)
 
-**Note**: All endpoints fetch data directly from the CFBD API on each request. No database persistence is used.
+**Note**: CFBD data is cached server-side via `unstable_cache` with a weekly TTL (expires Saturday 11 AM ET). Rating fetches are conditional per conference config.
 
 ---
 
@@ -27,27 +27,7 @@ Fetches game data from CFBD API and returns reshaped data with team metadata.
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
-**Notes**: Fetches directly from CFBD API on each request. Teams are automatically extracted from CFBD API responses. Conference records are calculated from completed conference games using the modular tiebreaker system. Uses GraphQL when in season and enabled, falls back to REST API otherwise.
-
----
-
-## GET /api/standings/[sport]/[conf]
-
-Fetches current conference standings calculated from completed conference games.
-
-**Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "SEC")  
-**Example**: `GET /api/standings/cfb/SEC?season=2025`
-
-**Query Parameters**: 
-- `season` (string, optional) - Season year. Defaults to current season from CFBD if not provided.
-
-**Response**: `{ "teams": [TeamMetadata[]] }`
-
-**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding` (string, e.g., "1st"), `conferenceRecord` (string, e.g., "7-1"), `rank` (number | null)
-
-**Caching**: 60s
-
-**Notes**: Calculates standings from completed conference games using the modular tiebreaker system. Supports multiple conferences (SEC, MWC, ACC, MAC, Big Ten, AAC, CUSA, Pac-12, Sun Belt).
+**Notes**: CFBD games and teams are fetched via `unstable_cache` (weekly TTL). Teams are automatically extracted from CFBD API responses. Conference records are calculated from completed conference games using the modular tiebreaker system. Uses GraphQL when in season and enabled, falls back to REST API otherwise.
 
 ---
 
@@ -87,7 +67,7 @@ See `lib/api-types.ts` for full type definitions.
 
 **Tiebreaker Rules**: Uses modular async tiebreaker system. Rules can fetch external data on demand (e.g., SP+ and FPI ratings for MWC). SEC rules: A (head-to-head), B (common opponents), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin). MWC includes team rating score.
 
-**Notes**: Fetches games from CFBD API. Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
+**Notes**: Games and teams fetched via `unstable_cache` (weekly TTL). Rating fetches (SP+, FPI, CFP rankings) are conditional -- only made for conferences whose tiebreaker config includes "Team Rating Score" (see `describeRequiredCfbdRatingFeeds`). Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
 
 ## Data Model Notes
 
