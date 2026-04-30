@@ -63,52 +63,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/ApiErrorResponse'
 
-  /standings/{sport}/{conf}:
-    get:
-      summary: Get current conference standings
-      operationId: getStandings
-      tags:
-        - Standings
-      parameters:
-        - name: sport
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Sport identifier
-        - name: conf
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Conference abbreviation
-        - name: season
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int32
-          description: Season year (defaults to current season)
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StandingsResponse'
-        '400':
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-        '500':
-          description: Server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ApiErrorResponse'
-
   /simulate/{sport}/{conf}:
     post:
       summary: Simulate conference standings with optional game overrides
@@ -538,15 +492,6 @@ components:
           type: integer
           format: int32
 
-    StandingsResponse:
-      type: object
-      required:
-        - teams
-      properties:
-        teams:
-          type: array
-          items:
-            $ref: '#/components/schemas/TeamMetadata'
 
     GameOverride:
       type: object

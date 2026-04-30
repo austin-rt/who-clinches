@@ -1,7 +1,6 @@
 import { apiSlice as api } from './baseApi';
 export const addTagTypes = [
   'Games',
-  'Standings',
   'Simulation',
   'Status',
   'Monitoring',
@@ -22,15 +21,6 @@ const injectedRtkApi = api
           },
         }),
         providesTags: ['Games'],
-      }),
-      getStandings: build.query<GetStandingsApiResponse, GetStandingsApiArg>({
-        query: (queryArg) => ({
-          url: `/standings/${queryArg.sport}/${queryArg.conf}`,
-          params: {
-            season: queryArg.season,
-          },
-        }),
-        providesTags: ['Standings'],
       }),
       simulate: build.mutation<SimulateApiResponse, SimulateApiArg>({
         query: (queryArg) => ({
@@ -94,15 +84,6 @@ export type GetSeasonGameDataApiArg = {
   season?: number;
   /** Week number (requires season parameter) */
   week?: number | string;
-};
-export type GetStandingsApiResponse = /** status 200 Successful response */ StandingsResponse;
-export type GetStandingsApiArg = {
-  /** Sport identifier */
-  sport: string;
-  /** Conference abbreviation */
-  conf: string;
-  /** Season year (defaults to current season) */
-  season?: number;
 };
 export type SimulateApiResponse = /** status 200 Successful response */ SimulateResponse;
 export type SimulateApiArg = {
@@ -211,9 +192,6 @@ export type GamesResponse = {
 export type ApiErrorResponse = {
   error: string;
   code: string;
-};
-export type StandingsResponse = {
-  teams: TeamMetadata[];
 };
 export type TeamRecord = {
   wins: number;
@@ -326,7 +304,6 @@ export type AdvancedStatsResponse = {
 };
 export const {
   useGetSeasonGameDataQuery,
-  useGetStandingsQuery,
   useSimulateMutation,
   useGetSeasonStatusQuery,
   useGetCfbdMonitorQuery,
