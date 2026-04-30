@@ -15,13 +15,24 @@ Skip this rule only if ALL are true: single file, immediately obvious outcome, n
 1. Implement primitives first (shared logic, no call site wiring).
 2. Adopt in ONE call site only.
 3. Delete all code the new implementation replaced before the checkpoint. Zero dead code at each checkpoint.
-4. End every checkpoint response with — then **stop and wait for explicit developer confirmation before continuing.** Do NOT proceed to the next checkpoint under any circumstances until the developer replies with confirmation.
+4. Before asking the developer to verify, the agent must test the checkpoint itself (see Agent self-test below).
+5. End every checkpoint response with — then **stop and wait for explicit developer confirmation before continuing.** Do NOT proceed to the next checkpoint under any circumstances until the developer replies with confirmation.
 
 > **Developer verification required:**
 >
 > [Numbered list of minimal UI test flows. Combine steps that share a page or context into a single flow. Each flow states what to do and what to expect. Cover both the changed behavior and likely regressions.]
 >
 > **Agent stops here. Do not proceed to [next checkpoint] until the developer confirms.**
+
+## Agent self-test
+
+After implementing a checkpoint and before presenting verification flows to the developer:
+
+1. Add temporary instrumentation (console logs, curl calls, file writes, etc.) to confirm the changed behavior works as expected.
+2. Run the instrumented code (start/restart servers, hit endpoints, trigger the relevant code path).
+3. Read the output and verify correctness. If something is wrong, fix the issue and re-test. Iterate until the checkpoint behavior is confirmed.
+4. Summarize what was tested and what the results were in the checkpoint response.
+5. Remove all temporary instrumentation (logs, debug endpoints, temp files) so the codebase is clean before the developer sees it.
 
 ## Verification flows
 
