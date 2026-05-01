@@ -15,7 +15,7 @@ interface GameCardProps {
 
 const GameCard = ({ game }: GameCardProps) => {
   return (
-    <div className="boarder-base:300 card card-sm relative border-2 bg-base-200 shadow-md dark:border-base-400 dark:bg-base-300">
+    <div className="boarder-base:300 card card-sm relative min-w-[243px] border-2 bg-base-200 shadow-md [container-type:inline-size] dark:border-base-400 dark:bg-base-300">
       <div className="card-body flex flex-col gap-2 px-2">
         <div className="flex items-center justify-between">
           <TimeDisplay date={game.date} timezone={game.venue.timezone} />
@@ -24,12 +24,12 @@ const GameCard = ({ game }: GameCardProps) => {
 
         <div className="flex items-center justify-evenly">
           <div className="flex flex-col items-center gap-1">
-            <Team team={game.away} showLogoOnly />
+            <Team team={game.away} />
             <TeamRankAbbrev team={game.away} />
           </div>
           <Score game={game} />
           <div className="flex flex-col items-center gap-1">
-            <Team team={game.home} showLogoOnly />
+            <Team team={game.home} />
             <TeamRankAbbrev team={game.home} />
           </div>
         </div>
