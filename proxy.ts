@@ -14,6 +14,12 @@ const ratelimit = new Ratelimit({
 export const proxy = async (request: NextRequest) => {
   if (process.env.VERCEL_ENV !== 'production') return NextResponse.next();
 
+  if (
+    request.nextUrl.searchParams.get('x-vercel-protection-bypass') ===
+    process.env.VERCEL_AUTOMATION_BYPASS_SECRET
+  )
+    return NextResponse.next();
+
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous';
 
   const { success, limit, remaining, reset } = await ratelimit.limit(ip);
