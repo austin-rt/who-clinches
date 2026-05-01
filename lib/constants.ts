@@ -118,6 +118,20 @@ export const CFB_CONFERENCE_METADATA = {
   },
 } as const satisfies Record<string, CFBConferenceMetadata>;
 
+export const CFBD_CONFERENCE_NAME_TO_ABBR: Record<string, string> = {
+  'SEC': 'SEC',
+  'ACC': 'ACC',
+  'Big Ten': 'B1G',
+  'Big 12': 'B12',
+  'Pac-12': 'PAC',
+  'American Athletic': 'AAC',
+  'Mid-American': 'MAC',
+  'Conference USA': 'CUSA',
+  'Mountain West': 'MWC',
+  'Sun Belt': 'SBC',
+  'MAC': 'MAC',
+};
+
 export type CFBConferenceAbbreviation = keyof typeof CFB_CONFERENCE_METADATA;
 
 export const CFB_CONFERENCE_ABBREVIATIONS = Object.keys(
