@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import {
-  getCachedGames,
-  getCachedTeams,
-  getCachedRankings,
-  getCachedSp,
-  getCachedFpi,
+  getGames,
+  getTeams,
+  getRankings,
+  getSp,
+  getFpi,
 } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
@@ -96,7 +96,7 @@ export const POST = async (
     const bodyHash = hashPayload(sport, conf, body);
 
     const runPipeline = async (): Promise<PipelineResult> => {
-      const cfbdGames = await getCachedGames({
+      const cfbdGames = await getGames({
         year: season,
         conference: conferenceMeta.cfbdId,
         seasonType: CFBD_SEASON_TYPE.REGULAR,
@@ -115,9 +115,8 @@ export const POST = async (
         };
       }
 
-      const cfbdTeams = await getCachedTeams({
-        conference: conferenceMeta.cfbdId,
-      });
+      const teamsByConference = await getTeams(season);
+      const cfbdTeams = teamsByConference[conferenceMeta.cfbdId] ?? [];
 
       const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
       const teamMap = new Map<string, TeamLean>(
@@ -186,10 +185,10 @@ export const POST = async (
         const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] =
           await Promise.all([
             ratingReqs.needsCfpRankings
-              ? getCachedRankings({ year: season })
+              ? getRankings({ year: season })
               : Promise.resolve(null),
-            getCachedSp({ year: season }),
-            getCachedFpi({ year: season }),
+            getSp({ year: season }),
+            getFpi({ year: season }),
           ] as const);
 
         if (ratingReqs.needsCfpRankings && rankingsResponse) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCachedGames, getCachedTeams } from '@/lib/cfb/cfbd-cached';
+import { getGames, getTeams } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
@@ -40,7 +40,7 @@ const fetchGamesFromCfbd = async (
   }
 
   try {
-    const cfbdGames = await getCachedGames({
+    const cfbdGames = await getGames({
       year: season,
       conference: conferenceMeta.cfbdId,
       seasonType: CFBD_SEASON_TYPE.REGULAR,
@@ -51,9 +51,8 @@ const fetchGamesFromCfbd = async (
       (game) => game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
     );
 
-    const cfbdTeams = await getCachedTeams({
-      conference: conferenceMeta.cfbdId,
-    });
+    const teamsByConference = await getTeams(season);
+    const cfbdTeams = teamsByConference[conferenceMeta.cfbdId] ?? [];
 
     const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
     const teamMap = new Map<string, TeamLean>(

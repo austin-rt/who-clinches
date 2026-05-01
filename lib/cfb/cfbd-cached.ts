@@ -1,88 +1,82 @@
-import { unstable_cache } from 'next/cache';
 import { cfbdClient } from './cfbd-client';
 import { calculateNextSaturdayRevalidate } from './helpers/calculate-next-weekday-revalidate';
+import { fetch, redis } from '@/lib/redis';
+import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/constants';
+import type { Team } from 'cfbd';
 
-/**
- * Server-side cached wrappers for CFBD client methods.
- * Each wrapper shares a single `unstable_cache` keyed by normalized params.
- * TTL: seconds until next Saturday 11 AM ET -- every entry expires right
- * before gameday so the first request of the weekend gets fresh data.
- */
+const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;
+const KEY_PREFIX = 'cfbd:cfb';
 
-export const getCachedGames = (params: {
+export const getTeams = (season: number): Promise<Record<string, Team[]>> => {
+  return fetch<Record<string, Team[]>>(
+    `${KEY_PREFIX}:teams:${season}`,
+    async () => {
+      const allTeams = await cfbdClient.getTeams({ classification: 'fbs' });
+      const grouped: Record<string, Team[]> = {};
+      for (const team of allTeams) {
+        const confName = team.conference ?? '';
+        const abbr = CFBD_CONFERENCE_NAME_TO_ABBR[confName];
+        if (!abbr) continue;
+        if (!grouped[abbr]) grouped[abbr] = [];
+        grouped[abbr].push(team);
+      }
+      return grouped;
+    },
+    THIRTY_DAYS_SECONDS,
+  );
+};
+
+export const getGames = async (params: {
   year: number;
   conference: string;
   seasonType: string;
   week?: number;
 }) => {
-  const revalidate = calculateNextSaturdayRevalidate();
-  const keyParts = [
-    'cfbd-games',
-    String(params.year),
-    params.conference,
-    params.seasonType,
-    params.week !== null && params.week !== undefined ? String(params.week) : 'all',
-  ];
-  return unstable_cache(
+  const weekKey = params.week !== null && params.week !== undefined ? String(params.week) : 'all';
+  const key = `${KEY_PREFIX}:games:${params.conference}:${params.year}:${params.seasonType}:${weekKey}`;
+  const weeklyTtl = calculateNextSaturdayRevalidate();
+
+  const games = await fetch(
+    key,
     () => cfbdClient.getGames(params),
-    keyParts,
-    { revalidate, tags: keyParts }
-  )();
+    weeklyTtl,
+  );
+
+  if (games.length > 0 && games.every((g) => g.completed)) {
+    await redis.persist(key);
+  }
+
+  return games;
 };
 
-export const getCachedTeams = (params: { conference: string }) => {
-  const revalidate = calculateNextSaturdayRevalidate();
-  const keyParts = ['cfbd-teams', params.conference];
-  return unstable_cache(
-    () => cfbdClient.getTeams(params),
-    keyParts,
-    { revalidate, tags: keyParts }
-  )();
-};
-
-export const getCachedRankings = (params: {
+export const getRankings = (params: {
   year: number;
   week?: number;
   seasonType?: string;
 }) => {
-  const revalidate = calculateNextSaturdayRevalidate();
-  const keyParts = [
-    'cfbd-rankings',
-    String(params.year),
-    params.week !== null && params.week !== undefined ? String(params.week) : 'latest',
-    params.seasonType ?? 'regular',
-  ];
-  return unstable_cache(
+  const weekKey = params.week !== null && params.week !== undefined ? String(params.week) : 'latest';
+  const seasonType = params.seasonType ?? 'regular';
+  return fetch(
+    `${KEY_PREFIX}:rankings:${params.year}:${weekKey}:${seasonType}`,
     () => cfbdClient.getRankings(params),
-    keyParts,
-    { revalidate, tags: keyParts }
-  )();
+    calculateNextSaturdayRevalidate(),
+  );
 };
 
-export const getCachedSp = (params: { year: number; team?: string }) => {
-  const revalidate = calculateNextSaturdayRevalidate();
-  const keyParts = [
-    'cfbd-sp',
-    String(params.year),
-    params.team ?? 'all',
-  ];
-  return unstable_cache(
+export const getSp = (params: { year: number; team?: string }) => {
+  const teamKey = params.team ?? 'all';
+  return fetch(
+    `${KEY_PREFIX}:sp:${params.year}:${teamKey}`,
     () => cfbdClient.getSp(params),
-    keyParts,
-    { revalidate, tags: keyParts }
-  )();
+    calculateNextSaturdayRevalidate(),
+  );
 };
 
-export const getCachedFpi = (params: { year: number; team?: string }) => {
-  const revalidate = calculateNextSaturdayRevalidate();
-  const keyParts = [
-    'cfbd-fpi',
-    String(params.year),
-    params.team ?? 'all',
-  ];
-  return unstable_cache(
+export const getFpi = (params: { year: number; team?: string }) => {
+  const teamKey = params.team ?? 'all';
+  return fetch(
+    `${KEY_PREFIX}:fpi:${params.year}:${teamKey}`,
     () => cfbdClient.getFpi(params),
-    keyParts,
-    { revalidate, tags: keyParts }
-  )();
+    calculateNextSaturdayRevalidate(),
+  );
 };

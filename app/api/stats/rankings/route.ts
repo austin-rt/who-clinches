@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getCachedRankings } from '@/lib/cfb/cfbd-cached';
+import { getRankings } from '@/lib/cfb/cfbd-cached';
 import type { PollWeek } from 'cfbd';
 import { ApiErrorResponse } from '@/app/store/api';
 
@@ -44,7 +44,7 @@ export const GET = async (request: NextRequest) => {
       );
     }
 
-    const pollWeeks = await getCachedRankings({
+    const pollWeeks = await getRankings({
       year: seasonYear,
       week: weekNumber,
     });
