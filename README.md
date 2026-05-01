@@ -162,7 +162,6 @@ CFBD API → reshape functions → API response → Frontend
 - `GET /api/games/[sport]/[conf]` - Fetch games and teams from CFBD API, reshape, return data
 - `GET /api/games/[sport]/[conf]/subscribe` - GraphQL subscription for live score updates (Server-Sent Events)
 - `GET /api/stats/rankings` - Fetch CFP rankings from CFBD API
-- `GET /api/stats/advanced` - Fetch advanced season statistics (SP+, FPI, SOR, etc.) from CFBD API
 
 **Frontend Loading Strategy:**
 

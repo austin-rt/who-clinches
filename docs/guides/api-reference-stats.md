@@ -30,25 +30,4 @@ Fetches College Football Playoff (CFP) rankings from CFBD API.
 
 ---
 
-## GET /api/stats/advanced
-
-Fetches advanced season statistics from CFBD API.
-
-**Query Parameters**: 
-- `season` (string, required) - Season year (if invalid, returns 400 error)
-
-**Response**: `{ "stats": AdvancedSeasonStat[] }`
-
-**AdvancedSeasonStat**: Contains advanced team statistics for the season (e.g., SP+, FPI, SOR, turnover margin, yards per play).
-
-**Caching**: Cached until next Monday at 5 AM ET (revalidates weekly after all games complete). Uses Next.js `unstable_cache` with dynamic revalidation.
-
-**Error Responses**: 
-- `400` - Missing or invalid season parameter
-- `500` - CFBD API error
-
-**Notes**: Fetches comprehensive advanced statistics for all teams in the specified season. Cache revalidates weekly to ensure fresh data after weekend games complete.
-
----
-
 **See also:** [Main API Reference](./api-reference.md) | [Data Endpoints](./api-reference-data.md)

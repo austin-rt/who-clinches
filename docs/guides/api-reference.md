@@ -7,7 +7,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 ## Endpoint Documentation
 
 - **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], POST /api/simulate/[sport]/[conf]
-- **[Stats Endpoints](./api-reference-stats.md)** - GET /api/stats/rankings, GET /api/stats/advanced
+- **[Stats Endpoints](./api-reference-stats.md)** - GET /api/stats/rankings
 
 **Note**: CFBD data is cached server-side via `unstable_cache` with a weekly TTL (expires Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional based on conference tiebreaker config. No database persistence or scheduled jobs are used.
 

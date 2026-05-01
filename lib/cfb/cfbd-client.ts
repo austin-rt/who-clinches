@@ -5,7 +5,6 @@ import {
   getCalendarFromCfbd,
   getTeamStatsFromCfbd,
   getRankingsFromCfbd,
-  getAdvancedSeasonStatsFromCfbd,
   getSpFromCfbd,
   getFpiFromCfbd,
   getUserInfoFromCfbd,
@@ -20,7 +19,6 @@ import type {
   UserInfo,
   TeamStat,
   PollWeek,
-  AdvancedSeasonStat,
   TeamSP,
   TeamFPI,
 } from 'cfbd';
@@ -166,7 +164,7 @@ export class CFBDClient {
     }
   }
 
-  async getTeams(params?: { conference?: string }): Promise<Team[]> {
+  async getTeams(params?: { conference?: string; classification?: string }): Promise<Team[]> {
     const inSeason = await this.isInSeason();
 
     if (inSeason && allowGraphQL()) {
@@ -256,27 +254,6 @@ export class CFBDClient {
    */
   getRankings(params: { year: number; week?: number; seasonType?: string }): Promise<PollWeek[]> {
     return getRankingsFromCfbd(params);
-  }
-
-  /**
-   * Get advanced season statistics for all teams or filtered by conference.
-   *
-   * @param params.year - Required: Season year
-   * @param params.conference - Optional: Filter by conference
-   *
-   * @example
-   * // Get stats for ALL teams in one call
-   * const allStats = await cfbdClient.getAdvancedSeasonStats({ year: 2025 });
-   *
-   * @example
-   * // Get stats for one conference
-   * const secStats = await cfbdClient.getAdvancedSeasonStats({ year: 2025, conference: 'SEC' });
-   */
-  getAdvancedSeasonStats(params: {
-    year: number;
-    conference?: string;
-  }): Promise<AdvancedSeasonStat[]> {
-    return getAdvancedSeasonStatsFromCfbd(params);
   }
 
   /**

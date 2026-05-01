@@ -7,7 +7,6 @@ import {
   getUserInfo,
   getTeamStats,
   getRankings,
-  getAdvancedSeasonStats,
   getSp,
   getFpi,
   type Game,
@@ -17,7 +16,6 @@ import {
   type UserInfo,
   type TeamStat,
   type PollWeek,
-  type AdvancedSeasonStat,
   type TeamSP,
   type TeamFPI,
 } from 'cfbd';
@@ -195,11 +193,12 @@ export const getGamesFromCfbd = async (params: {
   }
 };
 
-export const getTeamsFromCfbd = async (params?: { conference?: string }): Promise<Team[]> => {
+export const getTeamsFromCfbd = async (params?: { conference?: string; classification?: string }): Promise<Team[]> => {
   try {
     const result = await getTeams({
       query: {
         conference: params?.conference,
+        classification: params?.classification,
       },
     });
 
@@ -277,20 +276,6 @@ export const getRankingsFromCfbd = async (params: {
       year: params.year,
       ...(params.week !== undefined && { week: params.week }),
       ...(params.seasonType && { seasonType: params.seasonType as 'regular' | 'postseason' }),
-    },
-  });
-  void getUserInfoFromCfbd();
-  return result.data ?? [];
-};
-
-export const getAdvancedSeasonStatsFromCfbd = async (params: {
-  year: number;
-  conference?: string;
-}): Promise<AdvancedSeasonStat[]> => {
-  const result = await getAdvancedSeasonStats({
-    query: {
-      year: params.year,
-      ...(params.conference && { conference: params.conference }),
     },
   });
   void getUserInfoFromCfbd();
