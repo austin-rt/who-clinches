@@ -1,8 +1,8 @@
 import { Redis } from '@upstash/redis';
 
-const useFixtures = process.env.USE_FIXTURES === 'true';
+const skipRedis = process.env.VERCEL_ENV !== 'production';
 
-export const redis = useFixtures
+export const redis = skipRedis
   ? (null as unknown as Redis)
   : new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
@@ -14,7 +14,7 @@ export const fetch = async <T>(
   fetcher: () => Promise<T>,
   ttl?: number,
 ): Promise<T> => {
-  if (useFixtures) return fetcher();
+  if (skipRedis) return fetcher();
 
   const hit = await redis.get<T>(key);
   if (hit) return hit;
