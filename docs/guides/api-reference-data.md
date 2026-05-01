@@ -4,7 +4,7 @@ Complete reference for data query endpoints.
 
 **Related:** [Main API Reference](./api-reference.md)
 
-**Note**: CFBD data is cached server-side via `unstable_cache` with a weekly TTL (expires Saturday 11 AM ET). Rating fetches are conditional per conference config.
+**Note**: CFBD data is cached in Upstash Redis (production only) with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches are conditional per conference config.
 
 ---
 
@@ -27,7 +27,7 @@ Fetches game data from CFBD API and returns reshaped data with team metadata.
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
-**Notes**: CFBD games and teams are fetched via `unstable_cache` (weekly TTL). Teams are automatically extracted from CFBD API responses. Conference records are calculated from completed conference games using the modular tiebreaker system. Uses GraphQL when in season and enabled, falls back to REST API otherwise.
+**Notes**: CFBD games and teams are cached in Upstash Redis (production only). Teams are fetched once per season and grouped by conference. Conference records are calculated from completed conference games using the modular tiebreaker system.
 
 ---
 
@@ -67,7 +67,7 @@ See `lib/api-types.ts` for full type definitions.
 
 **Tiebreaker Rules**: Uses modular async tiebreaker system. Rules can fetch external data on demand (e.g., SP+ and FPI ratings for MWC). SEC rules: A (head-to-head), B (common opponents), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin). MWC includes team rating score.
 
-**Notes**: Games and teams fetched via `unstable_cache` (weekly TTL). Rating fetches (SP+, FPI, CFP rankings) are conditional -- only made for conferences whose tiebreaker config includes "Team Rating Score" (see `describeRequiredCfbdRatingFeeds`). Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
+**Notes**: Games and teams cached in Upstash Redis (production only). Rating fetches (SP+, FPI, CFP rankings) are conditional -- only made for conferences whose tiebreaker config includes "Team Rating Score" (see `describeRequiredCfbdRatingFeeds`). Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
 
 ## Data Model Notes
 

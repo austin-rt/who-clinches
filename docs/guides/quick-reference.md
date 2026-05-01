@@ -19,6 +19,9 @@ Domain-specific content locations for common tasks.
 - **REST API client**: `lib/cfb/cfbd-rest-client.ts`
 - **GraphQL API client**: `lib/cfb/cfbd-graphql-client.ts`
 - **Unified client**: `lib/cfb/cfbd-client.ts` (switches between REST/GraphQL based on season)
+- **Redis-backed data access**: `lib/cfb/cfbd-cached.ts` (getTeams, getGames, getRankings, getSp, getFpi)
+- **Redis primitive**: `lib/redis.ts` (shared `fetch<T>` cache-aside pattern, production only)
+- **Rate limiting**: `proxy.ts` (per-IP via `@upstash/ratelimit`, production only)
 - **Reshape functions**: `lib/reshape-games.ts` (generic), `lib/reshape-teams-from-cfbd.ts` (generic)
 
 ## Tiebreaker Logic
@@ -31,7 +34,7 @@ Domain-specific content locations for common tasks.
 
 ## Data Updates
 
-- **Architecture**: Direct CFBD API fetching with GraphQL subscriptions for live updates
+- **Architecture**: CFBD API data cached in Upstash Redis (production only) with TTLs per data type. GraphQL subscriptions for live updates when in season.
 - **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
 - **Frontend data loading**: `app/hooks/useGamesData.ts` - GraphQL subscriptions (Server-Sent Events) when in season, REST API when out of season
 
@@ -70,9 +73,12 @@ npm run lint                  # Run ESLint
 | Need | Location |
 |------|----------|
 | API endpoints | `app/api/` |
+| Redis cache primitive | `lib/redis.ts` |
+| CFBD cached data access | `lib/cfb/cfbd-cached.ts` |
 | CFBD REST client | `lib/cfb/cfbd-rest-client.ts` |
 | CFBD GraphQL client | `lib/cfb/cfbd-graphql-client.ts` |
 | CFBD unified client | `lib/cfb/cfbd-client.ts` |
+| Rate limiting | `proxy.ts` |
 | Tiebreaker logic | Modular system: `lib/cfb/tiebreaker-rules/common/` (common rules), `lib/cfb/tiebreaker-rules/core/` (engine), `lib/cfb/tiebreaker-rules/{conf}/config.ts` (conference configs) |
 | Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt` |
 | Constants | `lib/constants.ts` (sports and conference configuration) |

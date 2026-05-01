@@ -16,6 +16,8 @@ This application allows users to simulate "what-if" scenarios for college footba
 - **Framework**: Next.js 16 (App Router)
 - **Language**: TypeScript (strict mode)
 - **API**: College Football Data (CFBD) API - REST API when out of season, GraphQL API when in season
+- **Cache**: Upstash Redis (production only) - shared persistent cache for CFBD data
+- **Rate Limiting**: `@upstash/ratelimit` (production only) - per-IP sliding window
 - **Deployment**: Vercel (serverless functions)
 - **Styling**: Tailwind CSS
 
@@ -32,8 +34,7 @@ sec-tiebreaker/
 │   │   │   └── subscribe/route.ts # GET: GraphQL subscription for live updates
 │   │   ├── simulate/[sport]/[conf]/route.ts  # POST: Tiebreaker simulation endpoint
 │   │   ├── stats/
-│   │   │   ├── rankings/route.ts # GET: CFP rankings from CFBD API
-│   │   │   └── advanced/route.ts  # GET: Advanced season statistics (SP+, FPI, etc.)
+│   │   │   └── rankings/route.ts # GET: CFP rankings from CFBD API
 │   │   ├── cfbd-monitor/route.ts  # GET: CFBD API usage monitoring
 │   │   ├── cfbd-alert-handler/route.ts # POST: Alert webhook handler
 │   │   └── season-status/route.ts # GET: Check if currently in season
@@ -47,7 +48,7 @@ sec-tiebreaker/
 │   ├── cfb/
 │   │   ├── cfbd-client.ts       # Unified CFBD API client (switches REST/GraphQL)
 │   │   ├── cfbd-rest-client.ts  # CFBD REST API client (with API key rotation)
-│   │   ├── cfbd-cached.ts      # Server-side unstable_cache wrappers (weekly TTL)
+│   │   ├── cfbd-cached.ts      # Redis-backed data access (getTeams, getGames, getRankings, getSp, getFpi)
 │   │   ├── cfbd-graphql-client.ts # CFBD GraphQL API client
 │   │   ├── tiebreaker-cfbd-requirements.ts # Conditional rating fetches per conference
 │   │   ├── tiebreaker-rules/
@@ -68,6 +69,7 @@ sec-tiebreaker/
 │   ├── client/                  # Client-side utilities (input-hash)
 │   ├── fixtures/                # Fixture data loader for testing
 │   ├── utils/                   # Utility functions (game grouping, organization)
+│   ├── redis.ts                 # Upstash Redis client and fetch<T> cache primitive
 │   ├── reshape-games.ts         # Game data transformation
 │   ├── reshape-teams-from-cfbd.ts # Team data transformation from CFBD
 │   ├── api-types.ts            # API request/response types
@@ -106,6 +108,8 @@ The application will be available at [http://localhost:3000](http://localhost:30
 CFBD_API_KEY=your_prod_key        # Production (also used as fallback in dev if no DEV_ keys set)
 DEV_CFBD_API_KEY=your_dev_key     # Dev/preview: primary key with auto-rotation
 DEV_CFBD_API_KEY_2=another_key    # Dev/preview: additional key for rotation pool
+UPSTASH_REDIS_REST_URL=your_url   # Upstash Redis REST URL (production only)
+UPSTASH_REDIS_REST_TOKEN=your_tok # Upstash Redis REST token (production only)
 ```
 
 **API Rate Limits:**
@@ -203,9 +207,9 @@ type ConferenceSlug = NonNullable<Conference['abbreviation']>;
 - No custom type mapping needed
 - Direct compatibility with CFBD API responses
 
-### Direct API Integration
+### Shared Redis Cache (Production Only)
 
-All data is fetched directly from CFBD API on each request. No database persistence is used.
+CFBD data is cached in Upstash Redis to share data across Vercel instances and reduce cold start API calls. Redis is gated to production via `VERCEL_ENV`. Non-production environments fetch directly from the CFBD API.
 
 ## Testing
 

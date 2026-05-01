@@ -4,7 +4,7 @@ Complete reference for statistics endpoints.
 
 **Related:** [Main API Reference](./api-reference.md)
 
-**Note**: All endpoints fetch data directly from the CFBD API on each request. No database persistence is used.
+**Note**: Rankings are cached in Upstash Redis (production only) with a weekly TTL (Saturday 11 AM ET). Non-production environments fetch directly from the CFBD API.
 
 ---
 
@@ -20,7 +20,7 @@ Fetches College Football Playoff (CFP) rankings from CFBD API.
 
 **PollWeek**: Contains CFP poll data with team rankings. Returns `null` if no CFP rankings are available for the specified season/week.
 
-**Caching**: No caching (rankings update at different times throughout the week). Response includes `Cache-Control: no-store` header.
+**Caching**: Cached in Upstash Redis (production only) with weekly TTL (Saturday 11 AM ET).
 
 **Error Responses**: 
 - `400` - Missing or invalid season/week parameter

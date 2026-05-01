@@ -58,11 +58,13 @@ This is a specialized college football application built for simulating conferen
 
 **Types**: `lib/types.ts`
 
-**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (server-side `unstable_cache` wrappers with weekly TTL), `lib/cfb/cfbd-rest-client.ts` (REST client with API key rotation via `VERCEL_ENV`), `lib/cfb/cfbd-graphql-client.ts`, `lib/cfb/tiebreaker-cfbd-requirements.ts` (conditional rating fetches per conference config), `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration, `JSON_SERVER_URL`)
+**CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (Redis-backed data access via `fetch<T>` primitive), `lib/cfb/cfbd-rest-client.ts` (REST client with API key rotation via `VERCEL_ENV`), `lib/cfb/cfbd-graphql-client.ts`, `lib/cfb/tiebreaker-cfbd-requirements.ts` (conditional rating fetches per conference config), `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration, `CFBD_CONFERENCE_NAME_TO_ABBR`)
 
 **API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication), `lib/client/input-hash.ts` (client-side request deduplication)
 
-**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached server-side via `unstable_cache` (weekly TTL, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
+**Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive, production only via `VERCEL_ENV`), `proxy.ts` (per-IP rate limiting via `@upstash/ratelimit`, production only, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
+
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached in Upstash Redis (production only) via `lib/redis.ts` with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
@@ -78,8 +80,9 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby
 - **CFBD API**: Rate limits based on tier (Free: 1,000/month, Tier 2: $1/month, Tier 3+: higher limits for in-season)
+- **Rate Limiting**: Per-IP rate limiting (1 req/15s) via `@upstash/ratelimit` in `proxy.ts` (production only). Requests with valid `VERCEL_AUTOMATION_BYPASS_SECRET` skip rate limiting.
+- **Caching**: Upstash Redis (production only, gated by `VERCEL_ENV`). Non-production environments fetch directly from CFBD API with no caching.
 - **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
-- **No Database**: CFBD data cached server-side via `unstable_cache` (weekly TTL). No MongoDB/Mongoose persistence.
 
 ---
 
