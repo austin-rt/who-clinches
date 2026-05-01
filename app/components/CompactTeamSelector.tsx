@@ -38,7 +38,7 @@ const CompactTeamSelector = ({
           'opacity-50': !isSelected,
         })}
       >
-        <Team team={team} showLogoOnly />
+        <Team team={team} />
       </button>
       <div
         className={cn('flex flex-col items-center', {

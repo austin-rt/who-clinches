@@ -92,31 +92,31 @@ const Score = ({ game }: ScoreProps) => {
   const homeIsHigher = homeScoreNum > awayScoreNum;
   const isTie = awayScoreNum === homeScoreNum && awayScoreNum !== 0;
 
-  const dash = <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>;
-
-  return [
-    <div key="away-score" className="flex h-10 items-center">
-      <ScoreInput
-        value={awayScore}
-        onChange={(value) => handleScoreChange('away', value)}
-        onBlur={handleScoreBlur}
-        isHigher={awayIsHigher}
-        isTie={isTie}
-      />
-    </div>,
-    <div key="dash" className="flex h-10 items-center">
-      {dash}
-    </div>,
-    <div key="home-score" className="flex h-10 items-center">
-      <ScoreInput
-        value={homeScore}
-        onChange={(value) => handleScoreChange('home', value)}
-        onBlur={handleScoreBlur}
-        isHigher={homeIsHigher}
-        isTie={isTie}
-      />
-        </div>,
-      ];
+  return (
+    <div className="flex items-center justify-center gap-x-2">
+      <div className="flex h-10 items-center">
+        <ScoreInput
+          value={awayScore}
+          onChange={(value) => handleScoreChange('away', value)}
+          onBlur={handleScoreBlur}
+          isHigher={awayIsHigher}
+          isTie={isTie}
+        />
+      </div>
+      <div className="flex h-10 items-center">
+        <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>
+      </div>
+      <div className="flex h-10 items-center">
+        <ScoreInput
+          value={homeScore}
+          onChange={(value) => handleScoreChange('home', value)}
+          onBlur={handleScoreBlur}
+          isHigher={homeIsHigher}
+          isTie={isTie}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default Score;

@@ -5,7 +5,7 @@ import LogRocket from 'logrocket';
 
 const LogRocketInit = () => {
   useEffect(() => {
-    if (process.env.NODE_ENV === 'production') {
+    if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
       LogRocket.init('z1ekqu/who-clinches');
     }
   }, []);
