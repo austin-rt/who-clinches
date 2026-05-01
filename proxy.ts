@@ -14,9 +14,7 @@ const ratelimit = new Ratelimit({
 export const proxy = async (request: NextRequest) => {
   if (process.env.VERCEL_ENV !== 'production') return NextResponse.next();
 
-  const ip =
-    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
-    'anonymous';
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous';
 
   const { success, limit, remaining, reset } = await ratelimit.limit(ip);
 
@@ -30,7 +28,7 @@ export const proxy = async (request: NextRequest) => {
           'X-RateLimit-Remaining': remaining.toString(),
           'Retry-After': Math.ceil((reset - Date.now()) / 1000).toString(),
         },
-      },
+      }
     );
   }
 
