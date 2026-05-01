@@ -83,14 +83,14 @@ npm run test:all
 
 ## Preview Deployment Testing
 
-The preview deployment at `preview.whoclinches.com` has Vercel Protection enabled. API-only testing works with a query parameter, but browser testing requires a cookie.
+The preview deployment at `preview.whoclinches.com` has Vercel Protection enabled. API-only testing works with a query parameter, but browser testing requires a cookie. The bypass token is stored in `.env.local` as `VERCEL_AUTOMATION_BYPASS_SECRET`.
 
 ### API testing (curl)
 
 Append the bypass token as a query parameter:
 
 ```bash
-curl -s "https://preview.whoclinches.com/api/games/cfb/sec?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3"
+curl -s "https://preview.whoclinches.com/api/games/cfb/sec?x-vercel-protection-bypass=$VERCEL_AUTOMATION_BYPASS_SECRET"
 ```
 
 ### Browser testing (agent or manual)
@@ -98,7 +98,7 @@ curl -s "https://preview.whoclinches.com/api/games/cfb/sec?x-vercel-protection-b
 Static assets (JS, CSS, fonts) are blocked unless the bypass token is set as a cookie. Navigate to this URL first to set the cookie, then all subsequent page loads work:
 
 ```
-https://preview.whoclinches.com/?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3&x-vercel-set-bypass-cookie=samesitenone
+https://preview.whoclinches.com/?x-vercel-protection-bypass=$VERCEL_AUTOMATION_BYPASS_SECRET&x-vercel-set-bypass-cookie=samesitenone
 ```
 
 The `x-vercel-set-bypass-cookie=samesitenone` parameter tells Vercel to persist the token as a `SameSite=None` cookie, which applies to all asset requests on the domain.
@@ -108,7 +108,7 @@ The `x-vercel-set-bypass-cookie=samesitenone` parameter tells Vercel to persist 
 POST endpoints (e.g., simulate) require both the bypass token and a same-origin header:
 
 ```bash
-curl -s "https://preview.whoclinches.com/api/simulate/cfb/sec?x-vercel-protection-bypass=6AH0C61v0ABPo07CLh3rJ5l8s1rSahm3" \
+curl -s "https://preview.whoclinches.com/api/simulate/cfb/sec?x-vercel-protection-bypass=$VERCEL_AUTOMATION_BYPASS_SECRET" \
   -X POST \
   -H "Content-Type: application/json" \
   -H "Origin: https://preview.whoclinches.com" \
