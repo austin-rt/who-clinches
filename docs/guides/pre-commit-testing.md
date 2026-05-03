@@ -1,50 +1,55 @@
-# Pre-Commit Testing Setup
+# Git hooks and checks
 
-**Status:** ✅ Configured | **Hook Location:** `.husky/pre-commit`
-
----
-
-## What It Does
-
-Pre-commit hook runs test suite before allowing commits. Executes: Branch protection, ESLint disable check, linting + TypeScript, tests. Commit blocked if any step fails.
+**Hooks:** `.husky/pre-commit`, `.husky/pre-push`
 
 ---
 
-## Hook Configuration
+## Pre-commit (every commit)
 
-**Location:** `.husky/pre-commit`
+Runs:
 
-**Test Command:** `npm run test:all`
+- Branch guards (no direct commits to `main`, block stray `temp/` files except `temp/README.md`)
+- Block file-level `eslint-disable` without a rule name
+- **lint-staged** (`package.json`): Prettier + ESLint (`--max-warnings 0`) + `jest --findRelatedTests` on **staged** `*.{ts,tsx,js,jsx}` only
 
-**What This Runs**: All tests via `npm run test:all` (which runs `npm run test`)
-
-**If Tests Fail**: `ERROR: Tests failed. Commit blocked. Fix test failures and try again. Run 'npm run test:all' locally to debug.`
+Commits do **not** run full-project `eslint`, full `tsc`, or the full Jest suite.
 
 ---
 
-## How to Use
+## Pre-push (every push)
 
-**Normal Commit**: `git commit -m "message"` (hook runs automatically)
+Runs:
 
-**If Tests Fail**: Run `npm run test:all` locally, fix code, try commit again
+- `npx tsc --noEmit` (full project)
+- `npm run test:all` (full Jest suite)
 
-**Bypass** (Not Recommended): `git commit --no-verify` (emergencies only)
+Push is blocked if either fails.
+
+---
+
+## How to use
+
+**Commit:** `git commit -m "message"` — hooks run automatically.
+
+**Push:** `git push` — full typecheck and tests run automatically.
+
+**Bypass** (emergencies only): `git commit --no-verify` or `git push --no-verify` — not recommended; skips protections.
 
 ---
 
 ## Troubleshooting
 
-**"Tests failed. Commit blocked."**: Run `npm run test:all` locally, fix code, try again
+**Pre-commit fails:** Fix lint/format/Jest related-test output from lint-staged, then commit again.
 
-**"Hook is not running at all"**: Reinstall hooks (`npx husky install`)
+**Pre-push fails:** Run `npx tsc --noEmit` and `npm run test:all` locally, fix issues, push again.
 
-## Quick Reference
+**Hook not running:** `npm run prepare` or `npx husky`
 
-| Task | Command |
-|------|---------|
-| Make a commit | `git commit -m "message"` |
-| See tests before commit | `npm run test:all` |
-| Watch tests while developing | `npm run test:watch` |
-| Reinstall hook | `npx husky install` |
+## Quick reference
 
-**Status**: Ready for use | **Tests Protected**: ✅ 240/240 | **Commit Quality**: ✅ Enforced
+| Task           | Command              |
+| -------------- | -------------------- |
+| Commit         | `git commit -m "…"`  |
+| Full typecheck | `npx tsc --noEmit`   |
+| Full tests     | `npm run test:all`   |
+| Watch tests    | `npm run test:watch` |
