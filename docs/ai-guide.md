@@ -25,32 +25,38 @@ This is a specialized college football application built for simulating conferen
 ## Repository Structure
 
 **Key Directories:**
+
 - `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
 - `lib/cfb/` - CFBD API clients (cfbd-client, cfbd-rest-client, cfbd-graphql-client)
-- `lib/` - Core utilities (reshape-*, tiebreaker-rules modular system)
+- `lib/` - Core utilities (reshape-\*, tiebreaker-rules modular system)
 
 ## Documentation Navigation
 
 **Start Here:**
+
 - **[AI Loading Manifest](./ai-loading-manifest.md)** - Efficient doc loading strategy
 
 **API Documentation:**
+
 - **[API Reference](./guides/api-reference.md)** - Complete API endpoint reference
 - **[API Data Endpoints](./guides/api-reference-data.md)** - Detailed data endpoint documentation
 - **[CFBD API Monitoring](./guides/cfbd-api-monitoring.md)** - CFBD API monitoring and alerting
 
 **Frontend Documentation:**
+
 - **[Frontend Index](./guides/frontend/index.md)** - Frontend architecture overview
 - **[Data Flow](./guides/frontend/data-flow.md)** - How data flows through the application
 - **[State Management](./guides/frontend/state-management.md)** - Redux store and persistence
 
 **Testing Documentation:**
+
 - **[Testing Quick Reference](./guides/testing-quick-reference.md)** - Quick testing commands and procedures
 
 **Tiebreaker Rules:**
+
 - **Location**: `docs/tiebreaker-rules/*.txt` - NEVER edit these files. They are extracted from official conference PDFs via `scripts/extract-sec-rules.py`
 - **Code**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules exactly as specified
 
@@ -62,9 +68,9 @@ This is a specialized college football application built for simulating conferen
 
 **API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication), `lib/client/input-hash.ts` (client-side request deduplication)
 
-**Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive, production only via `VERCEL_ENV`), `proxy.ts` (per-IP rate limiting via `@upstash/ratelimit`, production only, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
+**Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive when `VERCEL_ENV` is `production` or `preview` and `UPSTASH_REDIS_*` are set), `proxy.ts` (per-IP rate limiting via `@upstash/ratelimit` on `production` and `preview`, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
 
-**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached in Upstash Redis (production only) via `lib/redis.ts` with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached in Upstash Redis (production and preview when configured) via `lib/redis.ts` with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
@@ -86,8 +92,8 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby
 - **CFBD API**: Rate limits based on tier (Free: 1,000/month, Tier 2: $1/month, Tier 3+: higher limits for in-season)
-- **Rate Limiting**: Per-IP rate limiting (1 req/15s) via `@upstash/ratelimit` in `proxy.ts` (production only). Requests with valid `VERCEL_AUTOMATION_BYPASS_SECRET` skip rate limiting.
-- **Caching**: Upstash Redis (production only, gated by `VERCEL_ENV`). Non-production environments fetch directly from CFBD API with no caching.
+- **Rate Limiting**: Per-IP rate limiting (60 req/min sliding window) via `@upstash/ratelimit` in `proxy.ts` when `VERCEL_ENV` is `production` or `preview`. Requests with valid `VERCEL_AUTOMATION_BYPASS_SECRET` skip rate limiting.
+- **Caching**: Upstash Redis when `VERCEL_ENV` is `production` or `preview` and `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` are set (use separate Preview env values in Vercel for preview). Otherwise the app fetches CFBD with no Redis cache.
 - **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
 
 ---
