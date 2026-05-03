@@ -1,36 +1,31 @@
-/* eslint-disable */
 type ErrorContext = Record<string, unknown>;
 
-const logErrorToExternalService = async (
-  error: Error | unknown,
-  context?: ErrorContext
-): Promise<void> => {
+const getAnalyticsContext = async (): Promise<ErrorContext> => {
   try {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const errorStack = error instanceof Error ? error.stack : undefined;
-
-    const payload = {
-      message: errorMessage,
-      stack: errorStack,
-      context,
-      timestamp: new Date().toISOString(),
-      environment: process.env.NODE_ENV || 'unknown',
+    const { headers } = await import('next/headers');
+    const h = await headers();
+    const anonymousId = h.get('X-Anonymous-ID');
+    const sessionRecordingURL = h.get('X-Session-Recording-URL');
+    return {
+      ...(anonymousId && { anonymousId }),
+      ...(sessionRecordingURL && { sessionRecordingURL }),
     };
-
-    // TODO: Implement external logging service integration
-    // Examples: LogRocket, Sentry, DataDog, etc.
-    // Replace this with your actual logging service implementation
   } catch {
-    // Silently fail if logging fails
+    return {};
   }
 };
 
 export const logError = async (
   error: Error | unknown,
-  context?: ErrorContext,
-  logExternally: boolean = true
+  context?: ErrorContext
 ): Promise<void> => {
-  if (logExternally) {
-    await logErrorToExternalService(error, context);
-  }
+  const errorMessage = error instanceof Error ? error.message : String(error);
+  const analyticsContext = await getAnalyticsContext();
+
+  console.error(JSON.stringify({
+    error: errorMessage,
+    ...context,
+    ...analyticsContext,
+    timestamp: new Date().toISOString(),
+  }));
 };
