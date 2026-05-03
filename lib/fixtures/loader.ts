@@ -13,28 +13,20 @@ export const loadFixture = async <T = unknown>(path: string): Promise<T> => {
       const fixtureError = new Error(
         `Fixture not found: ${path}\n` +
           `Expected location: ${fixturePath}\n` +
-          `When USE_FIXTURES=true, fixtures are required. Run 'npm run capture-fixtures' to generate fixtures.`
+          `When FIXTURE_YEAR is set, fixtures are required. Run 'npm run capture-fixtures' to generate fixtures.`
       );
-      await logError(
-        fixtureError,
-        {
-          action: 'load-fixture',
-          path,
-          fixturePath,
-        },
-        false
-      );
-      throw fixtureError;
-    }
-    await logError(
-      error,
-      {
+      await logError(fixtureError, {
         action: 'load-fixture',
         path,
         fixturePath,
-      },
-      false
-    );
+      });
+      throw fixtureError;
+    }
+    await logError(error, {
+      action: 'load-fixture',
+      path,
+      fixturePath,
+    });
     throw error;
   }
 };

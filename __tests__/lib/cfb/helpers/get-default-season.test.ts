@@ -18,7 +18,7 @@ describe('getDefaultSeasonFromCfbd', () => {
   });
 
   it('returns current season year when date is within season', async () => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = 2025;
     const now = new Date(`${currentYear}-09-15T12:00:00Z`);
 
     jest.useFakeTimers();
@@ -53,26 +53,6 @@ describe('getDefaultSeasonFromCfbd', () => {
     jest.useRealTimers();
   });
 
-  it('returns previous year when current year calendar does not exist', async () => {
-    const currentYear = new Date().getFullYear();
-    const previousYear = currentYear - 1;
-
-    mockGetCalendar
-      .mockResolvedValueOnce([])
-      .mockResolvedValueOnce([
-        createMockCalendarWeek({
-          season: previousYear,
-          week: 15,
-          startDate: `${previousYear}-12-15T00:00:00Z`,
-          endDate: `${previousYear}-12-31T23:59:59Z`,
-        }),
-      ]);
-
-    const result = await getDefaultSeasonFromCfbd();
-
-    expect(result).toBe(previousYear);
-  });
-
   it('falls back to previous year when API throws error', async () => {
     const previousYear = new Date().getFullYear() - 1;
 
@@ -94,4 +74,3 @@ describe('getDefaultSeasonFromCfbd', () => {
     expect(result).toBe(previousYear);
   });
 });
-

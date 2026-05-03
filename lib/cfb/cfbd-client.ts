@@ -11,6 +11,7 @@ import {
 } from './cfbd-rest-client';
 import { cfbdGraphQLClient } from './cfbd-graphql-client';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
+import { getFixtureYear } from './helpers/fixture-year';
 import { logError } from '../errorLogger';
 import type {
   Game,
@@ -94,8 +95,7 @@ export class CFBDClient {
           {
             action: 'get-games-graphql-fallback',
             params,
-          },
-          false
+          }
         );
         const games = await getGamesFromCfbd(params);
         return this.enrichGamesWithLines(games, params);
@@ -157,8 +157,7 @@ export class CFBDClient {
         {
           action: 'enrich-games-with-lines',
           params,
-        },
-        false
+        }
       );
       return games;
     }
@@ -194,8 +193,7 @@ export class CFBDClient {
           {
             action: 'get-teams-graphql-fallback',
             params,
-          },
-          false
+          }
         );
         return getTeamsFromCfbd(params);
       }
@@ -206,7 +204,7 @@ export class CFBDClient {
 
   getCalendar(year?: number) {
     if (!year) {
-      year = new Date().getFullYear();
+      year = getFixtureYear() ?? new Date().getFullYear();
     }
     return getCalendarFromCfbd(year);
   }

@@ -1,7 +1,10 @@
 import { getCalendarFromCfbd } from '../cfbd-rest-client';
 import { logError } from '../../errorLogger';
+import { getFixtureYear } from './fixture-year';
 
 export const isInSeasonFromCfbd = async (): Promise<boolean> => {
+  if (getFixtureYear() !== null) return false;
+
   try {
     const now = Date.now();
     const currentYear = new Date().getFullYear();
@@ -22,8 +25,7 @@ export const isInSeasonFromCfbd = async (): Promise<boolean> => {
       error,
       {
         action: 'check-season-status',
-      },
-      false
+      }
     );
     return false;
   }
