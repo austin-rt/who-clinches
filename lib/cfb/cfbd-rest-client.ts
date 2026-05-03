@@ -22,50 +22,56 @@ import {
 import { logError } from '@/lib/errorLogger';
 import { JSON_SERVER_URL } from '@/lib/constants';
 import { getFixtureYear } from './helpers/fixture-year';
+import {
+  CFBD_PREPROD_ROTATION_THRESHOLD,
+  applyPreprodKeyRotationPolicy,
+  parseCfbdApiKeyPool,
+  selectActiveApiKey,
+  type PreprodKeyUsage,
+} from './helpers/cfbd-preprod-key-rotation';
 
-const ROTATION_THRESHOLD = 5;
-
-const cfbdApiKeyPool = (process.env.CFBD_API_KEY ?? '').split(',').filter(Boolean);
+const cfbdApiKeyPool = parseCfbdApiKeyPool(process.env.CFBD_API_KEY);
 let activePreprodKeyIndex = 0;
-const preprodKeyUsage = new Map<number, { remainingCalls: number; timestamp: number }>();
+const preprodKeyUsage = new Map<number, PreprodKeyUsage>();
 
-export const getActiveApiKey = (): string => {
-  if (cfbdApiKeyPool.length === 0) {
-    return '';
-  }
-  if (process.env.VERCEL_ENV === 'production') {
-    return cfbdApiKeyPool[0];
-  }
-  return cfbdApiKeyPool[activePreprodKeyIndex];
-};
+export const getActiveApiKey = (): string =>
+  selectActiveApiKey(cfbdApiKeyPool, process.env.VERCEL_ENV, activePreprodKeyIndex);
 
 const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
-  if (process.env.VERCEL_ENV === 'production') return;
-  if (cfbdApiKeyPool.length <= 1) return;
+  const prevIndex = activePreprodKeyIndex;
+  const result = applyPreprodKeyRotationPolicy({
+    vercelEnv: process.env.VERCEL_ENV,
+    poolLength: cfbdApiKeyPool.length,
+    activeIndex: activePreprodKeyIndex,
+    usageByIndex: preprodKeyUsage,
+    remainingCallsForActiveKey: remainingCalls,
+    threshold: CFBD_PREPROD_ROTATION_THRESHOLD,
+    now: Date.now(),
+  });
 
-  preprodKeyUsage.set(activePreprodKeyIndex, { remainingCalls, timestamp: Date.now() });
+  if (result.kind === 'no_attempt') return;
 
-  if (remainingCalls >= ROTATION_THRESHOLD) return;
+  preprodKeyUsage.clear();
+  for (const [key, usage] of result.nextUsageByIndex.entries()) {
+    preprodKeyUsage.set(key, usage);
+  }
+  activePreprodKeyIndex = result.nextActiveIndex;
 
-  for (let i = 0; i < cfbdApiKeyPool.length; i++) {
-    if (i === activePreprodKeyIndex) continue;
-    const usage = preprodKeyUsage.get(i);
-    if (!usage || usage.remainingCalls >= ROTATION_THRESHOLD) {
-      activePreprodKeyIndex = i;
-      const baseUrl = getBaseUrl();
-      client.setConfig({
-        headers: { Authorization: `Bearer ${cfbdApiKeyPool[i]}` },
-        ...(baseUrl && { baseUrl }),
-      });
-      return;
-    }
+  if (result.nextActiveIndex !== prevIndex) {
+    const baseUrl = getBaseUrl();
+    client.setConfig({
+      headers: { Authorization: `Bearer ${cfbdApiKeyPool[result.nextActiveIndex]}` },
+      ...(baseUrl && { baseUrl }),
+    });
   }
 
-  void logError(new Error('All preprod CFBD API keys below rotation threshold'), {
-    action: 'cfbd-key-rotation',
-    preprodKeyCount: cfbdApiKeyPool.length,
-    usageSnapshot: Object.fromEntries(preprodKeyUsage),
-  });
+  if (result.logAllKeysExhausted) {
+    void logError(new Error('All preprod CFBD API keys below rotation threshold'), {
+      action: 'cfbd-key-rotation',
+      preprodKeyCount: cfbdApiKeyPool.length,
+      usageSnapshot: Object.fromEntries(preprodKeyUsage),
+    });
+  }
 };
 
 const getBaseUrl = (): string | undefined => {
