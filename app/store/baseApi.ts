@@ -1,10 +1,17 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { RootState } from './store';
 
-// Base API slice - endpoints will be injected by codegen into api.ts
-// This is the manual configuration file; api.ts is the generated entry point
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: '/api',
+    prepareHeaders: (headers, { getState }) => {
+      const { anonymousId, sessionRecordingURL } = (getState() as RootState).app;
+      if (anonymousId) headers.set('X-Anonymous-ID', anonymousId);
+      if (sessionRecordingURL) headers.set('X-Session-Recording-URL', sessionRecordingURL);
+      return headers;
+    },
+  }),
   tagTypes: ['Games', 'Standings', 'Teams', 'Stats'],
   endpoints: () => ({}),
 });

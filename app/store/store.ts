@@ -15,7 +15,7 @@ const uiPersistConfig = {
 const appPersistConfig = {
   key: 'app',
   storage,
-  blacklist: ['isInSeason', 'season'],
+  blacklist: ['isInSeason', 'season', 'sessionRecordingURL'],
 };
 
 const persistedUiReducer = persistReducer(uiPersistConfig, uiReducer);
