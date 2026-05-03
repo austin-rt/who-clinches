@@ -34,8 +34,7 @@ export const applyOverrides = (
             gameId: game.id,
             homeScore: override.homeScore,
             awayScore: override.awayScore,
-          },
-          false
+          }
         );
         throw error;
       }
@@ -48,8 +47,7 @@ export const applyOverrides = (
             gameId: game.id,
             homeScore: override.homeScore,
             awayScore: override.awayScore,
-          },
-          false
+          }
         );
         throw error;
       }
@@ -62,8 +60,7 @@ export const applyOverrides = (
             gameId: game.id,
             homeScore: override.homeScore,
             awayScore: override.awayScore,
-          },
-          false
+          }
         );
         throw error;
       }
@@ -95,8 +92,7 @@ export const applyOverrides = (
       {
         action: 'apply-overrides',
         gameId: game.id,
-      },
-      false
+      }
     );
     throw error;
   });
