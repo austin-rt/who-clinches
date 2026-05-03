@@ -50,12 +50,6 @@ const eslintConfig = defineConfig([
       'no-console': 'off', // Allow console in test files and scripts
     },
   },
-  {
-    files: ['lib/cfb/cfbd-rest-client.ts'],
-    rules: {
-      'no-console': 'off',
-    },
-  },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**', 'lib/consoleLogger.ts', 'lib/errorLogger.ts']),
 ]);
 
