@@ -12,7 +12,10 @@ const ratelimit = new Ratelimit({
 });
 
 export const proxy = async (request: NextRequest) => {
-  if (process.env.VERCEL_ENV !== 'production') return NextResponse.next();
+  const vercelEnv = process.env.VERCEL_ENV;
+  if (vercelEnv !== 'production' && vercelEnv !== 'preview') {
+    return NextResponse.next();
+  }
 
   if (
     request.nextUrl.searchParams.get('x-vercel-protection-bypass') ===
