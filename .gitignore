@@ -49,3 +49,6 @@ temp-*
 
 # jest server pid file
 .jest-server.pid
+
+# cursor mcp config
+.cursor/mcp.json

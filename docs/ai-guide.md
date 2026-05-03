@@ -76,6 +76,12 @@ This is a specialized college football application built for simulating conferen
 
 Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loading. Use the documentation structure above to find specific information.
 
+## Environments & URLs
+
+- **Production**: https://whoclinches.com (main branch, `VERCEL_ENV=production`)
+- **Preview/Stage**: https://preview.whoclinches.com (develop branch, `VERCEL_ENV=preview`)
+- **Local**: http://localhost:3000 (`VERCEL_ENV` undefined)
+
 ## Constraints
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby

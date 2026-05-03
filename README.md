@@ -105,9 +105,7 @@ The application will be available at [http://localhost:3000](http://localhost:30
 ### Environment Variables
 
 ```bash
-CFBD_API_KEY=your_prod_key        # Production (also used as fallback in dev if no DEV_ keys set)
-DEV_CFBD_API_KEY=your_dev_key     # Dev/preview: primary key with auto-rotation
-DEV_CFBD_API_KEY_2=another_key    # Dev/preview: additional key for rotation pool
+CFBD_API_KEY=your_key             # Comma-separated for multiple preprod keys (rotation); single value for production
 UPSTASH_REDIS_REST_URL=your_url   # Upstash Redis REST URL (production only)
 UPSTASH_REDIS_REST_TOKEN=your_tok # Upstash Redis REST token (production only)
 ```
@@ -125,7 +123,7 @@ UPSTASH_REDIS_REST_TOKEN=your_tok # Upstash Redis REST token (production only)
 - `RESEND_API_KEY` - Resend API key for email alerts (optional)
 - `RESEND_FROM_EMAIL` - From email address for alerts (optional)
 - `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token for protected Vercel deployments (optional)
-- `USE_FIXTURES` - Set to 'true' to use local fixture data instead of CFBD API (development/testing)
+- `FIXTURE_YEAR` - Set to a year (e.g. '2025') to use local fixture data instead of CFBD API (development/testing)
 
 ## Development Workflow
 

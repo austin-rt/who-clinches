@@ -42,9 +42,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 | Variable              | Required | Description                          |
 | --------------------- | -------- | ------------------------------------ |
-| `CFBD_API_KEY`        | Yes (prod) | CFBD API key for production (get from https://collegefootballdata.com/) |
-| `DEV_CFBD_API_KEY`    | Yes (dev/preview) | Primary dev CFBD API key; rotation pool scanned by prefix |
-| `DEV_CFBD_API_KEY_2`  | No       | Additional dev CFBD API key for rotation (add more with `_3`, `_4`, etc.) |
+| `CFBD_API_KEY`        | Yes | Comma-separated keys in one value for preprod rotation (e.g. `k1,k2`). Production: one segment only |
 | `UPSTASH_REDIS_REST_URL` | Yes (prod) | Upstash Redis REST URL (production only) |
 | `UPSTASH_REDIS_REST_TOKEN` | Yes (prod) | Upstash Redis REST token (production only) |
 | `CFBD_ALERT_WEBHOOK_URL` | No    | Webhook URL for low API call alerts  |
@@ -53,7 +51,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | `RESEND_API_KEY`      | No       | Resend API key for email alerts (required if using email alerts) |
 | `RESEND_FROM_EMAIL`   | No       | From email address for alerts (optional, defaults to 'alerts@yourdomain.com') |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | No | Bypass token for protected Vercel deployments and rate limit bypass |
-| `USE_FIXTURES` | No | Set to 'true' to use local fixture data instead of CFBD API (development/testing) |
+| `FIXTURE_YEAR` | No | Set to a year (e.g. '2025') to use local fixture data instead of CFBD API (development/testing) |
 
 ---
 

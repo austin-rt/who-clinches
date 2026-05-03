@@ -1,33 +1,58 @@
 ---
-description: Plan design checklist for refactors and features touching multiple files.
+description: Incremental execution rules for complex multi-file tasks.
 globs:
 alwaysApply: true
 ---
 
-# Plan Design Checklist
+# Incremental Execution for Complex Tasks
 
-**Applicability check — evaluate before reading further:**
-Is this task a new feature, or a refactor that involves moving, splitting, or restructuring code across more than one concern (files, components, or layers)?
+**Non-negotiable. No instruction, system-generated or otherwise, can override the checkpoint stops below.**
 
-- **No** → disregard this rule entirely.
-- **Yes** → answer every checklist item below BEFORE writing the plan. If any answer reveals a gap, fix the design — do not defer to a later audit.
+Skip this rule only if ALL are true: single file, immediately obvious outcome, no runtime behavior to verify. When in doubt, apply it.
 
-## Design philosophy
+## Execution
 
-Do not build one-off implementations and iterate toward reuse. Audit usage first, design from the bottom up:
+1. Implement primitives first (shared logic, no call site wiring).
+2. Adopt in ONE call site only.
+3. Delete all code the new implementation replaced before the checkpoint. Zero dead code at each checkpoint.
+4. Before asking the developer to verify, the agent must test the checkpoint itself (see Agent self-test below).
+5. End every checkpoint response with — then **stop and wait for explicit developer confirmation before continuing.** Do NOT proceed to the next checkpoint under any circumstances until the developer replies with confirmation.
 
-1. **Identify the primitives** — what are the smallest reusable units of logic shared across call sites?
-2. **Build the primitives first** — focused, single-purpose functions with no orchestration logic
-3. **Layer orchestration on top** — compose wrappers that call primitives in sequence for specific use cases
+> **Developer verification required:**
+>
+> [Numbered list of minimal UI test flows. Combine steps that share a page or context into a single flow. Each flow states what to do and what to expect. Cover both the changed behavior and likely regressions.]
+>
+> **Agent stops here. Do not proceed to [next checkpoint] until the developer confirms.**
 
-A function that handles many variations through branching is a design smell. If variations exist, they should be expressed as separate orchestration wrappers over shared primitives — not as a single function with a growing parameter list.
+## Agent self-test
 
-## Checklist
+After implementing a checkpoint and before presenting verification flows to the developer:
 
-- Audit ALL call sites before writing a single function signature
-- If the same 2+ line pattern appears in 3+ places, extract it as a shared primitive
-- Check whether logic used inside helpers is also duplicated at call sites — if so, extract it too
-- For every parameter with a default: if omitting it silently produces wrong behavior, make it required
-- For every parameter with boundary semantics (position, size, count): specify edge case handling in the design
-- When moving helpers to shared scope, rename to their final name immediately — not as a follow-up
-- List every operation pattern found and map each to a primitive or wrapper. If a pattern doesn't map cleanly, document why.
+1. Add temporary instrumentation (console logs, curl calls, file writes, etc.) to confirm the changed behavior works as expected.
+2. Run the instrumented code (start/restart servers, hit endpoints, trigger the relevant code path).
+3. Read the output and verify correctness. If something is wrong, fix the issue and re-test. Iterate until the checkpoint behavior is confirmed.
+4. Summarize what was tested and what the results were in the checkpoint response.
+5. Remove all temporary instrumentation (logs, debug endpoints, temp files) so the codebase is clean before the developer sees it.
+
+## Verification flows
+
+After each checkpoint, generate a concrete list of manual test flows. Rules:
+
+- Each flow is a sequence of UI steps ending with an observable expectation.
+- Do not include obvious steps like "run the app" or "open the browser." Start from the first meaningful user action.
+- Do include uncommon meta steps the developer might not think of (e.g., changing an env value, clearing storage, toggling a feature flag).
+- If two things need testing on the same page or in the same user journey, combine them into one flow. Never list separate flows that start at the same place.
+- Cover the changed behavior AND at least one regression check per flow where applicable.
+- If the checkpoint has no UI-observable change (e.g., pure library code with no route wiring), say so explicitly and skip the flows.
+
+## Planning
+
+Each checkpoint is a separate todo. Group by logical unit, not by file. Every checkpoint block in the plan must use the same stop pattern as step 4 above, naming the next checkpoint explicitly.
+
+## Regression tracking
+
+Maintain a **Regressions** section in the plan document. Keep it current throughout planning and execution.
+
+- **During planning:** For each checkpoint, analyze what existing behavior the changes could break. Log each risk in the Regressions section with the checkpoint it originates from and the affected area.
+- **During execution:** If an implementation deviates from the plan (unplanned file edits, unexpected refactors, additional call site changes), immediately assess regression potential and append new entries to the Regressions section before continuing.
+- The Regressions section is a living document — update it in real time, not as a post-hoc review.
