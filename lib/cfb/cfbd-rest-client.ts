@@ -23,7 +23,7 @@ import { logError } from '@/lib/errorLogger';
 import { JSON_SERVER_URL } from '@/lib/constants';
 import { getFixtureYear } from './helpers/fixture-year';
 
-const ROTATION_THRESHOLD = 5;
+const ROTATION_THRESHOLD = 807;
 
 const cfbdApiKeyPool = (process.env.CFBD_API_KEY ?? '').split(',').filter(Boolean);
 let activePreprodKeyIndex = 0;
@@ -139,6 +139,7 @@ export const getUserInfoFromCfbd = async (forceRefresh = false): Promise<UserInf
       lastUserInfoCheck = { info, timestamp: now };
       void logRemainingCalls(info);
       rotatePreprodKeyIfNeeded(info.remainingCalls);
+      console.log('[CFBD] preprod API key index', activePreprodKeyIndex);
       return info;
     }
 
