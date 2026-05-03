@@ -1,138 +1,99 @@
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { getGames, getTeams, getRankings, getAdvancedSeasonStats, client } from 'cfbd';
+import { join, resolve } from 'path';
+import { config } from 'dotenv';
 import {
   CFB_CONFERENCE_METADATA,
   CFB_CONFERENCE_ABBREVIATIONS,
   type CFBConferenceAbbreviation,
 } from '../lib/constants';
 
-const resolveApiKey = (): string => {
-  for (const [name, value] of Object.entries(process.env)) {
-    if (name.startsWith('DEV_CFBD_API_KEY') && value) return value;
-  }
-  return process.env.CFBD_API_KEY ?? '';
-};
-
-client.setConfig({
-  headers: {
-    Authorization: `Bearer ${resolveApiKey()}`,
-  },
-});
-
 const FIXTURES_DIR = join(process.cwd(), '__fixtures__', 'cfbd');
 
-const captureGames = async (
-  conference: CFBConferenceAbbreviation,
-  year: number,
-  week?: number
-): Promise<void> => {
-  const confMeta = CFB_CONFERENCE_METADATA[conference];
-  if (!confMeta) {
-    throw new Error(`Invalid conference: ${conference}`);
+const main = async () => {
+  config({ path: resolve(process.cwd(), '.env.local') });
+  delete process.env.FIXTURE_YEAR;
+
+  if (!(process.env.CFBD_API_KEY ?? '').trim()) {
+    throw new Error('CFBD_API_KEY is required (comma-separated for multiple preprod keys)');
   }
 
-  const result = await getGames({
-    query: {
+  const { getGamesFromCfbd, getTeamsFromCfbd, getRankingsFromCfbd } = await import(
+    '../lib/cfb/cfbd-rest-client'
+  );
+
+  const captureGames = async (
+    conference: CFBConferenceAbbreviation,
+    year: number,
+    week?: number
+  ): Promise<void> => {
+    const confMeta = CFB_CONFERENCE_METADATA[conference];
+    if (!confMeta) {
+      throw new Error(`Invalid conference: ${conference}`);
+    }
+
+    const games = await getGamesFromCfbd({
       year,
       week,
       conference: confMeta.cfbdId,
-    },
-  });
+    });
 
-  const games = result.data ?? [];
-  const filename = `${year}${week ? `-week${week}` : ''}.json`;
-  const dir = join(FIXTURES_DIR, 'games', conference);
-  await mkdir(dir, { recursive: true });
-  const filepath = join(dir, filename);
+    const filename = `${year}${week ? `-week${week}` : ''}.json`;
+    const dir = join(FIXTURES_DIR, 'games', conference);
+    await mkdir(dir, { recursive: true });
+    const filepath = join(dir, filename);
 
-  await writeFile(filepath, JSON.stringify(games, null, 2), 'utf-8');
-  console.log(`Captured ${games.length} games to ${filepath}`);
-};
+    await writeFile(filepath, JSON.stringify(games, null, 2), 'utf-8');
+    console.log(`Captured ${games.length} games to ${filepath}`);
+  };
 
-const captureTeams = async (conference: CFBConferenceAbbreviation): Promise<void> => {
-  const confMeta = CFB_CONFERENCE_METADATA[conference];
-  if (!confMeta) {
-    throw new Error(`Invalid conference: ${conference}`);
-  }
+  const captureTeams = async (conference: CFBConferenceAbbreviation): Promise<void> => {
+    const confMeta = CFB_CONFERENCE_METADATA[conference];
+    if (!confMeta) {
+      throw new Error(`Invalid conference: ${conference}`);
+    }
 
-  const result = await getTeams({
-    query: {
+    const teams = await getTeamsFromCfbd({
       conference: confMeta.cfbdId,
-    },
-  });
+    });
 
-  const teams = result.data ?? [];
-  const dir = join(FIXTURES_DIR, 'teams');
-  await mkdir(dir, { recursive: true });
-  const filepath = join(dir, `${conference}.json`);
+    const dir = join(FIXTURES_DIR, 'teams');
+    await mkdir(dir, { recursive: true });
+    const filepath = join(dir, `${conference}.json`);
 
-  await writeFile(filepath, JSON.stringify(teams, null, 2), 'utf-8');
-  console.log(`Captured ${teams.length} teams to ${filepath}`);
-};
+    await writeFile(filepath, JSON.stringify(teams, null, 2), 'utf-8');
+    console.log(`Captured ${teams.length} teams to ${filepath}`);
+  };
 
-const captureRankings = async (year: number, week?: number): Promise<void> => {
-  const result = await getRankings({
-    query: {
+  const captureRankings = async (year: number, week?: number): Promise<void> => {
+    const rankings = await getRankingsFromCfbd({
       year,
       ...(week !== undefined && { week }),
-    },
-  });
+    });
 
-  const rankings = result.data ?? [];
-  const filename = `${year}${week ? `-week${week}` : ''}.json`;
-  const dir = join(FIXTURES_DIR, 'rankings');
-  await mkdir(dir, { recursive: true });
-  const filepath = join(dir, filename);
+    const filename = `${year}${week ? `-week${week}` : ''}.json`;
+    const dir = join(FIXTURES_DIR, 'rankings');
+    await mkdir(dir, { recursive: true });
+    const filepath = join(dir, filename);
 
-  await writeFile(filepath, JSON.stringify(rankings, null, 2), 'utf-8');
-  console.log(`Captured ${rankings.length} ranking weeks to ${filepath}`);
-};
+    await writeFile(filepath, JSON.stringify(rankings, null, 2), 'utf-8');
+    console.log(`Captured ${rankings.length} ranking weeks to ${filepath}`);
+  };
 
-const captureAdvancedStats = async (year: number): Promise<void> => {
-  const result = await getAdvancedSeasonStats({
-    query: {
-      year,
-    },
-  });
-
-  const stats = result.data ?? [];
-  const dir = join(FIXTURES_DIR, 'stats', 'season', 'advanced');
-  await mkdir(dir, { recursive: true });
-  const filepath = join(dir, `${year}.json`);
-
-  await writeFile(filepath, JSON.stringify(stats, null, 2), 'utf-8');
-  console.log(`Captured ${stats.length} team advanced stats to ${filepath}`);
-};
-
-const main = async () => {
   const args = process.argv.slice(2);
   const command = args[0];
   const year = args[1] ? parseInt(args[1], 10) : new Date().getFullYear();
   const week = args[2] ? parseInt(args[2], 10) : undefined;
 
-  if (!resolveApiKey()) {
-    console.error('No CFBD API key found. Set DEV_CFBD_API_KEY, PROD_CFBD_API_KEY, or CFBD_API_KEY');
-    process.exit(1);
-  }
-
   try {
     if (command === 'rankings') {
-      // Capture rankings: npm run capture-fixtures rankings [year] [week]
       await captureRankings(year, week);
       console.log('✅ Rankings fixture captured successfully');
-    } else if (command === 'advanced-stats') {
-      // Capture advanced stats: npm run capture-fixtures advanced-stats [year]
-      await captureAdvancedStats(year);
-      console.log('✅ Advanced stats fixture captured successfully');
     } else {
-      // Original behavior: capture games and teams for a conference
       const conference = command as CFBConferenceAbbreviation | undefined;
       if (!conference) {
         console.error('Usage:');
         console.error('  tsx scripts/capture-cfbd-fixtures.ts <conference> [year] [week]');
         console.error('  tsx scripts/capture-cfbd-fixtures.ts rankings [year] [week]');
-        console.error('  tsx scripts/capture-cfbd-fixtures.ts advanced-stats [year]');
         console.error(`Available conferences: ${CFB_CONFERENCE_ABBREVIATIONS.join(', ')}`);
         process.exit(1);
       }
@@ -154,4 +115,3 @@ const main = async () => {
 };
 
 void main();
-
