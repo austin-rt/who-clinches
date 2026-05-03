@@ -2,13 +2,20 @@
 
 import { useEffect } from 'react';
 import LogRocket from 'logrocket';
+import { useAppSelector, useAppDispatch } from '@/app/store/hooks';
+import { setSessionRecordingURL } from '@/app/store/appSlice';
 
 const LogRocketInit = () => {
+  const anonymousId = useAppSelector((s) => s.app.anonymousId);
+  const dispatch = useAppDispatch();
+
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_VERCEL_ENV === 'production') {
-      LogRocket.init('z1ekqu/who-clinches');
-    }
-  }, []);
+    LogRocket.init('z1ekqu/who-clinches');
+    LogRocket.identify(anonymousId);
+    LogRocket.getSessionURL((url) => {
+      dispatch(setSessionRecordingURL(url));
+    });
+  }, [anonymousId, dispatch]);
 
   return null;
 };

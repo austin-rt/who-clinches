@@ -2,8 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import StoreProvider from './components/StoreProvider';
 import ThemeSync from './components/ThemeSync';
-import LogRocketInit from './components/LogRocketInit';
-import HotjarInit from './components/HotjarInit';
+import AnalyticsInit from './components/AnalyticsInit';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import './globals.css';
@@ -35,8 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} flex h-full min-h-screen flex-col antialiased`}
       >
         <StoreProvider>
-          <LogRocketInit />
-          <HotjarInit />
+          <AnalyticsInit />
           <ThemeSync />
           <Header />
           <main className="flex-1">{children}</main>
