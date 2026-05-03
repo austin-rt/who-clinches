@@ -52,3 +52,6 @@ temp-*
 
 # cursor mcp config
 .cursor/mcp.json
+
+# agent handoff scratch (local only; tracked paths remain in history)
+handoffs/*
