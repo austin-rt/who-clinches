@@ -1,4 +1,4 @@
-export const CFBD_PREPROD_ROTATION_THRESHOLD = 807;
+export const CFBD_PREPROD_ROTATION_THRESHOLD = 5;
 
 export type PreprodKeyUsage = {
   remainingCalls: number;
@@ -20,7 +20,7 @@ export const parseCfbdApiKeyPool = (cfbdApiKeyEnv: string | undefined): string[]
 export const selectActiveApiKey = (
   pool: readonly string[],
   vercelEnv: string | undefined,
-  activePreprodKeyIndex: number,
+  activePreprodKeyIndex: number
 ): string => {
   if (pool.length === 0) {
     return '';
