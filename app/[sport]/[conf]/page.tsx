@@ -27,7 +27,7 @@ const ConferencePage = () => {
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
   const dispatch = useAppDispatch();
-  const standingsRef = useRef<HTMLDivElement>(null);
+  const shareRef = useRef<HTMLDivElement>(null);
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
@@ -45,7 +45,7 @@ const ConferencePage = () => {
     setSimulateResponse(response);
     dispatch(setStandingsOpen(true));
     setTimeout(() => {
-      standingsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      shareRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   };
 
@@ -107,7 +107,7 @@ const ConferencePage = () => {
 
       {simulateResponse && <SimulationDisclaimer />}
 
-      <Standings ref={standingsRef} simulateResponse={simulateResponse} />
+      <Standings ref={shareRef} simulateResponse={simulateResponse} games={games} />
 
       <div className="flex items-center justify-between gap-4">
         <HideCompletedButton />

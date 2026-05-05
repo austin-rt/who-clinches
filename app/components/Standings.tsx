@@ -6,12 +6,14 @@ import { setStandingsOpen } from '@/app/store/uiSlice';
 import { SimulateResponse } from '@/app/store/api';
 import CurrentStandings from './CurrentStandings';
 import SimulatedStandings from './SimulatedStandings';
+import type { GameLean } from '@/lib/types';
 
 interface StandingsProps {
   simulateResponse?: SimulateResponse | null;
+  games?: GameLean[];
 }
 
-const Standings = forwardRef<HTMLDivElement, StandingsProps>(({ simulateResponse }, ref) => {
+const Standings = forwardRef<HTMLDivElement, StandingsProps>(({ simulateResponse, games }, ref) => {
   const dispatch = useAppDispatch();
   const standingsOpen = useAppSelector((state) => state.ui.standingsOpen);
   const [currentStandingsOpen, setCurrentStandingsOpen] = useState(false);
@@ -40,7 +42,7 @@ const Standings = forwardRef<HTMLDivElement, StandingsProps>(({ simulateResponse
       </div>
       <div className="collapse-content">
         {isSimulated ? (
-          <SimulatedStandings simulateResponse={simulateResponse!} />
+          <SimulatedStandings simulateResponse={simulateResponse!} games={games} />
         ) : (
           <CurrentStandings isOpen={currentStandingsOpen} />
         )}

@@ -43,43 +43,57 @@ const StandingsExplanations = ({ standings }: StandingsExplanationsProps) => {
 
   return (
     <div className="flex flex-col gap-3 text-xs">
-      {Object.entries(groupedStandings).map(([division, divisionStandings]) => (
-        <div key={division}>
-          {hasDivisions && division !== 'null' && (
-            <div className="text-base-content/80 mb-2 mt-2 text-sm font-bold uppercase">
-              {division}
-            </div>
-          )}
-          {divisionStandings.map((standing) => {
+      {Object.entries(groupedStandings).map(([division, divisionStandings]) => {
+        const midpoint = Math.ceil(divisionStandings.length / 2);
+        const leftCol = divisionStandings.slice(0, midpoint);
+        const rightCol = divisionStandings.slice(midpoint);
+
         return (
-          <div key={standing.teamId} className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <span className="text-base font-semibold">{standing.rank}.</span>
-              {standing.logo && (
-                <Image
-                  src={standing.logo}
-                  alt={standing.abbrev}
-                  width={32}
-                  height={32}
-                  className="pointer-events-none h-8 w-auto object-contain"
-                  unoptimized
-                />
-              )}
-              <div className="flex flex-col">
-                <span className="font-medium">
-                      {standing.displayName} ({standing.confRecord.wins} -{' '}
-                      {standing.confRecord.losses})
-                </span>
+          <div key={division}>
+            {hasDivisions && division !== 'null' && (
+              <div className="text-base-content/80 mb-2 mt-2 text-sm font-bold uppercase">
+                {division}
+              </div>
+            )}
+            <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
+              <div className="flex flex-col gap-1">
+                {leftCol.map((standing) => (
+                  <StandingRow key={standing.teamId} standing={standing} />
+                ))}
+              </div>
+              <div className="flex flex-col gap-1">
+                {rightCol.map((standing) => (
+                  <StandingRow key={standing.teamId} standing={standing} />
+                ))}
               </div>
             </div>
-            <div className="text-base-content/80 ml-9">{standing.explainPosition}</div>
           </div>
         );
       })}
-        </div>
-      ))}
     </div>
   );
 };
+
+const StandingRow = ({ standing }: { standing: StandingEntry }) => (
+  <div className="flex flex-col gap-0.5">
+    <div className="flex items-center gap-2">
+      <span className="text-base font-semibold">{standing.rank}.</span>
+      {standing.logo && (
+        <Image
+          src={standing.logo}
+          alt={standing.abbrev}
+          width={24}
+          height={24}
+          className="pointer-events-none h-6 w-auto object-contain"
+          unoptimized
+        />
+      )}
+      <span className="font-medium">
+        {standing.displayName} ({standing.confRecord.wins} - {standing.confRecord.losses})
+      </span>
+    </div>
+    <div className="text-base-content/70 ml-9 text-xxs">{standing.explainPosition}</div>
+  </div>
+);
 
 export default StandingsExplanations;
