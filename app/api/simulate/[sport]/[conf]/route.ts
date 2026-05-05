@@ -1,11 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-  getGames,
-  getTeams,
-  getRankings,
-  getSp,
-  getFpi,
-} from '@/lib/cfb/cfbd-cached';
+import { getGames, getTeams, getRankings, getSp, getFpi } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { applyOverrides } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
@@ -93,7 +87,22 @@ export const POST = async (
       );
     }
 
-    const bodyHash = hashPayload(sport, conf, body);
+    const normalizedOverrides =
+      conf === 'sec'
+        ? overrides
+        : Object.fromEntries(
+            Object.entries(overrides).map(([gameId, pick]) => {
+              const { homeScore, awayScore } = pick as { homeScore: number; awayScore: number };
+              return [
+                gameId,
+                homeScore > awayScore
+                  ? { homeScore: 1, awayScore: 0 }
+                  : { homeScore: 0, awayScore: 1 },
+              ];
+            })
+          );
+
+    const bodyHash = hashPayload(sport, conf, { season, overrides: normalizedOverrides });
 
     const runPipeline = async (): Promise<PipelineResult> => {
       const cfbdGames = await getGames({
@@ -139,7 +148,7 @@ export const POST = async (
         '@/lib/cfb/tiebreaker-rules/common/core-helpers'
       );
       const filteredGames = filterRegularSeasonGames(allGames);
-      const finalGames = applyOverrides(filteredGames, overrides);
+      const finalGames = applyOverrides(filteredGames, normalizedOverrides);
 
       const conferenceTeamIds = new Set(teams.map((team) => team._id));
       const teamSet = new Set<string>();
@@ -154,8 +163,7 @@ export const POST = async (
       const allTeams = Array.from(teamSet);
 
       const filteredConferenceGames = finalGames.filter(
-        (game) =>
-          conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
+        (game) => conferenceTeamIds.has(game.home.teamId) && conferenceTeamIds.has(game.away.teamId)
       );
 
       const teamLeanArray: TeamLean[] = teams.map((team) => ({
@@ -182,14 +190,11 @@ export const POST = async (
       let teamsWithData = teamLeanArray;
 
       if (ratingReqs.needsRatings) {
-        const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] =
-          await Promise.all([
-            ratingReqs.needsCfpRankings
-              ? getRankings({ year: season })
-              : Promise.resolve(null),
-            getSp({ year: season }),
-            getFpi({ year: season }),
-          ] as const);
+        const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] = await Promise.all([
+          ratingReqs.needsCfpRankings ? getRankings({ year: season }) : Promise.resolve(null),
+          getSp({ year: season }),
+          getFpi({ year: season }),
+        ] as const);
 
         if (ratingReqs.needsCfpRankings && rankingsResponse) {
           const { attachCfpRankingsToTeams } = await import('@/lib/cfb/helpers/attach-rankings');
@@ -233,11 +238,9 @@ export const POST = async (
     };
 
     const DEDUP_TTL_SECONDS = 60;
-    const result = await unstable_cache(
-      runPipeline,
-      ['simulate-dedup', bodyHash],
-      { revalidate: DEDUP_TTL_SECONDS }
-    )();
+    const result = await unstable_cache(runPipeline, ['simulate-dedup', bodyHash], {
+      revalidate: DEDUP_TTL_SECONDS,
+    })();
 
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status });
