@@ -48,7 +48,13 @@
       "Bash(vercel ls *)",
       "Bash(vercel inspect *)",
       "WebFetch(domain:preview.whoclinches.com)",
-      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('standings', [{}]\\)[0].get\\('abbrev', 'N/A'\\) if d.get\\('standings'\\) else d.get\\('error', 'unknown'\\)\\)\")"
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(d.get\\('standings', [{}]\\)[0].get\\('abbrev', 'N/A'\\) if d.get\\('standings'\\) else d.get\\('error', 'unknown'\\)\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(f'  {k}: {v}'\\) for k,v in d.get\\('scripts',{}\\).items\\(\\)]\")",
+      "Bash(test -f app/api/share/\\\\[sport\\\\]/\\\\[conf\\\\]/route.ts)",
+      "Bash(test -f app/results/\\\\[id\\\\]/page.tsx)",
+      "Bash(test -f app/results/\\\\[id\\\\]/opengraph-image.tsx)",
+      "Bash(test -f app/api/games/\\\\[sport\\\\]/\\\\[conf\\\\]/subscribe/route.ts)",
+      "Bash(grep -v '\\\\$VERCEL_AUTOMATION')"
     ],
     "deny": [
       "Bash(rm:*)",

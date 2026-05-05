@@ -38,6 +38,15 @@ Load additional docs based on your specific task:
 
 **Total:** ~20-23K tokens
 
+### Scenario 3: Database / Share Feature Work
+
+**Additional Load (~3-5K tokens):**
+
+- `docs/guides/api-reference-data.md` - Share endpoint documentation
+- `prisma/schema.prisma` - Database schema (direct read)
+
+**Total:** ~7-9K tokens
+
 ### Scenario 4: Frontend Work
 
 **Additional Load (~5-8K tokens):**
@@ -74,6 +83,7 @@ Load additional docs based on your specific task:
 | General Development | ✅        | None                                          | ~4.3K   |
 | API Endpoint        | ✅        | api-reference-data.md                         | ~10-13K |
 | CFBD API Work       | ✅        | cfbd-api-monitoring.md, api-reference-data.md | ~10-13K |
+| Database / Share    | ✅        | api-reference-data.md, prisma/schema.prisma   | ~7-9K   |
 | Frontend            | ✅        | frontend/index.md                             | ~10-13K |
 
 ---

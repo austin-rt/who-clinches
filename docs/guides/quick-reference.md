@@ -38,6 +38,14 @@ Domain-specific content locations for common tasks.
 - **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
 - **Frontend data loading**: `app/hooks/useGamesData.ts` - GraphQL subscriptions (Server-Sent Events) when in season, REST API when out of season
 
+## Database
+
+- **Prisma client**: `lib/db/client.ts` (singleton pattern)
+- **Schema**: `prisma/schema.prisma` (PostgreSQL via Neon)
+- **Migrations**: `prisma/migrations/`
+- **Models**: `SimulationSnapshot` (shareable simulation results with hash dedup)
+- **Commands**: `npm run db:migrate:dev` (local), `npm run db:migrate:deploy` (prod), `npm run db:check` (validate)
+
 ## Data Models
 
 - **API types**: `lib/api-types.ts`
@@ -66,6 +74,14 @@ npm run test                  # All tests
 # Development
 npm run dev                   # Start dev server
 npm run lint                  # Run ESLint
+
+# Database
+npm run db:migrate:dev        # Create/apply migrations locally
+npm run db:migrate:deploy     # Apply migrations in prod
+npm run db:check              # Validate schema
+
+# Build
+npm run build                 # prisma generate && next build
 ```
 
 ## File Locations
@@ -87,5 +103,10 @@ npm run lint                  # Run ESLint
 | Prefill helpers                    | `lib/cfb/helpers/prefill-helpers.ts`                                                                                                                                           |
 | Season check                       | `lib/cfb/helpers/season-check-cfbd.ts`                                                                                                                                         |
 | Types                              | `lib/types.ts`, `lib/api-types.ts`                                                                                                                                             |
+| Database client                    | `lib/db/client.ts`                                                                                                                                                             |
+| Prisma schema                      | `prisma/schema.prisma`                                                                                                                                                         |
+| Share API                          | `app/api/share/[sport]/[conf]/route.ts`                                                                                                                                        |
+| Results page                       | `app/results/[id]/page.tsx`                                                                                                                                                    |
+| OG image generation                | `app/results/[id]/opengraph-image.tsx`                                                                                                                                         |
 | Tests                              | `__tests__/`                                                                                                                                                                   |
 | Frontend data loading              | `app/hooks/useGamesData.ts`                                                                                                                                                    |

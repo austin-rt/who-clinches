@@ -3,6 +3,7 @@
 Tech stack and project structure for the frontend application.
 
 **Related Documentation:**
+
 - [Frontend Index](./index.md) - Frontend documentation overview
 - [AI Guide](../../ai-guide.md) - Development patterns and principles
 
@@ -20,13 +21,17 @@ Tech stack and project structure for the frontend application.
 
 ## File Structure
 
-**TODO**: Document file structure once finalized. Include component organization, store structure, and key directories.
+- `app/[sport]/[conf]/page.tsx` - Conference simulation page (main interactive view)
+- `app/results/[id]/page.tsx` - Shareable results page (read-only snapshot)
+- `app/results/[id]/opengraph-image.tsx` - OG image generation for share links
+- `app/page.tsx` - Home/landing page
+- `app/components/` - All React components (shared between main app and results page)
+- `app/store/` - Redux store (uiSlice, appSlice, gamePicksSlice, apiSlice)
+- `app/hooks/` - Custom hooks (`useGamesData`, `useInSeason`)
+- `app/api/` - API route handlers
 
-For current structure, see:
-- [AI Guide](../../ai-guide.md) - Repository Structure section
-- [Quick Reference](../quick-reference.md) - File Locations table
+For detailed file locations, see [Quick Reference](../quick-reference.md) - File Locations table.
 
 ---
 
-**Last Updated**: November 2025
-
+**Last Updated**: May 2026

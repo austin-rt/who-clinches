@@ -3,6 +3,7 @@
 How data flows through the application: fetching, user interactions, and state updates.
 
 **Related Documentation:**
+
 - [Frontend Index](./index.md) - Frontend documentation overview
 - [State Management](./state-management.md) - Redux store and persistence
 - [Components](./components.md) - Component patterns
@@ -17,11 +18,14 @@ How data flows through the application: fetching, user interactions, and state u
 - Automatic refetch on window focus
 - `lastUpdated` synced to Redux on successful fetch
 
-**Data Pipeline**: CFBD API → Reshape (with team enrichment) → API Response
+**Data Pipeline**: CFBD API → Redis cache (production/preview) → Reshape (with team enrichment) → API Response
+
 - Team metadata (`displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`) is enriched at the reshape level from CFBD API responses
-- All data is fetched directly from CFBD API on each request - no database persistence
+- CFBD data is cached in Upstash Redis (production and preview when configured) with TTLs per data type
+- Simulation snapshots are persisted to PostgreSQL (Prisma/Neon) when the user shares results
 
 **RTK Query Hooks** (from `app/store/apiSlice.ts`):
+
 - `useGetSeasonGameDataQuery({ sport, conf, season, week? })` - Fetch games from CFBD API (GET request to `/api/games/[sport]/[conf]`)
 - `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
 
@@ -36,6 +40,7 @@ The `useGamesData` hook implements a single-phase loading strategy:
 ### Subscription Strategy
 
 After initial load, the `useGamesData` hook implements conditional GraphQL subscriptions based on game states and start times:
+
 1. **Live Games Subscription**: Starts when:
    - Games are in progress (`state: 'in'`), OR
    - Games are starting within 5 minutes of kickoff (`state: 'pre'` and game date is within 5 minutes)
@@ -72,11 +77,22 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 ## Redux Patterns
 
 **State Management:**
+
 - `useAppSelector()`, `useAppDispatch()` from `app/store/hooks.ts`
 - `useUIState()` hook from `app/store/useUI.ts`
 - redux-persist automatically persists ui and app slices to localStorage (keys: `persist:ui`, `persist:app`)
 
+---
+
+## Share Flow
+
+1. User clicks **Simulate** → `SimulateButton` posts to `/api/simulate/[sport]/[conf]` → receives `SimulateResponse`
+2. `simulateResponse` state set on conference page → passed to `Standings` → `SimulatedStandings` → `ShareButton`
+3. `ShareButton` fires POST to `/api/share/[sport]/[conf]` in background `useEffect` immediately (pre-fetch)
+4. Share API stores snapshot in PostgreSQL with hash dedup, returns URL
+5. User clicks **Share Results** → modal opens instantly with pre-fetched URL
+6. Results page (`/results/[id]`) fetches snapshot from DB and renders with shared components
+
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).
 
-**Last Updated**: January 2025
-
+**Last Updated**: May 2026

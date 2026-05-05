@@ -19,18 +19,23 @@ This is a specialized college football application built for simulating conferen
 
 - **Game Simulation**: Users predict scores for upcoming/incomplete games
 - **Tiebreaker Resolution**: Implements official conference tiebreaker rules (varies by conference, e.g., SEC Rules A-E, MWC team rating score) to resolve ties. Rules are defined in `docs/tiebreaker-rules/*.txt` (the singular source of truth) and enforced by a modular system: common rules in `lib/cfb/tiebreaker-rules/common/`, core engine in `lib/cfb/tiebreaker-rules/core/`, and conference-specific configs in `lib/cfb/tiebreaker-rules/{conf}/config.ts`. Some rules are async and fetch external data (SP+ and FPI ratings) on demand.
+- **Score Normalization**: Non-SEC conference overrides are normalized to 1-0 (W/L) before simulation and hashing, since only SEC Rule E uses exact scoring margin. This ensures identical W/L patterns produce the same hash regardless of exact scores.
 - **Standings Calculation**: Generates complete conference standings with explanations
+- **Shareable Snapshots**: Users can share simulation results via URL. The share API (`/api/share/[sport]/[conf]`) stores pre-computed results in PostgreSQL (Prisma) with hash-based deduplication. The results page (`/results/[id]`) renders a read-only view using shared components.
 - **Real-Time Data**: Automatically updates from CFBD API via frontend polling with conditional logic
 
 ## Repository Structure
 
 **Key Directories:**
 
-- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
-- `app/components/` - React components
+- `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`, `/api/share/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
+- `app/components/` - React components (includes shared components used by both main app and results page)
+- `app/results/[id]/` - Shareable results page (read-only snapshot view with OG image generation)
 - `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
 - `lib/cfb/` - CFBD API clients (cfbd-client, cfbd-rest-client, cfbd-graphql-client)
+- `lib/db/` - Prisma database client (`client.ts`)
+- `prisma/` - Prisma schema and migrations (PostgreSQL via Neon)
 - `lib/` - Core utilities (reshape-\*, tiebreaker-rules modular system)
 
 ## Documentation Navigation
@@ -66,7 +71,9 @@ This is a specialized college football application built for simulating conferen
 
 **CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (Redis-backed data access via `fetch<T>` primitive), `lib/cfb/cfbd-rest-client.ts` (REST client with API key rotation via `VERCEL_ENV`), `lib/cfb/cfbd-graphql-client.ts`, `lib/cfb/tiebreaker-cfbd-requirements.ts` (conditional rating fetches per conference config), `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration, `CFBD_CONFERENCE_NAME_TO_ABBR`)
 
-**API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication), `lib/client/input-hash.ts` (client-side request deduplication)
+**API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication for simulate and share), `lib/client/input-hash.ts` (client-side request deduplication)
+
+**Database**: `lib/db/client.ts` (Prisma client singleton), `prisma/schema.prisma` (PostgreSQL schema via Neon). `SimulationSnapshot` model stores shareable simulation results with hash-based deduplication. Build: `prisma generate && next build`. Migrations: `prisma migrate dev` (local), `prisma migrate deploy` (production via Vercel build command).
 
 **Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive when `VERCEL_ENV` is `production` or `preview` and `UPSTASH_REDIS_*` are set), `proxy.ts` (per-IP rate limiting via `@upstash/ratelimit` on `production` and `preview`, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
 
