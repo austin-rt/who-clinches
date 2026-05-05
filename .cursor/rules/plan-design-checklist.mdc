@@ -54,5 +54,3 @@ Each checkpoint is a separate todo. Group by logical unit, not by file. Every ch
 Maintain a **Regressions** section in the plan document. Keep it current throughout planning and execution.
 
 - **During planning:** For each checkpoint, analyze what existing behavior the changes could break. Log each risk in the Regressions section with the checkpoint it originates from and the affected area.
-- **During execution:** If an implementation deviates from the plan (unplanned file edits, unexpected refactors, additional call site changes), immediately assess regression potential and append new entries to the Regressions section before continuing.
-- The Regressions section is a living document — update it in real time, not as a post-hoc review.

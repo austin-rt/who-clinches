@@ -45,6 +45,7 @@ After each checkpoint, generate a concrete list of manual test flows. Rules:
 - Cover the changed behavior AND at least one regression check per flow where applicable.
 - If the checkpoint has no UI-observable change (e.g., pure library code with no route wiring), say so explicitly and skip the flows.
 
-## Planning
+## Regression tracking
 
-Each checkpoint is a separate todo. Group by logical unit, not by file. Every checkpoint block in the plan must use the same stop pattern as step 4 above, naming the next checkpoint explicitly.
+- **During execution:** If an implementation deviates from the plan (unplanned file edits, unexpected refactors, additional call site changes), immediately assess regression potential and append new entries to the Regressions section before continuing.
+- The Regressions section is a living document — update it in real time, not as a post-hoc review.
