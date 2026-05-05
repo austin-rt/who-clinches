@@ -85,7 +85,7 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 ## Environments & URLs
 
 - **Production**: https://whoclinches.com (main branch, `VERCEL_ENV=production`)
-- **Preview/Stage**: https://preview.whoclinches.com (develop branch, `VERCEL_ENV=preview`)
+- **Preview/Stage**: https://preview.whoclinches.com (develop branch, `VERCEL_ENV=preview`, behind Vercel Authentication — bypass with `x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET` header)
 - **Local**: http://localhost:3000 (`VERCEL_ENV` undefined)
 
 ## Constraints
