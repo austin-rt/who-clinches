@@ -204,12 +204,6 @@ export default function AdminPage() {
 
   const isLocal = config.environment === 'local';
   const isPreview = config.environment === 'preview';
-  const envLabel =
-    config.environment === 'local'
-      ? 'Development'
-      : config.environment === 'preview'
-        ? 'Preview'
-        : 'Production';
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -223,7 +217,7 @@ export default function AdminPage() {
             !isLocal && !isPreview && 'border-neutral text-neutral'
           )}
         >
-          {envLabel}
+          {config.environment}
         </span>
       </div>
 
@@ -246,7 +240,7 @@ export default function AdminPage() {
 
       {/* Local Section */}
       {isLocal && (
-        <Card title="Development">
+        <Card title={config.environment}>
           <Toggle
             label="Fixture Year"
             description="Override season with fixture data (requires JSON server)"
@@ -294,7 +288,7 @@ export default function AdminPage() {
 
       {/* Preview Section */}
       {isPreview && (
-        <Card title="Preview">
+        <Card title={config.environment}>
           <h3 className="mb-3 font-semibold text-red-700">Danger Zone</h3>
           <div className="flex flex-wrap gap-2">
             <Button size="md" color="error" onClick={() => clearDb('preview')}>
