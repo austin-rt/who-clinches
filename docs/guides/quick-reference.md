@@ -80,6 +80,13 @@ npm run db:migrate:dev        # Create/apply migrations locally
 npm run db:migrate:deploy     # Apply migrations in prod
 npm run db:check              # Validate schema
 
+# Cache Flush
+npm run flush:redis:dev       # Flush dev Redis cache
+npm run flush:redis:prod      # Flush prod Redis cache
+npm run flush:redis:all       # Flush all Redis caches
+npm run flush:next            # Flush Next.js cache
+npm run flush:cache           # Flush both Redis (dev) and Next.js cache
+
 # Build
 npm run build                 # prisma generate && next build
 ```

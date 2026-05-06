@@ -34,6 +34,7 @@ npm run test:all
 - **`.env.production`** - Production environment variables
 
 **Usage:**
+
 - Bypass token (`VERCEL_AUTOMATION_BYPASS_SECRET`) auto-handled by Jest tests
 - Manual curl requires explicit bypass token (see comprehensive-api-testing.md)
 - All tests use mocks - no external API calls or database required
@@ -65,6 +66,7 @@ npm run test:all
 **Mock Data** - All tests use mocks based on CFBD TypeScript types.
 
 **Test Data Source:**
+
 - `__tests__/mocks/cfbd-rest-client.ts` - Mock CFBD API responses
 - Uses `Partial<>` types for flexible test overrides
 - No external API calls during tests
@@ -93,15 +95,19 @@ Append the bypass token as a query parameter:
 curl -s "https://preview.whoclinches.com/api/games/cfb/sec?x-vercel-protection-bypass=$VERCEL_AUTOMATION_BYPASS_SECRET"
 ```
 
-### Browser testing (agent or manual)
+### Browser testing (Playwright MCP)
 
-Static assets (JS, CSS, fonts) are blocked unless the bypass token is set as a cookie. Navigate to this URL first to set the cookie, then all subsequent page loads work:
+The repo includes `.mcp.json` which configures Playwright MCP to inject the bypass header via `.playwright-mcp-config.json`. This automatically sets `x-vercel-protection-bypass` on all browser requests.
 
+For manual Playwright sessions without the MCP config, inject the header before navigating:
+
+```js
+await page.setExtraHTTPHeaders({
+  'x-vercel-protection-bypass': process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
+});
 ```
-https://preview.whoclinches.com/?x-vercel-protection-bypass=$VERCEL_AUTOMATION_BYPASS_SECRET&x-vercel-set-bypass-cookie=samesitenone
-```
 
-The `x-vercel-set-bypass-cookie=samesitenone` parameter tells Vercel to persist the token as a `SameSite=None` cookie, which applies to all asset requests on the domain.
+**Note:** Cookie-based and query-parameter-based bypass approaches do not reliably work for browser testing because Vercel redirects server-side before checking cookies/params, causing sub-resource (CSS, JS, font) requests to fail with 401.
 
 ### POST endpoints
 

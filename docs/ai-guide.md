@@ -67,7 +67,7 @@ This is a specialized college football application built for simulating conferen
 
 ## Key Files Reference
 
-**Types**: `lib/types.ts`
+**Types**: `lib/types.ts`, `app/store/api.ts` (generated API types used by routes)
 
 **CFBD Integration**: `lib/cfb/cfbd-client.ts` (unified client), `lib/cfb/cfbd-cached.ts` (Redis-backed data access via `fetch<T>` primitive), `lib/cfb/cfbd-rest-client.ts` (REST client with API key rotation via `VERCEL_ENV`), `lib/cfb/cfbd-graphql-client.ts`, `lib/cfb/tiebreaker-cfbd-requirements.ts` (conditional rating fetches per conference config), `lib/reshape-games.ts`, `lib/reshape-teams-from-cfbd.ts`, `lib/constants.ts` (sports and conference configuration, `CFBD_CONFERENCE_NAME_TO_ABBR`)
 

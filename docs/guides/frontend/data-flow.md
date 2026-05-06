@@ -27,7 +27,7 @@ How data flows through the application: fetching, user interactions, and state u
 **RTK Query Hooks** (from `app/store/apiSlice.ts`):
 
 - `useGetSeasonGameDataQuery({ sport, conf, season, week? })` - Fetch games from CFBD API (GET request to `/api/games/[sport]/[conf]`)
-- `useSimulateMutation()` - Requires `{ sport, conf, season, overrides }` in request body
+- `useSimulateMutation()` - Requires `{ sport, conf, season, games, teams, overrides }` in request body
 
 ### Initial Load Strategy
 

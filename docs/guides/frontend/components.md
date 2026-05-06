@@ -92,9 +92,7 @@ import IconButton from '@/app/components/IconButton';
 
 ## Share Flow Components
 
-**ShareButton** (`app/components/ShareButton.tsx`): Pre-fetches share URL via `useEffect` immediately after simulation completes. Modal opens instantly on click. Props: `simulateResponse`, `games`.
-
-**ShareModal** (`app/components/ShareModal.tsx`): Modal with URL input, copy icon, social share icons (X, Threads, native share), and stroked Close button. Dark mode override on Close button for white text/border.
+**ShareButton** (`app/components/ShareButton.tsx`): Pre-fetches share URL via `useEffect` immediately after simulation completes. Renders inline share actions (copy URL, social share icons) without a modal. Props: `simulateResponse`, `games`.
 
 **Share URL Pre-fetch Pattern:** ShareButton fires the POST to `/api/share/[sport]/[conf]` in a `useEffect` when `simulateResponse` changes. Uses `fetchedHashRef` to prevent duplicate calls and `AbortController` for cleanup.
 
@@ -106,7 +104,22 @@ These components are used by both the conference page and the shareable results 
 
 - **ChampionshipMatchup** — Championship game participants display
 - **StandingsExplanations** — Two-column layout on `sm+`, with extracted `StandingRow` component (24px logos, compact explanation text)
-- **TiebreakerDetails** — Collapsible tiebreaker step details (collapsed by default)
+- **TiebreakerGraphVertical** — Vertical React Flow tiebreaker decision tree (mobile, `lg:hidden`)
+- **TiebreakerGraphHorizontal** — Horizontal React Flow tiebreaker decision tree (desktop, `hidden lg:block`)
+
+Custom flow node components in `app/components/flow-nodes/`: `RootNode`, `RuleNode`, `ResultNode`, `TeamEdge` (with horizontal variants `RootNodeH`, `RuleNodeH`, `ResultNodeH`).
+
+---
+
+## LinkButton Component System
+
+**LinkButton Variants** (`app/components/LinkButton/`):
+
+- `LinkButton` — Solid link-styled button with background color
+- `LinkButton.Stroked` — Outlined link button with border, transparent background
+- `LinkButton.Flat` — Flat link button with no border or background
+
+Follows the same variant pattern as `Button`. Renders as `<a>` elements for navigation.
 
 ---
 

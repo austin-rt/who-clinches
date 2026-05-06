@@ -24,7 +24,7 @@ Fetches game data from CFBD API and returns reshaped data with team metadata.
 
 **GameLean** (in `events` array): Game object with `id`, `_id`, `home` and `away` objects containing `teamId`, `abbrev`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `score`, `rank`.
 
-**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceStanding`, `conferenceRecord` (string, e.g., "7-1"), `rank` (number | null)
+**TeamMetadata** (in `teams` array): Team metadata with `id`, `abbrev`, `name`, `displayName`, `shortDisplayName`, `logo`, `color`, `alternateColor`, `conferenceId`, `conferenceStanding`, `conferenceRecord` (string, e.g., "7-1"), `record` (full record object), `rank` (number | null), `division` (string | null), `nationalRank` (number | null), `spPlusRating` (number | null), `sor` (number | null)
 
 **Caching**: Live games (`state: "in"`): 10s, others: 60s
 
@@ -39,11 +39,13 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 **Note**: Dynamic endpoint supporting multiple conferences. The endpoint path is `/api/simulate/[sport]/[conf]` where `sport` is `cfb` and `conf` is the conference abbreviation (e.g., `SEC`).  
 **Example**: `/api/simulate/cfb/SEC`
 
-**Request Body**: `{ "season": 2025, "overrides": { "gameId": { "homeScore": 45, "awayScore": 10 } } }`
+**Request Body**: `{ "season": 2025, "games": [GameLean[]], "teams": [TeamMetadata[]], "overrides": { "gameId": { "homeScore": 45, "awayScore": 10 } } }`
 
 **Parameters**:
 
 - `season` (number, required) - Season year
+- `games` (GameLean[], required) - All conference games from the games endpoint
+- `teams` (TeamMetadata[], required) - All conference teams from the games endpoint
 - `overrides` (object, optional) - Game ID → score overrides, defaults to `{}`. Game IDs match the `id` field from GameLean objects.
 
 **Override Format**:
@@ -54,15 +56,16 @@ Simulates conference tiebreaker standings with optional user-provided game outco
 - Tie scores are not allowed
 - Scores must be whole numbers (integers)
 
-**Response**: `{ "standings": [StandingEntry[]], "championship": [string, string], "tieLogs": [TieLog[]] }`
+**Response**: `{ "standings": [StandingEntry[]], "championship": [string, string], "tieLogs": [TieLog[]], "tieFlowGraphs": [TieFlowGraph[]] }`
 
 **Response Fields**:
 
 - `standings` (StandingEntry[] sorted by rank) - All teams with their final standings
 - `championship` ([string, string]) - Top 2 team IDs for championship game
 - `tieLogs` (TieLog[]) - Detailed tiebreaker explanations showing which rules were applied
+- `tieFlowGraphs` (TieFlowGraph[]) - React Flow decision tree data for visualizing tiebreaker steps
 
-See `lib/api-types.ts` for full type definitions.
+See `app/store/api.ts` for full type definitions (generated types used by API routes).
 
 **Error Responses**:
 
@@ -74,7 +77,7 @@ See `lib/api-types.ts` for full type definitions.
 
 **Score Normalization**: Non-SEC conference overrides are normalized to `{ homeScore: 1, awayScore: 0 }` or `{ homeScore: 0, awayScore: 1 }` before simulation and hashing. Only SEC Rule E uses exact scoring margin, so other conferences only need W/L. This ensures identical W/L patterns produce the same dedup hash regardless of exact scores.
 
-**Notes**: Games and teams cached in Upstash Redis (production and preview when configured). Rating fetches (SP+, FPI, CFP rankings) are conditional -- only made for conferences whose tiebreaker config includes "Team Rating Score" (see `describeRequiredCfbdRatingFeeds`). Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
+**Notes**: The simulate endpoint accepts client-provided `games` and `teams` data (from the games endpoint) — it does not fetch from CFBD. Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
 
 ## POST /api/share/[sport]/[conf]
 
