@@ -36,6 +36,18 @@ html[data-mode='dark'] {
   --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
 }
 
+[data-env='local'] {
+  --color-env-indicator: #16a34a;
+}
+
+[data-env='preview'] {
+  --color-env-indicator: #b45309;
+}
+
+[data-env='production'] {
+  --color-env-indicator: #dc2626;
+}
+
 /* Team themes will be dynamically injected in Phase 5 from CFBD API data */
 /* Each team theme only defines primary, secondary, accent colors */
 /* Base colors inherited from light/dark mode */

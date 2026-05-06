@@ -14,6 +14,7 @@ const config = {
         stroke: 'var(--color-stroke)',
         'stroke-alt': 'var(--color-stroke-alt)',
         'text-secondary': 'var(--color-text-secondary)',
+        'env-indicator': 'var(--color-env-indicator)',
       },
       fontSize: {
         xxs: '10px',
