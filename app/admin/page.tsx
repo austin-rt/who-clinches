@@ -241,14 +241,9 @@ export default function AdminPage() {
               size="sm"
               color="primary"
               className="mt-2 w-full max-w-xs"
-              value={config.fixtureYear ?? ''}
-              onChange={(e) =>
-                updateConfig({ fixtureYear: e.target.value ? Number(e.target.value) : null })
-              }
+              value={config.fixtureYear ?? config.availableFixtureYears[0] ?? ''}
+              onChange={(e) => updateConfig({ fixtureYear: Number(e.target.value) })}
             >
-              <option value="" disabled>
-                Select year
-              </option>
               {config.availableFixtureYears.map((year) => (
                 <option key={year} value={year}>
                   {year}

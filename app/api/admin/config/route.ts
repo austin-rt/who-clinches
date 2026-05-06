@@ -47,6 +47,9 @@ export const PATCH = async (request: NextRequest) => {
   const cascadeEffects: string[] = [];
 
   if (patch.fixtureYearOn && !current.fixtureYearOn) {
+    if (!patch.fixtureYear && !current.fixtureYear && AVAILABLE_FIXTURE_YEARS.length > 0) {
+      patch.fixtureYear = AVAILABLE_FIXTURE_YEARS[0];
+    }
     patch.redisOn = false;
     patch.rateLimitOn = false;
     cascadeEffects.push('Redis disabled (fixtures use local data)');
