@@ -204,6 +204,12 @@ export default function AdminPage() {
 
   const isLocal = config.environment === 'local';
   const isPreview = config.environment === 'preview';
+  const envLabel =
+    config.environment === 'local'
+      ? 'Development'
+      : config.environment === 'preview'
+        ? 'Preview'
+        : 'Production';
 
   return (
     <div className="mx-auto max-w-3xl space-y-6">
@@ -217,7 +223,7 @@ export default function AdminPage() {
             !isLocal && !isPreview && 'border-neutral text-neutral'
           )}
         >
-          {isLocal ? 'Local Dev' : config.environment}
+          {envLabel}
         </span>
       </div>
 
@@ -240,7 +246,7 @@ export default function AdminPage() {
 
       {/* Local Section */}
       {isLocal && (
-        <Card title="Local Dev">
+        <Card title="Development">
           <Toggle
             label="Fixture Year"
             description="Override season with fixture data (requires JSON server)"
