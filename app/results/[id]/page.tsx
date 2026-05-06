@@ -3,10 +3,9 @@ import { db } from '@/lib/db/client';
 import type { Metadata } from 'next';
 import type { SimulateResponse } from '@/app/store/api';
 import type { TeamLean, GameLean } from '@/lib/types';
-import Link from 'next/link';
 import ChampionshipMatchup from '@/app/components/ChampionshipMatchup';
-import StandingsExplanations from '@/app/components/StandingsExplanations';
-import TiebreakerDetails from '@/app/components/TiebreakerDetails';
+import SimulatedStandings from '@/app/components/SimulatedStandings';
+import { LinkButton } from '@/app/components/LinkButton';
 
 interface SnapshotPayload {
   input: { overrides: Record<string, { homeScore: number; awayScore: number }> };
@@ -66,38 +65,48 @@ const GameResultsContent = ({
   const sortedWeeks = Array.from(weeks.entries()).sort(([a], [b]) => a - b);
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
       {sortedWeeks.map(([weekNum, weekGames]) => (
-        <div key={weekNum} className="flex flex-col gap-2">
-          <div className="text-base-content/70 text-xs font-semibold">Week {weekNum}</div>
-          <div className="flex flex-wrap gap-2">
+        <div
+          key={weekNum}
+          className="flex flex-col rounded-lg border border-stroke bg-base-200 px-2"
+        >
+          <div className="p-2 text-xs font-semibold">Week {weekNum}</div>
+          <div className="border-t border-stroke" />
+          <div className="flex flex-wrap gap-1 px-1 py-3">
             {weekGames.map(({ game, homeScore, awayScore }) => {
               const normalized = isNormalized(homeScore, awayScore);
               const homeWon = homeScore > awayScore;
+              const winnerColor = homeWon ? game.home.color : game.away.color;
 
               return (
                 <div
                   key={game.id}
-                  className="border-base-content/10 flex w-36 items-center justify-around rounded-lg border bg-base-200 px-1 py-2 dark:bg-base-300"
+                  className="flex h-14 w-24 items-center justify-around rounded-lg bg-base-300 px-1"
+                  style={
+                    winnerColor
+                      ? { backgroundColor: `${winnerColor}33`, border: `2px solid ${winnerColor}` }
+                      : undefined
+                  }
                 >
                   <div className="flex flex-col items-center gap-0.5">
-                    <span
-                      className={`text-xs ${!homeWon ? 'font-semibold' : 'text-base-content/60'}`}
-                    >
+                    <span className={`text-xs ${!homeWon ? 'font-black' : 'text-base-content/60'}`}>
                       {game.away.abbrev}
                     </span>
-                    <span className="text-base-content/70 font-mono text-xxs">
+                    <span
+                      className={`font-mono text-xxs ${!homeWon ? 'font-black' : 'text-base-content/70'}`}
+                    >
                       {normalized ? (homeWon ? 'L' : 'W') : awayScore}
                     </span>
                   </div>
                   <span className="text-base-content/40 text-xxs">-</span>
                   <div className="flex flex-col items-center gap-0.5">
-                    <span
-                      className={`text-xs ${homeWon ? 'font-semibold' : 'text-base-content/60'}`}
-                    >
+                    <span className={`text-xs ${homeWon ? 'font-black' : 'text-base-content/60'}`}>
                       {game.home.abbrev}
                     </span>
-                    <span className="text-base-content/70 font-mono text-xxs">
+                    <span
+                      className={`font-mono text-xxs ${homeWon ? 'font-black' : 'text-base-content/70'}`}
+                    >
                       {normalized ? (homeWon ? 'W' : 'L') : homeScore}
                     </span>
                   </div>
@@ -124,39 +133,50 @@ const ResultsPage = async ({ params }: Props) => {
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-6 px-4 py-8">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-2xl font-bold">
             {snapshot.conf.toUpperCase()} {snapshot.season} Simulation
           </h1>
-          <p className="text-base-content/60 text-sm">
-            Shared {snapshot.createdAt.toLocaleDateString()}
-          </p>
         </div>
-        <Link href={`/cfb/${snapshot.conf}`} className="btn btn-primary btn-sm">
+        <div className="hidden sm:flex sm:justify-end">
+          <LinkButton.Stroked href={`/cfb/${snapshot.conf}`} target="_blank" size="md">
+            Try it yourself
+          </LinkButton.Stroked>
+        </div>
+      </div>
+      <div className="flex w-full sm:hidden">
+        <LinkButton.Stroked
+          href={`/cfb/${snapshot.conf}`}
+          target="_blank"
+          size="md"
+          className="w-full"
+        >
           Try it yourself
-        </Link>
+        </LinkButton.Stroked>
       </div>
 
       {team1 && team2 && <ChampionshipMatchup team1={team1} team2={team2} />}
 
-      <div className="collapse collapse-arrow bg-base-300">
+      <div className="collapse collapse-arrow bg-base-200 shadow-md">
         <input type="checkbox" defaultChecked />
-        <div className="collapse-title min-h-0 py-2 text-sm font-semibold">Standings</div>
+        <div className="collapse-title w-full justify-center text-base font-semibold">
+          Simulated Standings
+        </div>
         <div className="collapse-content">
-          <StandingsExplanations standings={output.standings} />
+          <SimulatedStandings simulateResponse={output} />
         </div>
       </div>
 
       <div className="collapse collapse-arrow bg-base-300">
         <input type="checkbox" defaultChecked />
-        <div className="collapse-title min-h-0 py-2 text-sm font-semibold">Game Results</div>
+        <div className="collapse-title min-h-0 py-2 text-sm font-semibold">
+          Simulated Game Results
+        </div>
         <div className="collapse-content">
           <GameResultsContent overrides={payload.input.overrides} games={payload.games} />
         </div>
       </div>
-
-      <TiebreakerDetails tieLogs={output.tieLogs} />
     </div>
   );
 };

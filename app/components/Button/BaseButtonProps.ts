@@ -7,4 +7,3 @@ export interface BaseButtonProps extends ComponentPropsWithRef<'button'> {
   disabled?: boolean;
   children?: ReactNode;
 }
-
