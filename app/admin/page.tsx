@@ -206,13 +206,8 @@ export default function AdminPage() {
   const isPreview = config.environment === 'preview';
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6" data-env={config.environment}>
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <span className="rounded-lg border-2 border-env-indicator px-3 py-1 text-sm font-semibold text-env-indicator">
-          {config.environment}
-        </span>
-      </div>
+    <div className="mx-auto max-w-3xl space-y-6">
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
       {actionMessage && (
         <div className="bg-info/10 rounded-lg border border-info px-4 py-3 text-sm text-info">

@@ -28,15 +28,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const env = (process.env.VERCEL_ENV ?? 'local') as 'local' | 'preview' | 'production';
+
   return (
-    <html lang="en" data-theme="sec" data-mode="light" className="h-full">
+    <html lang="en" data-theme="sec" data-mode="light" data-env={env} className="h-full">
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex h-full min-h-screen flex-col antialiased`}
       >
         <StoreProvider>
           <AnalyticsInit />
           <ThemeSync />
-          <Header />
+          <Header env={env} />
           <main className="flex-1">{children}</main>
           <Footer />
         </StoreProvider>
