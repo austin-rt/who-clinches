@@ -21,7 +21,7 @@ import {
 } from 'cfbd';
 import { logError } from '@/lib/errorLogger';
 import { JSON_SERVER_URL } from '@/lib/constants';
-import { getFixtureYear } from './helpers/fixture-year';
+import { getFixtureYearSync } from './helpers/fixture-year';
 import {
   CFBD_PREPROD_ROTATION_THRESHOLD,
   applyPreprodKeyRotationPolicy,
@@ -36,6 +36,12 @@ const preprodKeyUsage = new Map<number, PreprodKeyUsage>();
 
 export const getActiveApiKey = (): string =>
   selectActiveApiKey(cfbdApiKeyPool, process.env.VERCEL_ENV, activePreprodKeyIndex);
+
+export const getCfbdApiStatus = () => ({
+  activeKeyIndex: activePreprodKeyIndex,
+  poolSize: cfbdApiKeyPool.length,
+  usage: Object.fromEntries(preprodKeyUsage),
+});
 
 const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
   const prevIndex = activePreprodKeyIndex;
@@ -76,7 +82,7 @@ const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
 
 const getBaseUrl = (): string | undefined => {
   if (process.env.VERCEL_ENV === 'production') return undefined;
-  if (getFixtureYear() !== null || process.env.NODE_ENV === 'test') {
+  if (getFixtureYearSync() !== null || process.env.NODE_ENV === 'test') {
     return JSON_SERVER_URL;
   }
   return undefined;
@@ -138,7 +144,10 @@ export const getUserInfoFromCfbd = async (forceRefresh = false): Promise<UserInf
       return lastUserInfoCheck.info;
     }
 
-    const result = await getUserInfo();
+    const result = await getUserInfo({
+      headers: { Authorization: `Bearer ${getActiveApiKey()}` },
+      baseUrl: 'https://api.collegefootballdata.com',
+    });
     const info = result.data;
 
     if (info) {

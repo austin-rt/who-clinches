@@ -1,20 +1,26 @@
 import { Redis } from '@upstash/redis';
+import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 
-const vercelEnv = process.env.VERCEL_ENV;
 const redisConfigured = Boolean(
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
 );
-const useRedis = (vercelEnv === 'production' || vercelEnv === 'preview') && redisConfigured;
 
-export const redis = useRedis
+export const redis = redisConfigured
   ? new Redis({
       url: process.env.UPSTASH_REDIS_REST_URL!,
       token: process.env.UPSTASH_REDIS_REST_TOKEN!,
     })
   : (null as unknown as Redis);
 
+const isRedisEnabled = async (): Promise<boolean> => {
+  if (!redisConfigured) return false;
+  if (process.env.VERCEL_ENV === 'production') return true;
+  const config = await getRuntimeConfig();
+  return config.redisOn;
+};
+
 export const persistRedisKey = async (key: string): Promise<void> => {
-  if (!useRedis) return;
+  if (!(await isRedisEnabled())) return;
   await redis.persist(key);
 };
 
@@ -23,7 +29,7 @@ export const fetch = async <T>(
   fetcher: () => Promise<T>,
   ttl?: number
 ): Promise<T> => {
-  if (!useRedis) return fetcher();
+  if (!(await isRedisEnabled())) return fetcher();
 
   const hit = await redis.get<T>(key);
   if (hit) return hit;

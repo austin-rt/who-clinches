@@ -11,7 +11,16 @@ const ratelimit = new Ratelimit({
   prefix: 'ratelimit',
 });
 
-export const proxy = async (request: NextRequest) => {
+export const middleware = async (request: NextRequest) => {
+  const { pathname } = request.nextUrl;
+
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
+    if (process.env.VERCEL_ENV === 'production') {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
+    return NextResponse.next();
+  }
+
   const vercelEnv = process.env.VERCEL_ENV;
   if (vercelEnv !== 'production' && vercelEnv !== 'preview') {
     return NextResponse.next();
@@ -48,5 +57,5 @@ export const proxy = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/api/:path*', '/admin/:path*'],
 };

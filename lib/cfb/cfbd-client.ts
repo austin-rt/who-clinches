@@ -13,19 +13,15 @@ import { cfbdGraphQLClient } from './cfbd-graphql-client';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
 import { getFixtureYear } from './helpers/fixture-year';
 import { logError } from '../errorLogger';
-import type {
-  Game,
-  BettingGame,
-  Team,
-  UserInfo,
-  TeamStat,
-  PollWeek,
-  TeamSP,
-  TeamFPI,
-} from 'cfbd';
+import { getRuntimeConfig } from '@/lib/admin/runtime-config';
+import type { Game, BettingGame, Team, UserInfo, TeamStat, PollWeek, TeamSP, TeamFPI } from 'cfbd';
 
-const allowGraphQL = (): boolean => {
-  return typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
+const allowGraphQL = async (): Promise<boolean> => {
+  if (process.env.VERCEL_ENV === 'production') {
+    return process.env.NODE_ENV === 'production';
+  }
+  const config = await getRuntimeConfig();
+  return config.graphqlOn;
 };
 
 export class CFBDClient {
@@ -43,7 +39,7 @@ export class CFBDClient {
   }): Promise<Array<Game & { spread?: number; overUnder?: number; favoriteId?: number }>> {
     const inSeason = await this.isInSeason();
 
-    if (inSeason && allowGraphQL()) {
+    if (inSeason && (await allowGraphQL())) {
       try {
         const result = await cfbdGraphQLClient.getGameAggregate({
           season: params.year,
@@ -90,13 +86,10 @@ export class CFBDClient {
           favoriteId: node.favoriteId,
         }));
       } catch (error) {
-        await logError(
-          error,
-          {
-            action: 'get-games-graphql-fallback',
-            params,
-          }
-        );
+        await logError(error, {
+          action: 'get-games-graphql-fallback',
+          params,
+        });
         const games = await getGamesFromCfbd(params);
         return this.enrichGamesWithLines(games, params);
       }
@@ -152,13 +145,10 @@ export class CFBDClient {
         return game;
       });
     } catch (error) {
-      await logError(
-        error,
-        {
-          action: 'enrich-games-with-lines',
-          params,
-        }
-      );
+      await logError(error, {
+        action: 'enrich-games-with-lines',
+        params,
+      });
       return games;
     }
   }
@@ -166,7 +156,7 @@ export class CFBDClient {
   async getTeams(params?: { conference?: string; classification?: string }): Promise<Team[]> {
     const inSeason = await this.isInSeason();
 
-    if (inSeason && allowGraphQL()) {
+    if (inSeason && (await allowGraphQL())) {
       try {
         const result = await cfbdGraphQLClient.getCurrentTeams({
           conference: params?.conference,
@@ -188,13 +178,10 @@ export class CFBDClient {
           location: null,
         }));
       } catch (error) {
-        await logError(
-          error,
-          {
-            action: 'get-teams-graphql-fallback',
-            params,
-          }
-        );
+        await logError(error, {
+          action: 'get-teams-graphql-fallback',
+          params,
+        });
         return getTeamsFromCfbd(params);
       }
     }
@@ -202,9 +189,9 @@ export class CFBDClient {
     return getTeamsFromCfbd(params);
   }
 
-  getCalendar(year?: number) {
+  async getCalendar(year?: number) {
     if (!year) {
-      year = getFixtureYear() ?? new Date().getFullYear();
+      year = (await getFixtureYear()) ?? new Date().getFullYear();
     }
     return getCalendarFromCfbd(year);
   }

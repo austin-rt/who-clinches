@@ -12,6 +12,7 @@ import {
 } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
 import { getFixtureYear } from '@/lib/cfb/helpers/fixture-year';
+import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 import type { Game, Team } from 'cfbd';
 
 export const runtime = 'nodejs';
@@ -41,12 +42,18 @@ export const GET = async (
     return new Response('Invalid conference', { status: 400 });
   }
 
-  const seasonYear = season ? parseInt(season, 10) : (getFixtureYear() ?? new Date().getFullYear());
+  const seasonYear = season
+    ? parseInt(season, 10)
+    : ((await getFixtureYear()) ?? new Date().getFullYear());
   const inSeason = await isInSeasonFromCfbd();
-  const allowGraphQL = typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
 
-  if (!inSeason || !allowGraphQL) {
-    return new Response('Subscriptions only available during season in production', {
+  const isGraphQLEnabled =
+    process.env.VERCEL_ENV === 'production'
+      ? process.env.NODE_ENV === 'production'
+      : (await getRuntimeConfig()).graphqlOn;
+
+  if (!inSeason || !isGraphQLEnabled) {
+    return new Response('Subscriptions only available during season with GraphQL enabled', {
       status: 400,
     });
   }

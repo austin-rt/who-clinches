@@ -25,6 +25,7 @@ html:not([data-mode]) {
   --color-base-content: #1a1a1a; /* Main text color (dark gray) */
   --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
   --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
+  --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
   --color-winner: #00875a; /* Success green for winner */
   --color-loser: #de350b; /* Error red for loser */
 }
@@ -32,6 +33,7 @@ html:not([data-mode]) {
 html[data-mode='dark'] {
   --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
   --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
+  --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
 }
 
 /* Team themes will be dynamically injected in Phase 5 from CFBD API data */

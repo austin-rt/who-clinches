@@ -30,6 +30,14 @@
     }
   }
 
+  .btn-error {
+    @apply bg-red-700 text-white;
+
+    &:hover {
+      @apply bg-red-800;
+    }
+  }
+
   .btn.btn-stroke {
     @apply border-2 bg-transparent;
 
@@ -92,6 +100,14 @@
         &:hover {
           @apply bg-base-content text-base-100;
         }
+      }
+    }
+
+    &.btn-error {
+      @apply border-red-700 bg-transparent text-red-700;
+
+      &:hover {
+        @apply bg-red-700/10;
       }
     }
 

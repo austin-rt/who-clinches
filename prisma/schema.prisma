@@ -18,3 +18,14 @@ model SimulationSnapshot {
   payload   Json
   createdBy String?
 }
+
+model RuntimeConfig {
+  id               String   @id @default("singleton")
+  fixtureYearOn    Boolean  @default(false)
+  fixtureYear      Int?
+  graphqlOn        Boolean  @default(true)
+  redisOn          Boolean  @default(true)
+  rateLimitOn      Boolean  @default(true)
+  inSeasonOverride Boolean  @default(false)
+  updatedAt        DateTime @updatedAt
+}

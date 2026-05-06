@@ -1,9 +1,15 @@
 import { getCalendarFromCfbd } from '../cfbd-rest-client';
 import { logError } from '../../errorLogger';
 import { getFixtureYear } from './fixture-year';
+import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 
 export const isInSeasonFromCfbd = async (): Promise<boolean> => {
-  if (getFixtureYear() !== null) return false;
+  if (process.env.VERCEL_ENV !== 'production') {
+    const config = await getRuntimeConfig();
+    if (config.inSeasonOverride) return true;
+  }
+
+  if ((await getFixtureYear()) !== null) return false;
 
   try {
     const now = Date.now();
@@ -21,12 +27,9 @@ export const isInSeasonFromCfbd = async (): Promise<boolean> => {
 
     return (await checkYear(currentYear)) || (await checkYear(currentYear - 1));
   } catch (error) {
-    await logError(
-      error,
-      {
-        action: 'check-season-status',
-      }
-    );
+    await logError(error, {
+      action: 'check-season-status',
+    });
     return false;
   }
 };

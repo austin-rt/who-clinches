@@ -6,6 +6,11 @@ jest.mock('@/lib/cfb/cfbd-rest-client', () => ({
   getCalendarFromCfbd: jest.fn(),
 }));
 
+jest.mock('@/lib/cfb/helpers/fixture-year', () => ({
+  getFixtureYear: jest.fn().mockResolvedValue(null),
+  getFixtureYearSync: jest.fn().mockReturnValue(null),
+}));
+
 jest.mock('@/lib/errorLogger', () => ({
   logError: jest.fn(),
 }));

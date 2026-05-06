@@ -13,6 +13,7 @@ const config = {
         'base-400': 'var(--color-base-400)',
         stroke: 'var(--color-stroke)',
         'stroke-alt': 'var(--color-stroke-alt)',
+        'text-secondary': 'var(--color-text-secondary)',
       },
       fontSize: {
         xxs: '10px',
