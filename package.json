@@ -28,6 +28,11 @@
     "db:migrate:dev": "prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
     "db:check": "prisma validate",
+    "flush:redis:dev": "tsx scripts/flush-redis.ts dev",
+    "flush:redis:prod": "tsx scripts/flush-redis.ts prod",
+    "flush:redis:all": "tsx scripts/flush-redis.ts all",
+    "flush:next": "tsx scripts/flush-next.ts dev",
+    "flush:cache": "tsx scripts/flush-redis.ts dev && tsx scripts/flush-next.ts dev",
     "prepare": "husky"
   },
   "lint-staged": {
@@ -43,11 +48,14 @@
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "@reduxjs/toolkit": "^2.10.1",
+    "@types/dagre": "^0.7.54",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
+    "@xyflow/react": "^12.10.2",
     "cfbd": "^5.13.2",
     "city-timezones": "^1.3.2",
     "clsx": "^2.1.1",
+    "dagre": "^0.8.5",
     "daisyui": "^5.5.0",
     "fast-json-stable-stringify": "^2.1.0",
     "graphql-ws": "^5.14.2",
