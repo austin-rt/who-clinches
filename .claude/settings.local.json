@@ -54,10 +54,25 @@
       "Bash(test -f app/results/\\\\[id\\\\]/page.tsx)",
       "Bash(test -f app/results/\\\\[id\\\\]/opengraph-image.tsx)",
       "Bash(test -f app/api/games/\\\\[sport\\\\]/\\\\[conf\\\\]/subscribe/route.ts)",
-      "Bash(grep -v '\\\\$VERCEL_AUTOMATION')"
+      "Bash(grep -v '\\\\$VERCEL_AUTOMATION')",
+      "Bash(git stash *)",
+      "Bash(kill %1)",
+      "Bash(curl -s \"http://localhost:3000/api/games/cfb/sec?season=2025\")",
+      "Bash(npx next *)",
+      "Bash(npx jest *)",
+      "Bash(python3)",
+      "Bash(node -e ' *)",
+      "Bash(node -e \"const dagre = require\\('dagre'\\); const g = new dagre.graphlib.Graph\\(\\); g.setGraph\\({}\\); g.setNode\\('a', {width:100, height:50}\\); g.setNode\\('b', {width:100, height:50}\\); g.setEdge\\('a','b'\\); dagre.layout\\(g\\); console.log\\('dagre works:', g.node\\('a'\\).x, g.node\\('b'\\).x\\)\")",
+      "Bash(node -e \"const dagre = require\\('dagre'\\); const g = new dagre.graphlib.Graph\\(\\); g.setDefaultEdgeLabel\\(\\(\\) => \\({}\\)\\); g.setGraph\\({rankdir:'LR'}\\); g.setNode\\('a', {width:100, height:50}\\); g.setNode\\('b', {width:100, height:50}\\); g.setEdge\\('a','b'\\); dagre.layout\\(g\\); console.log\\('dagre works:', g.node\\('a'\\).x, g.node\\('b'\\).x\\)\")",
+      "Bash(node -e \"const p = require\\('/Users/austin/code/github/sec-tiebreaker/node_modules/dagre/package.json'\\); console.log\\('main:', p.main, 'module:', p.module\\)\")",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const j=JSON.parse\\(d\\); console.log\\('teams:', j.teams?.length, 'games:', j.events?.length\\)\")",
+      "Bash(node -e \"const j=require\\('/tmp/sec-games.json'\\); console.log\\('teams:', j.teams?.length, 'games:', j.events?.length\\)\")",
+      "Bash(git restore *)",
+      "Bash(grep -v '^$')",
+      "Bash(neonctl --help)",
+      "Bash(git diff *)"
     ],
     "deny": [
-      "Bash(rm:*)",
       "Bash(git push:*)",
       "Bash(sudo:*)",
       "Bash(git reset:*)",
@@ -78,9 +93,10 @@
       "Bash(npx prisma db push:*)",
       "Bash(npx prisma db execute:*)",
       "Bash(redis-cli FLUSHDB:*)",
-      "Bash(redis-cli FLUSHALL:*)"
+      "Bash(redis-cli FLUSHALL:*)",
+      "Bash(pkill:*)"
     ],
-    "ask": [],
+    "ask": ["Bash(rm:*)"],
     "defaultMode": "dontAsk"
   }
 }
