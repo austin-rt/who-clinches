@@ -58,11 +58,24 @@ const formatTtl = (seconds: number): string => {
 };
 
 const formatCachedAt = (timestamp: number): string => {
-  const seconds = Math.floor((Date.now() - timestamp) / 1000);
-  if (seconds < 60) return 'just now';
-  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-  return `${Math.floor(seconds / 86400)}d ago`;
+  const totalMinutes = Math.floor((Date.now() - timestamp) / 60000);
+  if (totalMinutes < 1) return 'just now';
+  const units: [number, string][] = [
+    [525960, 'y'],
+    [43830, 'mo'],
+    [1440, 'd'],
+    [1, 'm'],
+  ];
+  const parts: string[] = [];
+  let remaining = totalMinutes;
+  for (const [size, label] of units) {
+    if (remaining >= size) {
+      const count = Math.floor(remaining / size);
+      parts.push(`${count}${label}`);
+      remaining -= count * size;
+    }
+  }
+  return `${parts.join(' ')} ago`;
 };
 
 export default function AdminPage() {
