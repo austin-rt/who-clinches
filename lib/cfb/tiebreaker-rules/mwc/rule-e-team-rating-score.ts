@@ -1,15 +1,14 @@
 import { GameLean, TeamLean } from '../../../types';
 import { calculateTeamRatingScore } from '../common/team-rating-score';
 import { EPSILON_CONSTANT } from '../common/core-helpers';
-import { cfbdClient } from '@/lib/cfb/cfbd-client';
 
-export const applyRuleETeamRatingScore = async (
+export const applyRuleETeamRatingScore = (
   tiedTeams: string[],
   games: GameLean[],
   allTeams?: string[],
   teams?: TeamLean[],
   useCfpFirst?: boolean
-): Promise<{ winners: string[]; detail: string }> => {
+): { winners: string[]; detail: string } => {
   if (tiedTeams.length < 2) {
     return { winners: tiedTeams, detail: 'No tie to break' };
   }
@@ -18,24 +17,9 @@ export const applyRuleETeamRatingScore = async (
     return { winners: tiedTeams, detail: 'Teams data required for Team Rating Score' };
   }
 
-  // Fetch SP+ and FPI data on demand
-  const season = games[0]?.season ?? new Date().getFullYear();
-  const [spRatings, fpiRatings] = await Promise.all([
-    cfbdClient.getSp({ year: season }),
-    cfbdClient.getFpi({ year: season }),
-  ]);
-
   const ratings = tiedTeams.map((teamId) => ({
     teamId,
-    rating: calculateTeamRatingScore(
-      teamId,
-      teams,
-      tiedTeams,
-      useCfpFirst ?? false,
-      spRatings,
-      fpiRatings,
-      games
-    ),
+    rating: calculateTeamRatingScore(teamId, teams, tiedTeams, useCfpFirst ?? false),
   }));
 
   ratings.sort((a, b) => b.rating - a.rating);

@@ -1,5 +1,5 @@
 import { GameLean } from '../../../types';
-import { getTeamRecord, getTeamAbbrev, EPSILON_CONSTANT } from '../common/core-helpers';
+import { getTeamRecord, getTeamAbbrev, EPSILON_CONSTANT, formatList } from '../common/core-helpers';
 
 export const applyRuleAHeadToHead = (
   tiedTeams: string[],
@@ -60,10 +60,7 @@ export const applyRuleAHeadToHead = (
     for (const [winnerId, beatenTeams] of beatMap.entries()) {
       if (beatenTeams.length > 0) {
         const winnerAbbrev = getTeamAbbrev(winnerId, games);
-        const beatenStr =
-          beatenTeams.length === 1
-            ? beatenTeams[0]
-            : beatenTeams.slice(0, -1).join(', ') + ' and ' + beatenTeams[beatenTeams.length - 1];
+        const beatenStr = formatList(beatenTeams);
         detailParts.push(`${winnerAbbrev} Beat ${beatenStr}`);
       }
     }
@@ -74,9 +71,7 @@ export const applyRuleAHeadToHead = (
   }
 
   const opponentSets = tiedTeams.map((teamId) => {
-    const teamGames = h2hGames.filter(
-      (g) => g.home.teamId === teamId || g.away.teamId === teamId
-    );
+    const teamGames = h2hGames.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     return new Set(
       teamGames.map((g) => (g.home.teamId === teamId ? g.away.teamId : g.home.teamId))
     );
@@ -157,4 +152,3 @@ export const applyRuleAHeadToHead = (
 
   return { winners: tiedTeams, detail: 'No head-to-head resolution' };
 };
-

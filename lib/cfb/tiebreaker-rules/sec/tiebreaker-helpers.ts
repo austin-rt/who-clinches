@@ -1,5 +1,6 @@
 import { GameLean } from '../../../types';
 import { StandingEntry, TieLog, TieStep } from '../../../api-types';
+import { formatList } from '../common/core-helpers';
 
 const EPSILON = 0.0001;
 const OFFENSIVE_PCT_CAP = 200;
@@ -97,10 +98,7 @@ export const applyRuleAHeadToHead = (
   for (const [winnerId, beatenTeams] of beatMap.entries()) {
     if (beatenTeams.length > 0) {
       const winnerAbbrev = getTeamAbbrev(winnerId);
-      const beatenStr =
-        beatenTeams.length === 1
-          ? beatenTeams[0]
-          : beatenTeams.slice(0, -1).join(', ') + ' and ' + beatenTeams[beatenTeams.length - 1];
+      const beatenStr = formatList(beatenTeams);
       detailParts.push(`${winnerAbbrev} Beat ${beatenStr}`);
     }
   }
@@ -541,7 +539,7 @@ export const breakTie = (
     const ruleB = applyRuleBCommonOpponents(remaining, games);
     const ruleBTieBroken = ruleB.winners.length < remaining.length;
     steps.push({
-      rule: 'Common Opponents',
+      rule: 'Record Against Common Opponents',
       detail: ruleB.detail,
       survivors: ruleB.winners,
       tieBroken: ruleBTieBroken,
@@ -823,7 +821,9 @@ export const calculateStandings = (
 
     let explainPosition = '';
 
-    if (teamsWithSameRecord.length > 1) {
+    if (record.wins === 0) {
+      explainPosition = 'Winless in conference play.';
+    } else if (teamsWithSameRecord.length > 1) {
       const currentIndex = teamsWithSameRecord.findIndex((t) => t.teamId === teamId);
       const teamsAbove = teamsWithSameRecord.slice(0, currentIndex);
       const teamsBelow = teamsWithSameRecord.slice(currentIndex + 1);
@@ -955,7 +955,7 @@ export const calculateStandings = (
           const { reason, reasonValue } = getReasonFromStep(stepIndex);
           if (reason) {
             const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
-            parts.push(`Behind ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
+            parts.push(`Behind ${formatList(teamNames)} based on ${reason}${reasonValue}.`);
           }
         }
       }
@@ -979,7 +979,7 @@ export const calculateStandings = (
           const { reason, reasonValue } = getReasonFromStep(stepIndex);
           if (reason) {
             const teamNames = teamIds.map((tid) => getTeamShortNameFromId(tid));
-            parts.push(`Ahead of ${teamNames.join(' and ')} based on ${reason}${reasonValue}.`);
+            parts.push(`Ahead of ${formatList(teamNames)} based on ${reason}${reasonValue}.`);
           }
         }
       }
@@ -997,6 +997,7 @@ export const calculateStandings = (
       record: { wins: record.wins, losses: record.losses },
       confRecord: { wins: record.wins, losses: record.losses },
       explainPosition,
+      nationalRank: team.rank ?? null,
     };
   });
 

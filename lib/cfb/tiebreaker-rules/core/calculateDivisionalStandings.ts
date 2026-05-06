@@ -1,5 +1,5 @@
 import { GameLean, TeamLean } from '../../../types';
-import { StandingEntry, TieLog } from '../../../api-types';
+import { StandingEntry, TieLog, TieFlowGraph } from '../../../api-types';
 import { CFBConferenceTiebreakerConfig } from './types';
 import { calculateStandings } from './calculateStandings';
 
@@ -7,7 +7,7 @@ export const calculateDivisionalStandings = async (
   games: GameLean[],
   teams: TeamLean[],
   config: CFBConferenceTiebreakerConfig
-): Promise<{ standings: StandingEntry[]; tieLogs: TieLog[] }> => {
+): Promise<{ standings: StandingEntry[]; tieLogs: TieLog[]; tieFlowGraphs: TieFlowGraph[] }> => {
   const teamsByDivision = new Map<string, TeamLean[]>();
   const teamsWithoutDivision: TeamLean[] = [];
 
@@ -26,16 +26,16 @@ export const calculateDivisionalStandings = async (
 
   const allStandings: StandingEntry[] = [];
   const allTieLogs: TieLog[] = [];
+  const allTieFlowGraphs: TieFlowGraph[] = [];
 
   for (const [division, divisionTeams] of teamsByDivision.entries()) {
     const divisionTeamIds = divisionTeams.map((t) => t._id);
 
-    const { standings: divisionStandings, tieLogs: divisionTieLogs } = await calculateStandings(
-      games,
-      divisionTeamIds,
-      config,
-      teams
-    );
+    const {
+      standings: divisionStandings,
+      tieLogs: divisionTieLogs,
+      tieFlowGraphs: divisionFlowGraphs,
+    } = await calculateStandings(games, divisionTeamIds, config, teams);
 
     const standingsWithDivision = divisionStandings.map((standing) => ({
       ...standing,
@@ -44,20 +44,21 @@ export const calculateDivisionalStandings = async (
 
     allStandings.push(...standingsWithDivision);
     allTieLogs.push(...divisionTieLogs);
+    allTieFlowGraphs.push(...divisionFlowGraphs);
   }
 
   if (teamsWithoutDivision.length > 0) {
     const noDivisionTeamIds = teamsWithoutDivision.map((t) => t._id);
-    const { standings: noDivisionStandings, tieLogs: noDivisionTieLogs } = await calculateStandings(
-      games,
-      noDivisionTeamIds,
-      config,
-      teams
-    );
+    const {
+      standings: noDivisionStandings,
+      tieLogs: noDivisionTieLogs,
+      tieFlowGraphs: noDivisionFlowGraphs,
+    } = await calculateStandings(games, noDivisionTeamIds, config, teams);
 
     allStandings.push(...noDivisionStandings);
     allTieLogs.push(...noDivisionTieLogs);
+    allTieFlowGraphs.push(...noDivisionFlowGraphs);
   }
 
-  return { standings: allStandings, tieLogs: allTieLogs };
+  return { standings: allStandings, tieLogs: allTieLogs, tieFlowGraphs: allTieFlowGraphs };
 };

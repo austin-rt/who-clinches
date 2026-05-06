@@ -7,14 +7,14 @@ import type { PollWeek as CFBDPollWeek } from 'cfbd';
  *
  * @param teams - Array of teams to attach rankings to
  * @param pollWeeks - Array of PollWeek objects from CFBD API (will filter for CFP polls internally)
- * @returns Teams with cfpRank attached (null if not ranked, undefined if no rankings available)
+ * @returns Teams with nationalRank attached (null if not ranked, undefined if no rankings available)
  */
 export const attachCfpRankingsToTeams = (
   teams: TeamLean[],
   pollWeeks: CFBDPollWeek[] | null
 ): TeamLean[] => {
   if (!pollWeeks || pollWeeks.length === 0) {
-    return teams.map((team) => ({ ...team, cfpRank: undefined }));
+    return teams.map((team) => ({ ...team, nationalRank: undefined }));
   }
 
   // Find the latest CFP poll (highest week number, or most recent if week is null)
@@ -26,7 +26,7 @@ export const attachCfpRankingsToTeams = (
 
   const latestPollWeek = sortedPollWeeks[0];
   if (!latestPollWeek?.polls || latestPollWeek.polls.length === 0) {
-    return teams.map((team) => ({ ...team, cfpRank: undefined }));
+    return teams.map((team) => ({ ...team, nationalRank: undefined }));
   }
 
   // Find the CFP poll (should already be filtered, but double-check)
@@ -38,7 +38,7 @@ export const attachCfpRankingsToTeams = (
   );
 
   if (!cfpPoll?.ranks || cfpPoll.ranks.length === 0) {
-    return teams.map((team) => ({ ...team, cfpRank: undefined }));
+    return teams.map((team) => ({ ...team, nationalRank: undefined }));
   }
 
   // Create a map of team name -> rank
@@ -80,7 +80,7 @@ export const attachCfpRankingsToTeams = (
       }
     }
 
-    return { ...team, cfpRank: rank };
+    return { ...team, nationalRank: rank };
   });
 };
 

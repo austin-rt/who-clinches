@@ -41,6 +41,38 @@ export interface SimulateResponse {
   standings: StandingEntry[];
   championship: [string, string];
   tieLogs: TieLog[];
+  tieFlowGraphs: TieFlowGraph[];
+}
+
+export interface TieFlowNode {
+  id: string;
+  teamIds: string[];
+  rule: string | null;
+  detail: string;
+  label: string;
+  type: 'root' | 'rule' | 'result';
+}
+
+export interface TieFlowEdge {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+  teamIds: string[];
+}
+
+export interface TieFlowTeamMeta {
+  abbrev: string;
+  logo: string;
+  color: string;
+  displayName: string;
+}
+
+export interface TieFlowGraph {
+  nodes: TieFlowNode[];
+  edges: TieFlowEdge[];
+  teams: Record<string, TieFlowTeamMeta>;
+  summary: string[];
 }
 
 export interface StandingEntry {
@@ -54,6 +86,7 @@ export interface StandingEntry {
   confRecord: { wins: number; losses: number };
   explainPosition: string;
   division?: string | null;
+  nationalRank?: number | null;
 }
 
 export interface TieLog {

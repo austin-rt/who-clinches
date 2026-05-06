@@ -17,7 +17,7 @@ export const CFB_PAC12_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
       apply: applyRuleCHighestPlacedOpponent,
     },
     {
-      name: 'Common Opponents',
+      name: 'Record Against Common Opponents',
       apply: applyRuleBCommonOpponents,
     },
     {
@@ -34,4 +34,3 @@ export const CFB_PAC12_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
     },
   ],
 };
-

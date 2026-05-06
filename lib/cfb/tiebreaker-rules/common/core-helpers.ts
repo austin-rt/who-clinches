@@ -27,41 +27,32 @@ export const applyOverrides = (
     if (override) {
       if (override.homeScore === override.awayScore) {
         const error = new Error(`Tie scores not allowed for game ${game.id}`);
-        void logError(
-          error,
-          {
-            action: 'apply-overrides',
-            gameId: game.id,
-            homeScore: override.homeScore,
-            awayScore: override.awayScore,
-          }
-        );
+        void logError(error, {
+          action: 'apply-overrides',
+          gameId: game.id,
+          homeScore: override.homeScore,
+          awayScore: override.awayScore,
+        });
         throw error;
       }
       if (override.homeScore < 0 || override.awayScore < 0) {
         const error = new Error('Scores cannot be negative');
-        void logError(
-          error,
-          {
-            action: 'apply-overrides',
-            gameId: game.id,
-            homeScore: override.homeScore,
-            awayScore: override.awayScore,
-          }
-        );
+        void logError(error, {
+          action: 'apply-overrides',
+          gameId: game.id,
+          homeScore: override.homeScore,
+          awayScore: override.awayScore,
+        });
         throw error;
       }
       if (!Number.isInteger(override.homeScore) || !Number.isInteger(override.awayScore)) {
         const error = new Error('Scores must be whole numbers');
-        void logError(
-          error,
-          {
-            action: 'apply-overrides',
-            gameId: game.id,
-            homeScore: override.homeScore,
-            awayScore: override.awayScore,
-          }
-        );
+        void logError(error, {
+          action: 'apply-overrides',
+          gameId: game.id,
+          homeScore: override.homeScore,
+          awayScore: override.awayScore,
+        });
         throw error;
       }
 
@@ -87,15 +78,19 @@ export const applyOverrides = (
     const error = new Error(
       `Game ${game.id} has no scores and no predictedScore. All games must have scores for tiebreaker calculations.`
     );
-    void logError(
-      error,
-      {
-        action: 'apply-overrides',
-        gameId: game.id,
-      }
-    );
+    void logError(error, {
+      action: 'apply-overrides',
+      gameId: game.id,
+    });
     throw error;
   });
+};
+
+export const formatList = (items: string[]): string => {
+  if (items.length === 0) return '';
+  if (items.length === 1) return items[0];
+  if (items.length === 2) return `${items[0]} and ${items[1]}`;
+  return `${items.slice(0, -1).join(', ')}, and ${items[items.length - 1]}`;
 };
 
 export const getTeamAbbrev = (teamId: string, games: GameLean[]): string => {

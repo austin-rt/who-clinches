@@ -13,7 +13,7 @@ export const CFB_BIG12_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
       apply: applyRuleAHeadToHead,
     },
     {
-      name: 'Common Opponents',
+      name: 'Record Against Common Opponents',
       apply: applyRuleBCommonOpponents,
     },
     {
@@ -34,4 +34,3 @@ export const CFB_BIG12_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
     },
   ],
 };
-

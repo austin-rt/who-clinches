@@ -25,7 +25,7 @@ export const CFB_MWC_TIEBREAKER_CONFIG: CFBConferenceTiebreakerConfig = {
       apply: applyRuleCHighestPlacedOpponent,
     },
     {
-      name: 'Common Opponents',
+      name: 'Record Against Common Opponents',
       apply: applyRuleBCommonOpponents,
     },
   ],

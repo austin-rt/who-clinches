@@ -43,7 +43,7 @@ export const calculateNextWeekdayRevalidate = (
   if (currentDayOfWeek === targetDay && currentHour < hour) {
     daysUntil = 0;
   } else {
-    daysUntil = ((targetDay - currentDayOfWeek + 7) % 7) || 7;
+    daysUntil = (targetDay - currentDayOfWeek + 7) % 7 || 7;
   }
 
   const targetDate = new Date(now);
@@ -57,8 +57,7 @@ export const calculateNextWeekdayRevalidate = (
   });
 
   const dateParts = dateFormatter.formatToParts(targetDate);
-  const getDatePart = (type: string) =>
-    dateParts.find((p) => p.type === type)?.value;
+  const getDatePart = (type: string) => dateParts.find((p) => p.type === type)?.value;
   const year = parseInt(getDatePart('year') || '2025', 10);
   const month = parseInt(getDatePart('month') || '1', 10);
   const day = parseInt(getDatePart('day') || '1', 10);
@@ -66,18 +65,12 @@ export const calculateNextWeekdayRevalidate = (
   const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:00:00`;
   const localDate = new Date(dateStr);
 
-  const utcDate = new Date(
-    localDate.toLocaleString('en-US', { timeZone: 'UTC' })
-  );
-  const tzDate = new Date(
-    localDate.toLocaleString('en-US', { timeZone: timezone })
-  );
+  const utcDate = new Date(localDate.toLocaleString('en-US', { timeZone: 'UTC' }));
+  const tzDate = new Date(localDate.toLocaleString('en-US', { timeZone: timezone }));
   const offset = utcDate.getTime() - tzDate.getTime();
 
   const targetInUtc = new Date(localDate.getTime() - offset);
-  const secondsUntil = Math.floor(
-    (targetInUtc.getTime() - now.getTime()) / 1000
-  );
+  const secondsUntil = Math.floor((targetInUtc.getTime() - now.getTime()) / 1000);
 
   return Math.max(1, Math.min(secondsUntil, 8 * 24 * 60 * 60));
 };
@@ -85,3 +78,7 @@ export const calculateNextWeekdayRevalidate = (
 /** Seconds until next Saturday at 11 AM ET. */
 export const calculateNextSaturdayRevalidate = (): number =>
   calculateNextWeekdayRevalidate(6, 11, 'America/New_York');
+
+/** Seconds until next Sunday at 2 PM ET (AP poll releases ~2 PM ET). */
+export const calculateNextSundayRevalidate = (): number =>
+  calculateNextWeekdayRevalidate(0, 14, 'America/New_York');

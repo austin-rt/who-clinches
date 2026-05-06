@@ -223,7 +223,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps.length).toBeGreaterThan(1); // Should have multiple steps (recursion)
       // Find Rule B step that breaks the tie
       const ruleBStep = result.steps.find(
-        (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
+        (step: TieStep) => step.rule === 'Record Against Common Opponents' && step.tieBroken
       );
       expect(ruleBStep).toBeDefined();
       expect(ruleBStep?.survivors).toContain('A'); // A advances
@@ -324,7 +324,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
         (step: TieStep) => step.rule === 'Highest Placed Common Opponent' && step.tieBroken
       );
       const ruleBStep = result.steps.find(
-        (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
+        (step: TieStep) => step.rule === 'Record Against Common Opponents' && step.tieBroken
       );
       const ruleDStep = result.steps.find(
         (step: TieStep) => step.rule === 'Opponent Win Percentage' && step.tieBroken
@@ -736,7 +736,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       expect(result.steps.length).toBeGreaterThan(2);
       expect(result.steps[0].rule).toBe('Head-to-Head');
       expect(result.steps[0].tieBroken).toBe(false);
-      expect(result.steps[1].rule).toBe('Common Opponents');
+      expect(result.steps[1].rule).toBe('Record Against Common Opponents');
       expect(result.steps[1].tieBroken).toBe(false);
       // Find the Rule C step that breaks the tie (may be at different index due to recursion)
       const ruleCStep = result.steps.find(
@@ -746,7 +746,7 @@ describe('SEC Tiebreaker Rules - Integration Tests (Cascading and Recursion)', (
       if (!ruleCStep) {
         // Rule B might have broken it if records differ
         const ruleBStep = result.steps.find(
-          (step: TieStep) => step.rule === 'Common Opponents' && step.tieBroken
+          (step: TieStep) => step.rule === 'Record Against Common Opponents' && step.tieBroken
         );
         if (ruleBStep) {
           expect(ruleBStep.survivors).toContain('A');

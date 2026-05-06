@@ -10,9 +10,7 @@ export const applyRuleDOpponentWinPercentage = (
   }
 
   const records = tiedTeams.map((teamId) => {
-    const teamGames = games.filter(
-      (g) => g.home.teamId === teamId || g.away.teamId === teamId
-    );
+    const teamGames = games.filter((g) => g.home.teamId === teamId || g.away.teamId === teamId);
 
     const opponents = teamGames.map((g) =>
       g.home.teamId === teamId ? g.away.teamId : g.home.teamId
@@ -42,8 +40,15 @@ export const applyRuleDOpponentWinPercentage = (
     .filter((r) => Math.abs(r.oppWinPct - maxOppWinPct) < EPSILON_CONSTANT)
     .map((r) => r.teamId);
 
-  const detail = `${(maxOppWinPct * 100).toFixed(1)}%`;
+  const getAbbrev = (teamId: string) => {
+    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
+    return game?.home.teamId === teamId ? game.home.abbrev : game?.away.abbrev || teamId;
+  };
+
+  const detail = records
+    .sort((a, b) => b.oppWinPct - a.oppWinPct)
+    .map((r) => `${getAbbrev(r.teamId)} ${(r.oppWinPct * 100).toFixed(1)}%`)
+    .join(', ');
 
   return { winners, detail };
 };
-

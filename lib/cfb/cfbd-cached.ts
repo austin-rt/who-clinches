@@ -1,5 +1,8 @@
 import { cfbdClient } from './cfbd-client';
-import { calculateNextSaturdayRevalidate } from './helpers/calculate-next-weekday-revalidate';
+import {
+  calculateNextSaturdayRevalidate,
+  calculateNextSundayRevalidate,
+} from './helpers/calculate-next-weekday-revalidate';
 import { fetch, persistRedisKey } from '@/lib/redis';
 import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/constants';
 import type { Team } from 'cfbd';
@@ -52,7 +55,7 @@ export const getRankings = (params: { year: number; week?: number; seasonType?: 
   return fetch(
     `${KEY_PREFIX}:rankings:${params.year}:${weekKey}:${seasonType}`,
     () => cfbdClient.getRankings(params),
-    calculateNextSaturdayRevalidate()
+    calculateNextSundayRevalidate()
   );
 };
 

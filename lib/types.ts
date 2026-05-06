@@ -135,7 +135,7 @@ export interface TeamLean {
   division?: string | null;
   record: TeamRecord;
   conferenceStanding: string;
-  cfpRank?: number | null;
+  nationalRank?: number | null;
   spPlusRating?: number | null;
   sor?: number | null;
   advancedStats?: {
