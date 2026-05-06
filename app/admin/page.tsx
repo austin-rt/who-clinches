@@ -3,8 +3,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/Button';
-import { Select } from '@/app/components/Select';
 import Divider from '@/app/components/Divider';
+import { HiCheck } from 'react-icons/hi2';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 
 interface RuntimeConfig {
@@ -237,19 +237,41 @@ export default function AdminPage() {
           />
 
           {config.fixtureYearOn && (
-            <Select.Stroked
-              size="sm"
-              color="primary"
-              className="mt-2 w-full max-w-xs"
-              value={config.fixtureYear ?? config.availableFixtureYears[0] ?? ''}
-              onChange={(e) => updateConfig({ fixtureYear: Number(e.target.value) })}
-            >
-              {config.availableFixtureYears.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </Select.Stroked>
+            <div className="dropdown mt-2">
+              <label
+                tabIndex={0}
+                className="btn btn-ghost btn-sm border border-stroke font-semibold"
+              >
+                {config.fixtureYear ?? config.availableFixtureYears[0] ?? 'Year'}
+              </label>
+              <ul className="dropdown-content menu z-[1] w-32 rounded-lg border-2 border-stroke bg-base-100 p-2 shadow-lg">
+                {config.availableFixtureYears.map((year) => {
+                  const selected = year === (config.fixtureYear ?? config.availableFixtureYears[0]);
+                  return (
+                    <li key={year}>
+                      <a
+                        onClick={(e) => {
+                          e.preventDefault();
+                          void updateConfig({ fixtureYear: year });
+                          (document.activeElement as HTMLElement)?.blur();
+                        }}
+                        className={cn(
+                          'dropdown-close flex items-center gap-2 rounded-md py-2 pl-[calc(0.75rem+1rem+0.5rem)] pr-3 font-semibold',
+                          selected && 'bg-base-200 text-primary dark:text-accent'
+                        )}
+                      >
+                        {selected ? (
+                          <HiCheck className="absolute left-3 h-4 w-4 flex-shrink-0 text-primary dark:text-accent" />
+                        ) : (
+                          <span className="absolute left-3 h-4 w-4" />
+                        )}
+                        <span>{year}</span>
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           )}
 
           <Divider className="my-4" />

@@ -12,7 +12,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
 
-const Navigation = () => {
+const Navigation = ({ isNonProd }: { isNonProd: boolean }) => {
   const router = useRouter();
   const params = useParams();
   const currentConf = params.conf as string;
@@ -43,7 +43,13 @@ const Navigation = () => {
 
   return (
     <div className={cn('dropdown dropdown-end', hoverable && 'dropdown-hover')}>
-      <label tabIndex={0} className="btn btn-ghost btn-sm font-semibold uppercase">
+      <label
+        tabIndex={0}
+        className={cn(
+          'btn btn-ghost btn-sm font-semibold uppercase',
+          isNonProd ? 'text-white hover:bg-white/20' : 'text-base-content'
+        )}
+      >
         College Football
       </label>
       <ul className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-stroke bg-base-100 p-2 shadow-lg">
