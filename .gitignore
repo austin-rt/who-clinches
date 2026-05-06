@@ -53,6 +53,9 @@ temp-*
 # mcp config
 .cursor/mcp.json
 .playwright-mcp-config.json
+.playwright-mcp
 
 # agent handoff scratch (local only; tracked paths remain in history)
 docs/handoffs/*
+
+.claude/settings.local.json
