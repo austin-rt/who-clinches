@@ -460,18 +460,8 @@ const Toggle = ({
           disabled={disabled}
           onChange={(e) => onChange(e.target.checked)}
         />
-        <div
-          className={cn(
-            'relative h-7 w-12 rounded-full bg-base-300 transition-colors',
-            'peer-checked:bg-primary dark:peer-checked:bg-accent'
-          )}
-        >
-          <div
-            className={cn(
-              'absolute top-0.5 h-6 w-6 rounded-full bg-base-100 shadow transition-all',
-              checked ? 'left-[calc(100%-1.625rem)]' : 'left-0.5'
-            )}
-          />
+        <div className="relative h-7 w-12 rounded-full bg-base-300 transition-colors peer-checked:bg-primary dark:bg-[#555] dark:peer-checked:bg-accent">
+          <div className="absolute left-0.5 top-0.5 h-6 w-6 rounded-full bg-base-100 shadow transition-all peer-checked:left-[calc(100%-1.625rem)]" />
         </div>
       </label>
     </div>
