@@ -50,8 +50,9 @@ temp-*
 # jest server pid file
 .jest-server.pid
 
-# cursor mcp config
+# mcp config
 .cursor/mcp.json
+.playwright-mcp-config.json
 
 # agent handoff scratch (local only; tracked paths remain in history)
 docs/handoffs/*
