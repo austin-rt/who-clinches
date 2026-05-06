@@ -11,11 +11,10 @@ interface ChampionshipMatchupProps {
 const ChampionshipMatchup = ({ team1, team2 }: ChampionshipMatchupProps) => {
   return (
     <div className="flex flex-col gap-2">
-      <div className="text-sm font-semibold">Championship Matchup</div>
+      <div className="text-center text-base font-semibold">Championship Matchup</div>
       <ChampionshipCard team1={team1} team2={team2} />
     </div>
   );
 };
 
 export default ChampionshipMatchup;
-

@@ -7,6 +7,7 @@ import {
   SimulateRequestBody,
   useSimulateMutation,
   GameLean,
+  TeamMetadata,
 } from '../store/api';
 import {
   isValidSport,
@@ -16,21 +17,20 @@ import {
 } from '@/lib/constants';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
-import { useUIState } from '../store/useUI';
 import { buildSimulateInputKey } from '@/lib/client/input-hash';
 
 interface SimulateButtonProps {
   games: GameLean[];
+  teams: TeamMetadata[];
   onSimulateComplete?: (response: SimulateResponse) => void;
 }
 
-const SimulateButton = ({ games, onSimulateComplete }: SimulateButtonProps) => {
+const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProps) => {
   const params = useParams();
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
   const season = useAppSelector((state) => state.app.season);
-  const { mode } = useUIState();
   const [simulate, { isLoading }] = useSimulateMutation();
   const lastSimulateRef = useRef<{
     inputKey: string;
@@ -68,6 +68,8 @@ const SimulateButton = ({ games, onSimulateComplete }: SimulateButtonProps) => {
 
     const simulateRequestBody: SimulateRequestBody = {
       season,
+      games,
+      teams,
       overrides,
     };
 
@@ -88,14 +90,12 @@ const SimulateButton = ({ games, onSimulateComplete }: SimulateButtonProps) => {
     }
   };
 
-  const hasPicks = Object.keys(gamePicks).length > 0;
-
   return (
     <Button
       size="md"
-      color={mode === 'dark' ? 'accent' : 'primary'}
+      color="primary"
       onClick={handleSimulate}
-      disabled={!hasPicks || season === null}
+      disabled={season === null}
       loading={isLoading}
       className="w-1/2 text-xs sm:w-fit"
     >

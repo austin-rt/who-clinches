@@ -44,10 +44,6 @@ const StandingsExplanations = ({ standings }: StandingsExplanationsProps) => {
   return (
     <div className="flex flex-col gap-3 text-xs">
       {Object.entries(groupedStandings).map(([division, divisionStandings]) => {
-        const midpoint = Math.ceil(divisionStandings.length / 2);
-        const leftCol = divisionStandings.slice(0, midpoint);
-        const rightCol = divisionStandings.slice(midpoint);
-
         return (
           <div key={division}>
             {hasDivisions && division !== 'null' && (
@@ -55,17 +51,16 @@ const StandingsExplanations = ({ standings }: StandingsExplanationsProps) => {
                 {division}
               </div>
             )}
-            <div className="grid grid-cols-1 gap-x-6 gap-y-1 sm:grid-cols-2">
-              <div className="flex flex-col gap-1">
-                {leftCol.map((standing) => (
-                  <StandingRow key={standing.teamId} standing={standing} />
-                ))}
-              </div>
-              <div className="flex flex-col gap-1">
-                {rightCol.map((standing) => (
-                  <StandingRow key={standing.teamId} standing={standing} />
-                ))}
-              </div>
+            <div className="grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {divisionStandings.map((standing, idx) => (
+                <StandingRow
+                  key={standing.teamId}
+                  standing={standing}
+                  isLastRow={
+                    idx >= divisionStandings.length - (divisionStandings.length % 2 === 0 ? 2 : 1)
+                  }
+                />
+              ))}
             </div>
           </div>
         );
@@ -74,17 +69,17 @@ const StandingsExplanations = ({ standings }: StandingsExplanationsProps) => {
   );
 };
 
-const StandingRow = ({ standing }: { standing: StandingEntry }) => (
-  <div className="flex flex-col gap-0.5">
+const StandingRow = ({ standing, isLastRow }: { standing: StandingEntry; isLastRow: boolean }) => (
+  <div className={`flex flex-col gap-0.5 py-4 ${isLastRow ? '' : 'border-b border-stroke'}`}>
     <div className="flex items-center gap-2">
       <span className="text-base font-semibold">{standing.rank}.</span>
       {standing.logo && (
         <Image
           src={standing.logo}
           alt={standing.abbrev}
-          width={24}
-          height={24}
-          className="pointer-events-none h-6 w-auto object-contain"
+          width={48}
+          height={48}
+          className="pointer-events-none h-12 w-auto object-contain"
           unoptimized
         />
       )}
@@ -92,7 +87,9 @@ const StandingRow = ({ standing }: { standing: StandingEntry }) => (
         {standing.displayName} ({standing.confRecord.wins} - {standing.confRecord.losses})
       </span>
     </div>
-    <div className="text-base-content/70 ml-9 text-xxs">{standing.explainPosition}</div>
+    {standing.explainPosition && (
+      <div className="text-base-content/70 ml-9 text-sm">{standing.explainPosition}</div>
+    )}
   </div>
 );
 

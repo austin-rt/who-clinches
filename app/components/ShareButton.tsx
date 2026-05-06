@@ -3,15 +3,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import { useAppSelector } from '../store/hooks';
-import { Button } from './Button';
-import ShareModal from './ShareModal';
+import { FaXTwitter, FaThreads } from 'react-icons/fa6';
+import { IoSendOutline, IoCopyOutline, IoCheckmarkOutline, IoOpenOutline } from 'react-icons/io5';
+import IconButton from './IconButton';
 import {
   isValidSport,
   isValidConference,
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
-import { useUIState } from '../store/useUI';
 import type { SimulateResponse } from '../store/api';
 import type { GameLean } from '@/lib/types';
 
@@ -26,9 +26,8 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
   const confParam = params.conf as string;
   const season = useAppSelector((state) => state.app.season);
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
-  const { mode } = useUIState();
   const [shareUrl, setShareUrl] = useState<string | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
   const fetchedHashRef = useRef<string | null>(null);
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
@@ -50,9 +49,6 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
     if (fetchedHashRef.current === hash) return;
     fetchedHashRef.current = hash;
 
-    const controller = new AbortController();
-    let active = true;
-
     void fetch(`/api/share/${sport}/${conf}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -63,47 +59,67 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
           standings: simulateResponse.standings,
           championship: simulateResponse.championship,
           tieLogs: simulateResponse.tieLogs,
+          tieFlowGraphs: simulateResponse.tieFlowGraphs,
           games: games ?? [],
         },
       }),
-      signal: controller.signal,
     })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
-        if (active && data?.url) setShareUrl(data.url);
+        if (data?.url) setShareUrl(data.url);
       })
       .catch(() => {});
-
-    return () => {
-      active = false;
-      controller.abort();
-    };
   }, [simulateResponse, sport, conf, season, gamePicks, games]);
 
-  if (!simulateResponse || !conf || !season) return null;
+  if (!shareUrl || !conf || !season) return null;
+
+  const text = `My ${conf.toUpperCase()} ${season} simulation`;
+  const tweetURL = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`;
+  const threadsURL = `https://www.threads.net/intent/post?text=${encodeURIComponent(`${text} ${shareUrl}`)}`;
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: text, url: shareUrl });
+    }
+  };
 
   return (
-    <>
-      <Button
-        size="md"
-        color={mode === 'dark' ? 'accent' : 'primary'}
-        onClick={() => setModalOpen(true)}
-        loading={!shareUrl}
-        disabled={!shareUrl}
-        className="w-1/2 text-xs sm:w-fit"
-      >
-        Share Results
-      </Button>
-      {shareUrl && modalOpen && (
-        <ShareModal
-          url={shareUrl}
-          conf={conf}
-          season={season}
-          open={modalOpen}
-          onClose={() => setModalOpen(false)}
+    <div className="mx-auto flex w-fit flex-col items-center gap-3 rounded-lg bg-base-300 px-6 py-4">
+      <div className="text-sm font-semibold">Share Your Results</div>
+      <div className="flex items-center gap-1 rounded-lg bg-base-200 px-2">
+        <input
+          type="text"
+          readOnly
+          value={shareUrl}
+          className="w-48 bg-transparent py-2 text-xs outline-none sm:w-64"
         />
-      )}
-    </>
+        <IconButton onClick={handleCopy} title={copied ? 'Copied!' : 'Copy'} showLabel={false}>
+          {copied ? <IoCheckmarkOutline size={18} /> : <IoCopyOutline size={18} />}
+        </IconButton>
+        <IconButton href={shareUrl} title="Open" showLabel={false}>
+          <IoOpenOutline size={18} />
+        </IconButton>
+      </div>
+      <div className="flex items-center gap-3">
+        <IconButton href={tweetURL} title="X" showLabel={false}>
+          <FaXTwitter size={18} />
+        </IconButton>
+        <IconButton href={threadsURL} title="Threads" showLabel={false}>
+          <FaThreads size={18} />
+        </IconButton>
+        {typeof navigator !== 'undefined' && 'share' in navigator && (
+          <IconButton onClick={handleNativeShare} title="Share" showLabel={false}>
+            <IoSendOutline size={18} className="-rotate-45" />
+          </IconButton>
+        )}
+      </div>
+    </div>
   );
 };
 

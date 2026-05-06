@@ -57,6 +57,17 @@ export const POST = async (
       );
     }
 
+    const displayOverrides: Record<string, { awayScore: string; homeScore: string }> = {};
+    for (const [gameId, pick] of Object.entries(overrides)) {
+      const { homeScore, awayScore } = pick as { homeScore: number; awayScore: number };
+      const homeWon = homeScore > awayScore;
+      const normalized =
+        (homeScore === 1 && awayScore === 0) || (homeScore === 0 && awayScore === 1);
+      displayOverrides[gameId] = normalized
+        ? { awayScore: homeWon ? 'L' : 'W', homeScore: homeWon ? 'W' : 'L' }
+        : { awayScore: String(awayScore), homeScore: String(homeScore) };
+    }
+
     const id = nanoid(10);
     await db.simulationSnapshot.create({
       data: {
@@ -66,11 +77,12 @@ export const POST = async (
         conf,
         season,
         payload: {
-          input: { overrides },
+          input: { overrides: displayOverrides },
           output: {
             standings: results.standings,
             championship: results.championship,
             tieLogs: results.tieLogs,
+            tieFlowGraphs: results.tieFlowGraphs ?? [],
           },
           teams: results.teams ?? [],
           games: results.games ?? [],
