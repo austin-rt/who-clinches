@@ -1,10 +1,6 @@
 # API Reference: Data Endpoints
 
-Complete reference for data query endpoints.
-
-**Related:** [Main API Reference](./api-reference.md)
-
-**Note**: CFBD data is cached in Upstash Redis (production and preview when configured) with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches are conditional per conference config.
+Complete reference for data query endpoints. See [Main API Reference](./api-reference.md) for caching and rate limiting details.
 
 ---
 
@@ -73,11 +69,7 @@ See `app/store/api.ts` for full type definitions (generated types used by API ro
 - `404` - No conference games found for season
 - `500` - CFBD API error or tiebreaker calculation error
 
-**Tiebreaker Rules**: Uses modular async tiebreaker system. Rules can fetch external data on demand (e.g., SP+ and FPI ratings for MWC). SEC rules: A (head-to-head), B (common opponents), C (highest-placed common opponent), D (Opponent Win Percentage), E (scoring margin). MWC includes team rating score.
-
-**Score Normalization**: Non-SEC conference overrides are normalized to `{ homeScore: 1, awayScore: 0 }` or `{ homeScore: 0, awayScore: 1 }` before simulation and hashing. Only SEC Rule E uses exact scoring margin, so other conferences only need W/L. This ensures identical W/L patterns produce the same dedup hash regardless of exact scores.
-
-**Notes**: The simulate endpoint accepts client-provided `games` and `teams` data (from the games endpoint) — it does not fetch from CFBD. Uses `predictedScore` for games without overrides. Validates scores (non-negative integers, no ties). Handles ties recursively. Some conferences display a simulation disclaimer when external data (e.g., KPI, SportSource) is unavailable.
+**Notes**: Accepts client-provided `games` and `teams` data (from the games endpoint) — does not fetch from CFBD. Uses `predictedScore` for games without overrides. Non-SEC overrides are normalized to 1-0 W/L for hashing (only SEC Rule E uses exact margin).
 
 ## POST /api/share/[sport]/[conf]
 
@@ -86,26 +78,7 @@ Creates or retrieves a shareable simulation snapshot. Stores pre-computed result
 **Path Parameters**: `sport` (string, e.g., "cfb"), `conf` (string, e.g., "sec")
 **Example**: `POST /api/share/cfb/sec`
 
-**Request Body**:
-
-```json
-{
-  "season": 2025,
-  "overrides": { "gameId": { "homeScore": 35, "awayScore": 21 } },
-  "results": {
-    "standings": [StandingEntry[]],
-    "championship": ["teamId1", "teamId2"],
-    "tieLogs": [TieLog[]],
-    "games": [GameLean[]]
-  }
-}
-```
-
-**Parameters**:
-
-- `season` (number, required) - Season year
-- `overrides` (object, optional) - Game ID → score overrides used in the simulation
-- `results` (object, required) - Pre-computed simulation output containing `standings`, `championship`, `tieLogs`, and `games`
+**Request Body**: `{ season (number), overrides (object, optional), results: { standings, championship, tieLogs, games } }`
 
 **Response**: `{ "id": "nanoid", "url": "https://origin/results/nanoid" }`
 
@@ -131,14 +104,6 @@ Server-Sent Events (SSE) endpoint for real-time game score updates via GraphQL s
 **Response**: SSE stream with `GamesResponse` objects (`{ events: GameLean[], teams: TeamMetadata[], season: number }`)
 
 **Notes**: Used by `useGamesData` hook when games are live or starting within 5 minutes. Falls back to REST polling when out of season or GraphQL is disabled.
-
----
-
-## Data Model Notes
-
-**Game IDs**: Game IDs in overrides match the `id` field from `GameLean` objects returned by the games endpoint. These are generated from CFBD game data during reshaping.
-
-**Team Enrichment**: Team metadata is enriched at reshape level from CFBD API responses. All team name variations are available in API responses.
 
 ---
 

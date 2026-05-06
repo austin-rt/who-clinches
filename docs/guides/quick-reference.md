@@ -21,7 +21,7 @@ Domain-specific content locations for common tasks.
 - **Unified client**: `lib/cfb/cfbd-client.ts` (switches between REST/GraphQL based on season)
 - **Redis-backed data access**: `lib/cfb/cfbd-cached.ts` (getTeams, getGames, getRankings, getSp, getFpi)
 - **Redis primitive**: `lib/redis.ts` (shared `fetch<T>` cache-aside pattern, production and preview when `UPSTASH_REDIS_*` are set)
-- **Rate limiting**: `proxy.ts` (per-IP via `@upstash/ratelimit`, production and preview)
+- **Rate limiting**: `middleware.ts` (per-IP via `@upstash/ratelimit`, production and preview)
 - **Reshape functions**: `lib/reshape-games.ts` (generic), `lib/reshape-teams-from-cfbd.ts` (generic)
 
 ## Tiebreaker Logic
@@ -32,19 +32,23 @@ Domain-specific content locations for common tasks.
 - **External Analytics**: `docs/guides/external-analytics-by-conference.md` - What each conference requires vs. what CFBD provides
 - **Simulate endpoint**: `app/api/simulate/[sport]/[conf]/route.ts` (dynamic endpoint supporting multiple conferences)
 
-## Data Updates
-
-- **Architecture**: CFBD API data cached in Upstash Redis (production and preview when configured) with TTLs per data type. GraphQL subscriptions for live updates when in season.
-- **API reference**: `docs/guides/api-reference.md` (Data Endpoints section)
-- **Frontend data loading**: `app/hooks/useGamesData.ts` - GraphQL subscriptions (Server-Sent Events) when in season, REST API when out of season
-
 ## Database
 
 - **Prisma client**: `lib/db/client.ts` (singleton pattern)
 - **Schema**: `prisma/schema.prisma` (PostgreSQL via Neon)
 - **Migrations**: `prisma/migrations/`
-- **Models**: `SimulationSnapshot` (shareable simulation results with hash dedup)
+- **Models**: `SimulationSnapshot` (shareable simulation results with hash dedup), `RuntimeConfig` (admin dashboard toggle state, singleton row)
 - **Commands**: `npm run db:migrate:dev` (local), `npm run db:migrate:deploy` (prod), `npm run db:check` (validate)
+
+## Admin Dashboard
+
+- **Page**: `app/admin/page.tsx` (runtime config toggles, CFBD status, Redis inspector)
+- **Layout**: `app/admin/layout.tsx` (minimal layout without main site nav)
+- **Runtime config**: `lib/admin/runtime-config.ts` (getRuntimeConfig/updateRuntimeConfig with 5s cache, production short-circuit)
+- **Environment gating**: `lib/admin/is-admin-allowed.ts`, `middleware.ts` (404 in production)
+- **Fixture years**: `lib/admin/fixture-years.ts` (available fixture year list)
+- **API routes**: `/api/admin/config` (GET/PATCH), `/api/admin/flush-redis` (POST), `/api/admin/clear-db` (POST), `/api/admin/cfbd-status` (GET), `/api/admin/redis-keys` (GET/DELETE)
+- **Toggle cascades**: Fixture year ON → Redis OFF + Rate Limiting OFF; Redis toggle → flush cache; In-Season toggle → flush cache; GraphQL ON (outside season) → In-Season Override ON
 
 ## Data Models
 
@@ -101,7 +105,8 @@ npm run build                 # prisma generate && next build
 | CFBD REST client                   | `lib/cfb/cfbd-rest-client.ts`                                                                                                                                                  |
 | CFBD GraphQL client                | `lib/cfb/cfbd-graphql-client.ts`                                                                                                                                               |
 | CFBD unified client                | `lib/cfb/cfbd-client.ts`                                                                                                                                                       |
-| Rate limiting                      | `proxy.ts`                                                                                                                                                                     |
+| Rate limiting                      | `middleware.ts`                                                                                                                                                                |
+| Admin dashboard                    | `app/admin/page.tsx`, `lib/admin/runtime-config.ts`, `app/api/admin/`                                                                                                          |
 | Tiebreaker logic                   | Modular system: `lib/cfb/tiebreaker-rules/common/` (common rules), `lib/cfb/tiebreaker-rules/core/` (engine), `lib/cfb/tiebreaker-rules/{conf}/config.ts` (conference configs) |
 | Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt`                                                                                                                                                  |
 | Constants                          | `lib/constants.ts` (sports and conference configuration)                                                                                                                       |

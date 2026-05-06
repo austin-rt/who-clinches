@@ -33,19 +33,11 @@ import { Button } from '@/app/components/Button';
 - `secondary` - Secondary conference color (e.g., #004a9e - Lighter SEC Blue)
 - `accent` - Accent color (e.g., #ffd040 - SEC Gold)
 - `neutral` - Neutral gray
+- `error` - Destructive actions (bg-red-700, defined in `app/styles/buttons.css`)
 
 **Button Styles:**
 
-**TODO**: Document button styles implementation once finalized. Include CSS file location, DaisyUI integration, dark mode variants, and hover states.
-
----
-
-## Theme-Aware Components
-
-- Use DaisyUI semantic colors (`text-primary`, `bg-base-200`)
-- Theme applied via `data-theme` attribute
-- CSS variables for theme colors
-- Color scheme: Primary, Secondary, and Accent colors are configurable per conference
+Defined in `app/styles/buttons.css`. Global `.btn` override in `app/globals.css` strips DaisyUI's default color behavior — custom color classes must be explicitly defined in buttons.css for each variant.
 
 ---
 
@@ -120,14 +112,6 @@ Custom flow node components in `app/components/flow-nodes/`: `RootNode`, `RuleNo
 - `LinkButton.Flat` — Flat link button with no border or background
 
 Follows the same variant pattern as `Button`. Renders as `<a>` elements for navigation.
-
----
-
-## Score Calculation Pattern
-
-- Completed games: Use actual scores
-- Incomplete games: Calculate to ensure picked team wins
-- Uses `predictedScore` as base, adjusts to favor picked team
 
 ---
 

@@ -6,14 +6,14 @@
 
 ## Essential (Always Load)
 
-**~4.3K tokens** - Load these files for every task:
+**~7.4K tokens** - Load these files for every task:
 
 - `docs/ai-guide.md` - Core AI development guidelines (~1.7K tokens, 87 lines)
 - `docs/guides/quick-reference.md` - Domain-specific content locations (~0.9K tokens, 87 lines)
 - `docs/guides/api-reference.md` - API reference overview (~0.8K tokens, 71 lines)
 - `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.0K tokens, 117 lines)
 
-**Total Essential:** ~4.3K tokens (362 lines)
+**Total Essential:** ~7.4K tokens (362 lines)
 
 ---
 
@@ -47,7 +47,16 @@ Load additional docs based on your specific task:
 
 **Total:** ~7-9K tokens
 
-### Scenario 4: Frontend Work
+### Scenario 4: Admin Dashboard Work
+
+**Additional Load (~2-3K tokens):**
+
+- `lib/admin/runtime-config.ts` - RuntimeConfig singleton with cache and production short-circuit
+- `app/api/admin/config/route.ts` - Toggle PATCH handler with cascade rules
+
+**Total:** ~6-7K tokens
+
+### Scenario 5: Frontend Work
 
 **Additional Load (~5-8K tokens):**
 
@@ -60,7 +69,7 @@ Load additional docs based on your specific task:
 
 ## Loading Strategy
 
-1. **Always start with Essential docs** (~4.3K tokens)
+1. **Always start with Essential docs** (~7.4K tokens)
 2. **Add task-specific docs** based on scenario (~5-8K tokens)
 3. **Load full detailed guides** only when needed during execution
 
@@ -70,7 +79,7 @@ Load additional docs based on your specific task:
 
 - **Total for typical task:** ~10-13K tokens (Essential + Task-Specific)
 - **Remaining for execution:** ~187-190K tokens (out of 200K context window)
-- **Essential docs:** ~4.3K tokens (362 lines)
+- **Essential docs:** ~7.4K tokens (450 lines)
 - **Task-specific docs:** ~5-8K tokens per scenario
 - **Savings:** Significant reduction in loaded documentation
 
@@ -80,10 +89,11 @@ Load additional docs based on your specific task:
 
 | Task Type           | Essential | Task-Specific                                 | Total   |
 | ------------------- | --------- | --------------------------------------------- | ------- |
-| General Development | ✅        | None                                          | ~4.3K   |
+| General Development | ✅        | None                                          | ~7.4K   |
 | API Endpoint        | ✅        | api-reference-data.md                         | ~10-13K |
 | CFBD API Work       | ✅        | cfbd-api-monitoring.md, api-reference-data.md | ~10-13K |
 | Database / Share    | ✅        | api-reference-data.md, prisma/schema.prisma   | ~7-9K   |
+| Admin Dashboard     | ✅        | runtime-config.ts, admin/config route.ts      | ~6-7K   |
 | Frontend            | ✅        | frontend/index.md                             | ~10-13K |
 
 ---

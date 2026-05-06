@@ -73,9 +73,11 @@ This is a specialized college football application built for simulating conferen
 
 **API Utilities**: `lib/api/same-origin-gate.ts` (POST origin validation), `lib/api/payload-hash.ts` (response deduplication for simulate and share), `lib/client/input-hash.ts` (client-side request deduplication)
 
-**Database**: `lib/db/client.ts` (Prisma client singleton), `prisma/schema.prisma` (PostgreSQL schema via Neon). `SimulationSnapshot` model stores shareable simulation results with hash-based deduplication. Build: `prisma generate && next build`. Migrations: `prisma migrate dev` (local), `prisma migrate deploy` (production via Vercel build command).
+**Database**: `lib/db/client.ts` (Prisma client singleton), `prisma/schema.prisma` (PostgreSQL schema via Neon). `SimulationSnapshot` model stores shareable simulation results with hash-based deduplication. `RuntimeConfig` model stores admin dashboard toggle state as a singleton row (dev/preview only; production never queries it). Build: `prisma generate && next build`. Migrations: `prisma migrate dev` (local), `prisma migrate deploy` (production via Vercel build command).
 
-**Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive when `VERCEL_ENV` is `production` or `preview` and `UPSTASH_REDIS_*` are set), `proxy.ts` (per-IP rate limiting via `@upstash/ratelimit` on `production` and `preview`, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
+**Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive; always-on in production, runtime-configurable via admin dashboard in dev/preview), `middleware.ts` (per-IP rate limiting via `@upstash/ratelimit` on `production` and `preview`, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
+
+**Admin Dashboard**: `app/admin/page.tsx` (runtime config toggles for dev/preview), `lib/admin/runtime-config.ts` (RuntimeConfig singleton via Prisma with 5s in-memory cache, production short-circuit to defaults), `lib/admin/is-admin-allowed.ts` (environment gating), `middleware.ts` (returns 404 for `/admin*` and `/api/admin/*` in production). Admin API routes: `/api/admin/config` (GET/PATCH), `/api/admin/flush-redis` (POST), `/api/admin/clear-db` (POST), `/api/admin/cfbd-status` (GET), `/api/admin/redis-keys` (GET/DELETE)
 
 **Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached in Upstash Redis (production and preview when configured) via `lib/redis.ts` with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
 
@@ -99,8 +101,8 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby
 - **CFBD API**: Rate limits based on tier (Free: 1,000/month, Tier 2: $1/month, Tier 3+: higher limits for in-season)
-- **Rate Limiting**: Per-IP rate limiting (60 req/min sliding window) via `@upstash/ratelimit` in `proxy.ts` when `VERCEL_ENV` is `production` or `preview`. Requests with valid `VERCEL_AUTOMATION_BYPASS_SECRET` skip rate limiting.
-- **Caching**: Upstash Redis when `VERCEL_ENV` is `production` or `preview` and `UPSTASH_REDIS_REST_URL` / `UPSTASH_REDIS_REST_TOKEN` are set (use separate Preview env values in Vercel for preview). Otherwise the app fetches CFBD with no Redis cache.
+- **Rate Limiting**: Per-IP rate limiting (60 req/min sliding window) via `@upstash/ratelimit` in `middleware.ts` when `VERCEL_ENV` is `production` or `preview`. Requests with valid `VERCEL_AUTOMATION_BYPASS_SECRET` skip rate limiting. Dev/preview rate limiting is toggleable via admin dashboard.
+- **Caching**: Upstash Redis always-on in production. Dev/preview Redis is toggleable via admin dashboard (`lib/admin/runtime-config.ts`). Otherwise the app fetches CFBD with no Redis cache.
 - **Frontend Polling**: Conditional based on game states (see [Data Flow](./guides/frontend/data-flow.md) for details)
 
 ---

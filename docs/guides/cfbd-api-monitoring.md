@@ -7,6 +7,7 @@ This application monitors CFBD API usage and sends alerts when remaining API cal
 **GET `/api/cfbd-monitor`**
 
 Returns current API usage status:
+
 ```json
 {
   "patronLevel": 1,
@@ -20,6 +21,7 @@ Returns current API usage status:
 ## Alert Configuration
 
 Alerts are sent when remaining calls fall below tier-based thresholds:
+
 - **Free tier (0)**: 100 calls (10% of 1,000 limit)
 - **Tier 1 ($1/month)**: 500 calls (10% of 5,000 limit)
 - **Tier 2 ($5/month)**: 1,500 calls (5% of 30,000 limit)
@@ -28,6 +30,7 @@ Alerts are sent when remaining calls fall below tier-based thresholds:
 ### Setting Up Alerts
 
 **Environment Variables:**
+
 - `CFBD_ALERT_WEBHOOK_URL` - Webhook URL (Zapier, Make.com, custom endpoint)
 - `CFBD_ALERT_HANDLER_URL` - Alternative alert handler URL (auto-detected from VERCEL_URL if not set)
 - `CFBD_ALERT_EMAIL` - Email address for alerts (required if using email alerts)
@@ -35,6 +38,7 @@ Alerts are sent when remaining calls fall below tier-based thresholds:
 - `RESEND_FROM_EMAIL` - From email address (optional)
 
 **Webhook Payload:**
+
 ```json
 {
   "patronLevel": 1,
@@ -50,6 +54,7 @@ Alerts are sent when remaining calls fall below tier-based thresholds:
 ## Alert Cooldown
 
 Alerts are rate-limited to prevent spam:
+
 - **Cooldown**: 1 hour between alerts
 - Alerts only sent if remaining calls decrease or stay the same
 
@@ -59,3 +64,6 @@ The monitoring system automatically checks remaining calls after every CFBD API 
 
 In production, alerts are sent via webhook or email. In development, no alerts are sent.
 
+## Admin Dashboard
+
+The admin dashboard (`/admin`, dev/preview only) shows real-time CFBD API status: remaining calls vs tier total, patron level, active key index, and pool size. The CFBD status endpoint (`GET /api/admin/cfbd-status`) always hits the real CFBD API regardless of fixture state.

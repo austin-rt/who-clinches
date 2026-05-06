@@ -8,8 +8,16 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 - **[Data Endpoints](./api-reference-data.md)** - GET /api/games/[sport]/[conf], POST /api/simulate/[sport]/[conf], POST /api/share/[sport]/[conf]
 - **[Stats Endpoints](./api-reference-stats.md)** - GET /api/stats/rankings
+- **Admin Endpoints** (dev/preview only, 404 in production):
+  - `GET /api/admin/config` — Read runtime config (toggles + environment label)
+  - `PATCH /api/admin/config` — Update toggles (with server-side cascade rules)
+  - `POST /api/admin/flush-redis` — Flush Redis cache
+  - `POST /api/admin/clear-db` — Clear SimulationSnapshot rows
+  - `GET /api/admin/cfbd-status` — CFBD API remaining calls, patron level, key pool status
+  - `GET /api/admin/redis-keys` — List cached keys with TTLs
+  - `DELETE /api/admin/redis-keys` — Selective key deletion
 
-**Note**: CFBD data is cached in Upstash Redis (production and preview when configured) with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches are conditional based on conference tiebreaker config. Non-production environments bypass Redis and fetch directly from CFBD API. Share endpoint stores snapshots in PostgreSQL (Prisma/Neon).
+**Note**: CFBD data is cached in Upstash Redis with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches are conditional based on conference tiebreaker config. Redis is always-on in production; in dev/preview, caching is toggleable via the admin dashboard (`/admin`). Share endpoint stores snapshots in PostgreSQL (Prisma/Neon).
 
 ---
 
@@ -63,7 +71,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 
 - CFBD data is cached in Upstash Redis (production and preview when configured) with TTLs per data type
 - Conference identifiers use CFBD format (e.g., "SEC" for SEC)
-- Per-IP rate limiting (60 req/min) enforced in production and preview via `proxy.ts`
+- Per-IP rate limiting (60 req/min) enforced in production and preview via `middleware.ts`
 - Tiebreaker rules are async and may fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule)
 - Simulation snapshots stored in PostgreSQL (Prisma/Neon) with hash-based deduplication
 
