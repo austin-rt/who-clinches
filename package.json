@@ -33,6 +33,7 @@
     "flush:redis:all": "tsx scripts/flush-redis.ts all",
     "flush:next": "tsx scripts/flush-next.ts dev",
     "flush:cache": "tsx scripts/flush-redis.ts dev && tsx scripts/flush-next.ts dev",
+    "clean:screenshots": "rm -f .playwright-mcp/*.png && echo 'Screenshots cleaned'",
     "prepare": "husky"
   },
   "lint-staged": {
