@@ -30,16 +30,23 @@ export const GET = async () => {
       return NextResponse.json({ keys: [], count: 0 });
     }
 
-    const pipeline = redis.pipeline();
+    const ttlPipeline = redis.pipeline();
+    const valPipeline = redis.pipeline();
     for (const key of keys) {
-      pipeline.ttl(key);
+      ttlPipeline.ttl(key);
+      valPipeline.get(key);
     }
-    const ttls = (await pipeline.exec()) as number[];
+    const ttls = (await ttlPipeline.exec()) as number[];
+    const vals = await valPipeline.exec();
 
-    const entries = keys.map((key, i) => ({
-      key,
-      ttl: ttls[i],
-    }));
+    const entries = keys.map((key, i) => {
+      const val = vals[i] as { cachedAt?: number } | null;
+      return {
+        key,
+        ttl: ttls[i],
+        cachedAt: val?.cachedAt ?? null,
+      };
+    });
 
     return NextResponse.json({ keys: entries, count: entries.length });
   } catch (error) {

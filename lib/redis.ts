@@ -24,6 +24,11 @@ export const persistRedisKey = async (key: string): Promise<void> => {
   await redis.persist(key);
 };
 
+interface CacheEnvelope<T> {
+  data: T;
+  cachedAt: number;
+}
+
 export const fetch = async <T>(
   key: string,
   fetcher: () => Promise<T>,
@@ -31,13 +36,17 @@ export const fetch = async <T>(
 ): Promise<T> => {
   if (!(await isRedisEnabled())) return fetcher();
 
-  const hit = await redis.get<T>(key);
-  if (hit) return hit;
+  const hit = await redis.get<CacheEnvelope<T>>(key);
+  if (hit?.data !== undefined && hit?.cachedAt) return hit.data;
+  if (hit !== null && (hit as unknown as CacheEnvelope<T>)?.cachedAt === undefined) {
+    return hit as unknown as T;
+  }
   const fresh = await fetcher();
+  const envelope: CacheEnvelope<T> = { data: fresh, cachedAt: Date.now() };
   if (ttl) {
-    await redis.set(key, fresh, { ex: ttl });
+    await redis.set(key, envelope, { ex: ttl });
   } else {
-    await redis.set(key, fresh);
+    await redis.set(key, envelope);
   }
   return fresh;
 };

@@ -31,7 +31,39 @@ interface CfbdStatus {
 interface RedisKey {
   key: string;
   ttl: number;
+  cachedAt: number | null;
 }
+
+const formatTtl = (seconds: number): string => {
+  if (seconds < 0) return 'persistent';
+  const units: [number, string][] = [
+    [31536000, 'y'],
+    [2592000, 'mo'],
+    [604800, 'w'],
+    [86400, 'd'],
+    [3600, 'h'],
+    [60, 'm'],
+    [1, 's'],
+  ];
+  const parts: string[] = [];
+  let remaining = seconds;
+  for (const [size, label] of units) {
+    if (remaining >= size) {
+      const count = Math.floor(remaining / size);
+      parts.push(`${count}${label}`);
+      remaining -= count * size;
+    }
+  }
+  return parts.join(' ') || '0s';
+};
+
+const formatCachedAt = (timestamp: number): string => {
+  const seconds = Math.floor((Date.now() - timestamp) / 1000);
+  if (seconds < 60) return 'just now';
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+  return `${Math.floor(seconds / 86400)}d ago`;
+};
 
 export default function AdminPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
@@ -312,6 +344,7 @@ export default function AdminPage() {
                 <tr>
                   <th>Key</th>
                   <th>TTL</th>
+                  <th>Cached</th>
                   <th />
                 </tr>
               </thead>
@@ -319,7 +352,10 @@ export default function AdminPage() {
                 {redisKeys.map((entry) => (
                   <tr key={entry.key}>
                     <td className="font-mono text-xs">{entry.key}</td>
-                    <td>{entry.ttl === -1 ? 'persistent' : `${entry.ttl}s`}</td>
+                    <td className="whitespace-nowrap">{formatTtl(entry.ttl)}</td>
+                    <td className="whitespace-nowrap text-text-secondary">
+                      {entry.cachedAt ? formatCachedAt(entry.cachedAt) : '—'}
+                    </td>
                     <td>
                       <Button.Stroked
                         size="xs"
