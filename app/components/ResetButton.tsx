@@ -13,7 +13,7 @@ interface ResetButtonProps {
 
 const ResetButton = ({ onReset, className }: ResetButtonProps) => {
   const dispatch = useAppDispatch();
-  const { mode, view } = useUIState();
+  const { view } = useUIState();
 
   const handleClick = () => {
     dispatch(clearAllPicks());
@@ -25,7 +25,7 @@ const ResetButton = ({ onReset, className }: ResetButtonProps) => {
   return (
     <Button.Stroked
       size="md"
-      color={mode === 'dark' ? 'accent' : 'primary'}
+      color="primary"
       onClick={handleClick}
       className={cn('text-xs', className)}
     >

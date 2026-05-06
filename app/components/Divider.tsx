@@ -5,7 +5,7 @@ interface DividerProps {
 }
 
 const Divider = ({ className }: DividerProps) => {
-  return <div className={cn('border-t border-base-400 dark:border-accent', className)} />;
+  return <div className={cn('border-t border-stroke', className)} />;
 };
 
 export default Divider;

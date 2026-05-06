@@ -19,7 +19,7 @@ const ScoreInput = ({ value, onChange, onBlur, isHigher, isTie }: ScoreInputProp
       onChange={(e) => onChange(e.target.value)}
       onBlur={onBlur}
       className={cn(
-        'w-[4ch] rounded-md border border-primary bg-transparent py-0.5 text-center text-[clamp(1rem,7cqw,2rem)] leading-none outline-none',
+        'w-[4ch] rounded-md border border-stroke bg-transparent py-0.5 text-center text-[clamp(1rem,7cqw,2rem)] leading-none outline-none',
         {
           'font-extrabold': isHigher && !isTie,
           'font-normal': !isHigher || isTie,

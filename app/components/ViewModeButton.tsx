@@ -9,7 +9,7 @@ import { Button } from './Button';
 
 const ViewModeButton = () => {
   const dispatch = useAppDispatch();
-  const { view, mode } = useUIState();
+  const { view } = useUIState();
 
   const handleClick = () => {
     const newView = view === 'picks' ? 'scores' : 'picks';
@@ -18,7 +18,7 @@ const ViewModeButton = () => {
 
   return (
     <Button.Stroked
-      color={mode === 'dark' ? 'accent' : 'primary'}
+      color="primary"
       onClick={handleClick}
       className="group swap swap-rotate relative w-full sm:w-fit"
     >

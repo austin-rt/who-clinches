@@ -23,8 +23,15 @@ html:not([data-mode]) {
   --color-base-300: #e5e5e5; /* Tertiary background (darkest of the three) */
   --color-base-400: #cccccc; /* Fourth background */
   --color-base-content: #1a1a1a; /* Main text color (dark gray) */
+  --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
+  --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
   --color-winner: #00875a; /* Success green for winner */
   --color-loser: #de350b; /* Error red for loser */
+}
+
+html[data-mode='dark'] {
+  --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
+  --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
 }
 
 /* Team themes will be dynamically injected in Phase 5 from CFBD API data */
@@ -86,22 +93,12 @@ html:not([data-mode]) {
   }
 
   .dropdown-menu {
-    @apply border-primary;
-
-    html[data-mode='dark'] &,
-    [data-mode='dark'] & {
-      @apply border-accent;
-    }
+    @apply border-stroke;
   }
 
   /* Style DaisyUI dropdown to match design */
   .dropdown-content {
-    @apply border-primary;
-
-    html[data-mode='dark'] &,
-    [data-mode='dark'] & {
-      @apply border-accent;
-    }
+    @apply border-stroke;
   }
 
   .dropdown-content li > a {
@@ -111,6 +108,7 @@ html:not([data-mode]) {
   /* Accordion borders - all collapse elements with bg-base-300 */
   /* Light mode: 4 shades darker than base-200 (using base-300) */
   /* Dark mode: 4 shades lighter than base-200 (using base-300) */
+
   .collapse.bg-base-300 {
     @apply border border-base-300;
   }

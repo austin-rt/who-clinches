@@ -118,7 +118,7 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const isAwaySelected = selectedTeam === game.away.teamId;
 
   return (
-    <div className="flex w-36 items-center justify-around rounded-lg border border-base-300 bg-base-200 px-1 py-1 sm:py-2 dark:border-base-400 dark:bg-base-300">
+    <div className="flex w-36 items-center justify-around rounded-lg border border-stroke-alt bg-base-200 px-1 py-1 sm:py-2 dark:bg-base-300">
       <CompactTeamSelector
         team={game.away}
         teamId={game.away.teamId}

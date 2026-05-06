@@ -1,16 +1,12 @@
 'use client';
 
-import { useUIState } from '../store/useUI';
-
 const BuyMeACoffeeButton = () => {
-  const { mode } = useUIState();
-
   return (
     <a
       href="https://www.buymeacoffee.com/xWk6jcTZTU"
       target="_blank"
       rel="noopener noreferrer"
-      className={`btn btn-xs gap-1.5 whitespace-nowrap ${mode === 'dark' ? 'btn-accent' : 'btn-primary'}`}
+      className="btn btn-primary btn-xs gap-1.5 whitespace-nowrap"
     >
       <svg
         aria-hidden

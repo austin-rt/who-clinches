@@ -81,7 +81,7 @@ const ConferenceSelector = () => {
         </span>
       </Button.Stroked>
       {isOpen && (
-        <div className="dropdown-menu absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border-2 border-primary bg-base-100 shadow-lg">
+        <div className="dropdown-menu absolute left-0 top-full z-50 mt-1 w-48 rounded-lg border-2 border-stroke bg-base-100 shadow-lg">
           <div className="relative p-2">
             <div className="px-3 py-2 text-xs font-semibold uppercase text-base-content opacity-60 dark:opacity-80">
               College Football

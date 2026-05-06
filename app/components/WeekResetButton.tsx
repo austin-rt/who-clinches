@@ -4,7 +4,6 @@ import { cn } from '@/lib/utils';
 import { GameLean } from '@/lib/types';
 import { useAppDispatch } from '../store/hooks';
 import { clearGamePick } from '../store/gamePicksSlice';
-import { useUIState } from '@/app/store/useUI';
 import { Button } from './Button';
 
 interface WeekResetButtonProps {
@@ -15,7 +14,6 @@ interface WeekResetButtonProps {
 
 const WeekResetButton = ({ weekGames, onReset, className }: WeekResetButtonProps) => {
   const dispatch = useAppDispatch();
-  const { mode } = useUIState();
 
   const handleClick = () => {
     const allCompleted = weekGames.every((game) => game.completed);
@@ -29,7 +27,7 @@ const WeekResetButton = ({ weekGames, onReset, className }: WeekResetButtonProps
   return (
     <Button.Stroked
       size="md"
-      color={mode === 'dark' ? 'accent' : 'primary'}
+      color="primary"
       onClick={handleClick}
       className={cn('text-xs', className)}
     >

@@ -49,7 +49,7 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks, onReset }: CompactWeekGri
       {weeksData.map((week) => (
         <div
           key={week.weekNumber}
-          className="flex flex-col gap-3 rounded-lg border border-base-400 px-2 dark:border-accent"
+          className="flex flex-col gap-3 rounded-lg border border-stroke px-2"
         >
           <div className="flex flex-col gap-1">
             <div className="flex items-center justify-between gap-3 p-2">
@@ -60,7 +60,7 @@ const CompactWeekGrid = ({ finalWeeks, remainingWeeks, onReset }: CompactWeekGri
             </div>
             <Divider />
           </div>
-          <div className="flex flex-wrap gap-2 px-5 py-2">
+          <div className="flex flex-wrap gap-2 px-5 pb-4 pt-2">
             {week.games.map((game) => (
               <CompactGameButton key={game._id} game={game} />
             ))}

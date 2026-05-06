@@ -14,10 +14,10 @@
 
     html[data-mode='dark'] &,
     [data-mode='dark'] & {
-      @apply bg-base-content text-base-100;
+      @apply bg-accent text-base-100;
 
       &:hover {
-        background-color: hsl(var(--bc) / 0.9);
+        background-color: hsl(var(--a) / 0.9);
       }
     }
   }
