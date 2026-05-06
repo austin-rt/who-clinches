@@ -34,30 +34,28 @@ interface RedisKey {
   cachedAt: number | null;
 }
 
-const formatTtl = (seconds: number): string => {
-  if (seconds < 0) return 'persistent';
-  const units: [number, string][] = [
-    [31536000, 'y'],
-    [2592000, 'mo'],
-    [604800, 'w'],
-    [86400, 'd'],
-    [3600, 'h'],
-    [60, 'm'],
-    [1, 's'],
-  ];
-  const parts: string[] = [];
-  let remaining = seconds;
-  for (const [size, label] of units) {
-    if (remaining >= size) {
-      const count = Math.floor(remaining / size);
-      parts.push(`${count}${label}`);
-      remaining -= count * size;
-    }
+const friendlyName = (key: string): string => {
+  const parts = key.split(':');
+  if (parts[0] === 'ratelimit') return `Rate Limit (${parts[1]})`;
+  if (parts[0] !== 'cfbd') return key;
+  const [, , type, ...rest] = parts;
+  switch (type) {
+    case 'games':
+      return `${rest[0]} Games (${rest[1]} ${rest[2]})`;
+    case 'teams':
+      return `Teams (${rest[0]})`;
+    case 'rankings':
+      return `Rankings (${rest[0]} ${rest[2]})`;
+    case 'sp':
+      return `SP+ Ratings (${rest[0]})`;
+    case 'fpi':
+      return `FPI Ratings (${rest[0]})`;
+    default:
+      return key;
   }
-  return parts.join(' ') || '0s';
 };
 
-const formatCachedAt = (timestamp: number): string => {
+const formatRelativeTime = (timestamp: number): string => {
   const totalMinutes = Math.floor((Date.now() - timestamp) / 60000);
   if (totalMinutes < 1) return 'just now';
   const units: [number, string][] = [
@@ -76,6 +74,18 @@ const formatCachedAt = (timestamp: number): string => {
     }
   }
   return `${parts.join(' ')} ago`;
+};
+
+const formatExpiresAt = (ttlSeconds: number): string => {
+  if (ttlSeconds < 0) return 'never';
+  const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
+  return expiresAt.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 };
 
 export default function AdminPage() {
@@ -356,8 +366,9 @@ export default function AdminPage() {
               <thead>
                 <tr>
                   <th>Key</th>
-                  <th>TTL</th>
-                  <th>Cached</th>
+                  <th>Name</th>
+                  <th>Last Cached</th>
+                  <th>Expires At</th>
                   <th />
                 </tr>
               </thead>
@@ -365,9 +376,12 @@ export default function AdminPage() {
                 {redisKeys.map((entry) => (
                   <tr key={entry.key}>
                     <td className="font-mono text-xs">{entry.key}</td>
-                    <td className="whitespace-nowrap">{formatTtl(entry.ttl)}</td>
+                    <td className="whitespace-nowrap">{friendlyName(entry.key)}</td>
                     <td className="whitespace-nowrap text-text-secondary">
-                      {entry.cachedAt ? formatCachedAt(entry.cachedAt) : '—'}
+                      {entry.cachedAt ? formatRelativeTime(entry.cachedAt) : '—'}
+                    </td>
+                    <td className="whitespace-nowrap text-text-secondary">
+                      {formatExpiresAt(entry.ttl)}
                     </td>
                     <td>
                       <Button.Stroked
