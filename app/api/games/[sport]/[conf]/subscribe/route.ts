@@ -41,7 +41,7 @@ export const GET = async (
     return new Response('Invalid conference', { status: 400 });
   }
 
-  const seasonYear = season ? parseInt(season, 10) : getFixtureYear() ?? new Date().getFullYear();
+  const seasonYear = season ? parseInt(season, 10) : (getFixtureYear() ?? new Date().getFullYear());
   const inSeason = await isInSeasonFromCfbd();
   const allowGraphQL = typeof process !== 'undefined' && process.env.NODE_ENV === 'production';
 
@@ -153,9 +153,14 @@ export const GET = async (
               logo: team.logo,
               color: team.color,
               alternateColor: team.alternateColor,
+              conferenceId: team.conference,
               conferenceStanding: team.conferenceStanding ?? 'Tied for 1st',
               conferenceRecord: team.record?.conference ?? '0-0',
+              record: team.record,
               rank: null,
+              nationalRank: null,
+              spPlusRating: null,
+              sor: null,
             }));
 
             const response: GamesResponse = {

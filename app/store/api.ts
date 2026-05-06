@@ -1,11 +1,5 @@
 import { apiSlice as api } from './baseApi';
-export const addTagTypes = [
-  'Games',
-  'Simulation',
-  'Status',
-  'Monitoring',
-  'Stats',
-] as const;
+export const addTagTypes = ['Games', 'Simulation', 'Status', 'Monitoring', 'Stats'] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
     addTagTypes,
@@ -170,6 +164,22 @@ export type GameLean = {
   predictedScore: PredictedScore;
   gameType?: GameType;
 };
+export type TeamFullRecord = {
+  overall: string;
+  conference: string;
+  home: string;
+  away: string;
+  stats: {
+    wins?: number;
+    losses?: number;
+    winPercent?: number;
+    pointsFor?: number;
+    pointsAgainst?: number;
+    pointDifferential?: number;
+    avgPointsFor?: number;
+    avgPointsAgainst?: number;
+  };
+};
 export type TeamMetadata = {
   id: string;
   abbrev: string;
@@ -179,10 +189,15 @@ export type TeamMetadata = {
   logo: string;
   color: string;
   alternateColor: string;
+  conferenceId: string;
   conferenceStanding: string;
   conferenceRecord: string;
+  record: TeamFullRecord;
   rank: number | null;
   division?: string | null;
+  nationalRank?: number | null;
+  spPlusRating?: number | null;
+  sor?: number | null;
 };
 export type GamesResponse = {
   events: GameLean[];
@@ -208,6 +223,7 @@ export type StandingEntry = {
   confRecord: TeamRecord;
   explainPosition: string;
   division?: string | null;
+  nationalRank?: number | null;
 };
 export type TieStep = {
   rule: string;
@@ -220,10 +236,38 @@ export type TieLog = {
   teams: string[];
   steps: TieStep[];
 };
+export type TieFlowNode = {
+  id: string;
+  teamIds: string[];
+  rule: string | null;
+  detail: string;
+  label: string;
+  type: 'root' | 'rule' | 'result';
+};
+export type TieFlowEdge = {
+  id: string;
+  source: string;
+  target: string;
+  label: string;
+  teamIds: string[];
+};
+export type TieFlowTeamMeta = {
+  abbrev: string;
+  logo: string;
+  color: string;
+  displayName: string;
+};
+export type TieFlowGraph = {
+  nodes: TieFlowNode[];
+  edges: TieFlowEdge[];
+  teams: Record<string, TieFlowTeamMeta>;
+  summary: string[];
+};
 export type SimulateResponse = {
   standings: StandingEntry[];
   championship: string[];
   tieLogs: TieLog[];
+  tieFlowGraphs: TieFlowGraph[];
 };
 export type ErrorResponse = {
   error: string;
@@ -234,6 +278,8 @@ export type GameOverride = {
 };
 export type SimulateRequestBody = {
   season: number;
+  games: GameLean[];
+  teams: TeamMetadata[];
   overrides: {
     [key: string]: GameOverride;
   };

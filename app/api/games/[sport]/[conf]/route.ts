@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getGames, getTeams } from '@/lib/cfb/cfbd-cached';
+import { getGames, getTeams, getRankings, getSp, getFpi } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
-import type { Conference } from 'cfbd';
+import type { Conference, PollWeek } from 'cfbd';
 import {
   getConferenceMetadata,
   isValidSport,
@@ -16,10 +16,85 @@ import {
 } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';
+import { describeRequiredCfbdRatingFeeds } from '@/lib/cfb/tiebreaker-cfbd-requirements';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+const normalizeTeamName = (name: string): string =>
+  name
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/^the\s+/i, '');
+
+const CFP_POLL_NAMES = ['playoff', 'cfp', 'college football playoff'];
+const AP_POLL_NAMES = ['ap top 25'];
+
+const buildRankMapFromPoll = (
+  polls: PollWeek['polls'],
+  pollNames: string[]
+): Map<string, number> | null => {
+  const poll = polls?.find((p) => pollNames.some((name) => p.poll?.toLowerCase().includes(name)));
+  if (!poll?.ranks?.length) return null;
+
+  const map = new Map<string, number>();
+  for (const r of poll.ranks) {
+    if (r.rank === null || r.rank === undefined) continue;
+    if (r.teamId !== null && r.teamId !== undefined) map.set(String(r.teamId), r.rank);
+    if (r.school) map.set(normalizeTeamName(r.school), r.rank);
+  }
+  return map.size > 0 ? map : null;
+};
+
+const resolveWeeklyRanks = (pollWeeks: PollWeek[] | null): Map<number, Map<string, number>> => {
+  const weekMap = new Map<number, Map<string, number>>();
+  if (!pollWeeks) return weekMap;
+
+  for (const pw of pollWeeks) {
+    if (pw.week === null || pw.week === undefined) continue;
+    const resolved =
+      buildRankMapFromPoll(pw.polls, CFP_POLL_NAMES) ??
+      buildRankMapFromPoll(pw.polls, AP_POLL_NAMES);
+    if (resolved) weekMap.set(pw.week, resolved);
+  }
+  return weekMap;
+};
+
+const getLatestRanks = (weekMap: Map<number, Map<string, number>>): Map<string, number> => {
+  if (weekMap.size === 0) return new Map();
+  const maxWeek = Math.max(...weekMap.keys());
+  return weekMap.get(maxWeek)!;
+};
+
+const lookupRank = (
+  teamId: string,
+  teamName: string,
+  week: number | null,
+  weekMap: Map<number, Map<string, number>>
+): number | null => {
+  if (week === null || week === undefined) return null;
+  const rankMap = weekMap.get(week);
+  if (!rankMap) return null;
+  return rankMap.get(teamId) ?? rankMap.get(normalizeTeamName(teamName)) ?? null;
+};
+
+const attachRanksToGames = (
+  games: GameLean[],
+  weekMap: Map<number, Map<string, number>>
+): GameLean[] =>
+  games.map((game) => ({
+    ...game,
+    home: {
+      ...game.home,
+      rank: lookupRank(game.home.teamId, game.home.displayName, game.week, weekMap),
+    },
+    away: {
+      ...game.away,
+      rank: lookupRank(game.away.teamId, game.away.displayName, game.week, weekMap),
+    },
+  }));
 
 const fetchGamesFromCfbd = async (
   sport: SportSlug,
@@ -76,7 +151,52 @@ const fetchGamesFromCfbd = async (
     );
     const filteredGames = filterRegularSeasonGames(allGames);
 
-    const completedConferenceGames = filteredGames.filter(
+    const teamLeanArray: TeamLean[] = teams.map((team) => ({
+      _id: team._id,
+      name: team.name,
+      displayName: team.displayName,
+      shortDisplayName: team.shortDisplayName,
+      abbreviation: team.abbreviation,
+      logo: team.logo,
+      color: team.color,
+      alternateColor: team.alternateColor,
+      conferenceId: team.conference,
+      division: team.division,
+      record: team.record,
+      conferenceStanding: team.conferenceStanding,
+    }));
+
+    const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    const ratingReqs = config ? describeRequiredCfbdRatingFeeds(config) : null;
+
+    const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] = await Promise.all([
+      getRankings({ year: season }),
+      ratingReqs?.needsRatings ? getSp({ year: season }) : Promise.resolve(null),
+      ratingReqs?.needsRatings ? getFpi({ year: season }) : Promise.resolve(null),
+    ] as const);
+
+    let teamsEnriched = teamLeanArray;
+
+    if (ratingReqs?.needsRatings) {
+      const { attachSpPlusToTeams } = await import('@/lib/cfb/helpers/attach-sp-plus');
+      const { attachSorToTeams } = await import('@/lib/cfb/helpers/attach-sor');
+      teamsEnriched = attachSpPlusToTeams(teamsEnriched, spRatingsResponse!);
+      teamsEnriched = attachSorToTeams(teamsEnriched, fpiRatingsResponse!);
+    }
+
+    const weeklyRanks = resolveWeeklyRanks(rankingsResponse);
+    const gamesWithRanks = attachRanksToGames(filteredGames, weeklyRanks);
+    const latestRanks = getLatestRanks(weeklyRanks);
+
+    if (ratingReqs?.needsRatings) {
+      teamsEnriched = teamsEnriched.map((t) => ({
+        ...t,
+        nationalRank:
+          latestRanks.get(t._id) ?? latestRanks.get(normalizeTeamName(t.displayName)) ?? null,
+      }));
+    }
+
+    const completedConferenceGames = gamesWithRanks.filter(
       (game) =>
         game.completed &&
         game.conferenceGame &&
@@ -89,51 +209,37 @@ const fetchGamesFromCfbd = async (
       { rank: number; confRecord: { wins: number; losses: number }; division?: string | null }
     >();
 
-    if (completedConferenceGames.length > 0) {
-      const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
-      if (config) {
-        const teamLeanArray: TeamLean[] = teams.map((team) => ({
-          _id: team._id,
-          name: team.name,
-          displayName: team.displayName,
-          shortDisplayName: team.shortDisplayName,
-          abbreviation: team.abbreviation,
-          logo: team.logo,
-          color: team.color,
-          alternateColor: team.alternateColor,
-          conferenceId: team.conference,
-          division: team.division,
-          record: team.record,
-          conferenceStanding: team.conferenceStanding,
-        }));
+    if (completedConferenceGames.length > 0 && config) {
+      const hasDivisions = teamsEnriched.some(
+        (team) => team.division !== null && team.division !== undefined
+      );
 
-        const hasDivisions = teamLeanArray.some(
-          (team) => team.division !== null && team.division !== undefined
-        );
+      const { standings } = hasDivisions
+        ? await calculateDivisionalStandings(completedConferenceGames, teamsEnriched, config)
+        : await calculateStandings(
+            completedConferenceGames,
+            teams.map((team) => team._id),
+            config,
+            teamsEnriched
+          );
 
-        const { standings } = hasDivisions
-          ? await calculateDivisionalStandings(completedConferenceGames, teamLeanArray, config)
-          : await calculateStandings(
-              completedConferenceGames,
-              teams.map((team) => team._id),
-              config,
-              teamLeanArray
-            );
-
-        for (const standing of standings) {
-          standingsMap.set(standing.teamId, {
-            rank: standing.rank,
-            confRecord: standing.confRecord,
-            division: standing.division ?? null,
-          });
-        }
+      for (const standing of standings) {
+        standingsMap.set(standing.teamId, {
+          rank: standing.rank,
+          confRecord: standing.confRecord,
+          division: standing.division ?? null,
+        });
       }
     }
 
+    const enrichedMap = new Map(teamsEnriched.map((t) => [t._id, t]));
     const teamMetadata: Record<string, TeamMetadata> = {};
     for (const team of teams) {
       const standing = standingsMap.get(team._id);
+      const enriched = enrichedMap.get(team._id);
       const conferenceStanding = team.conferenceStanding || 'Tied for 1st';
+      const nationalRank =
+        latestRanks.get(team._id) ?? latestRanks.get(normalizeTeamName(team.displayName)) ?? null;
       teamMetadata[team._id] = {
         id: team._id,
         abbrev: team.abbreviation,
@@ -146,21 +252,26 @@ const fetchGamesFromCfbd = async (
           team.alternateColor && team.alternateColor !== 'undefined'
             ? team.alternateColor
             : '000000',
+        conferenceId: team.conference,
         conferenceStanding,
         conferenceRecord: standing
           ? `${standing.confRecord.wins}-${standing.confRecord.losses}`
           : team.record?.conference || '0-0',
+        record: team.record,
         rank: standing ? standing.rank : null,
         division: standing?.division ?? team.division ?? null,
+        nationalRank,
+        spPlusRating: enriched?.spPlusRating ?? null,
+        sor: enriched?.sor ?? null,
       };
     }
 
-    const hasLiveGames = filteredGames.some((game) => game.state === 'in');
+    const hasLiveGames = gamesWithRanks.some((game) => game.state === 'in');
     const cacheMaxAge = hasLiveGames ? 10 : 60;
 
     return NextResponse.json<GamesResponse>(
       {
-        events: filteredGames,
+        events: gamesWithRanks,
         teams: Object.values(teamMetadata),
         season,
       },

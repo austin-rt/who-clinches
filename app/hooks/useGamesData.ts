@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useRef, useState } from 'react';
-import { useGetSeasonGameDataQuery, GameLean, GamesResponse } from '@/app/store/api';
+import { useGetSeasonGameDataQuery, GameLean, GamesResponse, TeamMetadata } from '@/app/store/api';
 import { useAppSelector } from '@/app/store/hooks';
 import { type SportSlug } from '@/lib/constants';
 
@@ -10,6 +10,7 @@ interface UseGamesDataParams {
 
 interface UseGamesDataReturn {
   games: GameLean[];
+  teams: TeamMetadata[];
   season: number | null;
   isLoading: boolean;
   isError: boolean;
@@ -111,8 +112,14 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
     return finalData.events;
   }, [finalData]);
 
+  const teams = useMemo(() => {
+    if (!seasonData || !seasonData.teams) return [];
+    return seasonData.teams;
+  }, [seasonData]);
+
   return {
     games,
+    teams,
     season,
     isLoading,
     isError,
