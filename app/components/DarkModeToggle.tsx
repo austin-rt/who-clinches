@@ -18,7 +18,7 @@ const DarkModeToggle = () => {
         checked={mode === 'dark'}
         onChange={handleToggle}
       />
-      <div className="relative h-8 w-16 rounded-full bg-base-300 transition-colors dark:bg-accent-content">
+      <div className="relative h-8 w-16 rounded-full bg-white/30 transition-colors dark:bg-accent-content">
         <HiSun className="absolute left-1 top-1/2 h-5 w-5 -translate-y-1/2 text-base-content transition-colors dark:text-accent" />
         <HiMoon className="absolute right-1 top-1/2 h-5 w-5 -translate-y-1/2 text-primary transition-colors dark:text-accent" />
         <div
