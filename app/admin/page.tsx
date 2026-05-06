@@ -76,16 +76,25 @@ const formatRelativeTime = (timestamp: number): string => {
   return `${parts.join(' ')} ago`;
 };
 
-const formatExpiresAt = (ttlSeconds: number): string => {
+const formatExpiresIn = (ttlSeconds: number): string => {
   if (ttlSeconds < 0) return 'never';
-  const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
-  return expiresAt.toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-  });
+  let remaining = Math.floor(ttlSeconds / 60);
+  const units: [number, string][] = [
+    [525960, 'y'],
+    [43830, 'mo'],
+    [1440, 'd'],
+    [60, 'h'],
+    [1, 'm'],
+  ];
+  const parts: string[] = [];
+  for (const [size, label] of units) {
+    if (remaining >= size) {
+      const count = Math.floor(remaining / size);
+      parts.push(`${count}${label}`);
+      remaining -= count * size;
+    }
+  }
+  return parts.length ? parts.join(' ') : '<1m';
 };
 
 export default function AdminPage() {
@@ -368,7 +377,7 @@ export default function AdminPage() {
                   <th>Key</th>
                   <th>Name</th>
                   <th>Last Cached</th>
-                  <th>Expires At</th>
+                  <th>Expires In</th>
                   <th />
                 </tr>
               </thead>
@@ -381,16 +390,12 @@ export default function AdminPage() {
                       {entry.cachedAt ? formatRelativeTime(entry.cachedAt) : '—'}
                     </td>
                     <td className="whitespace-nowrap text-text-secondary">
-                      {formatExpiresAt(entry.ttl)}
+                      {formatExpiresIn(entry.ttl)}
                     </td>
                     <td>
-                      <Button.Stroked
-                        size="xs"
-                        color="error"
-                        onClick={() => deleteRedisKeys([entry.key])}
-                      >
+                      <Button size="xs" color="error" onClick={() => deleteRedisKeys([entry.key])}>
                         Delete
-                      </Button.Stroked>
+                      </Button>
                     </td>
                   </tr>
                 ))}
