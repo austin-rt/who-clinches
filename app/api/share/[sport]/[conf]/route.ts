@@ -8,7 +8,6 @@ import {
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
-import { checkSameOrigin } from '@/lib/api/same-origin-gate';
 import { hashPayload } from '@/lib/api/payload-hash';
 
 export const runtime = 'nodejs';
@@ -18,9 +17,6 @@ export const POST = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: string; conf: string }> }
 ) => {
-  const originCheck = checkSameOrigin(request);
-  if (originCheck) return originCheck;
-
   try {
     const body = await request.json();
     const { season, overrides = {}, results } = body;

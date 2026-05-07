@@ -15,8 +15,6 @@ import {
   type SportSlug,
   type CFBConferenceAbbreviation,
 } from '@/lib/constants';
-import { checkSameOrigin } from '@/lib/api/same-origin-gate';
-
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
@@ -42,9 +40,6 @@ export const POST = async (
   request: NextRequest,
   { params }: { params: Promise<{ sport: string; conf: string }> }
 ): Promise<NextResponse<SimulateResponse | { error: string }>> => {
-  const originCheck = checkSameOrigin(request);
-  if (originCheck) return originCheck;
-
   try {
     const body = await request.json();
     const { season, games, teams, overrides = {} } = body;

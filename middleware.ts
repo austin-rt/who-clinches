@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
+import { checkSameOrigin } from '@/lib/api/same-origin-gate';
 
 const ratelimit = new Ratelimit({
   redis: new Redis({
@@ -14,23 +15,28 @@ const ratelimit = new Ratelimit({
 export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
-    if (process.env.VERCEL_ENV === 'production') {
-      return NextResponse.json({ error: 'Not found' }, { status: 404 });
-    }
-    return NextResponse.next();
-  }
-
   const vercelEnv = process.env.VERCEL_ENV;
   if (vercelEnv !== 'production' && vercelEnv !== 'preview') {
     return NextResponse.next();
   }
 
-  if (
+  const hasBypassToken =
     request.nextUrl.searchParams.get('x-vercel-protection-bypass') ===
-    process.env.VERCEL_AUTOMATION_BYPASS_SECRET
-  )
+    process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+
+  if (!hasBypassToken) {
+    const originCheck = checkSameOrigin(request);
+    if (originCheck) return originCheck;
+  }
+
+  if (pathname.startsWith('/admin') || pathname.startsWith('/api/admin')) {
+    if (vercelEnv === 'production') {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
     return NextResponse.next();
+  }
+
+  if (hasBypassToken) return NextResponse.next();
 
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous';
 
