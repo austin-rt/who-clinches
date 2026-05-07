@@ -92,6 +92,7 @@ const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProp
 
   return (
     <Button
+      data-testid="simulate-button"
       size="md"
       color="primary"
       onClick={handleSimulate}

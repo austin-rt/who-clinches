@@ -60,8 +60,10 @@ const ConferencePage = () => {
     return (
       <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-bold text-error">Conference Not Found</h1>
-          <p className="text-base-content/70 text-lg">
+          <h1 data-testid="error-heading" className="text-4xl font-bold text-error">
+            Conference Not Found
+          </h1>
+          <p data-testid="error-message" className="text-base-content/70 text-lg">
             {!isValidSport(sportParam)
               ? `The sport &quot;${sportParam}&quot; is not supported.`
               : `The conference &quot;${confParam}&quot; for sport &quot;${sportParam}&quot; is not supported.`}
@@ -79,8 +81,10 @@ const ConferencePage = () => {
     return (
       <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <div className="flex flex-col gap-2">
-          <h1 className="text-4xl font-bold text-error">Conference Not Found</h1>
-          <p className="text-base-content/70 text-lg">
+          <h1 data-testid="error-heading" className="text-4xl font-bold text-error">
+            Conference Not Found
+          </h1>
+          <p data-testid="error-message" className="text-base-content/70 text-lg">
             The conference &quot;{confParam}&quot; for sport &quot;{sportParam}&quot; is not
             supported.
           </p>
@@ -93,7 +97,9 @@ const ConferencePage = () => {
     <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-2xl font-bold transition-colors">{conferenceName} Championship</h1>
+          <h1 data-testid="conference-heading" className="text-2xl font-bold transition-colors">
+            {conferenceName} Championship
+          </h1>
           <p className="text-base-content/70 text-sm">
             Predict outcomes to see who clinches the {conferenceName} title bids
           </p>

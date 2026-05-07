@@ -90,10 +90,14 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
   };
 
   return (
-    <div className="mx-auto flex w-fit flex-col items-center gap-3 rounded-lg bg-base-300 px-6 py-4">
+    <div
+      data-testid="share-section"
+      className="mx-auto flex w-fit flex-col items-center gap-3 rounded-lg bg-base-300 px-6 py-4"
+    >
       <div className="text-sm font-semibold">Share Your Results</div>
       <div className="flex items-center gap-1 rounded-lg bg-base-200 px-2">
         <input
+          data-testid="share-url-input"
           type="text"
           readOnly
           value={shareUrl}

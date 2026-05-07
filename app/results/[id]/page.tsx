@@ -135,18 +135,24 @@ const ResultsPage = async ({ params }: Props) => {
     <div className="container mx-auto flex min-h-full flex-col gap-6 px-4 py-8">
       <div className="flex items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-2xl font-bold">
+          <h1 data-testid="results-heading" className="text-2xl font-bold">
             {snapshot.conf.toUpperCase()} {snapshot.season} Simulation
           </h1>
         </div>
         <div className="hidden sm:flex sm:justify-end">
-          <LinkButton.Stroked href={`/cfb/${snapshot.conf}`} target="_blank" size="md">
+          <LinkButton.Stroked
+            data-testid="results-try-it-link"
+            href={`/cfb/${snapshot.conf}`}
+            target="_blank"
+            size="md"
+          >
             Try it yourself
           </LinkButton.Stroked>
         </div>
       </div>
       <div className="flex w-full sm:hidden">
         <LinkButton.Stroked
+          data-testid="results-try-it-link"
           href={`/cfb/${snapshot.conf}`}
           target="_blank"
           size="md"
@@ -158,7 +164,10 @@ const ResultsPage = async ({ params }: Props) => {
 
       {team1 && team2 && <ChampionshipMatchup team1={team1} team2={team2} />}
 
-      <div className="collapse collapse-arrow bg-base-200 shadow-md">
+      <div
+        data-testid="results-standings"
+        className="collapse collapse-arrow bg-base-200 shadow-md"
+      >
         <input type="checkbox" defaultChecked />
         <div className="collapse-title w-full justify-center text-base font-semibold">
           Simulated Standings
@@ -168,7 +177,7 @@ const ResultsPage = async ({ params }: Props) => {
         </div>
       </div>
 
-      <div className="collapse collapse-arrow bg-base-300">
+      <div data-testid="results-games" className="collapse collapse-arrow bg-base-300">
         <input type="checkbox" defaultChecked />
         <div className="collapse-title min-h-0 py-2 text-sm font-semibold">
           Simulated Game Results

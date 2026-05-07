@@ -24,6 +24,7 @@ const ResetButton = ({ onReset, className }: ResetButtonProps) => {
 
   return (
     <Button.Stroked
+      data-testid="reset-button"
       size="md"
       color="primary"
       onClick={handleClick}

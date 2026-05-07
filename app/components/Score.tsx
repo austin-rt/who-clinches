@@ -94,7 +94,7 @@ const Score = ({ game }: ScoreProps) => {
 
   return (
     <div className="flex items-center justify-center gap-x-2">
-      <div className="flex h-10 items-center">
+      <div data-testid="score-input-away" className="flex h-10 items-center">
         <ScoreInput
           value={awayScore}
           onChange={(value) => handleScoreChange('away', value)}
@@ -106,7 +106,7 @@ const Score = ({ game }: ScoreProps) => {
       <div className="flex h-10 items-center">
         <div className="text-base-content/40 shrink-0 text-sm leading-none">-</div>
       </div>
-      <div className="flex h-10 items-center">
+      <div data-testid="score-input-home" className="flex h-10 items-center">
         <ScoreInput
           value={homeScore}
           onChange={(value) => handleScoreChange('home', value)}

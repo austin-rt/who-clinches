@@ -35,7 +35,10 @@ const Standings = forwardRef<HTMLDivElement, StandingsProps>(({ simulateResponse
       } shadow-md`}
     >
       <input type="checkbox" checked={isOpen} onChange={(e) => handleToggle(e.target.checked)} />
-      <div className="collapse-title w-full justify-center text-base font-semibold">
+      <div
+        data-testid="standings-title"
+        className="collapse-title w-full justify-center text-base font-semibold"
+      >
         {isSimulated ? 'Simulated Standings' : 'Current Standings'}
       </div>
       <div className="collapse-content">
