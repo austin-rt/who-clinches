@@ -121,7 +121,6 @@ Fill in your API keys:
 | `RESEND_FROM_EMAIL`        | [Resend](https://resend.com/)           | Verified sender address.                                                                    |
 | `CFBD_ALERT_WEBHOOK_URL`   | —                                       | Webhook URL for low API call alerts.                                                        |
 | `CFBD_ALERT_EMAIL`         | —                                       | Email address for low API call alerts.                                                      |
-| `FIXTURE_YEAR`             | —                                       | Use local fixture data instead of live CFBD API (e.g., `2025`).                             |
 
 ### 3. Set up the database
 
