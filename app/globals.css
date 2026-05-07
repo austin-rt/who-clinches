@@ -26,8 +26,6 @@ html:not([data-mode]) {
   --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
   --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
   --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
-  --color-winner: #00875a; /* Success green for winner */
-  --color-loser: #de350b; /* Error red for loser */
 }
 
 html[data-mode='dark'] {

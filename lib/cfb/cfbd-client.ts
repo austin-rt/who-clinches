@@ -2,8 +2,6 @@ import {
   getGamesFromCfbd,
   getTeamsFromCfbd,
   getLinesFromCfbd,
-  getCalendarFromCfbd,
-  getTeamStatsFromCfbd,
   getRankingsFromCfbd,
   getSpFromCfbd,
   getFpiFromCfbd,
@@ -11,10 +9,9 @@ import {
 } from './cfbd-rest-client';
 import { cfbdGraphQLClient } from './cfbd-graphql-client';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
-import { getFixtureYear } from './helpers/fixture-year';
 import { logError } from '../errorLogger';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
-import type { Game, BettingGame, Team, UserInfo, TeamStat, PollWeek, TeamSP, TeamFPI } from 'cfbd';
+import type { Game, BettingGame, Team, PollWeek, TeamSP, TeamFPI } from 'cfbd';
 
 const allowGraphQL = async (): Promise<boolean> => {
   if (process.env.VERCEL_ENV === 'production') {
@@ -25,10 +22,6 @@ const allowGraphQL = async (): Promise<boolean> => {
 };
 
 export class CFBDClient {
-  isInSeason(): Promise<boolean> {
-    return isInSeasonFromCfbd();
-  }
-
   async getGames(params: {
     year?: number;
     week?: number;
@@ -37,7 +30,7 @@ export class CFBDClient {
     conference?: string;
     id?: number;
   }): Promise<Array<Game & { spread?: number; overUnder?: number; favoriteId?: number }>> {
-    const inSeason = await this.isInSeason();
+    const inSeason = await isInSeasonFromCfbd();
 
     if (inSeason && (await allowGraphQL())) {
       try {
@@ -154,7 +147,7 @@ export class CFBDClient {
   }
 
   async getTeams(params?: { conference?: string; classification?: string }): Promise<Team[]> {
-    const inSeason = await this.isInSeason();
+    const inSeason = await isInSeasonFromCfbd();
 
     if (inSeason && (await allowGraphQL())) {
       try {
@@ -187,44 +180,6 @@ export class CFBDClient {
     }
 
     return getTeamsFromCfbd(params);
-  }
-
-  async getCalendar(year?: number) {
-    if (!year) {
-      year = (await getFixtureYear()) ?? new Date().getFullYear();
-    }
-    return getCalendarFromCfbd(year);
-  }
-
-  /**
-   * Get team stats for all teams or filtered by conference/team.
-   *
-   * @param params.year - Required: Season year
-   * @param params.conference - Optional: Filter by conference (e.g., 'SEC', 'B1G')
-   * @param params.team - Optional: Filter by specific team
-   * @param params.startWeek - Optional: Start week filter
-   * @param params.endWeek - Optional: End week filter
-   *
-   * @example
-   * // Get stats for ALL teams in one call
-   * const allStats = await cfbdClient.getTeamStats({ year: 2025 });
-   *
-   * @example
-   * // Get stats for one conference
-   * const secStats = await cfbdClient.getTeamStats({ year: 2025, conference: 'SEC' });
-   */
-  getTeamStats(params: {
-    year: number;
-    conference?: string;
-    team?: string;
-    startWeek?: number;
-    endWeek?: number;
-  }): Promise<TeamStat[]> {
-    return getTeamStatsFromCfbd(params);
-  }
-
-  getRemainingCalls(forceRefresh = false): Promise<UserInfo | null> {
-    return getUserInfoFromCfbd(forceRefresh);
   }
 
   /**

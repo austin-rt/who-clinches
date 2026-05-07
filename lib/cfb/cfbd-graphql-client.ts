@@ -322,13 +322,6 @@ export class CFBDGraphQLClient {
       }
     };
   }
-
-  dispose(): void {
-    if (this.wsClient) {
-      void this.wsClient.dispose();
-      this.wsClient = null;
-    }
-  }
 }
 
 export const cfbdGraphQLClient = new CFBDGraphQLClient();

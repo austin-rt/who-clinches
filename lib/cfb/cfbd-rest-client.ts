@@ -5,7 +5,6 @@ import {
   getLines,
   getCalendar,
   getUserInfo,
-  getTeamStats,
   getRankings,
   getSp,
   getFpi,
@@ -14,7 +13,6 @@ import {
   type Team,
   type CalendarWeek,
   type UserInfo,
-  type TeamStat,
   type PollWeek,
   type TeamSP,
   type TeamFPI,
@@ -253,26 +251,6 @@ export const getCalendarFromCfbd = async (year: number): Promise<CalendarWeek[]>
       year,
     },
   });
-  return result.data ?? [];
-};
-
-export const getTeamStatsFromCfbd = async (params: {
-  year: number;
-  conference?: string;
-  team?: string;
-  startWeek?: number;
-  endWeek?: number;
-}): Promise<TeamStat[]> => {
-  const result = await getTeamStats({
-    query: {
-      year: params.year,
-      ...(params.conference && { conference: params.conference }),
-      ...(params.team && { team: params.team }),
-      ...(params.startWeek !== undefined && { startWeek: params.startWeek }),
-      ...(params.endWeek !== undefined && { endWeek: params.endWeek }),
-    },
-  });
-  void getUserInfoFromCfbd();
   return result.data ?? [];
 };
 

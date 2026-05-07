@@ -72,7 +72,3 @@ export const updateRuntimeConfig = async (
   cached = { data, timestamp: Date.now() };
   return data;
 };
-
-export const invalidateConfigCache = (): void => {
-  cached = null;
-};

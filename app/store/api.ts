@@ -348,12 +348,4 @@ export type AdvancedSeasonStat = {
 export type AdvancedStatsResponse = {
   stats: AdvancedSeasonStat[];
 };
-export const {
-  useGetSeasonGameDataQuery,
-  useSimulateMutation,
-  useGetSeasonStatusQuery,
-  useGetCfbdMonitorQuery,
-  usePostCfbdAlertHandlerMutation,
-  useGetRankingsQuery,
-  useGetAdvancedStatsQuery,
-} = injectedRtkApi;
+export const { useGetSeasonGameDataQuery, useSimulateMutation } = injectedRtkApi;

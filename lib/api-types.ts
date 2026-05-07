@@ -1,10 +1,7 @@
 import { GameLean } from './types';
 
-export interface BaseError {
+export interface ApiErrorResponse {
   error: string;
-}
-
-export interface ApiErrorResponse extends BaseError {
   code: string;
 }
 
