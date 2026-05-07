@@ -12,6 +12,8 @@ import {
   SiVercel,
   SiHotjar,
   SiUpstash,
+  SiResend,
+  SiGraphql,
 } from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import { VscPulse } from 'react-icons/vsc';
@@ -26,6 +28,8 @@ const techStack: { name: string; url: string; icon: IconType }[] = [
   { name: 'Redux Toolkit', url: 'https://redux-toolkit.js.org/', icon: SiRedux },
   { name: 'Tailwind CSS', url: 'https://tailwindcss.com/docs', icon: SiTailwindcss },
   { name: 'DaisyUI', url: 'https://daisyui.com/components/', icon: SiDaisyui },
+  { name: 'GraphQL', url: 'https://graphql.org/learn/', icon: SiGraphql },
+  { name: 'Resend', url: 'https://resend.com/docs', icon: SiResend },
   { name: 'Vercel', url: 'https://vercel.com/docs', icon: SiVercel },
   { name: 'Hotjar', url: 'https://www.hotjar.com/', icon: SiHotjar },
   { name: 'LogRocket', url: 'https://logrocket.com/', icon: VscPulse },
