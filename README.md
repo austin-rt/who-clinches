@@ -148,9 +148,9 @@ The app runs at [http://localhost:3000](http://localhost:3000). This starts both
 ### Workflow
 
 1. All development happens on `develop` branch
-2. Commits auto-deploy to staging URL for testing
+2. Pushing to `develop` auto-deploys to the staging URL
 3. When ready for production: merge `develop` → `main`
-4. Production deployment happens automatically
+4. Pushing to `main` auto-deploys to production
 
 ### TypeScript Strict Mode
 
@@ -167,19 +167,22 @@ npm run dev  # Runs: concurrently "npm run json-server" "next dev"
 ### 1. Data Fetching (CFBD API → Frontend)
 
 ```
-CFBD API → reshape functions → API response → Frontend
+CFBD API → Redis cache → reshape functions → API response → Frontend
 ```
 
 **Endpoints:**
 
-- `GET /api/games/[sport]/[conf]` - Fetch games and teams from CFBD API, reshape, return data
-- `GET /api/games/[sport]/[conf]/subscribe` - GraphQL subscription for live score updates (Server-Sent Events)
-- `GET /api/stats/rankings` - Fetch CFP rankings from CFBD API
+- `GET /api/games/[sport]/[conf]` - Fetch games, teams, and ratings from CFBD API; reshape and return enriched data with pre-calculated standings
+- `GET /api/games/[sport]/[conf]/subscribe` - Server-Sent Events stream for live score updates (GraphQL, in-season only)
+- `GET /api/stats/rankings` - Fetch CFP/AP rankings from CFBD API
+- `GET /api/share/[sport]/[conf]` - Load a saved simulation snapshot for sharing
 
-**Frontend Loading Strategy:**
+**Data Source Strategy:**
 
-- Initial load fetches from CFBD API
-- Live updates use GraphQL subscriptions (when in season) or REST API polling (when out of season)
+- REST API fetches games, teams, and ratings out of season
+- GraphQL replaces REST for game data during the season (faster, includes live scores)
+- SSE subscription (`/subscribe`) streams live score updates via GraphQL during the season
+- Redis caches CFBD responses in all environments when configured (optional in dev/preview, always-on in production). TTLs revalidate on game days for fresher data
 
 ### 2. Simulation Engine
 
@@ -189,7 +192,22 @@ User overrides → tiebreaker calculation → standings display
 
 **Endpoints:**
 
-- `POST /api/simulate/[sport]/[conf]` - Simulate conference standings with optional game overrides
+- `POST /api/simulate/[sport]/[conf]` - Simulate conference standings with game overrides and client-provided data
+
+Client-side deduplication: the simulate button hashes the input (games + overrides + season) and skips the API call if inputs haven't changed since the last request.
+
+### 3. Sharing
+
+```
+Simulate → save snapshot (deduped by payload hash) → shareable URL → load snapshot
+```
+
+**Endpoints:**
+
+- `POST /api/share/[sport]/[conf]` - Save a simulation snapshot to the database (SHA-256 hash dedup — identical scenarios return the existing snapshot)
+- `GET /api/share/[sport]/[conf]?id=<id>` - Load a saved snapshot for the shared results page
+
+Snapshots are stored in the `SimulationSnapshot` table with a content-addressable hash. Sharing the same scenario twice returns the same URL.
 
 **Utility Endpoints:**
 
@@ -216,9 +234,9 @@ type ConferenceSlug = NonNullable<Conference['abbreviation']>;
 - No custom type mapping needed
 - Direct compatibility with CFBD API responses
 
-### Shared Redis Cache (Production Only)
+### Redis Cache
 
-CFBD data is cached in Upstash Redis to share data across Vercel instances and reduce cold start API calls. Redis is gated to production via `VERCEL_ENV`. Non-production environments fetch directly from the CFBD API.
+CFBD data is cached in Upstash Redis to share data across Vercel serverless functions and reduce redundant API calls. Redis is available in all environments when configured — always-on in production, toggleable via the admin panel in dev/preview. Without Redis, requests fetch directly from the CFBD API.
 
 ## Testing
 
