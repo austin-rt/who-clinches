@@ -23,3 +23,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 printf "${GREEN}✓ All tests passed${NC}\n"
+
+printf "${YELLOW}Running e2e tests...${NC}\n"
+npx playwright test
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: E2E tests failed. Push blocked.${NC}\n"
+  printf "${YELLOW}Run 'npm run test:e2e' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${GREEN}✓ E2E tests passed${NC}\n"

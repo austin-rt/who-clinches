@@ -18,6 +18,7 @@
     "test:coverage": "jest --coverage",
     "test:api": "jest __tests__/api",
     "test:reshape": "jest __tests__/lib/reshape-teams",
+    "test:e2e": "playwright test",
     "generate": "rtk-query-codegen-openapi rtk-query-codegen.config.js",
     "codegen": "rtk-query-codegen-openapi rtk-query-codegen.config.js",
     "json-server": "tsx scripts/json-server.ts",
@@ -70,6 +71,7 @@
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@rtk-query/codegen-openapi": "^2.2.0",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^16.0.0",

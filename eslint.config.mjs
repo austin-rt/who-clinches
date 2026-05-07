@@ -44,6 +44,7 @@ const eslintConfig = defineConfig([
       'scripts/**/*.ts',
       '__tests__/**/*.ts',
       '__tests__/**/*.tsx',
+      'e2e/**/*.ts',
     ],
     rules: {
       'func-style': 'off', // Allow function declarations in TypeScript scripts

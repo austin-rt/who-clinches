@@ -50,6 +50,11 @@ temp-*
 # jest server pid file
 .jest-server.pid
 
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+
 # mcp config
 .cursor/mcp.json
 .playwright-mcp-config.json
