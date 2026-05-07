@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import TechStack from './TechStack';
 
 export const metadata: Metadata = {
   title: 'Contribute - Who Clinches',
@@ -67,18 +68,6 @@ const apiKeys = [
       'Only needed for CFBD API key usage alert emails. Skip this for most contributions.',
     required: false,
   },
-];
-
-const techStack = [
-  { name: 'Next.js', url: 'https://nextjs.org/docs' },
-  { name: 'TypeScript', url: 'https://www.typescriptlang.org/docs/' },
-  { name: 'Tailwind CSS', url: 'https://tailwindcss.com/docs' },
-  { name: 'DaisyUI', url: 'https://daisyui.com/components/' },
-  { name: 'Redux Toolkit', url: 'https://redux-toolkit.js.org/' },
-  { name: 'Prisma', url: 'https://www.prisma.io/docs' },
-  { name: 'Neon (Postgres)', url: 'https://neon.tech/docs' },
-  { name: 'Upstash (Redis)', url: 'https://upstash.com/docs/redis' },
-  { name: 'Vercel', url: 'https://vercel.com/docs' },
 ];
 
 export default function ContributePage() {
@@ -183,19 +172,7 @@ export default function ContributePage() {
           Familiarity with any of these is helpful but not required — we&apos;re happy to help you
           get oriented.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {techStack.map((tech) => (
-            <a
-              key={tech.name}
-              href={tech.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full border border-stroke bg-base-100 px-3 py-1 text-xs font-medium transition-colors hover:bg-base-300"
-            >
-              {tech.name}
-            </a>
-          ))}
-        </div>
+        <TechStack />
       </div>
     </div>
   );
