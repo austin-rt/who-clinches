@@ -93,9 +93,9 @@ export default function ContributePage() {
       <div className="mt-10 space-y-6">
         {steps.map((step) => (
           <div key={step.number} className="flex gap-4">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-lg font-bold text-white">
+            <span className="mt-0.5 shrink-0 text-2xl font-bold tabular-nums text-text-secondary">
               {step.number}
-            </div>
+            </span>
             <div>
               <h3 className="text-lg font-semibold">{step.title}</h3>
               <p className="mt-1 text-sm text-text-secondary">{step.description}</p>
@@ -113,29 +113,23 @@ export default function ContributePage() {
         </p>
         <div className="mt-4 space-y-3">
           {apiKeys.map((key) => (
-            <div
-              key={key.name}
-              className="flex items-start gap-3 rounded-lg border border-stroke bg-base-100 p-4"
-            >
-              <div
-                className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${key.required ? 'bg-primary text-white' : 'bg-base-300 text-text-secondary'}`}
-              >
-                {key.required ? 'Required' : 'Optional'}
+            <div key={key.name} className="rounded-lg border border-stroke bg-base-100 p-4">
+              <div className="flex items-center gap-2">
+                <a
+                  href={key.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold underline-offset-2 hover:underline"
+                >
+                  {key.name}
+                </a>
+                {key.required ? (
+                  <span className="bg-error/10 rounded px-1.5 py-0.5 text-[10px] font-medium text-error">
+                    required
+                  </span>
+                ) : null}
               </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold">{key.name}</span>
-                  <a
-                    href={key.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-primary underline-offset-2 hover:underline dark:text-accent"
-                  >
-                    {key.service}
-                  </a>
-                </div>
-                <p className="mt-0.5 text-xs text-text-secondary">{key.description}</p>
-              </div>
+              <p className="mt-1 text-xs text-text-secondary">{key.description}</p>
             </div>
           ))}
         </div>
