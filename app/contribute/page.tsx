@@ -34,6 +34,41 @@ const steps = [
   },
 ];
 
+const apiKeys = [
+  {
+    name: 'CFBD API Key',
+    service: 'collegefootballdata.com',
+    url: 'https://collegefootballdata.com/key',
+    description:
+      'Free account — your key is on your account page. The free Patreon tier is enough for development.',
+    required: true,
+  },
+  {
+    name: 'Neon Database URLs',
+    service: 'neon.tech',
+    url: 'https://neon.tech/',
+    description:
+      'Create a free Postgres project. You need both the pooled (DATABASE_URL) and direct (DIRECT_URL) connection strings from the dashboard.',
+    required: true,
+  },
+  {
+    name: 'Upstash Redis',
+    service: 'upstash.com',
+    url: 'https://console.upstash.com/',
+    description:
+      'Free Redis database for caching and rate limiting. Without this, the app skips caching — still works fine for development.',
+    required: false,
+  },
+  {
+    name: 'Resend (Email)',
+    service: 'resend.com',
+    url: 'https://resend.com/',
+    description:
+      'Only needed for CFBD API key usage alert emails. Skip this for most contributions.',
+    required: false,
+  },
+];
+
 export default function ContributePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -55,6 +90,43 @@ export default function ContributePage() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
+        <h2 className="text-xl font-semibold">Getting Set Up</h2>
+        <p className="mt-2 text-sm text-text-secondary">
+          Copy <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.example</code> to{' '}
+          <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.local</code> and fill in
+          your API keys. Only the CFBD key and a Neon database are required to run locally.
+        </p>
+        <div className="mt-4 space-y-3">
+          {apiKeys.map((key) => (
+            <div
+              key={key.name}
+              className="flex items-start gap-3 rounded-lg border border-stroke bg-base-100 p-4"
+            >
+              <div
+                className={`mt-0.5 shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${key.required ? 'bg-primary text-white' : 'bg-base-300 text-text-secondary'}`}
+              >
+                {key.required ? 'Required' : 'Optional'}
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold">{key.name}</span>
+                  <a
+                    href={key.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary underline-offset-2 hover:underline dark:text-accent"
+                  >
+                    {key.service}
+                  </a>
+                </div>
+                <p className="mt-0.5 text-xs text-text-secondary">{key.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">

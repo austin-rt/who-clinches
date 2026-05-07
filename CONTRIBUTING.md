@@ -18,7 +18,7 @@ Thanks for your interest in contributing! This guide walks you through the proce
    ```bash
    cp .env.example .env.local
    ```
-   You'll need a [CFBD API key](https://collegefootballdata.com/) (free tier works for development).
+   Then fill in the required API keys (see [Environment Variables](#environment-variables) below).
 5. **Run database migrations:**
    ```bash
    npx prisma migrate dev
@@ -27,6 +27,31 @@ Thanks for your interest in contributing! This guide walks you through the proce
    ```bash
    npm run dev
    ```
+
+## Environment Variables
+
+Copy `.env.example` to `.env.local` and fill in the values. Here's what each service is and where to get credentials:
+
+### Required
+
+| Variable       | Service                                                       | How to get it                                                                                                                                                                                                           |
+| -------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CFBD_API_KEY` | [College Football Data API](https://collegefootballdata.com/) | Create a free account at [collegefootballdata.com](https://collegefootballdata.com/). Your API key is on your [account page](https://collegefootballdata.com/key). The free Patreon tier is sufficient for development. |
+| `DATABASE_URL` | [Neon](https://neon.tech/) (Postgres)                         | Sign up at [neon.tech](https://neon.tech/), create a project, and copy the **pooled** connection string from the dashboard. Append `?sslmode=require&pgbouncer=true`.                                                   |
+| `DIRECT_URL`   | [Neon](https://neon.tech/) (Postgres)                         | Same Neon project — copy the **direct** (unpooled) connection string. Append `?sslmode=require`. This is used by Prisma for migrations.                                                                                 |
+
+### Optional
+
+These aren't needed to run the app locally but enable additional features:
+
+| Variable                   | Service                                 | How to get it                                                                                                                                                                                 |
+| -------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UPSTASH_REDIS_REST_URL`   | [Upstash](https://upstash.com/) (Redis) | Create a free Redis database at [console.upstash.com](https://console.upstash.com/). Copy the REST URL from the database details page. Without this, the app skips caching and rate limiting. |
+| `UPSTASH_REDIS_REST_TOKEN` | [Upstash](https://upstash.com/) (Redis) | Same Upstash database — copy the REST token.                                                                                                                                                  |
+| `RESEND_API_KEY`           | [Resend](https://resend.com/) (Email)   | Only needed for CFBD API key usage alerts. Sign up at [resend.com](https://resend.com/) and create an API key.                                                                                |
+| `RESEND_FROM_EMAIL`        | [Resend](https://resend.com/) (Email)   | The verified sender email address from your Resend account.                                                                                                                                   |
+
+> **Tip:** You only need `CFBD_API_KEY` and the two Neon database URLs to get the app running. Everything else is optional for local development.
 
 ## Finding Something to Work On
 

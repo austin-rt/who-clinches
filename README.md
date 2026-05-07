@@ -80,50 +80,62 @@ sec-tiebreaker/
 └── types/                       # TypeScript type definitions
 ```
 
-## Getting Started
+## Running Locally
 
 ### Prerequisites
 
-- Node.js 18+ and npm
-- CFBD API key ([Get one here](https://collegefootballdata.com/))
+- Node.js 18+
+- npm
 
-### Installation
+### 1. Clone and install
 
 ```bash
-# Install dependencies
+git clone https://github.com/austin-rt/who-clinches.git
+cd who-clinches
 npm install
+```
 
-# Set up environment variables
-# Create .env.local file with your CFBD API key (see Environment Variables section below)
+### 2. Set up environment variables
 
-# Run development server
+```bash
+cp .env.example .env.local
+```
+
+Fill in your API keys:
+
+#### Required
+
+| Variable       | Service                                                   | Where to get it                                                                                                                                                                             |
+| -------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CFBD_API_KEY` | [College Football Data](https://collegefootballdata.com/) | Create a free account, grab your key from your [account page](https://collegefootballdata.com/key). Free Patreon tier works for dev. Comma-separate multiple keys for rotation in non-prod. |
+| `DATABASE_URL` | [Neon](https://neon.tech/)                                | Create a free Postgres project. Copy the **pooled** connection string and append `?sslmode=require&pgbouncer=true`.                                                                         |
+| `DIRECT_URL`   | [Neon](https://neon.tech/)                                | Same project — copy the **direct** (unpooled) connection string, append `?sslmode=require`. Used by Prisma for migrations.                                                                  |
+
+#### Optional
+
+| Variable                   | Service                                 | Purpose                                                                                     |
+| -------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `UPSTASH_REDIS_REST_URL`   | [Upstash](https://console.upstash.com/) | Redis cache and rate limiting. Without it the app skips caching — still works fine for dev. |
+| `UPSTASH_REDIS_REST_TOKEN` | [Upstash](https://console.upstash.com/) | Same Upstash database.                                                                      |
+| `RESEND_API_KEY`           | [Resend](https://resend.com/)           | Email alerts for low CFBD API usage.                                                        |
+| `RESEND_FROM_EMAIL`        | [Resend](https://resend.com/)           | Verified sender address.                                                                    |
+| `CFBD_ALERT_WEBHOOK_URL`   | —                                       | Webhook URL for low API call alerts.                                                        |
+| `CFBD_ALERT_EMAIL`         | —                                       | Email address for low API call alerts.                                                      |
+| `FIXTURE_YEAR`             | —                                       | Use local fixture data instead of live CFBD API (e.g., `2025`).                             |
+
+### 3. Set up the database
+
+```bash
+npx prisma migrate dev
+```
+
+### 4. Start the dev server
+
+```bash
 npm run dev
 ```
 
-The application will be available at [http://localhost:3000](http://localhost:3000)
-
-### Environment Variables
-
-```bash
-CFBD_API_KEY=your_key             # Comma-separated for multiple preprod keys (rotation); single value for production
-UPSTASH_REDIS_REST_URL=your_url   # Upstash Redis REST URL (production only)
-UPSTASH_REDIS_REST_TOKEN=your_tok # Upstash Redis REST token (production only)
-```
-
-**API Rate Limits:**
-- Free tier: 1,000 calls/month (sufficient for development)
-- Tier 2: $1/month (recommended for normal use)
-- Tier 3+: Higher limits for in-season usage
-
-**Optional Environment Variables:**
-
-- `CFBD_ALERT_WEBHOOK_URL` - Webhook URL for low API call alerts (optional)
-- `CFBD_ALERT_HANDLER_URL` - Alternative alert handler URL (auto-detected from VERCEL_URL if not set)
-- `CFBD_ALERT_EMAIL` - Email address for low API call alerts (optional)
-- `RESEND_API_KEY` - Resend API key for email alerts (optional)
-- `RESEND_FROM_EMAIL` - From email address for alerts (optional)
-- `VERCEL_AUTOMATION_BYPASS_SECRET` - Bypass token for protected Vercel deployments (optional)
-- `FIXTURE_YEAR` - Set to a year (e.g. '2025') to use local fixture data instead of CFBD API (development/testing)
+The app runs at [http://localhost:3000](http://localhost:3000). This starts both Next.js and a local JSON server for fixture data.
 
 ## Development Workflow
 
