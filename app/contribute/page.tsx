@@ -47,7 +47,7 @@ const apiKeys = [
   {
     name: 'Neon Database URLs',
     service: 'neon.tech',
-    url: 'https://neon.tech/',
+    url: 'https://console.neon.tech/',
     description:
       'Create a free Postgres project. You need both the pooled (DATABASE_URL) and direct (DIRECT_URL) connection strings from the dashboard.',
     required: true,
@@ -63,7 +63,7 @@ const apiKeys = [
   {
     name: 'Resend (Email)',
     service: 'resend.com',
-    url: 'https://resend.com/',
+    url: 'https://resend.com/api-keys',
     description:
       'Only needed for CFBD API key usage alert emails. Skip this for most contributions.',
     required: false,
@@ -102,16 +102,15 @@ export default function ContributePage() {
         </p>
         <div className="mt-4 space-y-3">
           {apiKeys.map((key) => (
-            <div key={key.name} className="rounded-lg border border-stroke bg-base-100 p-4">
+            <a
+              key={key.name}
+              href={key.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block rounded-lg border border-stroke bg-base-100 p-4 transition-colors hover:bg-base-300"
+            >
               <div className="flex items-center gap-2">
-                <a
-                  href={key.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold underline-offset-2 hover:underline"
-                >
-                  {key.name}
-                </a>
+                <span className="font-semibold">{key.name}</span>
                 {key.required ? (
                   <span className="bg-error/10 rounded px-1.5 py-0.5 text-[10px] font-medium text-error">
                     required
@@ -119,7 +118,7 @@ export default function ContributePage() {
                 ) : null}
               </div>
               <p className="mt-1 text-xs text-text-secondary">{key.description}</p>
-            </div>
+            </a>
           ))}
         </div>
       </div>
@@ -167,7 +166,7 @@ export default function ContributePage() {
       </div>
 
       <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
-        <h2 className="text-xl font-semibold">Tech Stack</h2>
+        <h2 className="text-xl font-semibold">Relevant Docs</h2>
         <p className="mt-2 text-sm text-text-secondary">
           Familiarity with any of these is helpful but not required — we&apos;re happy to help you
           get oriented.
