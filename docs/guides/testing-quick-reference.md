@@ -36,18 +36,19 @@ npm run test:all
 **Usage:**
 
 - Bypass token (`VERCEL_AUTOMATION_BYPASS_SECRET`) auto-handled by Jest tests
-- Manual curl requires explicit bypass token (see comprehensive-api-testing.md)
+- Manual curl requires explicit bypass token (see Preview Deployment Testing section below)
 - All tests use mocks - no external API calls or database required
 
 ---
 
 ## Test Structure
 
-- `__tests__/api/cfb/` - API endpoint tests (simulate, predicted scores)
-- `__tests__/api/cfb/sec/tiebreaker-rules/` - Tiebreaker rule tests (rule-a through rule-e, integration tests including async rules)
-- `__tests__/lib/` - Unit tests (reshape-games, reshape-teams-from-cfbd) using mocks
-- `__tests__/setup.ts` - Test helpers (fetchAPI)
-- `__tests__/mocks/` - Mock data for CFBD API responses (including SP+ and FPI mocks)
+- `__tests__/api/cfb/` - API endpoint tests (predicted scores)
+- `__tests__/api/cfb/sec/tiebreaker-rules/` - SEC-specific rule tests (rule-e scoring margin, integration tests)
+- `__tests__/api/cfb/tiebreaker-rules/common/` - Common tiebreaker rule tests (rules A-E, divisional, overall win pct, total wins)
+- `__tests__/lib/cfb/helpers/` - Helper unit tests (default season, preprod key rotation)
+- `__tests__/setup.ts` - Test setup (dotenv, BASE_URL)
+- `__tests__/mocks/` - Mock data for CFBD API responses (cfbd-rest-client mock)
 
 ---
 
@@ -118,5 +119,5 @@ curl -s "https://preview.whoclinches.com/api/simulate/cfb/sec?x-vercel-protectio
   -X POST \
   -H "Content-Type: application/json" \
   -H "Origin: https://preview.whoclinches.com" \
-  -d '{"overrides":{},"season":2026}'
+  -d '{"season":2026,"games":[],"teams":[],"overrides":{}}'
 ```

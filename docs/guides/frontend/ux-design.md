@@ -3,6 +3,7 @@
 User experience design decisions and interaction patterns.
 
 **Related Documentation:**
+
 - [Frontend Index](./index.md) - Frontend documentation overview
 - [View Modes](./view-modes.md) - Picks and Scores modes
 - [Components](./components.md) - Component implementations
@@ -52,5 +53,4 @@ User experience design decisions and interaction patterns.
 
 ---
 
-**Last Updated**: November 2025
-
+**Last Updated**: May 2026

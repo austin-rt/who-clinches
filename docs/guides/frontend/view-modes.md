@@ -44,4 +44,4 @@ Both modes expose a `WeekResetButton` (`app/components/WeekResetButton.tsx`) on 
 
 ---
 
-**Last Updated**: November 2025
+**Last Updated**: May 2026

@@ -62,6 +62,13 @@ Domain-specific content locations for common tasks.
 - **Components**: `app/components/`
 - **Store**: `app/store/`
 
+## CI & Branch Protection
+
+- **CI workflow**: `.github/workflows/ci.yml` (typecheck + tests on push/PR to main/develop)
+- **Branch enforcement**: `.github/workflows/enforce-branch.yml` (PRs to main must come from develop)
+- **Branch ruleset**: GitHub ruleset "Restrict main pushes" — requires PR for non-owner pushes, `check-source` required status check
+- **Contributing guide**: `CONTRIBUTING.md`, `/contribute` page (`app/contribute/page.tsx`)
+
 ## Project Setup
 
 - **AI guide**: `docs/ai-guide.md`
@@ -95,30 +102,16 @@ npm run flush:cache           # Flush both Redis (dev) and Next.js cache
 npm run build                 # prisma generate && next build
 ```
 
-## File Locations
+## Additional File Locations
 
-| Need                               | Location                                                                                                                                                                       |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| API endpoints                      | `app/api/`                                                                                                                                                                     |
-| Redis cache primitive              | `lib/redis.ts`                                                                                                                                                                 |
-| CFBD cached data access            | `lib/cfb/cfbd-cached.ts`                                                                                                                                                       |
-| CFBD REST client                   | `lib/cfb/cfbd-rest-client.ts`                                                                                                                                                  |
-| CFBD GraphQL client                | `lib/cfb/cfbd-graphql-client.ts`                                                                                                                                               |
-| CFBD unified client                | `lib/cfb/cfbd-client.ts`                                                                                                                                                       |
-| Rate limiting                      | `middleware.ts`                                                                                                                                                                |
-| Admin dashboard                    | `app/admin/page.tsx`, `lib/admin/runtime-config.ts`, `app/api/admin/`                                                                                                          |
-| Tiebreaker logic                   | Modular system: `lib/cfb/tiebreaker-rules/common/` (common rules), `lib/cfb/tiebreaker-rules/core/` (engine), `lib/cfb/tiebreaker-rules/{conf}/config.ts` (conference configs) |
-| Tiebreaker rules (source of truth) | `docs/tiebreaker-rules/*.txt`                                                                                                                                                  |
-| Constants                          | `lib/constants.ts` (sports and conference configuration)                                                                                                                       |
-| Reshape games                      | `lib/reshape-games.ts`                                                                                                                                                         |
-| Reshape teams from CFBD            | `lib/reshape-teams-from-cfbd.ts`                                                                                                                                               |
-| Prefill helpers                    | `lib/cfb/helpers/prefill-helpers.ts`                                                                                                                                           |
-| Season check                       | `lib/cfb/helpers/season-check-cfbd.ts`                                                                                                                                         |
-| Types                              | `lib/types.ts`, `lib/api-types.ts`                                                                                                                                             |
-| Database client                    | `lib/db/client.ts`                                                                                                                                                             |
-| Prisma schema                      | `prisma/schema.prisma`                                                                                                                                                         |
-| Share API                          | `app/api/share/[sport]/[conf]/route.ts`                                                                                                                                        |
-| Results page                       | `app/results/[id]/page.tsx`                                                                                                                                                    |
-| OG image generation                | `app/results/[id]/opengraph-image.tsx`                                                                                                                                         |
-| Tests                              | `__tests__/`                                                                                                                                                                   |
-| Frontend data loading              | `app/hooks/useGamesData.ts`                                                                                                                                                    |
+| Need                | Location                                                           |
+| ------------------- | ------------------------------------------------------------------ |
+| Constants           | `lib/constants.ts` (sports and conference configuration)           |
+| Prefill helpers     | `lib/cfb/helpers/prefill-helpers.ts`                               |
+| Season check        | `lib/cfb/helpers/season-check-cfbd.ts`                             |
+| Share API           | `app/api/share/[sport]/[conf]/route.ts`                            |
+| Results page        | `app/results/[id]/page.tsx`                                        |
+| OG image generation | `app/results/[id]/opengraph-image.tsx`                             |
+| Frontend data hook  | `app/hooks/useGamesData.ts`                                        |
+| Contribute page     | `app/contribute/page.tsx`                                          |
+| CI workflows        | `.github/workflows/ci.yml`, `.github/workflows/enforce-branch.yml` |

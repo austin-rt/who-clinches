@@ -53,8 +53,8 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | Variable                          | Required           | Description                                                                                         |
 | --------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------- |
 | `CFBD_API_KEY`                    | Yes                | Comma-separated keys in one value for preprod rotation (e.g. `k1,k2`). Production: one segment only |
-| `UPSTASH_REDIS_REST_URL`          | Yes (prod)         | Upstash Redis REST URL (production only)                                                            |
-| `UPSTASH_REDIS_REST_TOKEN`        | Yes (prod)         | Upstash Redis REST token (production only)                                                          |
+| `UPSTASH_REDIS_REST_URL`          | No                 | Upstash Redis REST URL (all envs when configured; always-on in production)                          |
+| `UPSTASH_REDIS_REST_TOKEN`        | No                 | Upstash Redis REST token (all envs when configured; always-on in production)                        |
 | `CFBD_ALERT_WEBHOOK_URL`          | No                 | Webhook URL for low API call alerts                                                                 |
 | `CFBD_ALERT_HANDLER_URL`          | No                 | Alternative alert handler URL (auto-detected from VERCEL_URL if not set)                            |
 | `CFBD_ALERT_EMAIL`                | No                 | Email address for low API call alerts (required if using email alerts)                              |
@@ -63,7 +63,7 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | `DATABASE_URL`                    | Yes (prod/preview) | PostgreSQL connection string (Neon pooled URL) for Prisma                                           |
 | `DIRECT_URL`                      | Yes (prod/preview) | PostgreSQL direct connection string (Neon non-pooled URL) for Prisma migrations                     |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Bypass token for Vercel Authentication (preview) and rate limit bypass                              |
-| `FIXTURE_YEAR`                    | No                 | Set to a year (e.g. '2025') to use local fixture data instead of CFBD API (development/testing)     |
+| `FIXTURE_YEAR`                    | No                 | Legacy sync fallback for fixture data. Prefer the admin dashboard toggle (`/admin`) in dev/preview  |
 
 ---
 

@@ -97,6 +97,12 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 - **Preview/Stage**: https://preview.whoclinches.com (develop branch, `VERCEL_ENV=preview`, behind Vercel Authentication — bypass with `x-vercel-protection-bypass: $VERCEL_AUTOMATION_BYPASS_SECRET` header)
 - **Local**: http://localhost:3000 (`VERCEL_ENV` undefined)
 
+## CI & Branch Protection
+
+- **GitHub Actions CI** (`.github/workflows/ci.yml`): Runs `tsc --noEmit` and `npm test` on push to `main`/`develop` and on PRs targeting those branches
+- **Branch Ruleset**: PRs to `main` must come from `develop` (enforced via `.github/workflows/enforce-branch.yml` + required status check). Repository owner bypasses the PR requirement for direct pushes.
+- **Contribute Page**: `/contribute` route with setup guide, API key links, tech stack, and GitHub quick links. `CONTRIBUTING.md` has full workflow details.
+
 ## Constraints
 
 - **Vercel Timeouts**: 60s Pro, 10s Hobby

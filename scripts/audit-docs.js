@@ -204,9 +204,9 @@ function reportTier1Load() {
   const totalLinesStr = totalLines.toString().padStart(4);
   const totalTokensStr = totalTokensEst.toString().padStart(5);
   console.log(`\n  ${totalLabel} ${totalLinesStr} lines, ~${totalTokensStr} tokens`);
-  console.log(`\n  Note: ai-loading-manifest.md estimates ~7.4K tokens`);
+  console.log(`\n  Note: ai-loading-manifest.md estimates ~6.5K tokens`);
   console.log(
-    `  Status: ${totalTokensEst <= 7400 ? '✅ Within expected range' : '⚠️  Exceeds estimate'}`
+    `  Status: ${totalTokensEst <= 7000 ? '✅ Within expected range' : '⚠️  Exceeds estimate'}`
   );
 
   return { totalLines, totalTokensEst };

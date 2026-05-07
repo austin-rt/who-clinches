@@ -3,6 +3,7 @@
 Complete documentation of frontend architecture, component patterns, state management, and UX design decisions.
 
 **Related Documentation:**
+
 - [API Reference](../api-reference.md) - Backend API endpoints
 - [AI Guide](../../ai-guide.md) - Development patterns and principles
 
@@ -21,5 +22,4 @@ Complete documentation of frontend architecture, component patterns, state manag
 
 ---
 
-**Last Updated**: November 2025
-
+**Last Updated**: May 2026
