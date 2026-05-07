@@ -1,20 +1,13 @@
 import { attachSorToTeams } from '@/lib/cfb/helpers/attach-sor';
 import { TeamLean } from '@/lib/types';
 import type { TeamFPI } from 'cfbd';
+import { createTeamLean } from '../../../api/cfb/tiebreaker-rules/common/test-helpers';
 
 const makeTeam = (overrides: Partial<TeamLean> = {}): TeamLean => ({
-  _id: '1',
+  ...createTeamLean({ teamId: '1', abbrev: 'ALA', conferenceId: 'SEC' }),
   name: 'Alabama',
   displayName: 'Alabama Crimson Tide',
   shortDisplayName: 'Alabama',
-  abbreviation: 'ALA',
-  logo: '',
-  color: '000000',
-  alternateColor: 'ffffff',
-  conferenceId: 'SEC',
-  division: null,
-  record: { overall: '0-0', conference: '0-0', home: '0-0', away: '0-0', stats: {} },
-  conferenceStanding: '',
   ...overrides,
 });
 

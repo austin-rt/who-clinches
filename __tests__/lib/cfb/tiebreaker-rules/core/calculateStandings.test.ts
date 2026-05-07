@@ -1,27 +1,14 @@
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { CFBConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
-import { createGameLean } from '../../../../api/cfb/tiebreaker-rules/common/test-helpers';
-import { TeamLean, GameLean } from '@/lib/types';
+import {
+  createGameLean,
+  createTeamLean,
+} from '../../../../api/cfb/tiebreaker-rules/common/test-helpers';
+import { GameLean } from '@/lib/types';
 
 jest.mock('@/lib/errorLogger', () => ({
   logError: jest.fn(),
 }));
-
-const makeTeamLean = (id: string, abbrev: string): TeamLean => ({
-  _id: id,
-  name: abbrev,
-  displayName: abbrev,
-  shortDisplayName: abbrev,
-  abbreviation: abbrev,
-  logo: `${abbrev}.png`,
-  color: '000000',
-  alternateColor: 'ffffff',
-  conferenceId: 'TEST',
-  division: null,
-  record: { overall: '0-0', conference: '0-0', home: '0-0', away: '0-0', stats: {} },
-  conferenceStanding: '',
-  nationalRank: null,
-});
 
 const makeH2HConfig = (): CFBConferenceTiebreakerConfig => ({
   rules: [
@@ -68,7 +55,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      makeTeamLean(id, id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU')
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
     );
     const config = makeH2HConfig();
 
@@ -87,7 +74,9 @@ describe('calculateStandings', () => {
         away: { teamId: 'B', score: 14, abbrev: 'UA' },
       }),
     ];
-    const teams = ['A', 'B'].map((id) => makeTeamLean(id, id === 'A' ? 'ALA' : 'UA'));
+    const teams = ['A', 'B'].map((id) =>
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : 'UA' })
+    );
     const config = makeH2HConfig();
     const applySpy = jest.spyOn(config.rules[0], 'apply');
 
@@ -104,7 +93,9 @@ describe('calculateStandings', () => {
         away: { teamId: 'B', score: 14, abbrev: 'UA' },
       }),
     ];
-    const teams = ['A', 'B'].map((id) => makeTeamLean(id, id === 'A' ? 'ALA' : 'UA'));
+    const teams = ['A', 'B'].map((id) =>
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : 'UA' })
+    );
 
     const { standings } = await calculateStandings(games, ['A', 'B'], makeH2HConfig(), teams);
     expect(standings[0].explainPosition).toBe('Undefeated in conference play.');
@@ -118,7 +109,9 @@ describe('calculateStandings', () => {
         away: { teamId: 'B', score: 14, abbrev: 'UA' },
       }),
     ];
-    const teams = ['A', 'B'].map((id) => makeTeamLean(id, id === 'A' ? 'ALA' : 'UA'));
+    const teams = ['A', 'B'].map((id) =>
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : 'UA' })
+    );
 
     const { standings } = await calculateStandings(games, ['A', 'B'], makeH2HConfig(), teams);
     expect(standings[1].explainPosition).toBe('Winless in conference play.');
@@ -143,7 +136,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      makeTeamLean(id, id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU')
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
     );
 
     const { standings } = await calculateStandings(games, ['A', 'B', 'C'], makeH2HConfig(), teams);
@@ -169,7 +162,11 @@ describe('calculateStandings', () => {
       }),
     ];
     const config = makeH2HConfig();
-    const teams = [makeTeamLean('A', 'ALA'), makeTeamLean('B', 'UA'), makeTeamLean('C', 'LSU')];
+    const teams = [
+      createTeamLean({ teamId: 'A', abbrev: 'ALA' }),
+      createTeamLean({ teamId: 'B', abbrev: 'UA' }),
+      createTeamLean({ teamId: 'C', abbrev: 'LSU' }),
+    ];
 
     const { standings } = await calculateStandings(games, ['A', 'B', 'C'], config, teams);
     const tiedStandings = standings.filter(
@@ -211,7 +208,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      makeTeamLean(id, id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU')
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
     );
 
     const { standings } = await calculateStandings(games, ['A', 'B', 'C'], config, teams);
@@ -228,7 +225,10 @@ describe('calculateStandings', () => {
         away: { teamId: 'B', score: 14, abbrev: 'UA' },
       }),
     ];
-    const teams = [makeTeamLean('A', 'ALA'), makeTeamLean('B', 'UA')];
+    const teams = [
+      createTeamLean({ teamId: 'A', abbrev: 'ALA' }),
+      createTeamLean({ teamId: 'B', abbrev: 'UA' }),
+    ];
     teams[0].nationalRank = 5;
 
     const { standings } = await calculateStandings(games, ['A', 'B'], makeH2HConfig(), teams);
@@ -261,7 +261,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      makeTeamLean(id, id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU')
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
     );
 
     const { tieFlowGraphs } = await calculateStandings(
@@ -285,7 +285,9 @@ describe('calculateStandings', () => {
         away: { teamId: 'B', score: 14, abbrev: 'UA' },
       }),
     ];
-    const teams = ['A', 'B'].map((id) => makeTeamLean(id, id === 'A' ? 'ALA' : 'UA'));
+    const teams = ['A', 'B'].map((id) =>
+      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : 'UA' })
+    );
 
     const { tieFlowGraphs } = await calculateStandings(games, ['A', 'B'], makeH2HConfig(), teams);
     expect(tieFlowGraphs).toHaveLength(0);

@@ -1,4 +1,54 @@
-import { GameLean } from '@/lib/types';
+import { GameLean, TeamLean } from '@/lib/types';
+import { CFBConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
+import { breakTie } from '@/lib/cfb/tiebreaker-rules/core/breakTie';
+
+interface TeamForTiebreaker {
+  teamId: string;
+  abbrev: string;
+  conferenceId?: string;
+  division?: string | null;
+  nationalRank?: number | null;
+  spPlusRating?: number | null;
+  sor?: number | null;
+}
+
+export const createTeamLean = (team: TeamForTiebreaker): TeamLean => ({
+  _id: team.teamId,
+  name: team.abbrev,
+  displayName: team.abbrev,
+  shortDisplayName: team.abbrev,
+  abbreviation: team.abbrev,
+  logo: '',
+  color: '000000',
+  alternateColor: 'ffffff',
+  conferenceId: team.conferenceId ?? 'TEST',
+  division: team.division ?? null,
+  record: { overall: '0-0', conference: '0-0', home: '0-0', away: '0-0', stats: {} },
+  conferenceStanding: '',
+  nationalRank: team.nationalRank ?? null,
+  spPlusRating: team.spPlusRating ?? null,
+  sor: team.sor ?? null,
+});
+
+export const runTiebreaker = async (args: {
+  tiedTeams: string[];
+  games: GameLean[];
+  allTeams: string[];
+  config: CFBConferenceTiebreakerConfig;
+  teams?: TeamLean[];
+}) => {
+  const explanations = new Map<string, string[]>();
+  const { ranked, steps } = await breakTie(
+    args.tiedTeams,
+    args.games,
+    args.allTeams,
+    args.config,
+    explanations,
+    false,
+    args.teams ?? []
+  );
+  return { ranked, steps, explanations };
+};
 
 interface GameForTiebreaker {
   gameId: string;

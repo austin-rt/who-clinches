@@ -1,5 +1,5 @@
 import { applyRuleESecScoringMargin } from '@/lib/cfb/tiebreaker-rules/sec/rule-e-sec-scoring-margin';
-import { createGameLean } from './test-helpers';
+import { createGameLean } from '../../tiebreaker-rules/common/test-helpers';
 
 describe('Who Clinches - SEC Tiebreaker Rules - Rule E: Capped Relative Total Scoring Margin', () => {
   describe('Two-Team Tie for Second Place', () => {
