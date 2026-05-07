@@ -4,3 +4,4 @@ reviews:
     enabled: true
     base_branches:
       - develop
+  review_status: false
