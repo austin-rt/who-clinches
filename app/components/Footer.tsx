@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import BuyMeACoffeeButton from './BuyMeACoffeeButton';
 
 const Footer = () => {
@@ -10,7 +11,16 @@ const Footer = () => {
       <div className="container mx-auto">
         <div className="flex flex-col items-center gap-4">
           <BuyMeACoffeeButton />
-          <p className="text-sm">© {currentYear} Who Clinches</p>
+          <div className="flex items-center gap-3 text-sm">
+            <p>© {currentYear} Who Clinches</p>
+            <span className="text-text-secondary">·</span>
+            <Link
+              href="/contribute"
+              className="text-text-secondary transition-colors hover:text-base-content"
+            >
+              Contribute
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
