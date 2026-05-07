@@ -94,7 +94,7 @@ export default function ContributePage() {
       </div>
 
       <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
-        <h2 className="text-xl font-semibold">Getting Set Up</h2>
+        <h2 className="text-xl font-semibold">Getting Started</h2>
         <p className="mt-2 text-sm text-text-secondary">
           Copy <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.example</code> to{' '}
           <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.local</code> and fill in
