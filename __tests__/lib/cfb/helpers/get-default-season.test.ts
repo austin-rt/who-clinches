@@ -78,4 +78,42 @@ describe('getDefaultSeasonFromCfbd', () => {
 
     expect(result).toBe(previousYear);
   });
+
+  describe('fixture year branch', () => {
+    const originalNodeEnv = process.env.NODE_ENV;
+    const mockGetFixtureYear = jest.mocked(
+      jest.requireMock<typeof import('@/lib/cfb/helpers/fixture-year')>(
+        '@/lib/cfb/helpers/fixture-year'
+      ).getFixtureYear
+    );
+
+    const setNodeEnv = (value: string) => {
+      Object.defineProperty(process.env, 'NODE_ENV', { value, writable: true, configurable: true });
+    };
+
+    afterEach(() => {
+      setNodeEnv(originalNodeEnv!);
+    });
+
+    it('returns fixture year when set in development', async () => {
+      setNodeEnv('development');
+      mockGetFixtureYear.mockResolvedValue(2024);
+
+      const result = await getDefaultSeasonFromCfbd();
+
+      expect(result).toBe(2024);
+      expect(mockGetCalendar).not.toHaveBeenCalled();
+    });
+
+    it('ignores fixture year in non-development environments', async () => {
+      setNodeEnv('production');
+      mockGetFixtureYear.mockResolvedValue(2024);
+      mockGetCalendar.mockResolvedValue([createMockCalendarWeek({ season: 2025, week: 1 })]);
+
+      const result = await getDefaultSeasonFromCfbd();
+
+      expect(result).not.toBe(2024);
+      expect(mockGetCalendar).toHaveBeenCalled();
+    });
+  });
 });
