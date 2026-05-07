@@ -63,7 +63,6 @@ Complete reference for all Conference Tiebreaker API endpoints.
 | `DATABASE_URL`                    | Yes (prod/preview) | PostgreSQL connection string (Neon pooled URL) for Prisma                                           |
 | `DIRECT_URL`                      | Yes (prod/preview) | PostgreSQL direct connection string (Neon non-pooled URL) for Prisma migrations                     |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Bypass token for Vercel Authentication (preview) and rate limit bypass                              |
-| `FIXTURE_YEAR`                    | No                 | Legacy sync fallback for fixture data. Prefer the admin dashboard toggle (`/admin`) in dev/preview  |
 
 ---
 
