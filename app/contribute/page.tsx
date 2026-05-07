@@ -69,6 +69,18 @@ const apiKeys = [
   },
 ];
 
+const techStack = [
+  { name: 'Next.js', url: 'https://nextjs.org/docs' },
+  { name: 'TypeScript', url: 'https://www.typescriptlang.org/docs/' },
+  { name: 'Tailwind CSS', url: 'https://tailwindcss.com/docs' },
+  { name: 'DaisyUI', url: 'https://daisyui.com/components/' },
+  { name: 'Redux Toolkit', url: 'https://redux-toolkit.js.org/' },
+  { name: 'Prisma', url: 'https://www.prisma.io/docs' },
+  { name: 'Neon (Postgres)', url: 'https://neon.tech/docs' },
+  { name: 'Upstash (Redis)', url: 'https://upstash.com/docs/redis' },
+  { name: 'Vercel', url: 'https://vercel.com/docs' },
+];
+
 export default function ContributePage() {
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
@@ -178,23 +190,16 @@ export default function ContributePage() {
           get oriented.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          {[
-            'Next.js',
-            'TypeScript',
-            'Tailwind CSS',
-            'DaisyUI',
-            'Redux Toolkit',
-            'Prisma',
-            'Neon (Postgres)',
-            'Upstash (Redis)',
-            'Vercel',
-          ].map((tech) => (
-            <span
-              key={tech}
-              className="rounded-full border border-stroke bg-base-100 px-3 py-1 text-xs font-medium"
+          {techStack.map((tech) => (
+            <a
+              key={tech.name}
+              href={tech.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-stroke bg-base-100 px-3 py-1 text-xs font-medium transition-colors hover:bg-base-300"
             >
-              {tech}
-            </span>
+              {tech.name}
+            </a>
           ))}
         </div>
       </div>

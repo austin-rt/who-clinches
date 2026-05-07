@@ -16,7 +16,7 @@ const Footer = () => {
             <span className="text-text-secondary">·</span>
             <Link
               href="/contribute"
-              className="text-text-secondary transition-colors hover:text-base-content"
+              className="text-text-secondary transition-colors hover:text-base-content dark:text-white dark:hover:text-base-content"
             >
               Contribute
             </Link>
