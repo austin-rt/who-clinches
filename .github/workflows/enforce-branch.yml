@@ -8,8 +8,10 @@ jobs:
   check-source:
     runs-on: ubuntu-latest
     steps:
-      - name: Require develop branch
-        if: github.head_ref != 'develop'
+      - name: Close PR and comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          echo "::error::PRs to main must come from develop. This PR is from '${{ github.head_ref }}'."
-          exit 1
+          gh pr close ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --comment "PRs to main are not accepted. This branch is updated via direct push from develop."
