@@ -13,7 +13,7 @@ export default defineConfig({
   webServer: {
     command: 'next build && concurrently "npm run json-server" "next start"',
     url: 'http://localhost:3000',
-    reuseExistingServer: true,
+    reuseExistingServer: false,
     timeout: 120_000,
     env: { FIXTURE_YEAR: '2025' },
   },
