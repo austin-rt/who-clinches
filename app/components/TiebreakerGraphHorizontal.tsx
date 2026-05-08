@@ -250,7 +250,7 @@ const TiebreakerGraphHorizontal = ({ tieFlowGraphs }: TiebreakerGraphHorizontalP
                         <ReactFlowProvider>
                           <FlowChartInner graph={graph} />
                         </ReactFlowProvider>
-                        <div className="absolute -right-[10.5px] -top-[2px] flex h-10 w-10 items-center justify-center rounded-full text-base-content opacity-0 transition-all group-hover:bg-base-400 group-hover:opacity-100 group-active:bg-base-400 group-active:opacity-100">
+                        <div className="absolute -right-[8.5px] top-[10px] flex h-10 w-10 items-center justify-center rounded-full text-base-content opacity-0 transition-all hover:bg-base-400 active:bg-base-400 group-hover:opacity-100">
                           <HiArrowsPointingOut size={24} />
                         </div>
                       </div>
