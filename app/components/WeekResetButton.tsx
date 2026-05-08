@@ -2,7 +2,8 @@
 
 import { cn } from '@/lib/utils';
 import { GameLean } from '@/lib/types';
-import { useAppDispatch } from '../store/hooks';
+import { isPickAtDefault } from '@/lib/utils/getDefaultPick';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearGamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 
@@ -14,6 +15,8 @@ interface WeekResetButtonProps {
 
 const WeekResetButton = ({ weekGames, onReset, className }: WeekResetButtonProps) => {
   const dispatch = useAppDispatch();
+  const picks = useAppSelector((state) => state.gamePicks.picks);
+  const hasOverrides = weekGames.some((game) => !isPickAtDefault(game, picks[game.id]));
 
   const handleClick = () => {
     const allCompleted = weekGames.every((game) => game.completed);
@@ -29,7 +32,9 @@ const WeekResetButton = ({ weekGames, onReset, className }: WeekResetButtonProps
       size="md"
       color="primary"
       onClick={handleClick}
-      className={cn('text-xs', className)}
+      aria-hidden={!hasOverrides}
+      tabIndex={hasOverrides ? 0 : -1}
+      className={cn('text-xs', className, { invisible: !hasOverrides })}
     >
       Reset Week
     </Button.Stroked>

@@ -133,13 +133,23 @@ const ConferencePage = () => {
 
       <div className="flex items-center justify-between gap-4">
         <HideCompletedButton />
-        <ResetButton onReset={handleReset} className="w-fit" />
+        <ResetButton
+          games={games}
+          hasSimulationResults={!!simulateResponse}
+          onReset={handleReset}
+          className="w-fit"
+        />
       </div>
 
       <GamesList onReset={handleReset} />
 
       <div className="flex w-full flex-row justify-center gap-4 sm:w-auto sm:justify-between">
-        <ResetButton onReset={handleReset} className="w-1/2 sm:w-fit" />
+        <ResetButton
+          games={games}
+          hasSimulationResults={!!simulateResponse}
+          onReset={handleReset}
+          className="w-1/2 sm:w-fit"
+        />
         <SimulateButton games={games} teams={teams} onSimulateComplete={handleSimulateComplete} />
       </div>
     </div>

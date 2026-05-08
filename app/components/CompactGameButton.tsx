@@ -1,10 +1,11 @@
 'use client';
 
 import { GameLean } from '@/lib/types';
+import { getDefaultSelectedTeam, calculateDefaultScores } from '@/lib/utils/getDefaultPick';
 import CompactTeamSelector from './CompactTeamSelector';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setGamePick } from '../store/gamePicksSlice';
-import { useMemo, useEffect, useCallback } from 'react';
+import { memo, useMemo, useEffect, useCallback } from 'react';
 
 interface CompactGameButtonProps {
   game: GameLean;
@@ -15,78 +16,11 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const gamePick = useAppSelector((state) => state.gamePicks.picks[game.id]);
 
   const calculateScoresForPick = useCallback(
-    (pickedTeamId: string) => {
-      const isPickingHome = pickedTeamId === game.home.teamId;
-
-      if (game.completed) {
-        const actualHomeScore = game.home.score ?? 0;
-        const actualAwayScore = game.away.score ?? 0;
-
-        if (isPickingHome) {
-          return {
-            homeScore: actualAwayScore >= actualHomeScore ? actualAwayScore + 1 : actualHomeScore,
-            awayScore: actualAwayScore,
-          };
-        } else {
-          return {
-            homeScore: actualHomeScore,
-            awayScore: actualHomeScore >= actualAwayScore ? actualHomeScore + 1 : actualAwayScore,
-          };
-        }
-      }
-
-      if (!game.predictedScore) {
-        return { homeScore: 28, awayScore: 21 };
-      }
-
-      const baseHomeScore = game.predictedScore.home;
-      const baseAwayScore = game.predictedScore.away;
-
-      if (isPickingHome) {
-        return {
-          homeScore: baseAwayScore >= baseHomeScore ? baseAwayScore + 1 : baseHomeScore,
-          awayScore: baseAwayScore,
-        };
-      } else {
-        return {
-          homeScore: baseHomeScore,
-          awayScore: baseHomeScore >= baseAwayScore ? baseHomeScore + 1 : baseAwayScore,
-        };
-      }
-    },
-    [game.completed, game.home.teamId, game.home.score, game.away.score, game.predictedScore]
+    (pickedTeamId: string) => calculateDefaultScores(game, pickedTeamId),
+    [game]
   );
 
-  const defaultSelectedTeam = useMemo(() => {
-    if (game.completed) {
-      const homeScore = game.home.score ?? 0;
-      const awayScore = game.away.score ?? 0;
-      if (homeScore > awayScore) {
-        return game.home.teamId;
-      } else if (awayScore > homeScore) {
-        return game.away.teamId;
-      }
-    }
-    if (game.predictedScore) {
-      if (game.predictedScore.home > game.predictedScore.away) {
-        return game.home.teamId;
-      } else if (game.predictedScore.away > game.predictedScore.home) {
-        return game.away.teamId;
-      }
-    }
-    if (game.odds.favoriteTeamId) {
-      return game.odds.favoriteTeamId;
-    }
-    return game.home.teamId;
-  }, [
-    game.completed,
-    game.home.score,
-    game.away.score,
-    game.home.teamId,
-    game.away.teamId,
-    game.predictedScore,
-    game.odds.favoriteTeamId,
-  ]);
+  const defaultSelectedTeam = useMemo(() => getDefaultSelectedTeam(game), [game]);
 
   useEffect(() => {
     if (!gamePick && defaultSelectedTeam) {
@@ -138,4 +72,4 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   );
 };
 
-export default CompactGameButton;
+export default memo(CompactGameButton);

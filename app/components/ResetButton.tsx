@@ -1,19 +1,24 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { useAppDispatch } from '../store/hooks';
+import { GameLean } from '@/lib/types';
+import { isPickAtDefault } from '@/lib/utils/getDefaultPick';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearAllPicks } from '../store/gamePicksSlice';
-import { useUIState } from '@/app/store/useUI';
 import { Button } from './Button';
 
 interface ResetButtonProps {
+  games: GameLean[];
+  hasSimulationResults?: boolean;
   onReset?: () => void;
   className?: string;
 }
 
-const ResetButton = ({ onReset, className }: ResetButtonProps) => {
+const ResetButton = ({ games, hasSimulationResults, onReset, className }: ResetButtonProps) => {
   const dispatch = useAppDispatch();
-  const { view } = useUIState();
+  const picks = useAppSelector((state) => state.gamePicks.picks);
+  const hasOverrides = games.some((game) => !isPickAtDefault(game, picks[game.id]));
+  const visible = hasOverrides || hasSimulationResults;
 
   const handleClick = () => {
     dispatch(clearAllPicks());
@@ -28,9 +33,11 @@ const ResetButton = ({ onReset, className }: ResetButtonProps) => {
       size="md"
       color="primary"
       onClick={handleClick}
-      className={cn('text-xs', className)}
+      aria-hidden={!visible}
+      tabIndex={visible ? 0 : -1}
+      className={cn('text-xs', className, { invisible: !visible })}
     >
-      {view === 'picks' ? 'Reset Picks' : 'Reset Scores'}
+      Reset Season
     </Button.Stroked>
   );
 };
