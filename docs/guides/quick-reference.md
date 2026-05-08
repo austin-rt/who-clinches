@@ -80,7 +80,8 @@ Domain-specific content locations for common tasks.
 
 ```bash
 # Testing
-npm run test                  # All tests
+npm run test                  # All unit/integration tests (Jest)
+npm run test:e2e              # E2E tests (Playwright)
 
 # Development
 npm run dev                   # Start dev server

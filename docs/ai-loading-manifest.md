@@ -8,12 +8,12 @@
 
 **~6.5K tokens** - Load these files for every task:
 
-- `docs/ai-guide.md` - Core AI development guidelines (~2.6K tokens, 117 lines)
-- `docs/guides/quick-reference.md` - Domain-specific content locations (~1.5K tokens, 118 lines)
-- `docs/guides/api-reference.md` - API reference overview (~1.3K tokens, 85 lines)
-- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.1K tokens, 124 lines)
+- `docs/ai-guide.md` - Core AI development guidelines (~2.7K tokens, 119 lines)
+- `docs/guides/quick-reference.md` - Domain-specific content locations (~1.5K tokens, 119 lines)
+- `docs/guides/api-reference.md` - API reference overview (~1.3K tokens, 84 lines)
+- `docs/guides/testing-quick-reference.md` - Testing commands and quick reference (~1.0K tokens, 109 lines)
 
-**Total Essential:** ~6.5K tokens (444 lines)
+**Total Essential:** ~6.5K tokens (431 lines)
 
 ---
 

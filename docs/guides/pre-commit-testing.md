@@ -22,8 +22,9 @@ Runs:
 
 - `npx tsc --noEmit` (full project)
 - `npm run test:all` (full Jest suite)
+- `npx playwright test` (full e2e suite — builds app, starts server on port 3002)
 
-Push is blocked if either fails.
+Push is blocked if any step fails.
 
 ---
 
@@ -52,4 +53,5 @@ Push is blocked if either fails.
 | Commit         | `git commit -m "…"`  |
 | Full typecheck | `npx tsc --noEmit`   |
 | Full tests     | `npm run test:all`   |
+| E2E tests      | `npm run test:e2e`   |
 | Watch tests    | `npm run test:watch` |

@@ -5,7 +5,16 @@ Quick commands and environment setup.
 ## Common Commands
 
 ```bash
-# Run all API tests
+# Run all unit/integration tests
+npm run test
+
+# Run all tests (alias)
+npm run test:all
+
+# Run e2e tests (Playwright, builds + starts server on port 3002)
+npm run test:e2e
+
+# Run API tests only
 npm run test:api
 
 # Run reshape unit tests
@@ -18,13 +27,7 @@ npm run test:watch
 npm run test:coverage
 
 # Run specific test file
-npm run test -- __tests__/api/cfb/games.test.ts
-
-# Run all tests
-npm run test
-
-# Run all tests (alias)
-npm run test:all
+npm run test -- __tests__/api/cfb/games-enrichment.test.ts
 ```
 
 ## Environment Files
@@ -43,44 +46,26 @@ npm run test:all
 
 ## Test Structure
 
-- `__tests__/api/cfb/` - API endpoint tests (predicted scores)
-- `__tests__/api/cfb/sec/tiebreaker-rules/` - SEC-specific rule tests (rule-e scoring margin, integration tests)
+**Unit / Integration (Jest):**
+
+- `__tests__/api/cfb/` - API endpoint tests (predicted scores, games enrichment, override normalization)
+- `__tests__/api/cfb/sec/tiebreaker-rules/` - SEC-specific rule tests (rule-e scoring margin)
 - `__tests__/api/cfb/tiebreaker-rules/common/` - Common tiebreaker rule tests (rules A-E, divisional, overall win pct, total wins)
-- `__tests__/lib/cfb/helpers/` - Helper unit tests (default season, preprod key rotation)
+- `__tests__/api/cfb/tiebreaker-rules/integration/` - Per-conference integration tests (all 10 conferences)
+- `__tests__/app/components/` - Component tests (Score)
+- `__tests__/lib/api/` - API utility tests (same-origin gate)
+- `__tests__/lib/cfb/helpers/` - Helper unit tests (default season, preprod key rotation, attach-sor, attach-sp-plus, turnover margin, revalidate timing)
+- `__tests__/lib/cfb/tiebreaker-rules/` - Core tiebreaker engine tests (breakTie, calculateStandings, core-helpers)
+- `__tests__/lib/` - Shared utility tests (reshape-games, getDefaultPick)
 - `__tests__/setup.ts` - Test setup (dotenv, BASE_URL)
 - `__tests__/mocks/` - Mock data for CFBD API responses (cfbd-rest-client mock)
 
----
+**E2E (Playwright):**
 
-## Test Coverage
-
-- API endpoints: Business logic and behavior tests (simulate, multi-conference support)
-- Reshape functions: Edge cases and transformation logic
-- Tiebreaker rules: Comprehensive rule tests including async rules (e.g., SP+ and FPI fetching for MWC)
-- **Coverage threshold:** 80% minimum (branches, functions, lines, statements)
-- **What's tested:** Business logic, edge cases, error handling, API contracts, data integrity, async tiebreaker rules
-
----
-
-## Test Data
-
-**Mock Data** - All tests use mocks based on CFBD TypeScript types.
-
-**Test Data Source:**
-
-- `__tests__/mocks/cfbd-rest-client.ts` - Mock CFBD API responses
-- Uses `Partial<>` types for flexible test overrides
-- No external API calls during tests
-
-**Benefits:** Fast execution, no external dependencies, complete isolation.
-
----
-
-## Troubleshooting
-
-- **Tests hanging**: Check logs for teardown issues. `forceExit: true` in Jest config prevents hanging
-- **Timeouts**: Test timeout is 120s per test
-- **Empty coverage**: Run `npm run test:coverage`, open `coverage/index.html`
+- `e2e/simulate-happy-path.spec.ts` - Simulate SEC standings and verify results render
+- `e2e/share-round-trip.spec.ts` - Share URL renders saved simulation results
+- `e2e/reset-flow.spec.ts` - Reset clears simulation results and picks
+- `e2e/error-states.spec.ts` - Invalid conference/sport shows error page
 
 ---
 

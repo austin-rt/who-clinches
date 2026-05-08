@@ -100,6 +100,8 @@ Start with [AI Loading Manifest](./ai-loading-manifest.md) for efficient doc loa
 ## CI & Branch Protection
 
 - **GitHub Actions CI** (`.github/workflows/ci.yml`): Runs `tsc --noEmit` and `npm test` on push to `main`/`develop` and on PRs targeting those branches
+- **Pre-push hook**: Runs `tsc --noEmit`, `npm run test:all` (Jest), and `npx playwright test` (e2e). Push is blocked if any step fails.
+- **E2E tests** (`e2e/`): Playwright tests covering simulate, share, reset, and error states. Runs against a built app on port 3002 with fixture data (`FIXTURE_YEAR=2025`).
 - **Branch Ruleset**: PRs to `main` must come from `develop` (enforced via `.github/workflows/enforce-branch.yml` + required status check). Repository owner bypasses the PR requirement for direct pushes.
 - **Contribute Page**: `/contribute` route with setup guide, API key links, tech stack, and GitHub quick links. `CONTRIBUTING.md` has full workflow details.
 
