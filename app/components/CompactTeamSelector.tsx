@@ -1,5 +1,6 @@
 'use client';
 
+import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import { GameLean } from '@/lib/types';
 import Team from './Team';
@@ -20,26 +21,24 @@ const CompactTeamSelector = ({
   isWon,
   onTeamClick,
 }: CompactTeamSelectorProps) => {
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleClick = () => {
     onTeamClick(teamId);
   };
 
   const hasRank = team.rank !== null;
 
   return (
-    <div className="flex flex-col items-center">
-      <button
-        type="button"
-        onClick={handleClick}
-        className={cn('cursor-pointer rounded-lg transition-all', {
-          'opacity-100': isSelected,
-          'opacity-50': !isSelected,
-        })}
-      >
-        <Team team={team} />
-      </button>
+    <button
+      type="button"
+      onClick={handleClick}
+      aria-label={`Pick ${team.abbrev} to win`}
+      aria-pressed={isSelected}
+      className={cn('flex cursor-pointer flex-col items-center rounded-lg', {
+        'opacity-100': isSelected,
+        'opacity-50': !isSelected,
+      })}
+    >
+      <Team team={team} />
       <div
         className={cn('flex flex-col items-center', {
           'pl-3': hasRank,
@@ -47,7 +46,7 @@ const CompactTeamSelector = ({
       >
         <TeamRankAbbrev team={team} isSelected={isSelected} />
         <span
-          className={cn('text-base-content/70 text-xxs w-full text-center leading-none', {
+          className={cn('text-base-content/70 w-full text-center text-xxs leading-none', {
             'font-extrabold': isWon,
             'font-normal': !isWon,
           })}
@@ -55,8 +54,8 @@ const CompactTeamSelector = ({
           {isWon ? 'W' : 'L'}
         </span>
       </div>
-    </div>
+    </button>
   );
 };
 
-export default CompactTeamSelector;
+export default memo(CompactTeamSelector);

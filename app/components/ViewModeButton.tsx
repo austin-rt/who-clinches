@@ -20,15 +20,18 @@ const ViewModeButton = () => {
     <Button.Stroked
       color="primary"
       onClick={handleClick}
+      aria-label={view === 'picks' ? 'Enter Scores' : 'Make Picks'}
       className="group swap swap-rotate relative w-full sm:w-fit"
     >
       <div
+        aria-hidden={view !== 'scores'}
         className={`flex items-center gap-2 transition-colors ${view === 'scores' ? 'opacity-100' : 'absolute opacity-0'}`}
       >
         <BsTrophy className="h-5 w-5 fill-current" />
         <span className="text-xs font-semibold">Make Picks</span>
       </div>
       <div
+        aria-hidden={view !== 'picks'}
         className={`flex items-center gap-2 transition-colors ${view === 'picks' ? 'opacity-100' : 'absolute opacity-0'}`}
       >
         <MdOutlineScoreboard className="h-6 w-6 fill-current" />
