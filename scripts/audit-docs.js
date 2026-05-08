@@ -4,12 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DOCS_DIR = path.join(__dirname, '..', 'docs');
-const TIER1_FILES = [
-  'ai-guide.md',
-  'guides/quick-reference.md',
-  'guides/api-reference.md',
-  'guides/testing-quick-reference.md',
-];
+const TIER1_FILES = ['ai-guide.md', 'guides/external-analytics-by-conference.md'];
 
 function getAllMarkdownFiles(dir) {
   const files = [];
@@ -156,12 +151,7 @@ function findOrphanedDocs() {
     }
   }
 
-  // Index files are not considered orphaned
-  const indexFiles = new Set(['guides/frontend/index.md']);
-
-  const orphaned = Array.from(allFilePaths).filter(
-    (f) => !referencedFiles.has(f) && !indexFiles.has(f)
-  );
+  const orphaned = Array.from(allFilePaths).filter((f) => !referencedFiles.has(f));
 
   if (orphaned.length > 0) {
     console.log(`⚠️  Found ${orphaned.length} potentially orphaned files:`);
@@ -180,7 +170,6 @@ function reportTier1Load() {
   let totalLines = 0;
   let totalChars = 0;
 
-  console.log('Essential Docs (from ai-loading-manifest.md):');
   for (const file of TIER1_FILES) {
     const filePath = path.join(DOCS_DIR, file);
     if (fs.existsSync(filePath)) {
@@ -192,7 +181,7 @@ function reportTier1Load() {
       totalLines += lines;
       totalChars += chars;
 
-      const filename = path.basename(file).padEnd(35);
+      const filename = path.basename(file).padEnd(45);
       const linesStr = lines.toString().padStart(4);
       const tokensStr = tokensEst.toString().padStart(5);
       console.log(`  ${filename} ${linesStr} lines, ~${tokensStr} tokens`);
@@ -200,13 +189,12 @@ function reportTier1Load() {
   }
 
   const totalTokensEst = Math.round(totalChars / 4);
-  const totalLabel = 'TOTAL'.padEnd(35);
+  const totalLabel = 'TOTAL'.padEnd(45);
   const totalLinesStr = totalLines.toString().padStart(4);
   const totalTokensStr = totalTokensEst.toString().padStart(5);
   console.log(`\n  ${totalLabel} ${totalLinesStr} lines, ~${totalTokensStr} tokens`);
-  console.log(`\n  Note: ai-loading-manifest.md estimates ~6.5K tokens`);
   console.log(
-    `  Status: ${totalTokensEst <= 7000 ? '✅ Within expected range' : '⚠️  Exceeds estimate'}`
+    `\n  Status: ${totalTokensEst <= 3000 ? '✅ Within expected range' : '⚠️  Exceeds estimate'}`
   );
 
   return { totalLines, totalTokensEst };
@@ -225,7 +213,6 @@ function checkDuplicateHeadings() {
     const relPath = path.relative(DOCS_DIR, file);
     const headings = [];
 
-    // Remove code blocks before checking headings
     content = content.replace(codeBlockRegex, '');
 
     let match;
