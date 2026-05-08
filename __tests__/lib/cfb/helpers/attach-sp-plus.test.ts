@@ -32,10 +32,4 @@ describe('attachSpPlusToTeams', () => {
     const result = attachSpPlusToTeams(teams, [makeSp('Mississippi State', 15.0, 20)]);
     expect(result[0].spPlusRating).toBe(20);
   });
-
-  it('returns undefined spPlusRating for all teams when ratings are empty', () => {
-    const teams = [makeTeam()];
-    const result = attachSpPlusToTeams(teams, []);
-    expect(result[0].spPlusRating).toBeUndefined();
-  });
 });

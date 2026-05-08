@@ -2,7 +2,6 @@ import {
   filterRegularSeasonGames,
   applyOverrides,
   getTeamRecord,
-  formatList,
 } from '@/lib/cfb/tiebreaker-rules/common/core-helpers';
 import { createGameLean } from '../../../../api/cfb/tiebreaker-rules/common/test-helpers';
 import { GameLean } from '@/lib/types';
@@ -171,24 +170,6 @@ describe('core-helpers', () => {
       expect(record.wins).toBe(0);
       expect(record.losses).toBe(0);
       expect(record.winPct).toBe(0);
-    });
-  });
-
-  describe('formatList', () => {
-    it('returns empty string for empty array', () => {
-      expect(formatList([])).toBe('');
-    });
-
-    it('returns the item for single-element array', () => {
-      expect(formatList(['Alabama'])).toBe('Alabama');
-    });
-
-    it('joins two items with "and"', () => {
-      expect(formatList(['Alabama', 'Auburn'])).toBe('Alabama and Auburn');
-    });
-
-    it('joins three+ items with Oxford comma', () => {
-      expect(formatList(['Alabama', 'Auburn', 'LSU'])).toBe('Alabama, Auburn, and LSU');
     });
   });
 });

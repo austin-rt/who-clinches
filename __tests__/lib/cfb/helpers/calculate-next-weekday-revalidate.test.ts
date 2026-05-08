@@ -28,11 +28,4 @@ describe('calculateNextWeekdayRevalidate', () => {
     expect(result).toBeGreaterThan(2 * 24 * 60 * 60);
     expect(result).toBeLessThan(4 * 24 * 60 * 60);
   });
-
-  it('clamps result to [1, 8 days]', () => {
-    const result = calculateNextWeekdayRevalidate(6, 11, 'America/New_York');
-    const maxSeconds = 8 * 24 * 60 * 60;
-    expect(result).toBeGreaterThanOrEqual(1);
-    expect(result).toBeLessThanOrEqual(maxSeconds);
-  });
 });

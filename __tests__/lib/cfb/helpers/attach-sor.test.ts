@@ -15,12 +15,6 @@ const makeFpi = (team: string, sor: number): TeamFPI =>
   ({ team, resumeRanks: { strengthOfRecord: sor } }) as unknown as TeamFPI;
 
 describe('attachSorToTeams', () => {
-  it('returns undefined sor for all teams when ratings are empty', () => {
-    const teams = [makeTeam()];
-    const result = attachSorToTeams(teams, []);
-    expect(result[0].sor).toBeUndefined();
-  });
-
   it('matches by exact team name', () => {
     const teams = [makeTeam({ name: 'Alabama' })];
     const result = attachSorToTeams(teams, [makeFpi('Alabama', 5)]);

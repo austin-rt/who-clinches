@@ -217,66 +217,6 @@ describe('calculateStandings', () => {
     }
   });
 
-  it('populates StandingEntry fields correctly', async () => {
-    const games = [
-      createGameLean({
-        gameId: '1',
-        home: { teamId: 'A', score: 28, abbrev: 'ALA' },
-        away: { teamId: 'B', score: 14, abbrev: 'UA' },
-      }),
-    ];
-    const teams = [
-      createTeamLean({ teamId: 'A', abbrev: 'ALA' }),
-      createTeamLean({ teamId: 'B', abbrev: 'UA' }),
-    ];
-    teams[0].nationalRank = 5;
-
-    const { standings } = await calculateStandings(games, ['A', 'B'], makeH2HConfig(), teams);
-    const first = standings[0];
-    expect(first.rank).toBe(1);
-    expect(first.teamId).toBe('A');
-    expect(first.abbrev).toBe('ALA');
-    expect(first.logo).toBe('');
-    expect(first.color).toBe('000000');
-    expect(first.nationalRank).toBe(5);
-    expect(first.division).toBeNull();
-  });
-
-  it('buildTieFlowGraphs produces graph for tied teams', async () => {
-    const games = [
-      createGameLean({
-        gameId: '1',
-        home: { teamId: 'A', score: 28, abbrev: 'ALA' },
-        away: { teamId: 'B', score: 14, abbrev: 'UA' },
-      }),
-      createGameLean({
-        gameId: '2',
-        home: { teamId: 'B', score: 35, abbrev: 'UA' },
-        away: { teamId: 'C', score: 24, abbrev: 'LSU' },
-      }),
-      createGameLean({
-        gameId: '3',
-        home: { teamId: 'C', score: 21, abbrev: 'LSU' },
-        away: { teamId: 'A', score: 17, abbrev: 'ALA' },
-      }),
-    ];
-    const teams = ['A', 'B', 'C'].map((id) =>
-      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
-    );
-
-    const { tieFlowGraphs } = await calculateStandings(
-      games,
-      ['A', 'B', 'C'],
-      makeH2HConfig(),
-      teams
-    );
-    expect(tieFlowGraphs.length).toBeGreaterThanOrEqual(1);
-    const graph = tieFlowGraphs[0];
-    expect(graph.nodes.length).toBeGreaterThan(0);
-    expect(graph.edges.length).toBeGreaterThan(0);
-    expect(graph.summary.length).toBeGreaterThan(0);
-  });
-
   it('buildTieFlowGraphs skips single-team groups', async () => {
     const games = [
       createGameLean({

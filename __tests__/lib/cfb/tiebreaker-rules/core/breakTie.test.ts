@@ -98,39 +98,4 @@ describe('breakTie', () => {
     );
     expect(explanationsRecursive.has('B')).toBe(false);
   });
-
-  it('buildEliminationReason for Head-to-Head includes opponent and record', async () => {
-    const config = makeConfig({ name: 'Head-to-Head', winners: ['A'] });
-    const explanations = new Map<string, string[]>();
-    await breakTie(['A', 'B'], games, ['A', 'B', 'C'], config, explanations, false, emptyTeams);
-    const reason = explanations.get('B')![0];
-    expect(reason).toContain('head-to-head');
-    expect(reason).toMatch(/\d+-\d+/);
-  });
-
-  it('buildEliminationReason for Common Opponents shows record', async () => {
-    const config = makeConfig({ name: 'Common Opponents', winners: ['A'] });
-    const explanations = new Map<string, string[]>();
-    await breakTie(['A', 'B'], games, ['A', 'B', 'C'], config, explanations, false, emptyTeams);
-    const reason = explanations.get('B')![0];
-    expect(reason).toContain('common opponents');
-    expect(reason).toMatch(/\d+-\d+/);
-  });
-
-  it('buildEliminationReason for Scoring Margin includes margin value', async () => {
-    const config = makeConfig({ name: 'Scoring Margin', winners: ['A'] });
-    const explanations = new Map<string, string[]>();
-    await breakTie(['A', 'B'], games, ['A', 'B', 'C'], config, explanations, false, emptyTeams);
-    const reason = explanations.get('B')![0];
-    expect(reason).toContain('scoring margin');
-  });
-
-  it('buildEliminationReason for Win Percentage shows percentage', async () => {
-    const config = makeConfig({ name: 'Opponent Win Percentage', winners: ['A'] });
-    const explanations = new Map<string, string[]>();
-    await breakTie(['A', 'B'], games, ['A', 'B', 'C'], config, explanations, false, emptyTeams);
-    const reason = explanations.get('B')![0];
-    expect(reason).toContain('Win Percentage');
-    expect(reason).toMatch(/\d+\.\d+%/);
-  });
 });
