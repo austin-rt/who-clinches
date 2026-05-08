@@ -22,7 +22,7 @@ Redux store structure, slices, and persistence patterns.
 ```typescript
 {
   ui: UIState,              // Theme, mode, view, hideCompletedGames, standingsOpen
-  app: AppState,            // Season, isInSeason, allowGraphQL
+  app: AppState,            // Season, isInSeason, allowGraphQL, anonymousId, sessionRecordingURL
   gamePicks: GamePicksState, // User game selections
   api: ApiState             // RTK Query cache
 }

@@ -13,10 +13,8 @@ How data flows through the application: fetching, user interactions, and state u
 ## Game Data Fetching
 
 - RTK Query with automatic caching and conditional polling
-- `useGamesData({ sport, conf, season })` hook - Main hook for game data with intelligent polling
+- `useGamesData({ sport, conf })` hook - Main hook for game data with intelligent polling (season read from Redux)
 - Dynamic routes require sport/conf parameters: `/api/games/[sport]/[conf]`
-- Automatic refetch on window focus
-- `lastUpdated` synced to Redux on successful fetch
 
 **Data Pipeline**: CFBD API → Redis cache (production/preview) → Reshape (with team enrichment) → API Response
 
@@ -24,7 +22,7 @@ How data flows through the application: fetching, user interactions, and state u
 - CFBD data is cached in Upstash Redis (production and preview when configured) with TTLs per data type
 - Simulation snapshots are persisted to PostgreSQL (Prisma/Neon) when the user shares results
 
-**RTK Query Hooks** (from `app/store/apiSlice.ts`):
+**RTK Query Hooks** (from `app/store/api.ts`):
 
 - `useGetSeasonGameDataQuery({ sport, conf, season, week? })` - Fetch games from CFBD API (GET request to `/api/games/[sport]/[conf]`)
 - `useSimulateMutation()` - Requires `{ sport, conf, season, games, teams, overrides }` in request body
@@ -90,7 +88,7 @@ This strategy minimizes API calls while ensuring fresh data when users are activ
 2. `simulateResponse` state set on conference page → passed to `Standings` → `SimulatedStandings` → `ShareButton`
 3. `ShareButton` fires POST to `/api/share/[sport]/[conf]` in background `useEffect` immediately (pre-fetch)
 4. Share API stores snapshot in PostgreSQL with hash dedup, returns URL
-5. User clicks **Share Results** → modal opens instantly with pre-fetched URL
+5. Inline share section renders instantly with pre-fetched URL (copy, social share icons)
 6. Results page (`/results/[id]`) fetches snapshot from DB and renders with shared components
 
 **Component Patterns:** Arrow function syntax with default export. Define types in `types/frontend.ts` or `lib/types.ts` (no inline literal union types).

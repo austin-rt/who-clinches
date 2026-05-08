@@ -66,8 +66,7 @@ See `app/store/api.ts` for full type definitions (generated types used by API ro
 **Error Responses**:
 
 - `400` - Missing required fields, invalid score (negative/non-integer), tie scores not allowed, or conference config error
-- `404` - No conference games found for season
-- `500` - CFBD API error or tiebreaker calculation error
+- `500` - Tiebreaker calculation error
 
 **Notes**: Accepts client-provided `games` and `teams` data (from the games endpoint) — does not fetch from CFBD. Uses `predictedScore` for games without overrides. Non-SEC overrides are normalized to 1-0 W/L for hashing (only SEC Rule E uses exact margin).
 
@@ -84,12 +83,11 @@ Creates or retrieves a shareable simulation snapshot. Stores pre-computed result
 
 **Deduplication**: Uses `hashPayload(sport, conf, { season, overrides })` to produce a unique hash. If a snapshot with the same hash already exists, returns the existing record (HTTP 200) instead of creating a new one (HTTP 201).
 
-**Security**: Same-origin validation via `checkSameOrigin()`. Rejects requests from different origins.
+**Security**: Same-origin validation enforced by `middleware.ts` (not the route handler).
 
 **Error Responses**:
 
 - `400` - Missing season, missing results, invalid sport/conference
-- `403` - Cross-origin request rejected
 - `500` - Database error
 
 ---

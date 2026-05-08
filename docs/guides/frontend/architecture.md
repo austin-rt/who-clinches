@@ -26,7 +26,7 @@ Tech stack and project structure for the frontend application.
 - `app/results/[id]/opengraph-image.tsx` - OG image generation for share links
 - `app/page.tsx` - Home/landing page
 - `app/components/` - All React components (shared between main app and results page)
-- `app/store/` - Redux store (uiSlice, appSlice, gamePicksSlice, apiSlice)
+- `app/store/` - Redux store (uiSlice, appSlice, gamePicksSlice, api)
 - `app/hooks/` - Custom hooks (`useGamesData`, `useInSeason`)
 - `app/api/` - API route handlers
 

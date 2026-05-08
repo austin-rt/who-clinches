@@ -31,7 +31,7 @@ This is a specialized college football application built for simulating conferen
 - `app/api/` - API routes with dynamic structure: `/api/[operation]/[sport]/[conf]` (e.g., `/api/games/[sport]/[conf]`, `/api/simulate/[sport]/[conf]`, `/api/share/[sport]/[conf]`). Teams are automatically extracted from games endpoint responses.
 - `app/components/` - React components (includes shared components used by both main app and results page)
 - `app/results/[id]/` - Shareable results page (read-only snapshot view with OG image generation)
-- `app/store/` - Redux state management (uiSlice, gamePicksSlice, apiSlice)
+- `app/store/` - Redux state management (uiSlice, appSlice, gamePicksSlice, api)
 - `lib/constants.ts` - Sports and conference configuration (single source of truth for sport/conference metadata)
 - `lib/cfb/` - CFBD API clients (cfbd-client, cfbd-rest-client, cfbd-graphql-client)
 - `lib/db/` - Prisma database client (`client.ts`)
@@ -77,13 +77,13 @@ This is a specialized college football application built for simulating conferen
 
 **Redis & Rate Limiting**: `lib/redis.ts` (Upstash Redis client, `fetch<T>` cache-aside primitive; always-on in production, runtime-configurable via admin dashboard in dev/preview), `middleware.ts` (per-IP rate limiting via `@upstash/ratelimit` on `production` and `preview`, bypass with `VERCEL_AUTOMATION_BYPASS_SECRET`)
 
-**Admin Dashboard**: `app/admin/page.tsx` (runtime config toggles for dev/preview), `lib/admin/runtime-config.ts` (RuntimeConfig singleton via Prisma with 5s in-memory cache, production short-circuit to defaults), `lib/admin/is-admin-allowed.ts` (environment gating), `middleware.ts` (returns 404 for `/admin*` and `/api/admin/*` in production). Admin API routes: `/api/admin/config` (GET/PATCH), `/api/admin/flush-redis` (POST), `/api/admin/clear-db` (POST), `/api/admin/cfbd-status` (GET), `/api/admin/redis-keys` (GET/DELETE)
+**Admin Dashboard**: `app/admin/page.tsx` (runtime config toggles for dev/preview), `lib/admin/runtime-config.ts` (RuntimeConfig singleton via Prisma with 5s in-memory cache, production short-circuit to defaults), `lib/admin/is-admin-allowed.ts` (environment gating), `middleware.ts` (returns 404 for `/admin*` and `/api/admin/*` in production). See [API Reference](./guides/api-reference.md) for admin route details.
 
-**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. CFBD data is cached in Upstash Redis (production and preview when configured) via `lib/redis.ts` with TTLs per data type: teams (30 days), completed games (permanent), in-progress games/rankings/SP+/FPI (weekly, Saturday 11 AM ET). Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`).
+**Team Enrichment**: Team metadata (`shortDisplayName`, `alternateColor`) is enriched at the reshape level (`lib/reshape-games.ts`) from CFBD API responses. Rating fetches (SP+, FPI, CFP rankings) are conditional per conference config (`lib/cfb/tiebreaker-cfbd-requirements.ts`). See [API Reference](./guides/api-reference.md) for Redis TTL details.
 
 **Tiebreaker Logic**: Modular system with common rules (`lib/cfb/tiebreaker-rules/common/`), core engine (`lib/cfb/tiebreaker-rules/core/breakTie.ts`, `calculateStandings.ts`), and conference configs (`lib/cfb/tiebreaker-rules/{conf}/config.ts`) - Must enforce rules from `docs/tiebreaker-rules/`. Rules can be async and fetch external data on demand (e.g., SP+ and FPI ratings for MWC team rating score rule).
 
-**Frontend State**: `app/store/` - Redux (uiSlice, appSlice, gamePicksSlice, apiSlice) with redux-persist for ui and app slices only
+**Frontend State**: `app/store/` - Redux (uiSlice, appSlice, gamePicksSlice, api) with redux-persist for ui and app slices only
 
 **Frontend Data Hook**: `app/hooks/useGamesData.ts` - Conditional frontend polling with RTK Query
 
