@@ -1,13 +1,16 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ReactFlow, type Node, type Edge, Position, ReactFlowProvider } from '@xyflow/react';
+import { HiArrowsPointingOut } from 'react-icons/hi2';
 import dagre from 'dagre';
 import type { TieFlowGraph } from '@/app/store/api';
 import RootNodeH from './flow-nodes/RootNodeH';
 import RuleNodeH from './flow-nodes/RuleNodeH';
 import ResultNodeH from './flow-nodes/ResultNodeH';
 import TeamEdge from './flow-nodes/TeamEdge';
+import Divider from './Divider';
+import FlowChartLightbox from './FlowChartLightbox';
 
 import '@xyflow/react/dist/style.css';
 
@@ -176,56 +179,117 @@ const FlowChartInner = ({ graph }: { graph: TieFlowGraph }) => {
   );
 };
 
+const InteractiveFlowChart = ({ graph }: { graph: TieFlowGraph }) => {
+  const { nodes, edges } = useMemo(() => buildLayout(graph), [graph]);
+
+  return (
+    <div className="h-full w-full">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
+        fitView
+        zoomOnPinch
+        panOnDrag
+        zoomOnScroll
+        preventScrolling
+        minZoom={0.3}
+        maxZoom={3}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        proOptions={{ hideAttribution: true }}
+      />
+    </div>
+  );
+};
+
 interface TiebreakerGraphHorizontalProps {
   tieFlowGraphs: TieFlowGraph[];
 }
 
 const TiebreakerGraphHorizontal = ({ tieFlowGraphs }: TiebreakerGraphHorizontalProps) => {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
   if (!tieFlowGraphs || tieFlowGraphs.length === 0) return null;
 
-  return (
-    <div className="collapse collapse-arrow bg-base-300">
-      <input type="checkbox" defaultChecked />
-      <div className="collapse-title min-h-0 py-2 text-sm font-semibold">Tiebreaker Details</div>
-      <div className="collapse-content">
-        <div className="flex flex-col gap-4 pt-2">
-          {tieFlowGraphs.map((graph, index) => {
-            const rank = getBaseRank(graph);
-            const rootNode = graph.nodes.find((n) => n.type === 'root');
-            const title = `Tied for ${ordinal(rank)} — ${rootNode?.label || ''}`;
+  const getTitle = (graph: TieFlowGraph) => {
+    const rank = getBaseRank(graph);
+    const rootNode = graph.nodes.find((n) => n.type === 'root');
+    return `Tied for ${ordinal(rank)} — ${rootNode?.label || ''}`;
+  };
 
-            return (
-              <div key={index} className="collapse collapse-arrow rounded-xl bg-base-200">
-                <input type="checkbox" defaultChecked />
-                <div className="collapse-title min-h-0 py-2 text-sm font-semibold">{title}</div>
-                <div className="collapse-content">
-                  <div className="pt-2">
-                    <ReactFlowProvider>
-                      <FlowChartInner graph={graph} />
-                    </ReactFlowProvider>
-                    {graph.summary.length > 0 && (
-                      <div className="collapse collapse-arrow mt-3 bg-base-300">
-                        <input type="checkbox" />
-                        <div className="collapse-title min-h-0 py-2 text-xs font-semibold">
-                          Summary
-                        </div>
-                        <div className="collapse-content">
-                          {graph.summary.map((line, i) => (
-                            <p key={i} className="text-base-content/60 text-xs leading-relaxed">
-                              {line}
-                            </p>
-                          ))}
+  return (
+    <>
+      <div className="collapse collapse-arrow bg-base-300">
+        <input type="checkbox" defaultChecked />
+        <div className="collapse-title min-h-0 py-2 text-sm font-semibold">Tiebreaker Details</div>
+        <div className="collapse-content">
+          <div className="flex flex-col gap-4 pt-2">
+            {tieFlowGraphs.map((graph, index) => {
+              const title = getTitle(graph);
+
+              return (
+                <div key={index} className="collapse collapse-arrow rounded-xl bg-base-200">
+                  <input type="checkbox" defaultChecked />
+                  <div className="collapse-title min-h-0 py-2 text-sm font-semibold">{title}</div>
+                  <div className="collapse-content">
+                    <Divider />
+                    <div>
+                      <div
+                        className="group relative cursor-pointer pt-2"
+                        onClick={() => setSelectedIndex(index)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Expand ${title} flow chart`}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') setSelectedIndex(index);
+                        }}
+                      >
+                        <ReactFlowProvider>
+                          <FlowChartInner graph={graph} />
+                        </ReactFlowProvider>
+                        <div className="bg-base-300/80 pointer-events-none absolute -right-[10.5px] -top-[2px] rounded-full p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                          <HiArrowsPointingOut size={24} className="text-base-content/60" />
                         </div>
                       </div>
-                    )}
+                      {graph.summary.length > 0 && (
+                        <div className="collapse collapse-arrow mt-3 bg-base-300">
+                          <input type="checkbox" />
+                          <div className="collapse-title min-h-0 py-2 text-xs font-semibold">
+                            Summary
+                          </div>
+                          <div className="collapse-content">
+                            {graph.summary.map((line, i) => (
+                              <p key={i} className="text-base-content/60 text-xs leading-relaxed">
+                                {line}
+                              </p>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
-    </div>
+
+      {selectedIndex !== null && (
+        <FlowChartLightbox
+          isOpen
+          onClose={() => setSelectedIndex(null)}
+          title={getTitle(tieFlowGraphs[selectedIndex])}
+        >
+          <ReactFlowProvider>
+            <InteractiveFlowChart graph={tieFlowGraphs[selectedIndex]} />
+          </ReactFlowProvider>
+        </FlowChartLightbox>
+      )}
+    </>
   );
 };
 
