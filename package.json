@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\" \"npm run tunnel\"",
+    "dev": "concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\"",
     "dev:next": "next dev --hostname 0.0.0.0",
+    "dev:tunnel": "concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\" \"npm run tunnel\"",
     "build": "prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
@@ -31,7 +32,7 @@
     "flush:next": "tsx scripts/flush-next.ts dev",
     "flush:cache": "tsx scripts/flush-redis.ts dev && tsx scripts/flush-next.ts dev",
     "clean:screenshots": "rm -f .playwright-mcp/*.png && echo 'Screenshots cleaned'",
-    "tunnel": "npx cloudflared tunnel --url http://localhost:3000",
+    "tunnel": "npx cloudflared tunnel run dev",
     "prepare": "husky"
   },
   "lint-staged": {

@@ -251,8 +251,8 @@ const TiebreakerGraphVertical = ({ tieFlowGraphs }: TiebreakerGraphVerticalProps
                         <ReactFlowProvider>
                           <FlowChartInner graph={graph} />
                         </ReactFlowProvider>
-                        <div className="bg-base-300/80 pointer-events-none absolute -right-3 top-2 rounded-full p-2">
-                          <HiArrowsPointingOut size={24} className="text-base-content/60" />
+                        <div className="absolute -right-3 top-2 flex h-10 w-10 items-center justify-center rounded-full text-base-content transition-colors group-hover:bg-base-400 group-active:bg-base-400">
+                          <HiArrowsPointingOut size={24} />
                         </div>
                       </div>
                       {graph.summary.length > 0 && (
