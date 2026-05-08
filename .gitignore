@@ -64,3 +64,4 @@ temp-*
 docs/handoffs/*
 
 .claude/settings.local.json
+certificates
