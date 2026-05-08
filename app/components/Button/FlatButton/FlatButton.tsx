@@ -65,7 +65,6 @@ const FlatButton: ForwardRefExoticComponent<FlatButtonProps> = forwardRef<
 
     return (
       <button
-        type="button"
         ref={ref}
         disabled={disabled || loading}
         onClick={handleClick}

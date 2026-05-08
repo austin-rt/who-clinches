@@ -56,7 +56,6 @@ const StrokedButton: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
 
     return (
       <button
-        type="button"
         ref={ref}
         disabled={disabled || loading}
         onClick={handleClick}
