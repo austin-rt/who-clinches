@@ -29,6 +29,9 @@ const ChampionshipCard = ({ team1, team2 }: ChampionshipCardProps) => {
             </div>
           </div>
           <span className="text-center text-base font-semibold leading-none">{team1.abbrev}</span>
+          <span className="text-base-content/60 text-xs">
+            ({team1.confRecord.wins}-{team1.confRecord.losses})
+          </span>
         </div>
         <span className="text-base-content/60 text-base leading-none">vs</span>
         <div className="flex flex-col items-center gap-2">
@@ -48,6 +51,9 @@ const ChampionshipCard = ({ team1, team2 }: ChampionshipCardProps) => {
             </div>
           </div>
           <span className="text-center text-base font-semibold leading-none">{team2.abbrev}</span>
+          <span className="text-base-content/60 text-xs">
+            ({team2.confRecord.wins}-{team2.confRecord.losses})
+          </span>
         </div>
       </div>
     </div>
