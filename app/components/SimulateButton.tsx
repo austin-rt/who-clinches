@@ -9,12 +9,8 @@ import {
   GameLean,
   TeamMetadata,
 } from '../store/api';
-import {
-  isValidSport,
-  isValidConference,
-  type SportSlug,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { GamePick } from '../store/gamePicksSlice';
 import { Button } from './Button';
 import { buildSimulateInputKey } from '@/lib/client/input-hash';

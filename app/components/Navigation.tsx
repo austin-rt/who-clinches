@@ -7,8 +7,8 @@ import {
   CFB_CONFERENCE_METADATA,
   CFB_AVAILABLE_CONFERENCES,
   type CFBConferenceAbbreviation,
-  isValidConference,
-} from '@/lib/constants';
+} from '@/lib/cfb/constants';
+import { SPORT_METADATA, isValidConference } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
 
@@ -50,7 +50,9 @@ const Navigation = ({ isNonProd }: { isNonProd: boolean }) => {
           isNonProd ? 'text-white hover:bg-white/20' : 'text-base-content'
         )}
       >
-        College Football
+        {currentConf && isValidConference(currentConf)
+          ? CFB_CONFERENCE_METADATA[currentConf].name
+          : SPORT_METADATA.cfb.name}
       </label>
       <ul className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-stroke bg-base-100 p-2 shadow-lg">
         {CFB_AVAILABLE_CONFERENCES.map((key) => {

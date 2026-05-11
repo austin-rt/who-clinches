@@ -6,12 +6,8 @@ import { useAppSelector } from '../store/hooks';
 import { FaXTwitter, FaThreads } from 'react-icons/fa6';
 import { IoSendOutline, IoCopyOutline, IoCheckmarkOutline, IoOpenOutline } from 'react-icons/io5';
 import IconButton from './IconButton';
-import {
-  isValidSport,
-  isValidConference,
-  type SportSlug,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import type { SimulateResponse } from '../store/api';
 import type { GameLean } from '@/lib/types';
 

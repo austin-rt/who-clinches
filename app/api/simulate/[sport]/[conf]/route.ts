@@ -7,13 +7,12 @@ import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateSta
 import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';
 import { SimulateResponse, TeamMetadata } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
+import { CFB_CONFERENCE_CONFIGS, type CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import {
   getConferenceMetadata,
   isValidSport,
-  CFB_CONFERENCE_CONFIGS,
   isValidConference,
   type SportSlug,
-  type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

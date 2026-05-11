@@ -3,12 +3,8 @@
 import { useMemo, useEffect } from 'react';
 import { useGetSeasonGameDataQuery, TeamMetadata } from '@/app/store/api';
 import { useParams } from 'next/navigation';
-import {
-  isValidSport,
-  isValidConference,
-  type SportSlug,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { useAppSelector } from '@/app/store/hooks';
 import LoadingSpinner from './LoadingSpinner';
 import Divider from './Divider';

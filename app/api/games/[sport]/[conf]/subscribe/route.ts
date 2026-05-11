@@ -4,12 +4,8 @@ import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GamesResponse, TeamMetadata } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
-import {
-  getConferenceMetadata,
-  isValidSport,
-  isValidConference,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { getConferenceMetadata, isValidSport, isValidConference } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
 import { getFixtureYear } from '@/lib/cfb/helpers/fixture-year';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';

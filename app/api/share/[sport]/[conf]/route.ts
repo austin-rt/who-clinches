@@ -2,12 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { db } from '@/lib/db/client';
 import type { Prisma } from '@prisma/client';
-import {
-  isValidSport,
-  isValidConference,
-  type SportSlug,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { hashPayload } from '@/lib/api/payload-hash';
 
 export const runtime = 'nodejs';

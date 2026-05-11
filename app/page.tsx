@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { type CFBConferenceAbbreviation } from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 
 const Home = () => {
   const firstSport = 'cfb';

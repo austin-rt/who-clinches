@@ -4,7 +4,7 @@ import {
   calculateNextSundayRevalidate,
 } from './helpers/calculate-next-weekday-revalidate';
 import { fetch, persistRedisKey } from '@/lib/redis';
-import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/constants';
+import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/cfb/constants';
 import type { Team } from 'cfbd';
 
 const THIRTY_DAYS_SECONDS = 30 * 24 * 60 * 60;

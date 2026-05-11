@@ -2,7 +2,8 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'http';
 import { join } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import { parse } from 'url';
-import { CFB_CONFERENCE_METADATA, JSON_SERVER_URL } from '../lib/constants';
+import { CFB_CONFERENCE_METADATA } from '../lib/cfb/constants';
+import { JSON_SERVER_URL } from '../lib/constants';
 
 const FIXTURES_ROOT = join(process.cwd(), '__fixtures__', 'cfbd');
 

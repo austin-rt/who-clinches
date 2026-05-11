@@ -1,12 +1,8 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import {
-  isValidSport,
-  isValidConference,
-  type SportSlug,
-  type CFBConferenceAbbreviation,
-} from '@/lib/constants';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
+import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';

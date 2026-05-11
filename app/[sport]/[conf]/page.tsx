@@ -13,12 +13,12 @@ import ShareButton from '@/app/components/ShareButton';
 import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
+import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import {
   getConferenceMetadata,
   isValidSport,
   isValidConference,
   type SportSlug,
-  type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { SimulateResponse } from '@/app/store/api';
 import { useAppDispatch } from '@/app/store/hooks';

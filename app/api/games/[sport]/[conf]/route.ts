@@ -5,14 +5,13 @@ import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
 import type { Conference, PollWeek } from 'cfbd';
+import { CFB_CONFERENCE_CONFIGS, type CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import {
   getConferenceMetadata,
   isValidSport,
   isValidConference,
   CFBD_SEASON_TYPE,
-  CFB_CONFERENCE_CONFIGS,
   type SportSlug,
-  type CFBConferenceAbbreviation,
 } from '@/lib/constants';
 import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 import { calculateDivisionalStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateDivisionalStandings';

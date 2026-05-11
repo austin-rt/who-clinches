@@ -5,7 +5,7 @@ import {
   CFB_CONFERENCE_METADATA,
   CFB_CONFERENCE_ABBREVIATIONS,
   type CFBConferenceAbbreviation,
-} from '../lib/constants';
+} from '../lib/cfb/constants';
 
 const FIXTURES_DIR = join(process.cwd(), '__fixtures__', 'cfbd');
 
