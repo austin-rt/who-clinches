@@ -4,6 +4,7 @@ import StoreProvider from './components/StoreProvider';
 import ThemeSync from './components/ThemeSync';
 import AnalyticsInit from './components/AnalyticsInit';
 import Header from './components/Header';
+import Breadcrumb from './components/Breadcrumb';
 import Footer from './components/Footer';
 import './globals.css';
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           <AnalyticsInit />
           <ThemeSync />
           <Header env={env} />
+          <Breadcrumb />
           <main className="flex-1">{children}</main>
           <Footer />
         </StoreProvider>
