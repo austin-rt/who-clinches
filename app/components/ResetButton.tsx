@@ -27,15 +27,15 @@ const ResetButton = ({ games, hasSimulationResults, onReset, className }: ResetB
     }
   };
 
+  if (!visible) return null;
+
   return (
     <Button.Stroked
       data-testid="reset-button"
       size="md"
       color="primary"
       onClick={handleClick}
-      aria-hidden={!visible}
-      tabIndex={visible ? 0 : -1}
-      className={cn('text-xs', className, { invisible: !visible })}
+      className={cn('text-xs', className)}
     >
       Reset Season
     </Button.Stroked>

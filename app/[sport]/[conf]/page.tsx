@@ -131,7 +131,7 @@ const ConferencePage = () => {
 
       <Standings simulateResponse={simulateResponse} />
 
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 empty:hidden">
         {games.some((g) => g.completed) && <HideCompletedButton />}
         <ResetButton
           games={games}
