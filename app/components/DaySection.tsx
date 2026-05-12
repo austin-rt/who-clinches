@@ -44,7 +44,7 @@ const DaySection = ({ games, dayLabel }: DaySectionProps) => {
   const headerText = `${dayLabel}, ${dateRange}`;
 
   return (
-    <div className="space-y-3 rounded-lg bg-base-100 p-6">
+    <div className="flex flex-col gap-y-4 rounded-lg bg-base-100 px-4 pb-4">
       <div className="flex flex-col gap-1">
         <h3 className="text-sm font-semibold">{headerText}</h3>
         <Divider />

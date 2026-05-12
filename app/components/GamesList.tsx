@@ -7,7 +7,7 @@ import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
 import { organizeGames } from '@/lib/utils/organizeGames';
-import FinalWeeks from './FinalWeeks';
+import CompletedWeeks from './CompletedWeeks';
 import RemainingWeeks from './RemainingWeeks';
 import CompactWeekGrid from './CompactWeekGrid';
 import LoadingSpinner from './LoadingSpinner';
@@ -37,7 +37,7 @@ const GamesList = ({ onReset }: GamesListProps) => {
     return null;
   }
 
-  const { finalWeeks, remainingWeeks } = organizeGames(games);
+  const { completedWeeks, remainingWeeks } = organizeGames(games);
 
   if (isLoading || isUninitialized) {
     return (
@@ -52,7 +52,7 @@ const GamesList = ({ onReset }: GamesListProps) => {
   }
 
   const totalGames =
-    finalWeeks.reduce((sum, week) => sum + week.length, 0) +
+    completedWeeks.reduce((sum, week) => sum + week.length, 0) +
     remainingWeeks.reduce((sum, week) => sum + week.length, 0);
 
   if (totalGames === 0) {
@@ -65,13 +65,17 @@ const GamesList = ({ onReset }: GamesListProps) => {
 
   if (view === 'picks') {
     return (
-      <CompactWeekGrid finalWeeks={finalWeeks} remainingWeeks={remainingWeeks} onReset={onReset} />
+      <CompactWeekGrid
+        completedWeeks={completedWeeks}
+        remainingWeeks={remainingWeeks}
+        onReset={onReset}
+      />
     );
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <FinalWeeks weeks={finalWeeks} onReset={onReset} />
+      <CompletedWeeks weeks={completedWeeks} onReset={onReset} />
       <RemainingWeeks weeks={remainingWeeks} onReset={onReset} />
     </div>
   );

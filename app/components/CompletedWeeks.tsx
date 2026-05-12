@@ -6,12 +6,12 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { setHideCompletedGames } from '@/app/store/uiSlice';
 import ExpandedWeekGroup from './ExpandedWeekGroup';
 
-interface FinalWeeksProps {
+interface CompletedWeeksProps {
   weeks: GameLean[][];
   onReset?: () => void;
 }
 
-const FinalWeeks = ({ weeks, onReset }: FinalWeeksProps) => {
+const CompletedWeeks = ({ weeks, onReset }: CompletedWeeksProps) => {
   const dispatch = useAppDispatch();
   const { hideCompletedGames } = useUIState();
   const isOpen = !hideCompletedGames;
@@ -22,18 +22,18 @@ const FinalWeeks = ({ weeks, onReset }: FinalWeeksProps) => {
 
   const totalGames = weeks.reduce((sum, week) => sum + week.length, 0);
 
-  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(setHideCompletedGames(!e.target.checked));
-  };
-
   return (
-    <div className="collapse collapse-arrow bg-base-200">
-      <input type="checkbox" checked={isOpen} onChange={handleCheckboxChange} />
+    <div className="collapse collapse-arrow rounded-lg bg-base-200">
+      <input
+        type="checkbox"
+        checked={isOpen}
+        onChange={(e) => dispatch(setHideCompletedGames(!e.target.checked))}
+      />
       <div className="collapse-title text-lg font-semibold">
-        Final ({totalGames} {totalGames === 1 ? 'game' : 'games'})
+        Completed Games ({totalGames} {totalGames === 1 ? 'game' : 'games'})
       </div>
       <div className="collapse-content">
-        <div className="space-y-6 pt-2">
+        <div className="flex flex-col gap-4 pt-2">
           {weeks.map((weekGames) => (
             <ExpandedWeekGroup
               key={weekGames[0]?.id ?? weekGames[0]?.week}
@@ -47,4 +47,4 @@ const FinalWeeks = ({ weeks, onReset }: FinalWeeksProps) => {
   );
 };
 
-export default FinalWeeks;
+export default CompletedWeeks;

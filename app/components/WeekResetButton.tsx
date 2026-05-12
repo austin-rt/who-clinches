@@ -27,17 +27,14 @@ const WeekResetButton = ({ weekGames, onReset, className }: WeekResetButtonProps
     }
   };
 
+  if (!hasOverrides) return null;
+
   return (
-    <Button.Stroked
-      size="md"
-      color="primary"
-      onClick={handleClick}
-      aria-hidden={!hasOverrides}
-      tabIndex={hasOverrides ? 0 : -1}
-      className={cn('text-xs', className, { invisible: !hasOverrides })}
-    >
-      Reset Week
-    </Button.Stroked>
+    <div className={cn('flex items-center justify-end', className)}>
+      <Button.Stroked size="md" color="primary" onClick={handleClick} className="text-xs">
+        Reset Week
+      </Button.Stroked>
+    </div>
   );
 };
 

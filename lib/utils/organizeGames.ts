@@ -3,11 +3,11 @@ import { GameLean } from '@/lib/types';
 export const organizeGames = (
   games: GameLean[] | undefined
 ): {
-  finalWeeks: GameLean[][];
+  completedWeeks: GameLean[][];
   remainingWeeks: GameLean[][];
 } => {
   if (!games || !Array.isArray(games)) {
-    return { finalWeeks: [], remainingWeeks: [] };
+    return { completedWeeks: [], remainingWeeks: [] };
   }
   const gamesByWeek = new Map<number, GameLean[]>();
   games.forEach((game) => {
@@ -18,7 +18,7 @@ export const organizeGames = (
     gamesByWeek.get(week)!.push(game);
   });
 
-  const finalWeeks: GameLean[][] = [];
+  const completedWeeks: GameLean[][] = [];
   const remainingWeeks: GameLean[][] = [];
 
   Array.from(gamesByWeek.entries())
@@ -29,11 +29,11 @@ export const organizeGames = (
       );
       const allCompleted = sortedGames.every((game) => game.completed);
       if (allCompleted) {
-        finalWeeks.push(sortedGames);
+        completedWeeks.push(sortedGames);
       } else {
         remainingWeeks.push(sortedGames);
       }
     });
 
-  return { finalWeeks, remainingWeeks };
+  return { completedWeeks, remainingWeeks };
 };
