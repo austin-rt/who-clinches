@@ -8,6 +8,7 @@ test('simulate SEC standings and verify results render', async ({ page }) => {
   await expect(page.getByTestId('championship-matchup')).not.toBeVisible();
 
   const simulateBtn = page.getByTestId('simulate-button');
+  await expect(simulateBtn).toBeEnabled({ timeout: 10_000 });
   await simulateBtn.scrollIntoViewIfNeeded();
   await simulateBtn.click();
 

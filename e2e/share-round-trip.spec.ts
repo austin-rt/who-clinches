@@ -5,6 +5,7 @@ test('share URL renders saved simulation results', async ({ page }) => {
   await expect(page.getByTestId('conference-heading')).toBeVisible();
 
   const simulateBtn = page.getByTestId('simulate-button');
+  await expect(simulateBtn).toBeEnabled({ timeout: 10_000 });
   await simulateBtn.scrollIntoViewIfNeeded();
   await simulateBtn.click();
 

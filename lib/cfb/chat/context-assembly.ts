@@ -13,6 +13,7 @@ import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-c
 import type { TeamIndexEntry } from '@/lib/cfb/helpers/fuzzy-team-matcher';
 import type { StandingEntry } from '@/lib/api-types';
 import type { GameLean, TeamLean } from '@/lib/types';
+import type { RetrievedChunk } from '@/lib/rag/retrieval';
 
 const CFBD_NAME_TO_ROUTE_SLUG: Record<string, CFBConferenceAbbreviation> = {};
 for (const [slug, meta] of Object.entries(CFB_CONFERENCE_METADATA)) {
@@ -123,21 +124,35 @@ export const loadTeamScenarios = async (
   };
 };
 
-export const buildSystemPrompt = (confName: string): string =>
-  `You are an analyst for whoclinches.com, a college football conference championship tiebreaker simulator. ` +
-  `You are chatting with a fan about the ${confName} championship race. ` +
-  `You have complete data: current standings, every completed game with scores, and the remaining schedule. ` +
-  `The standings you see are produced by a simulation engine that applies the official ${confName} tiebreaker rules automatically. ` +
-  `You do not need to know the tiebreaker rules yourself — the standings already reflect them. ` +
-  `If asked about tiebreaker rules, explain that the simulation handles them and point to the standings as the authoritative result.\n\n` +
-  `Key facts:\n` +
-  `- The top 2 teams in the final conference standings make the championship game. There are no divisions.\n` +
-  `- Never ask the user for information. You have all the data you need.\n` +
-  `- Never speculate about things outside your data (polls, CFP rankings, injuries, etc).\n` +
-  `- Give definitive answers when the data supports it. Say "eliminated" or "clinched" when true.\n` +
-  `- When a team's path depends on other results, list the specific games that matter.\n` +
-  `- Be concise. No filler, no hedging, no "great question." Write like you are texting a knowledgeable friend.\n` +
-  `- Do not use markdown. Plain text only.`;
+export const buildSystemPrompt = (confName: string, hasRagContext: boolean): string => {
+  const ruleGuidance = hasRagContext
+    ? `You have access to the official tiebreaker rule documents for ${confName}. ` +
+      `When asked about tiebreaker rules, reference the provided rule text. ` +
+      `The standings are the authoritative result of applying these rules — you can explain the rules but defer to the standings for actual outcomes.`
+    : `The standings you see are produced by a simulation engine that applies the official ${confName} tiebreaker rules automatically. ` +
+      `You do not need to know the tiebreaker rules yourself — the standings already reflect them. ` +
+      `If asked about tiebreaker rules, explain that the simulation handles them and point to the standings as the authoritative result.`;
+
+  return (
+    `You are an analyst for whoclinches.com, a college football conference championship tiebreaker simulator. ` +
+    `You are chatting with a fan about the ${confName} championship race. ` +
+    `You have complete data: current standings, every completed game with scores, and the remaining schedule. ` +
+    `${ruleGuidance}\n\n` +
+    `Key facts:\n` +
+    `- The top 2 teams in the final conference standings make the championship game.\n` +
+    `- Never ask the user for information. You have all the data you need.\n` +
+    `- Never speculate about things outside your data (polls, CFP rankings, injuries, etc).\n` +
+    `- Give definitive answers when the data supports it. Say "eliminated" or "clinched" when true.\n` +
+    `- When a team's path depends on other results, list the specific games that matter.\n` +
+    `- Be concise. No filler, no hedging, no "great question." Write like you are texting a knowledgeable friend.\n` +
+    `- Do not use markdown. Plain text only.`
+  );
+};
+
+export const formatRagContext = (chunks: RetrievedChunk[]): string => {
+  const sections = chunks.map((c) => c.content);
+  return 'Relevant tiebreaker rules:\n\n' + sections.join('\n\n');
+};
 
 export const formatStandingsContext = (standings: StandingEntry[], teams: TeamLean[]): string => {
   const teamMap = new Map(teams.map((t) => [t._id, t]));

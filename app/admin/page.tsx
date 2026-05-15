@@ -15,9 +15,26 @@ interface RuntimeConfig {
   rateLimitOn: boolean;
   inSeasonOverride: boolean;
   aiChatOn: boolean;
+  ragOn: boolean;
   environment: 'local' | 'preview' | 'production';
   availableFixtureYears: number[];
   cascadeEffects?: string[];
+}
+
+interface KnowledgeStatus {
+  totalChunks: number;
+  lastBatchId: string | null;
+  lastIngestedAt: string | null;
+  byConference: Record<string, number>;
+  apiKeys: {
+    anthropic: { configured: boolean };
+    voyage: { configured: boolean };
+  };
+  tokenUsage: {
+    last24h: { input: number; output: number };
+    last7d: { input: number; output: number };
+  };
+  lastEmbeddingError: { timestamp: string; message: string } | null;
 }
 
 interface CfbdStatus {
@@ -101,6 +118,7 @@ const formatExpiresIn = (ttlSeconds: number): string => {
 export default function AdminPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
   const [cfbdStatus, setCfbdStatus] = useState<CfbdStatus | null>(null);
+  const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus | null>(null);
   const [redisKeys, setRedisKeys] = useState<RedisKey[]>([]);
   const [redisKeyCount, setRedisKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -132,6 +150,16 @@ export default function AdminPage() {
     }
   }, []);
 
+  const fetchKnowledgeStatus = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/knowledge-status');
+      const data = await res.json();
+      setKnowledgeStatus(data);
+    } catch {
+      /* Knowledge status not available */
+    }
+  }, []);
+
   const fetchRedisKeys = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/redis-keys');
@@ -147,11 +175,16 @@ export default function AdminPage() {
 
   useEffect(() => {
     const load = async () => {
-      await Promise.all([fetchConfig(), fetchCfbdStatus(), fetchRedisKeys()]);
+      await Promise.all([
+        fetchConfig(),
+        fetchCfbdStatus(),
+        fetchKnowledgeStatus(),
+        fetchRedisKeys(),
+      ]);
       setLoading(false);
     };
     void load();
-  }, [fetchConfig, fetchCfbdStatus, fetchRedisKeys]);
+  }, [fetchConfig, fetchCfbdStatus, fetchKnowledgeStatus, fetchRedisKeys]);
 
   const updateConfig = async (patch: Partial<RuntimeConfig>) => {
     const res = await fetch('/api/admin/config', {
@@ -346,6 +379,15 @@ export default function AdminPage() {
             checked={config.aiChatOn}
             onChange={(v) => updateConfig({ aiChatOn: v })}
           />
+          <Divider />
+          <Toggle
+            label="RAG Context"
+            description="When on, chat retrieves tiebreaker rule documents via vector search"
+            checked={config.ragOn}
+            disabled={!config.aiChatOn}
+            disabledReason="Requires AI Chat to be enabled"
+            onChange={(v) => updateConfig({ ragOn: v })}
+          />
         </div>
       </Card>
 
@@ -364,6 +406,102 @@ export default function AdminPage() {
             <Stat label="Patron Level" value={cfbdStatus.patronLevel ?? 'N/A'} />
             <Stat label="Active Key" value={`#${cfbdStatus.activeKeyIndex + 1}`} />
             <Stat label="Pool Size" value={cfbdStatus.poolSize} />
+          </div>
+        </Card>
+      )}
+
+      {/* Knowledge Base */}
+      {knowledgeStatus && (
+        <Card title="Knowledge Base">
+          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+            <Stat label="Total Chunks" value={knowledgeStatus.totalChunks} />
+            <Stat
+              label="Last Ingested"
+              value={
+                knowledgeStatus.lastIngestedAt
+                  ? formatRelativeTime(new Date(knowledgeStatus.lastIngestedAt).getTime())
+                  : 'Never'
+              }
+            />
+            <Stat label="Batch" value={knowledgeStatus.lastBatchId?.slice(0, 20) ?? 'None'} />
+            <Stat label="Conferences" value={Object.keys(knowledgeStatus.byConference).length} />
+          </div>
+          {Object.keys(knowledgeStatus.byConference).length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {Object.entries(knowledgeStatus.byConference)
+                .sort(([, a], [, b]) => b - a)
+                .map(([conf, count]) => (
+                  <span
+                    key={conf}
+                    className="rounded-full bg-base-300 px-2.5 py-0.5 text-xs font-medium"
+                  >
+                    {conf} ({count})
+                  </span>
+                ))}
+            </div>
+          )}
+          {knowledgeStatus.lastEmbeddingError && (
+            <div className="bg-error/10 mt-3 rounded px-3 py-2 text-xs text-error">
+              Embedding error: {knowledgeStatus.lastEmbeddingError.message}
+            </div>
+          )}
+          <p className="mt-3 text-xs text-text-secondary">
+            Run <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code> to
+            re-ingest
+          </p>
+        </Card>
+      )}
+
+      {/* API Keys & Usage */}
+      {knowledgeStatus && (
+        <Card title="API Keys & Usage">
+          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
+            <div>
+              <div className="text-xs text-text-secondary">Anthropic</div>
+              <span
+                className={cn(
+                  'mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  knowledgeStatus.apiKeys.anthropic.configured
+                    ? 'bg-success/20 text-success'
+                    : 'bg-error/20 text-error'
+                )}
+              >
+                {knowledgeStatus.apiKeys.anthropic.configured ? 'Configured' : 'Missing'}
+              </span>
+            </div>
+            <div>
+              <div className="text-xs text-text-secondary">Voyage AI</div>
+              <span
+                className={cn(
+                  'mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  knowledgeStatus.apiKeys.voyage.configured
+                    ? 'bg-success/20 text-success'
+                    : 'bg-error/20 text-error'
+                )}
+              >
+                {knowledgeStatus.apiKeys.voyage.configured ? 'Configured' : 'Missing'}
+              </span>
+            </div>
+          </div>
+          <Divider className="my-4" />
+          <div className="text-xs text-text-secondary">Claude Haiku Token Usage</div>
+          <div className="mt-2 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+            <Stat
+              label="Input (24h)"
+              value={knowledgeStatus.tokenUsage.last24h.input.toLocaleString()}
+            />
+            <Stat
+              label="Output (24h)"
+              value={knowledgeStatus.tokenUsage.last24h.output.toLocaleString()}
+            />
+            <Stat
+              label="Input (7d)"
+              value={knowledgeStatus.tokenUsage.last7d.input.toLocaleString()}
+            />
+            <Stat
+              label="Output (7d)"
+              value={knowledgeStatus.tokenUsage.last7d.output.toLocaleString()}
+            />
           </div>
         </Card>
       )}

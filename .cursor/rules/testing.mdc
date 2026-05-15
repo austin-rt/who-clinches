@@ -17,8 +17,7 @@ The distinguishing question: _does this application own this behavior, or does t
 - Return value forwarding — that a function returns what its dependency returned
 - Existence checks — that output is not null or undefined without asserting its content
 - That a component renders without crashing
-- That JavaScript works (const assignment, arithmetic, sort stability)
-- That third-party libraries behave correctly
+- Platform guarantees — that JavaScript, the DOM, or the browser work correctly (e.g., `<button disabled>` blocks clicks, sort stability, arithmetic, hidden elements aren't visible). If the behavior holds for any conforming runtime regardless of our code, it is not ours to test.
 
 **Do test:**
 

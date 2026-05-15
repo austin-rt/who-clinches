@@ -1,11 +1,13 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [vector]
 }
 
 model SimulationSnapshot {
@@ -28,6 +30,7 @@ model RuntimeConfig {
   rateLimitOn      Boolean  @default(true)
   inSeasonOverride Boolean  @default(false)
   aiChatOn         Boolean  @default(false)
+  ragOn            Boolean  @default(false)
   updatedAt        DateTime @updatedAt
 }
 
@@ -39,9 +42,27 @@ model ChatMessage {
   conf      String?
   teamId    String?
   teamName  String?
-  promptHash String?
-  createdAt DateTime @default(now())
+  promptHash   String?
+  inputTokens  Int?
+  outputTokens Int?
+  createdAt    DateTime @default(now())
 
   @@index([sessionId])
   @@index([createdAt])
+}
+
+model KnowledgeChunk {
+  id         String                  @id @default(cuid())
+  sourceFile String
+  conference String?
+  section    String?
+  content    String
+  embedding  Unsupported("vector(512)")
+  tokenCount Int
+  chunkIndex Int
+  createdAt  DateTime                @default(now())
+  batchId    String
+
+  @@index([conference])
+  @@index([batchId])
 }

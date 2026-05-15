@@ -10,8 +10,10 @@ import {
   formatStandingsContext,
   formatGamesContext,
   formatScenarioContext,
+  formatRagContext,
   resolveTeamConference,
 } from '@/lib/cfb/chat/context-assembly';
+import { retrieveRelevantChunks } from '@/lib/rag/retrieval';
 import { CFB_CONFERENCE_METADATA, type CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 
@@ -135,12 +137,20 @@ export const POST = async (request: NextRequest) => {
     }
 
     const confMeta = CFB_CONFERENCE_METADATA[conf];
-    const data = await loadConferenceData(conf);
+
+    const [data, ragChunks] = await Promise.all([
+      loadConferenceData(conf),
+      runtimeConfig.ragOn ? retrieveRelevantChunks(message, confMeta.cfbdId) : Promise.resolve([]),
+    ]);
 
     const contextParts: string[] = [
       formatStandingsContext(data.standings, data.teams),
       formatGamesContext(data.games, data.teams),
     ];
+
+    if (ragChunks.length > 0) {
+      contextParts.push(formatRagContext(ragChunks));
+    }
 
     if (ambiguousMatches) {
       contextParts.push(
@@ -154,13 +164,17 @@ export const POST = async (request: NextRequest) => {
       contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
     }
 
-    const systemPrompt = buildSystemPrompt(confMeta.name);
+    const systemPrompt = buildSystemPrompt(confMeta.name, ragChunks.length > 0);
     const contextBlock = contextParts.join('\n\n');
     const promptHash = createHash('sha256').update(systemPrompt).digest('hex').slice(0, 12);
 
     const logMeta = { sessionId, conf, teamId: targetTeamId, teamName: targetTeamName, promptHash };
 
-    const logMessage = (role: string, content: string) => {
+    const logMessage = (
+      role: string,
+      content: string,
+      tokens?: { inputTokens: number; outputTokens: number }
+    ) => {
       if (!sessionId) return;
       db.chatMessage
         .create({
@@ -172,6 +186,7 @@ export const POST = async (request: NextRequest) => {
             teamId: logMeta.teamId,
             teamName: logMeta.teamName,
             promptHash: logMeta.promptHash,
+            ...(tokens ?? {}),
           },
         })
         .catch(() => {});
@@ -202,15 +217,21 @@ export const POST = async (request: NextRequest) => {
     const readable = new ReadableStream({
       async start(controller) {
         let fullResponse = '';
+        let inputTokens = 0;
+        let outputTokens = 0;
         try {
           for await (const event of stream) {
-            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+            if (event.type === 'message_start') {
+              inputTokens = event.message.usage.input_tokens;
+            } else if (event.type === 'message_delta') {
+              outputTokens = event.usage.output_tokens;
+            } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
               fullResponse += event.delta.text;
               const chunk = `data: ${JSON.stringify({ type: 'delta', text: event.delta.text })}\n\n`;
               controller.enqueue(encoder.encode(chunk));
             }
           }
-          logMessage('assistant', fullResponse);
+          logMessage('assistant', fullResponse, { inputTokens, outputTokens });
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
           controller.close();
         } catch (err) {

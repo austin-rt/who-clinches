@@ -9,6 +9,7 @@ interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
+  pending?: boolean;
 }
 
 interface ChatDrawerProps {
@@ -20,7 +21,7 @@ interface ChatDrawerProps {
 
 const TypingIndicator = () => (
   <div className="chat chat-start">
-    <div className="chat-bubble flex items-center gap-1 bg-base-300 py-3 text-base-content">
+    <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-base-300 px-4 py-3">
       <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:0ms]" />
       <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:150ms]" />
       <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:300ms]" />
@@ -33,6 +34,8 @@ const TYPING_SHOW_DELAY_MAX = 900;
 const TYPING_MIN_VISIBLE = 600;
 
 const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) => {
+  const [mounted, setMounted] = useState(false);
+  const [visible, setVisible] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -42,6 +45,8 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const pendingRef = useRef<string[]>([]);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -53,26 +58,26 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
 
   useEffect(() => {
     if (open) {
+      setMounted(true);
       sessionIdRef.current = crypto.randomUUID();
       setMessages([]);
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [open]);
-
-  useEffect(() => {
-    if (!open && abortRef.current) {
-      abortRef.current.abort();
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setVisible(true);
+          setTimeout(() => inputRef.current?.focus(), 100);
+        });
+      });
+    } else {
+      setVisible(false);
+      if (abortRef.current) abortRef.current.abort();
     }
   }, [open]);
 
   const sendMessage = useCallback(
-    async (text: string) => {
-      const userMessage: ChatMessage = {
-        id: `user-${Date.now()}`,
-        role: 'user',
-        content: text,
-      };
-      setMessages((prev) => [...prev, userMessage]);
+    async (text: string, opts?: { skipBubble?: boolean }) => {
+      if (!opts?.skipBubble) {
+        setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: text }]);
+      }
       setInput('');
       setIsStreaming(true);
 
@@ -174,6 +179,13 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
       } finally {
         setIsStreaming(false);
         abortRef.current = null;
+        const queued = pendingRef.current;
+        if (queued.length > 0) {
+          pendingRef.current = [];
+          const combined = queued.join('\n');
+          setMessages((prev) => prev.map((m) => (m.pending ? { ...m, pending: false } : m)));
+          void sendMessage(combined, { skipBubble: true });
+        }
       }
     },
     [messages, conferenceHint, teamId]
@@ -182,7 +194,16 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const text = input.trim();
-    if (!text || isStreaming) return;
+    if (!text) return;
+    if (isStreaming) {
+      pendingRef.current.push(text);
+      setMessages((prev) => [
+        ...prev,
+        { id: `pending-${Date.now()}`, role: 'user', content: text, pending: true },
+      ]);
+      setInput('');
+      return;
+    }
     void sendMessage(text);
   };
 
@@ -190,25 +211,33 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
     if (e.key === 'Escape') onClose();
   };
 
+  const handleTransitionEnd = () => {
+    if (!visible) setMounted(false);
+  };
+
+  if (!mounted) return null;
+
   return (
     <>
-      {open && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 transition-opacity"
-          onClick={onClose}
-          onKeyDown={handleKeyDown}
-          role="button"
-          tabIndex={-1}
-          aria-label="Close chat"
-        />
-      )}
+      <div
+        className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
+          visible ? 'opacity-100' : 'opacity-0'
+        }`}
+        onClick={onClose}
+        onKeyDown={handleKeyDown}
+        role="button"
+        tabIndex={-1}
+        aria-label="Close chat"
+      />
 
       <div
+        ref={drawerRef}
         className={`fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-base-100 shadow-xl transition-transform duration-300 sm:w-96 ${
-          open ? 'translate-x-0' : 'translate-x-full'
+          visible ? 'translate-x-0' : 'translate-x-full'
         }`}
         role="dialog"
         aria-label="Chat"
+        onTransitionEnd={handleTransitionEnd}
       >
         <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
           <h2 className="text-sm font-semibold">Path to the Title</h2>
@@ -229,11 +258,7 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
           {messages.map((msg) => (
             <div key={msg.id} className={`chat ${msg.role === 'user' ? 'chat-end' : 'chat-start'}`}>
               <div
-                className={`chat-bubble text-sm ${
-                  msg.role === 'user'
-                    ? 'bg-primary text-primary-content'
-                    : 'bg-base-300 text-base-content'
-                }`}
+                className={`${msg.role === 'user' ? 'chat-bubble-sent' : 'chat-bubble-received'}${msg.pending ? 'opacity-50' : ''}`}
               >
                 {msg.content}
               </div>
@@ -253,7 +278,7 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
 
         <form
           onSubmit={handleSubmit}
-          className="flex items-center gap-2 border-t border-base-300 px-4 py-3"
+          className="flex items-center border-t border-base-300 px-4 py-3"
         >
           <input
             ref={inputRef}
@@ -262,17 +287,11 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="How does Alabama make it?"
-            disabled={isStreaming}
             maxLength={500}
-            className="input-bordered input flex-1 text-sm"
+            className="chat-input"
           />
-          <button
-            type="submit"
-            disabled={isStreaming || !input.trim()}
-            className="btn btn-primary btn-sm btn-circle"
-            aria-label="Send"
-          >
-            <IoSendOutline className="h-4 w-4" />
+          <button type="submit" className="chat-send-btn" aria-label="Send">
+            <IoSendOutline className="h-4 w-4 -rotate-45" />
           </button>
         </form>
       </div>

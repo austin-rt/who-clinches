@@ -132,4 +132,68 @@ html[data-mode='dark'] {
   .toggle.bg-transparent:checked::before {
     background-color: var(--toggle-border-color);
   }
+
+  .chat-bubble-sent {
+    @apply max-w-[85%] rounded-2xl rounded-br-sm px-4 py-2 text-sm;
+
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      @apply bg-primary text-white;
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      @apply bg-accent text-base-100;
+    }
+  }
+
+  .chat-bubble-received {
+    @apply max-w-[85%] rounded-2xl rounded-bl-sm bg-base-300 px-4 py-2 text-sm text-base-content;
+  }
+
+  .chat-input {
+    @apply h-10 flex-1 rounded-l-md bg-base-100 px-4 text-sm leading-10 outline-none;
+    border: 1px solid color-mix(in srgb, var(--color-base-content) 25%, transparent);
+    border-right: none;
+
+    &::placeholder {
+      color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
+    }
+
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      &:focus {
+        @apply border-primary;
+      }
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      &:focus {
+        @apply border-accent;
+      }
+    }
+  }
+
+  .chat-send-btn {
+    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-r-md;
+
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      @apply bg-primary text-white;
+
+      &:hover {
+        background-color: hsl(var(--p) / 0.9);
+      }
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      @apply bg-accent text-base-100;
+
+      &:hover {
+        background-color: hsl(var(--a) / 0.9);
+      }
+    }
+  }
 }

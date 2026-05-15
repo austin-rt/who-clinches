@@ -47,6 +47,7 @@ Cookie/query-param approaches fail because Vercel redirects server-side before c
 | `DATABASE_URL`                    | Yes (prod/preview) | Neon pooled PostgreSQL URL for Prisma                        |
 | `DIRECT_URL`                      | Yes (prod/preview) | Neon non-pooled URL for Prisma migrations                    |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Preview auth bypass + rate limit bypass                      |
+| `VOYAGE_API_KEY`                  | No                 | Voyage AI embeddings for RAG knowledge base                  |
 
 ## CI & Branch Protection
 
