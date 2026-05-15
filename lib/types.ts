@@ -86,6 +86,8 @@ export interface ReshapedTeam {
   displayName: string;
   shortDisplayName: string;
   abbreviation: string;
+  mascot?: string | null;
+  alternateNames?: string[];
   logo: string;
   color: string;
   alternateColor: string;
@@ -152,5 +154,7 @@ export interface TeamLean {
       pointsPerOpportunity?: number;
     };
   };
+  mascot?: string | null;
+  alternateNames?: string[];
   turnoverMargin?: number | null;
 }

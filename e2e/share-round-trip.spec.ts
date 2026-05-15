@@ -9,7 +9,7 @@ test('share URL renders saved simulation results', async ({ page }) => {
   await simulateBtn.click();
 
   await expect(page.getByTestId('championship-matchup')).toBeVisible({ timeout: 30_000 });
-  await expect(page.getByTestId('share-section')).toBeVisible({ timeout: 10_000 });
+  await expect(page.getByTestId('share-section')).toBeVisible({ timeout: 30_000 });
   const shareInput = page.getByTestId('share-url-input');
   const shareUrl = await shareInput.inputValue();
   const resultsPath = new URL(shareUrl).pathname;

@@ -262,6 +262,8 @@ const fetchGamesFromCfbd = async (
         nationalRank,
         spPlusRating: enriched?.spPlusRating ?? null,
         sor: enriched?.sor ?? null,
+        mascot: team.mascot ?? null,
+        alternateNames: team.alternateNames ?? [],
       };
     }
 

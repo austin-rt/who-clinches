@@ -36,7 +36,7 @@ export interface SimulateRequest {
 
 export interface SimulateResponse {
   standings: StandingEntry[];
-  championship: [string, string];
+  championship: string[];
   tieLogs: TieLog[];
   tieFlowGraphs: TieFlowGraph[];
 }

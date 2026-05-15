@@ -14,6 +14,7 @@ interface RuntimeConfig {
   redisOn: boolean;
   rateLimitOn: boolean;
   inSeasonOverride: boolean;
+  aiChatOn: boolean;
   environment: 'local' | 'preview' | 'production';
   availableFixtureYears: number[];
   cascadeEffects?: string[];
@@ -337,6 +338,13 @@ export default function AdminPage() {
             description="Upstash rate limiter (60 req/min)"
             checked={config.rateLimitOn}
             onChange={(v) => updateConfig({ rateLimitOn: v })}
+          />
+          <Divider />
+          <Toggle
+            label="AI Chat"
+            description="When off, chat uses fixture responses. When on, chat calls Claude Haiku"
+            checked={config.aiChatOn}
+            onChange={(v) => updateConfig({ aiChatOn: v })}
           />
         </div>
       </Card>

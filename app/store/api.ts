@@ -1,4 +1,5 @@
 import { apiSlice as api } from './baseApi';
+import type { SimulateResponse } from '@/lib/api-types';
 export const addTagTypes = ['Games', 'Simulation', 'Status', 'Monitoring', 'Stats'] as const;
 const injectedRtkApi = api
   .enhanceEndpoints({
@@ -186,6 +187,8 @@ export type TeamMetadata = {
   name: string;
   displayName: string;
   shortDisplayName: string;
+  mascot?: string | null;
+  alternateNames?: string[];
   logo: string;
   color: string;
   alternateColor: string;
@@ -263,12 +266,7 @@ export type TieFlowGraph = {
   teams: Record<string, TieFlowTeamMeta>;
   summary: string[];
 };
-export type SimulateResponse = {
-  standings: StandingEntry[];
-  championship: string[];
-  tieLogs: TieLog[];
-  tieFlowGraphs: TieFlowGraph[];
-};
+export type { SimulateResponse } from '@/lib/api-types';
 export type ErrorResponse = {
   error: string;
 };

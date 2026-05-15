@@ -11,6 +11,8 @@ import Standings from '@/app/components/Standings';
 import ChampionshipMatchup from '@/app/components/ChampionshipMatchup';
 import ShareButton from '@/app/components/ShareButton';
 import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
+import ChatDrawer from '@/app/components/Chat/ChatDrawer';
+import ChatTriggerButton from '@/app/components/Chat/ChatTriggerButton';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
@@ -31,6 +33,7 @@ const ConferencePage = () => {
   const dispatch = useAppDispatch();
 
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
@@ -104,13 +107,17 @@ const ConferencePage = () => {
             Predict outcomes to see who clinches the {conferenceName} title bids
           </p>
         </div>
-        <div className="hidden sm:flex sm:justify-end">
+        <div className="hidden sm:flex sm:justify-end sm:gap-2">
+          <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-fit" />
           <ViewModeButton />
         </div>
       </div>
 
-      <div className="flex w-full sm:hidden">
-        <ViewModeButton />
+      <div className="flex w-full gap-2 sm:hidden">
+        <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-1/2" />
+        <div className="w-1/2">
+          <ViewModeButton />
+        </div>
       </div>
 
       {simulateResponse && <SimulationDisclaimer />}
@@ -126,6 +133,7 @@ const ConferencePage = () => {
             }
           />
           <ShareButton simulateResponse={simulateResponse} games={games} />
+          <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-fit" />
         </div>
       )}
 
@@ -152,6 +160,8 @@ const ConferencePage = () => {
         />
         <SimulateButton games={games} teams={teams} onSimulateComplete={handleSimulateComplete} />
       </div>
+
+      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} conferenceHint={conf} />
     </div>
   );
 };

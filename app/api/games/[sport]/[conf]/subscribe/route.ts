@@ -164,6 +164,8 @@ export const GET = async (
               nationalRank: null,
               spPlusRating: null,
               sor: null,
+              mascot: team.mascot ?? null,
+              alternateNames: team.alternateNames ?? [],
             }));
 
             const response: GamesResponse = {

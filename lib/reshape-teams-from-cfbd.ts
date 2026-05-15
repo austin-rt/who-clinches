@@ -8,6 +8,8 @@ export const extractTeamsFromCfbd = (cfbdTeams: Team[], conferenceId: string): R
     displayName: team.school + (team.mascot ? ` ${team.mascot}` : ''),
     shortDisplayName: team.school,
     abbreviation: team.abbreviation ?? '',
+    mascot: team.mascot || null,
+    alternateNames: (team as Team & { alternateNames?: string[] }).alternateNames ?? [],
     logo: (team.logos?.[0] || '').replace(/^http:\/\//, 'https://'),
     color: team.color || '000000',
     alternateColor: team.alternateColor || '000000',

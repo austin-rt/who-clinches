@@ -7,6 +7,7 @@ export interface RuntimeConfigData {
   redisOn: boolean;
   rateLimitOn: boolean;
   inSeasonOverride: boolean;
+  aiChatOn: boolean;
 }
 
 const DEFAULTS: RuntimeConfigData = {
@@ -16,6 +17,7 @@ const DEFAULTS: RuntimeConfigData = {
   redisOn: true,
   rateLimitOn: true,
   inSeasonOverride: false,
+  aiChatOn: false,
 };
 
 let cached: { data: RuntimeConfigData; timestamp: number } | null = null;
@@ -41,6 +43,7 @@ export const getRuntimeConfig = async (): Promise<RuntimeConfigData> => {
           redisOn: row.redisOn,
           rateLimitOn: row.rateLimitOn,
           inSeasonOverride: row.inSeasonOverride,
+          aiChatOn: row.aiChatOn,
         }
       : DEFAULTS;
 
@@ -67,6 +70,7 @@ export const updateRuntimeConfig = async (
     redisOn: row.redisOn,
     rateLimitOn: row.rateLimitOn,
     inSeasonOverride: row.inSeasonOverride,
+    aiChatOn: row.aiChatOn,
   };
 
   cached = { data, timestamp: Date.now() };
