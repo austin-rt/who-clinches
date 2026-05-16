@@ -127,6 +127,7 @@ export const POST = async (request: NextRequest) => {
 
     const runtimeConfig = await getRuntimeConfig();
     if (!runtimeConfig.aiChatOn) {
+      await new Promise((r) => setTimeout(r, 800 + Math.random() * 700));
       return new Response(streamFixtureResponse(), {
         headers: {
           'Content-Type': 'text/event-stream',

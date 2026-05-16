@@ -21,10 +21,10 @@ interface ChatDrawerProps {
 
 const TypingIndicator = () => (
   <div className="chat chat-start">
-    <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-base-300 px-4 py-3">
-      <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:0ms]" />
-      <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:150ms]" />
-      <span className="bg-base-content/50 inline-block h-2 w-2 animate-bounce rounded-full [animation-delay:300ms]" />
+    <div className="chat-bubble-received flex items-center justify-center gap-1.5 py-3">
+      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite] rounded-full bg-base-content" />
+      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite_0.2s] rounded-full bg-base-content" />
+      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite_0.4s] rounded-full bg-base-content" />
     </div>
   </div>
 );
