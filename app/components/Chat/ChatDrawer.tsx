@@ -246,7 +246,7 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
           <h2 className="text-sm font-semibold">Path to the Title</h2>
           <button
             onClick={onClose}
-            className="btn btn-ghost btn-sm btn-circle text-base-content"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
             aria-label="Close"
           >
             <HiXMark className="h-5 w-5" />
