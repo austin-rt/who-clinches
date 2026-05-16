@@ -227,10 +227,11 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
 
       <div
         ref={drawerRef}
-        className={`fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-base-100 shadow-xl transition-transform duration-300 sm:w-96 ${
+        className={`fixed right-0 top-0 z-50 flex w-full flex-col bg-base-100 shadow-xl transition-transform duration-300 sm:w-96 ${
           visible ? 'translate-x-0' : 'translate-x-full'
         }`}
         style={{
+          height: '100dvh',
           overscrollBehavior: 'contain',
           touchAction: 'pan-y',
           visibility: visible ? 'visible' : 'hidden',
@@ -242,8 +243,7 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
         aria-hidden={!visible}
         inert={!visible ? true : undefined}
       >
-        <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
-          <h2 className="text-sm font-semibold">Path to the Title</h2>
+        <div className="flex items-center justify-end border-b border-base-300 px-4 py-3">
           <button
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
