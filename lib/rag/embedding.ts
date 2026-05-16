@@ -20,7 +20,13 @@ let voyageModule: VoyageModule | null = null;
 
 const loadVoyage = async (): Promise<VoyageModule> => {
   if (!voyageModule) {
-    voyageModule = (await import('voyageai')) as unknown as VoyageModule;
+    try {
+      voyageModule = (await import('voyageai')) as unknown as VoyageModule;
+    } catch {
+      const mod = await import('node:module');
+      const cjsRequire = mod.createRequire(import.meta.url);
+      voyageModule = cjsRequire('voyageai') as unknown as VoyageModule;
+    }
   }
   return voyageModule;
 };
