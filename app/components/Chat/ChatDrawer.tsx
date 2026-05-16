@@ -34,7 +34,6 @@ const TYPING_SHOW_DELAY_MAX = 900;
 const TYPING_MIN_VISIBLE = 600;
 
 const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) => {
-  const [mounted, setMounted] = useState(false);
   const [visible, setVisible] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -58,7 +57,6 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
 
   useEffect(() => {
     if (open) {
-      setMounted(true);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setVisible(true);
@@ -209,18 +207,17 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
     if (e.key === 'Escape') onClose();
   };
 
-  const handleTransitionEnd = () => {
-    if (!visible) setMounted(false);
-  };
-
-  if (!mounted) return null;
-
   return (
     <>
       <div
         className={`fixed inset-0 z-40 bg-black/50 transition-opacity duration-300 ${
-          visible ? 'opacity-100' : 'opacity-0'
+          visible ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
+        style={{
+          visibility: visible ? 'visible' : 'hidden',
+          transitionProperty: 'opacity, visibility',
+          transitionDelay: visible ? '0ms' : '0ms, 300ms',
+        }}
         onClick={onClose}
         onKeyDown={handleKeyDown}
         role="button"
@@ -233,10 +230,17 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
         className={`fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-base-100 shadow-xl transition-transform duration-300 sm:w-96 ${
           visible ? 'translate-x-0' : 'translate-x-full'
         }`}
-        style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
+        style={{
+          overscrollBehavior: 'contain',
+          touchAction: 'pan-y',
+          visibility: visible ? 'visible' : 'hidden',
+          transitionProperty: 'transform, visibility',
+          transitionDelay: visible ? '0ms' : '0ms, 300ms',
+        }}
         role="dialog"
         aria-label="Chat"
-        onTransitionEnd={handleTransitionEnd}
+        aria-hidden={!visible}
+        inert={!visible ? true : undefined}
       >
         <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
           <h2 className="text-sm font-semibold">Path to the Title</h2>
