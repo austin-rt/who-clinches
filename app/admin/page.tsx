@@ -354,6 +354,8 @@ export default function AdminPage() {
             label="GraphQL"
             description="When off, all data fetches use REST API. Auto-enables In-Season Override when turned on outside of season"
             checked={config.graphqlOn}
+            disabled={true}
+            disabledReason="Not yet implemented"
             onChange={(v) => updateConfig({ graphqlOn: v })}
           />
           <Divider />

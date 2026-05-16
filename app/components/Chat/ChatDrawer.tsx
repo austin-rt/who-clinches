@@ -17,6 +17,8 @@ interface ChatDrawerProps {
   onClose: () => void;
   conferenceHint?: CFBConferenceAbbreviation;
   teamId?: string;
+  initialMessage?: string | null;
+  onInitialMessageSent?: () => void;
 }
 
 const TypingIndicator = () => (
@@ -33,7 +35,14 @@ const TYPING_SHOW_DELAY_MIN = 400;
 const TYPING_SHOW_DELAY_MAX = 900;
 const TYPING_MIN_VISIBLE = 600;
 
-const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) => {
+const ChatDrawer = ({
+  open,
+  onClose,
+  conferenceHint,
+  teamId,
+  initialMessage,
+  onInitialMessageSent,
+}: ChatDrawerProps) => {
   const [visible, setVisible] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
@@ -42,7 +51,7 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
   const sessionIdRef = useRef<string>(crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef<string[]>([]);
@@ -54,6 +63,8 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
   useEffect(() => {
     scrollToBottom();
   }, [messages, showTyping, scrollToBottom]);
+
+  const initialMessageSentRef = useRef(false);
 
   useEffect(() => {
     if (open) {
@@ -187,6 +198,17 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
     [messages, conferenceHint, teamId]
   );
 
+  useEffect(() => {
+    if (open && initialMessage && !initialMessageSentRef.current && !isStreaming) {
+      initialMessageSentRef.current = true;
+      void sendMessage(initialMessage);
+      onInitialMessageSent?.();
+    }
+    if (!open) {
+      initialMessageSentRef.current = false;
+    }
+  }, [open, initialMessage, isStreaming, onInitialMessageSent, sendMessage]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const text = input.trim();
@@ -283,18 +305,25 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
           <div ref={messagesEndRef} />
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex items-center border-t border-base-300 px-4 py-3"
-        >
-          <input
+        <form onSubmit={handleSubmit} className="flex items-end border-t border-base-300 px-4 py-3">
+          <textarea
             ref={inputRef}
-            type="text"
             value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
+            onChange={(e) => {
+              setInput(e.target.value);
+              e.target.style.height = 'auto';
+              e.target.style.height = `${e.target.scrollHeight}px`;
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+              if (e.key === 'Escape') onClose();
+            }}
             placeholder="How does Alabama make it?"
             maxLength={500}
+            rows={1}
             className="chat-input"
           />
           <button type="submit" className="chat-send-btn" aria-label="Send">

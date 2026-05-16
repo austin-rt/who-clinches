@@ -19,7 +19,7 @@ import {
 } from 'cfbd';
 import { logError } from '@/lib/errorLogger';
 import { JSON_SERVER_URL } from '@/lib/constants';
-import { isFixtureDataSource } from './helpers/fixture-year';
+import { isFixtureDataSource, isFixtureDataSourceAsync } from './helpers/fixture-year';
 import {
   CFBD_PREPROD_ROTATION_THRESHOLD,
   applyPreprodKeyRotationPolicy,
@@ -93,6 +93,22 @@ client.setConfig({
   },
   ...(baseUrl && { baseUrl }),
 });
+
+let lastConfigCheck = 0;
+const CONFIG_CHECK_TTL_MS = 5000;
+
+const ensureBaseUrl = async () => {
+  if (process.env.VERCEL_ENV === 'production') return;
+  const now = Date.now();
+  if (now - lastConfigCheck < CONFIG_CHECK_TTL_MS) return;
+  lastConfigCheck = now;
+
+  const useFixtures = await isFixtureDataSourceAsync();
+  client.setConfig({
+    headers: { Authorization: `Bearer ${getActiveApiKey()}` },
+    ...(useFixtures && { baseUrl: JSON_SERVER_URL }),
+  });
+};
 
 let lastUserInfoCheck: { info: UserInfo; timestamp: number } | null = null;
 const USER_INFO_CACHE_MS = 60000;
@@ -172,6 +188,7 @@ export const getGamesFromCfbd = async (params: {
   conference?: string;
   id?: number;
 }): Promise<Game[]> => {
+  await ensureBaseUrl();
   try {
     const result = await getGames({
       query: {
@@ -202,6 +219,7 @@ export const getTeamsFromCfbd = async (params?: {
   conference?: string;
   classification?: string;
 }): Promise<Team[]> => {
+  await ensureBaseUrl();
   try {
     const result = await getTeams({
       query: {
@@ -230,6 +248,7 @@ export const getLinesFromCfbd = async (params: {
   team?: string;
   conference?: string;
 }): Promise<BettingGame[]> => {
+  await ensureBaseUrl();
   const result = await getLines({
     query: {
       year: params.year,
@@ -246,6 +265,7 @@ export const getLinesFromCfbd = async (params: {
 };
 
 export const getCalendarFromCfbd = async (year: number): Promise<CalendarWeek[]> => {
+  await ensureBaseUrl();
   const result = await getCalendar({
     query: {
       year,
@@ -259,6 +279,7 @@ export const getRankingsFromCfbd = async (params: {
   week?: number;
   seasonType?: string;
 }): Promise<PollWeek[]> => {
+  await ensureBaseUrl();
   const result = await getRankings({
     query: {
       year: params.year,

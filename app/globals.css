@@ -152,8 +152,11 @@ html[data-mode='dark'] {
   }
 
   .chat-input {
-    @apply h-10 flex-1 rounded-l-md bg-base-100 px-4 leading-10 outline-none;
+    @apply min-h-10 flex-1 resize-none rounded-l-md bg-base-100 px-4 py-2.5 outline-none;
     font-size: 16px;
+    line-height: 1.25rem;
+    max-height: 120px;
+    overflow-y: auto;
     border: 1px solid color-mix(in srgb, var(--color-base-content) 25%, transparent);
     border-right: none;
 
@@ -173,6 +176,50 @@ html[data-mode='dark'] {
       &:focus {
         @apply border-accent;
       }
+    }
+  }
+
+  .chat-search-bar {
+    @apply flex cursor-text items-start gap-3 rounded-xl bg-base-100 px-4 py-3;
+    border: 1px solid color-mix(in srgb, var(--color-base-content) 20%, transparent);
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+
+    &:focus-within {
+      border-color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-base-content) 5%, transparent);
+    }
+
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      &:focus-within {
+        @apply border-primary;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 10%, transparent);
+      }
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      &:focus-within {
+        @apply border-accent;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 10%, transparent);
+      }
+    }
+  }
+
+  .chat-search-icon {
+    @apply mt-0.5 h-4 w-4 shrink-0;
+    color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
+  }
+
+  .chat-search-input {
+    @apply w-full bg-transparent text-base-content outline-none;
+    font-size: 16px;
+    line-height: 1.25rem;
+
+    &::placeholder {
+      color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
     }
   }
 

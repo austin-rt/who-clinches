@@ -12,7 +12,8 @@ import ChampionshipMatchup from '@/app/components/ChampionshipMatchup';
 import ShareButton from '@/app/components/ShareButton';
 import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
 import ChatDrawer from '@/app/components/Chat/ChatDrawer';
-import ChatTriggerButton from '@/app/components/Chat/ChatTriggerButton';
+import ChatSearchBar from '@/app/components/Chat/ChatSearchBar';
+import { useGeoTeam } from '@/app/components/Chat/GeoTeamProvider';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
@@ -34,6 +35,8 @@ const ConferencePage = () => {
 
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const geoTeam = useGeoTeam();
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
   const sport = isValid ? (sportParam as SportSlug) : null;
@@ -98,8 +101,8 @@ const ConferencePage = () => {
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex w-full flex-col gap-2 text-center">
           <h1 data-testid="conference-heading" className="text-2xl font-bold transition-colors">
             {conferenceName} Championship
           </h1>
@@ -107,15 +110,16 @@ const ConferencePage = () => {
             Predict outcomes to see who clinches the {conferenceName} title bids
           </p>
         </div>
-        <div className="hidden sm:flex sm:justify-end sm:gap-2">
-          <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-fit" />
-          <ViewModeButton />
-        </div>
-      </div>
-
-      <div className="flex w-full gap-2 sm:hidden">
-        <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-1/2" />
-        <div className="w-1/2">
+        <ChatSearchBar
+          geoTeamName={geoTeam.teamName}
+          fallbackTeamName={teams[0]?.shortDisplayName ?? null}
+          onOpen={() => setChatOpen(true)}
+          onSubmit={(msg) => {
+            setInitialMessage(msg);
+            setChatOpen(true);
+          }}
+        />
+        <div className="flex w-full justify-end">
           <ViewModeButton />
         </div>
       </div>
@@ -133,7 +137,6 @@ const ConferencePage = () => {
             }
           />
           <ShareButton simulateResponse={simulateResponse} games={games} />
-          <ChatTriggerButton onClick={() => setChatOpen(true)} className="w-fit" />
         </div>
       )}
 
@@ -161,7 +164,13 @@ const ConferencePage = () => {
         <SimulateButton games={games} teams={teams} onSimulateComplete={handleSimulateComplete} />
       </div>
 
-      <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} conferenceHint={conf} />
+      <ChatDrawer
+        open={chatOpen}
+        onClose={() => setChatOpen(false)}
+        conferenceHint={conf}
+        initialMessage={initialMessage}
+        onInitialMessageSent={() => setInitialMessage(null)}
+      />
     </div>
   );
 };

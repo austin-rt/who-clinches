@@ -6,15 +6,13 @@ test('chat drawer opens, sends message, streams response, and closes', async ({ 
   const drawer = page.getByRole('dialog', { name: 'Chat' });
   await expect(drawer).not.toBeVisible();
 
-  await page.getByTestId('chat-trigger').first().click();
+  const searchBar = page.getByTestId('chat-trigger');
+  await searchBar.fill('What does Alabama need to clinch?');
+  await searchBar.press('Enter');
+
   await expect(drawer).toBeVisible();
 
-  const input = drawer.getByPlaceholder('How does Alabama make it?');
-  await input.fill('What does Alabama need to clinch?');
-  await drawer.getByRole('button', { name: 'Send' }).click();
-
   await expect(drawer.getByText('What does Alabama need to clinch?')).toBeVisible();
-  await expect(input).toHaveValue('');
 
   const assistantBubble = drawer.locator('.chat-start .chat-bubble-received');
   await expect(assistantBubble.first()).toBeVisible({ timeout: 15_000 });
