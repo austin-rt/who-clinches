@@ -18,10 +18,11 @@ const ViewModeButton = () => {
 
   return (
     <Button.Stroked
-      color="primary"
+      color="neutral"
+      size="sm"
       onClick={handleClick}
       aria-label={view === 'picks' ? 'Enter Scores' : 'Make Picks'}
-      className="group swap swap-rotate relative w-full sm:w-fit"
+      className="group swap swap-rotate relative w-fit"
     >
       <div
         aria-hidden={view !== 'scores'}

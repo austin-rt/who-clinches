@@ -321,7 +321,6 @@ const ChatDrawer = ({
               }
               if (e.key === 'Escape') onClose();
             }}
-            placeholder="How does Alabama make it?"
             maxLength={500}
             rows={1}
             className="chat-input"

@@ -208,11 +208,6 @@ html[data-mode='dark'] {
     }
   }
 
-  .chat-search-icon {
-    @apply mt-0.5 h-4 w-4 shrink-0;
-    color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
-  }
-
   .chat-search-input {
     @apply w-full bg-transparent text-base-content outline-none;
     font-size: 16px;
@@ -220,6 +215,16 @@ html[data-mode='dark'] {
 
     &::placeholder {
       color: color-mix(in srgb, var(--color-base-content) 40%, transparent);
+    }
+  }
+
+  .chat-search-send {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors;
+    color: color-mix(in srgb, var(--color-base-content) 50%, transparent);
+
+    &:hover {
+      color: var(--color-base-content);
+      background-color: color-mix(in srgb, var(--color-base-content) 8%, transparent);
     }
   }
 

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { IoChatbubblesOutline } from 'react-icons/io5';
+import { IoSendOutline } from 'react-icons/io5';
 
 interface ChatSearchBarProps {
   geoTeamName: string | null;
@@ -37,7 +37,6 @@ const ChatSearchBar = ({ geoTeamName, fallbackTeamName, onOpen, onSubmit }: Chat
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="chat-search-bar" role="presentation">
-        <IoChatbubblesOutline className="chat-search-icon" />
         <input
           ref={inputRef}
           type="text"
@@ -49,6 +48,9 @@ const ChatSearchBar = ({ geoTeamName, fallbackTeamName, onOpen, onSubmit }: Chat
           className="chat-search-input"
           data-testid="chat-trigger"
         />
+        <button type="button" onClick={handleSubmit} className="chat-search-send" aria-label="Send">
+          <IoSendOutline className="h-4 w-4 -rotate-45" />
+        </button>
       </div>
     </div>
   );

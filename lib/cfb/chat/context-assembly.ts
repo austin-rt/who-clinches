@@ -177,8 +177,9 @@ export const formatStandingsContext = (standings: StandingEntry[], teams: TeamLe
 
 export const formatGamesContext = (games: GameLean[], teams: TeamLean[]): string => {
   const teamMap = new Map(teams.map((t) => [t._id, t]));
-  const completed = games.filter((g) => g.completed);
-  const remaining = games.filter((g) => !g.completed);
+  const conferenceGames = games.filter((g) => g.conferenceGame);
+  const completed = conferenceGames.filter((g) => g.completed);
+  const remaining = conferenceGames.filter((g) => !g.completed);
   const parts: string[] = [];
 
   if (completed.length > 0) {
@@ -217,7 +218,7 @@ export const formatScenarioContext = (
     return `${teamName} has been eliminated from conference championship contention.`;
   }
 
-  const remaining = games.filter((g) => !g.completed);
+  const remaining = games.filter((g) => !g.completed && g.conferenceGame);
   if (remaining.length === 0) {
     return `${teamName} has clinched a spot in the conference championship game.`;
   }
