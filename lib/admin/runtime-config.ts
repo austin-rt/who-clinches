@@ -33,8 +33,6 @@ export const getRuntimeConfig = async (): Promise<RuntimeConfigData> => {
       ...DEFAULTS,
       fixtureYearOn: true,
       fixtureYear: parseInt(process.env.FIXTURE_YEAR),
-      aiChatOn: false,
-      ragOn: false,
       redisOn: false,
       rateLimitOn: false,
     };
