@@ -1,6 +1,6 @@
 'use client';
 
-import { BsTrophy } from 'react-icons/bs';
+import { IoChatbubblesOutline } from 'react-icons/io5';
 import { Button } from '@/app/components/Button';
 
 interface ChatTriggerButtonProps {
@@ -16,7 +16,7 @@ const ChatTriggerButton = ({ onClick, className }: ChatTriggerButtonProps) => (
     data-testid="chat-trigger"
   >
     <div className="flex items-center gap-2">
-      <BsTrophy className="h-4 w-4 fill-current" />
+      <IoChatbubblesOutline className="h-4 w-4" />
       <span className="text-xs font-semibold">Path to the Title</span>
     </div>
   </Button.Stroked>

@@ -59,8 +59,6 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
   useEffect(() => {
     if (open) {
       setMounted(true);
-      sessionIdRef.current = crypto.randomUUID();
-      setMessages([]);
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setVisible(true);
@@ -235,13 +233,18 @@ const ChatDrawer = ({ open, onClose, conferenceHint, teamId }: ChatDrawerProps) 
         className={`fixed right-0 top-0 z-50 flex h-full w-full flex-col bg-base-100 shadow-xl transition-transform duration-300 sm:w-96 ${
           visible ? 'translate-x-0' : 'translate-x-full'
         }`}
+        style={{ overscrollBehavior: 'contain', touchAction: 'pan-y' }}
         role="dialog"
         aria-label="Chat"
         onTransitionEnd={handleTransitionEnd}
       >
         <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
           <h2 className="text-sm font-semibold">Path to the Title</h2>
-          <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle" aria-label="Close">
+          <button
+            onClick={onClose}
+            className="btn btn-ghost btn-sm btn-circle text-base-content"
+            aria-label="Close"
+          >
             <HiXMark className="h-5 w-5" />
           </button>
         </div>

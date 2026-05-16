@@ -152,7 +152,8 @@ html[data-mode='dark'] {
   }
 
   .chat-input {
-    @apply h-10 flex-1 rounded-l-md bg-base-100 px-4 text-sm leading-10 outline-none;
+    @apply h-10 flex-1 rounded-l-md bg-base-100 px-4 leading-10 outline-none;
+    font-size: 16px;
     border: 1px solid color-mix(in srgb, var(--color-base-content) 25%, transparent);
     border-right: none;
 
