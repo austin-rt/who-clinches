@@ -18,6 +18,14 @@ const DEFAULTS: RuntimeConfigData = {
   redisOn: true,
   rateLimitOn: true,
   inSeasonOverride: false,
+  aiChatOn: false,
+  ragOn: false,
+};
+
+const PRODUCTION_CONFIG: RuntimeConfigData = {
+  ...DEFAULTS,
+  redisOn: true,
+  rateLimitOn: true,
   aiChatOn: true,
   ragOn: true,
 };
@@ -26,17 +34,7 @@ let cached: { data: RuntimeConfigData; timestamp: number } | null = null;
 const CACHE_TTL_MS = 5000;
 
 export const getRuntimeConfig = async (): Promise<RuntimeConfigData> => {
-  if (process.env.VERCEL_ENV === 'production') return DEFAULTS;
-
-  if (process.env.FIXTURE_YEAR) {
-    return {
-      ...DEFAULTS,
-      fixtureYearOn: true,
-      fixtureYear: parseInt(process.env.FIXTURE_YEAR),
-      redisOn: false,
-      rateLimitOn: false,
-    };
-  }
+  if (process.env.VERCEL_ENV === 'production') return PRODUCTION_CONFIG;
 
   if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
     return cached.data;

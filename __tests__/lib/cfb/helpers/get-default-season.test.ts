@@ -8,7 +8,7 @@ jest.mock('@/lib/cfb/cfbd-rest-client', () => ({
 
 jest.mock('@/lib/cfb/helpers/fixture-year', () => ({
   getFixtureYear: jest.fn().mockResolvedValue(null),
-  getFixtureYearSync: jest.fn().mockReturnValue(null),
+  isFixtureDataSource: jest.fn().mockReturnValue(false),
 }));
 
 jest.mock('@/lib/errorLogger', () => ({

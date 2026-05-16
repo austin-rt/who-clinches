@@ -19,7 +19,7 @@ import {
 } from 'cfbd';
 import { logError } from '@/lib/errorLogger';
 import { JSON_SERVER_URL } from '@/lib/constants';
-import { getFixtureYearSync } from './helpers/fixture-year';
+import { isFixtureDataSource } from './helpers/fixture-year';
 import {
   CFBD_PREPROD_ROTATION_THRESHOLD,
   applyPreprodKeyRotationPolicy,
@@ -80,7 +80,7 @@ const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
 
 const getBaseUrl = (): string | undefined => {
   if (process.env.VERCEL_ENV === 'production') return undefined;
-  if (getFixtureYearSync() !== null || process.env.NODE_ENV === 'test') {
+  if (isFixtureDataSource()) {
     return JSON_SERVER_URL;
   }
   return undefined;
