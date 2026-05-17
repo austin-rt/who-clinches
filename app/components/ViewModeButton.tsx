@@ -1,44 +1,38 @@
 'use client';
 
-import { BsTrophy } from 'react-icons/bs';
-import { MdOutlineScoreboard } from 'react-icons/md';
 import { useAppDispatch } from '../store/hooks';
 import { setView } from '../store/uiSlice';
 import { useUIState } from '@/app/store/useUI';
-import { Button } from './Button';
 
 const ViewModeButton = () => {
   const dispatch = useAppDispatch();
   const { view } = useUIState();
 
-  const handleClick = () => {
-    const newView = view === 'picks' ? 'scores' : 'picks';
-    dispatch(setView(newView));
-  };
-
   return (
-    <Button.Stroked
-      color="neutral"
-      size="sm"
-      onClick={handleClick}
-      aria-label={view === 'picks' ? 'Enter Scores' : 'Make Picks'}
-      className="group swap swap-rotate relative w-fit"
-    >
-      <div
-        aria-hidden={view !== 'scores'}
-        className={`flex items-center gap-2 transition-colors ${view === 'scores' ? 'opacity-100' : 'absolute opacity-0'}`}
+    <div className="inline-flex rounded-lg bg-base-300 p-0.5 text-xs font-medium">
+      <button
+        type="button"
+        onClick={() => dispatch(setView('picks'))}
+        className={`rounded-md px-3 py-1.5 transition-colors ${
+          view === 'picks'
+            ? 'bg-base-100 text-base-content shadow-sm'
+            : 'text-base-content/60 hover:text-base-content'
+        }`}
       >
-        <BsTrophy className="h-5 w-5 fill-current" />
-        <span className="text-xs font-semibold">Make Picks</span>
-      </div>
-      <div
-        aria-hidden={view !== 'picks'}
-        className={`flex items-center gap-2 transition-colors ${view === 'picks' ? 'opacity-100' : 'absolute opacity-0'}`}
+        Picks
+      </button>
+      <button
+        type="button"
+        onClick={() => dispatch(setView('scores'))}
+        className={`rounded-md px-3 py-1.5 transition-colors ${
+          view === 'scores'
+            ? 'bg-base-100 text-base-content shadow-sm'
+            : 'text-base-content/60 hover:text-base-content'
+        }`}
       >
-        <MdOutlineScoreboard className="h-6 w-6 fill-current" />
-        <span className="text-xs font-semibold">Enter Scores</span>
-      </div>
-    </Button.Stroked>
+        Scores
+      </button>
+    </div>
   );
 };
 
