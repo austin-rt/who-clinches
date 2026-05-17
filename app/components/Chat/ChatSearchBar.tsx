@@ -3,6 +3,17 @@
 import { useState, useRef, useCallback } from 'react';
 import { IoSendOutline } from 'react-icons/io5';
 
+const SCENARIO_PLACEHOLDERS = [
+  'What if all home teams win?',
+  'What if there are no upsets all season?',
+  'What if the whole season plays out chalk?',
+  'What if every road team pulls the upset?',
+  'What if we flip every result so far?',
+  'Who has the hardest path to the title?',
+  'Who has the easiest remaining schedule?',
+  'Which teams are already eliminated?',
+];
+
 interface ChatSearchBarProps {
   geoTeamName: string | null;
   fallbackTeamName: string | null;
@@ -22,9 +33,12 @@ const ChatSearchBar = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const teamName = geoTeamName ?? fallbackTeamName ?? 'your team';
+  const [placeholderIndex] = useState(() => Date.now() % (SCENARIO_PLACEHOLDERS.length + 1));
   const placeholder = hasConversation
     ? 'Continue chatting...'
-    : `How does ${teamName} make the title?`;
+    : placeholderIndex === 0
+      ? `How does ${teamName} make the title?`
+      : SCENARIO_PLACEHOLDERS[placeholderIndex - 1];
 
   const handleSubmit = useCallback(() => {
     const text = value.trim();
