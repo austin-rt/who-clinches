@@ -454,6 +454,15 @@ const ChatDrawer = ({
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4">
+          <div className="bg-warning/10 mb-3 rounded-lg px-3 py-2 text-center text-xs text-warning">
+            Experimental — results may be inaccurate.{' '}
+            <a
+              href="mailto:feedback@whoclinches.com"
+              className="underline hover:text-warning-content"
+            >
+              Report issues
+            </a>
+          </div>
           {messages.length === 0 && !showTyping && (
             <div className="flex h-full items-center justify-center">
               <p className="text-base-content/50 text-center text-sm">
