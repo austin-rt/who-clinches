@@ -149,8 +149,8 @@ export const loadTeamScenarios = async (
 export const buildSystemPrompt = (confName: string, hasRagContext: boolean): string => {
   const dataGuidance = hasRagContext
     ? `You have access to official tiebreaker rule documents, historical SP+ and FPI ratings (2020-2024), ` +
-      `conference championship results (2020-2024), and actual season records. ` +
-      `Use this data to discuss team quality, strength of schedule, historical trends, and make informed predictions. ` +
+      `conference championship results (2020-2024), preseason rankings (2020-2024), and actual season records. ` +
+      `Use this data to discuss team quality, strength of schedule, historical trends, preseason-vs-actual performance, and make informed predictions. ` +
       `The standings in the context data are computed by the app's simulation engine using the official tiebreaker rules — they are authoritative.`
     : `The standings in the context data are computed by the app's simulation engine using the official ${confName} tiebreaker rules — they are authoritative. ` +
       `If asked about tiebreaker rules, explain that the simulation handles them automatically.`;

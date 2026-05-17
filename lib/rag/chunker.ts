@@ -506,6 +506,36 @@ export const FILE_CONFIGS: FileConfig[] = [
     strategy: 'single',
     baseDir: 'docs/historical-stats',
   },
+  {
+    path: '2020-preseason-rankings.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2021-preseason-rankings.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2022-preseason-rankings.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2023-preseason-rankings.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2024-preseason-rankings.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
 ];
 
 export const chunkDocument = (content: string, config: FileConfig): ChunkMetadata[] => {
