@@ -395,7 +395,10 @@ const ChatDrawer = ({
           <div ref={messagesEndRef} />
         </div>
 
-        <form onSubmit={handleSubmit} className="flex items-end border-t border-base-300 px-4 py-3">
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-stretch border-t border-base-300 px-4 py-3"
+        >
           <textarea
             ref={inputRef}
             value={input}

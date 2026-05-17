@@ -155,8 +155,7 @@ html[data-mode='dark'] {
     @apply min-h-10 flex-1 resize-none rounded-l-md bg-base-100 px-4 py-2.5 outline-none;
     font-size: 16px;
     line-height: 1.25rem;
-    max-height: 120px;
-    overflow-y: auto;
+    overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--color-base-content) 25%, transparent);
     border-right: none;
 
@@ -241,7 +240,7 @@ html[data-mode='dark'] {
   }
 
   .chat-send-btn {
-    @apply flex h-10 w-10 shrink-0 items-center justify-center rounded-r-md;
+    @apply flex w-10 shrink-0 items-center justify-center self-stretch rounded-r-md;
 
     html[data-mode='light'] &,
     html:not([data-mode='dark']) & {
