@@ -174,6 +174,9 @@ export const buildSystemPrompt = (confName: string, hasRagContext: boolean): str
     `- The top 2 teams in the final conference standings make the championship game.\n` +
     `- You have all the data — never ask the user for information.\n` +
     `- For "what if" questions, use the simulate_scenario tool. Never guess tiebreaker outcomes.\n` +
+    `- CRITICAL: When the simulate_scenario tool returns results, report the EXACT championship matchup and standings from the tool output. ` +
+    `The tool runs the real simulation engine — its output is authoritative. Never paraphrase, reinterpret, or guess differently from what the tool returned. ` +
+    `If the tool says Team A vs Team B in the championship, that is the answer. Period.\n` +
     `- Give definitive answers when the data supports it. Say "eliminated" or "clinched" when true.\n` +
     `- When a team's path depends on other results, list the specific games that matter.\n` +
     `- You CAN and SHOULD make predictions and give opinions when asked. Use historical SP+/FPI data, ` +

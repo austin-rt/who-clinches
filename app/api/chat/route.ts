@@ -306,9 +306,11 @@ export const POST = async (request: NextRequest) => {
             const toolInput = JSON.parse(toolUseBlock.input);
             const { resolved, unresolvable } = await resolveOverrides(toolInput.overrides);
 
+            let totalResolved = 0;
             const resultParts: string[] = [];
 
             for (const [simConf, overrideList] of resolved) {
+              totalResolved += overrideList.length;
               const confData = await loadConferenceData(simConf);
               const overridesMap: Record<string, { homeScore: number; awayScore: number }> = {};
               for (const o of overrideList) {
@@ -331,18 +333,29 @@ export const POST = async (request: NextRequest) => {
               const champ2 = teamMap.get(simResult.championship[1])?.shortDisplayName ?? '?';
 
               resultParts.push(
-                `${simConf.toUpperCase()} standings with overrides:\n${standingsLines.join('\n')}\n\nChampionship game: ${champ1} vs ${champ2}`
+                `CHAMPIONSHIP GAME: ${champ1} vs ${champ2}\n\n` +
+                  `Full ${simConf.toUpperCase()} standings with overrides (${overrideList.length} games overridden):\n${standingsLines.join('\n')}`
               );
             }
 
             if (unresolvable.length > 0) {
               resultParts.push(
-                'Issues with some overrides:\n' +
+                `WARNING: ${unresolvable.length} overrides could not be applied (${totalResolved} succeeded):\n` +
                   unresolvable.map((u) => `- ${u.reason}`).join('\n')
               );
             }
 
             const toolResult = resultParts.join('\n\n');
+
+            logMessage(
+              'tool',
+              JSON.stringify({
+                input: toolInput.overrides,
+                resolved: totalResolved,
+                unresolvable: unresolvable.map((u) => u.reason),
+                result: toolResult,
+              })
+            );
 
             const followupMsgs: Anthropic.MessageParam[] = [
               ...msgs,
