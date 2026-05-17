@@ -18,6 +18,6 @@ test('chat drawer opens, sends message, streams response, and closes', async ({ 
   await expect(assistantBubble.first()).toBeVisible({ timeout: 15_000 });
   await expect(assistantBubble.first()).not.toBeEmpty();
 
-  await drawer.getByRole('button', { name: 'Close' }).click();
+  await drawer.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(drawer).not.toBeVisible();
 });
