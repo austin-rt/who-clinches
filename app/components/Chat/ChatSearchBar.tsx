@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react';
 import { IoSendOutline } from 'react-icons/io5';
+import { HiSparkles } from 'react-icons/hi2';
 
 const SCENARIO_PLACEHOLDERS = [
   'What if all home teams win?',
@@ -75,6 +76,7 @@ const ChatSearchBar = ({
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="chat-search-bar" role="presentation">
+        <HiSparkles className="text-primary/60 ml-3 h-4 w-4 shrink-0" />
         <input
           ref={inputRef}
           type="text"
@@ -90,6 +92,9 @@ const ChatSearchBar = ({
           <IoSendOutline className="h-4 w-4 -rotate-45" />
         </button>
       </div>
+      <p className="text-base-content/40 mt-1.5 text-center text-xs">
+        AI-powered scenario analysis
+      </p>
     </div>
   );
 };

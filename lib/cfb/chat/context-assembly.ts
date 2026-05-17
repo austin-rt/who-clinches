@@ -177,6 +177,9 @@ export const buildSystemPrompt = (confName: string, hasRagContext: boolean): str
     `- CRITICAL: When the simulate_scenario tool returns results, report the EXACT championship matchup and standings from the tool output. ` +
     `The tool runs the real simulation engine — its output is authoritative. Never paraphrase, reinterpret, or guess differently from what the tool returned. ` +
     `If the tool says Team A vs Team B in the championship, that is the answer. Period.\n` +
+    `- NEVER cite scenario enumeration counts as probabilities. "Alabama makes it in 7300 of 10000 scenarios" is NOT "73% likely." ` +
+    `Those scenarios are unweighted random permutations — they don't account for team quality, SP+, betting lines, or any real probability. ` +
+    `Report them as "X of Y tested scenarios" only. If asked about actual likelihood, say you don't have probability data unless you have SP+/betting line data to reference.\n` +
     `- Give definitive answers when the data supports it. Say "eliminated" or "clinched" when true.\n` +
     `- When a team's path depends on other results, list the specific games that matter.\n` +
     `- You CAN and SHOULD make predictions and give opinions when asked. Use historical SP+/FPI data, ` +
