@@ -222,10 +222,33 @@ export const POST = async (request: NextRequest) => {
     const simulateTool: Anthropic.Tool = {
       name: 'simulate_scenario',
       description:
-        "Run the conference simulation with hypothetical game outcomes. Use this when the user asks 'what if' questions about games that haven't been played yet or asks you to change the outcome of completed games.",
+        "Run the conference simulation with hypothetical game outcomes. Use this when the user asks 'what if' questions. " +
+        'Use a preset scenario when one fits (home_wins, away_wins, team_wins_out, team_loses_out, flip_results). ' +
+        'Only use custom overrides for specific matchup questions like "what if Alabama beat Georgia."',
       input_schema: {
         type: 'object' as const,
         properties: {
+          scenario: {
+            type: 'string',
+            enum: [
+              'home_wins',
+              'away_wins',
+              'team_wins_out',
+              'team_loses_out',
+              'flip_results',
+              'custom',
+            ],
+            description:
+              'home_wins: every home team wins. away_wins: every away team wins. ' +
+              'team_wins_out: a specific team wins all remaining games. ' +
+              'team_loses_out: a specific team loses all remaining games. ' +
+              'flip_results: reverse the outcome of every completed game. ' +
+              'custom: use the overrides array for specific matchups.',
+          },
+          team: {
+            type: 'string',
+            description: 'Team name (required for team_wins_out and team_loses_out)',
+          },
           overrides: {
             type: 'array',
             items: {
@@ -237,10 +260,10 @@ export const POST = async (request: NextRequest) => {
               },
               required: ['home_team', 'away_team', 'winner'],
             },
-            description: 'Game outcomes to override',
+            description: 'Game outcomes to override (only for scenario: custom)',
           },
         },
-        required: ['overrides'],
+        required: ['scenario'],
       },
     };
 
@@ -304,26 +327,83 @@ export const POST = async (request: NextRequest) => {
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
             const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
             const toolInput = JSON.parse(toolUseBlock.input);
-            const { resolved, unresolvable } = await resolveOverrides(toolInput.overrides);
+            const scenario: string = toolInput.scenario ?? 'custom';
 
+            const overridesMap: Record<string, { homeScore: number; awayScore: number }> = {};
+            let presetLabel = '';
+            let unresolvable: Array<{ reason: string }> = [];
             let totalResolved = 0;
+
+            const confGames = data.games.filter(
+              (g) =>
+                g.conferenceGame &&
+                g.gameType?.abbreviation !== 'post' &&
+                g.gameType?.abbreviation !== 'spring_post'
+            );
+
+            if (scenario === 'home_wins') {
+              presetLabel = 'all home teams win';
+              for (const g of confGames) {
+                overridesMap[g._id] = { homeScore: 1, awayScore: 0 };
+              }
+              totalResolved = Object.keys(overridesMap).length;
+            } else if (scenario === 'away_wins') {
+              presetLabel = 'all away teams win';
+              for (const g of confGames) {
+                overridesMap[g._id] = { homeScore: 0, awayScore: 1 };
+              }
+              totalResolved = Object.keys(overridesMap).length;
+            } else if (scenario === 'flip_results') {
+              presetLabel = 'all results flipped';
+              for (const g of confGames.filter((g) => g.completed)) {
+                const homeWon = (g.home.score ?? 0) > (g.away.score ?? 0);
+                overridesMap[g._id] = homeWon
+                  ? { homeScore: 0, awayScore: 1 }
+                  : { homeScore: 1, awayScore: 0 };
+              }
+              totalResolved = Object.keys(overridesMap).length;
+            } else if (scenario === 'team_wins_out' || scenario === 'team_loses_out') {
+              const teamMatcher = await getTeamMatcher();
+              const teamMatch = teamMatcher.bestMatch(toolInput.team ?? '');
+              if (!teamMatch || teamMatch.score > 0.4) {
+                unresolvable = [{ reason: `Could not identify team "${toolInput.team}"` }];
+              } else {
+                const tid = String(teamMatch.team.id);
+                presetLabel = `${teamMatch.team.school} ${scenario === 'team_wins_out' ? 'wins out' : 'loses out'}`;
+                for (const g of confGames.filter((g) => !g.completed)) {
+                  if (g.home.teamId === tid || g.away.teamId === tid) {
+                    const teamIsHome = g.home.teamId === tid;
+                    const teamWins = scenario === 'team_wins_out';
+                    overridesMap[g._id] =
+                      teamIsHome === teamWins
+                        ? { homeScore: 1, awayScore: 0 }
+                        : { homeScore: 0, awayScore: 1 };
+                  }
+                }
+                totalResolved = Object.keys(overridesMap).length;
+              }
+            } else {
+              const customResult = await resolveOverrides(toolInput.overrides ?? []);
+              unresolvable = customResult.unresolvable.map((u) => ({ reason: u.reason }));
+              for (const [, overrideList] of customResult.resolved) {
+                totalResolved += overrideList.length;
+                for (const o of overrideList) {
+                  overridesMap[o.gameId] = { homeScore: o.homeScore, awayScore: o.awayScore };
+                }
+              }
+            }
+
             const resultParts: string[] = [];
 
-            for (const [simConf, overrideList] of resolved) {
-              totalResolved += overrideList.length;
-              const confData = await loadConferenceData(simConf);
-              const overridesMap: Record<string, { homeScore: number; awayScore: number }> = {};
-              for (const o of overrideList) {
-                overridesMap[o.gameId] = { homeScore: o.homeScore, awayScore: o.awayScore };
-              }
+            if (totalResolved > 0) {
               const simResult = await runConferenceSimulation({
-                games: confData.games,
-                teams: confData.teams,
+                games: data.games,
+                teams: data.teams,
                 overrides: overridesMap,
-                conf: simConf,
+                conf,
               });
 
-              const teamMap = new Map(confData.teams.map((t) => [t._id, t]));
+              const teamMap = new Map(data.teams.map((t) => [t._id, t]));
               const standingsLines = simResult.standings.map((s) => {
                 const team = teamMap.get(s.teamId);
                 return `${s.rank}. ${team?.shortDisplayName ?? s.displayName} (${s.confRecord.wins}-${s.confRecord.losses})`;
@@ -334,7 +414,7 @@ export const POST = async (request: NextRequest) => {
 
               resultParts.push(
                 `CHAMPIONSHIP GAME: ${champ1} vs ${champ2}\n\n` +
-                  `Full ${simConf.toUpperCase()} standings with overrides (${overrideList.length} games overridden):\n${standingsLines.join('\n')}`
+                  `Full ${conf.toUpperCase()} standings${presetLabel ? ` (${presetLabel}, ${totalResolved} games)` : ` (${totalResolved} games overridden)`}:\n${standingsLines.join('\n')}`
               );
             }
 
@@ -350,7 +430,8 @@ export const POST = async (request: NextRequest) => {
             logMessage(
               'tool',
               JSON.stringify({
-                input: toolInput.overrides,
+                scenario,
+                team: toolInput.team ?? null,
                 resolved: totalResolved,
                 unresolvable: unresolvable.map((u) => u.reason),
                 result: toolResult,
