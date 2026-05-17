@@ -217,7 +217,12 @@ export const formatStandingsContext = (standings: StandingEntry[], teams: TeamLe
 
 export const formatGamesContext = (games: GameLean[], teams: TeamLean[]): string => {
   const teamMap = new Map(teams.map((t) => [t._id, t]));
-  const conferenceGames = games.filter((g) => g.conferenceGame);
+  const conferenceGames = games.filter(
+    (g) =>
+      g.conferenceGame &&
+      g.gameType?.abbreviation !== 'post' &&
+      g.gameType?.abbreviation !== 'spring_post'
+  );
   const completed = conferenceGames.filter((g) => g.completed);
   const remaining = conferenceGames.filter((g) => !g.completed);
   const parts: string[] = [];
