@@ -33,9 +33,30 @@ export const createTeamMatcher = (teams: TeamIndexEntry[]) => {
       fuse.search(query, { limit }).map((r) => ({ team: r.item, score: r.score ?? 1 })),
 
     bestMatch: (query: string): FuzzyMatchResult | null => {
-      const results = fuse.search(query, { limit: 1 });
-      if (results.length === 0) return null;
-      return { team: results[0].item, score: results[0].score ?? 1 };
+      const direct = fuse.search(query, { limit: 1 });
+      if (direct.length > 0 && (direct[0].score ?? 1) < 0.15) {
+        return { team: direct[0].item, score: direct[0].score ?? 1 };
+      }
+
+      const words = query
+        .replace(/[^a-zA-Z\s]/g, '')
+        .split(/\s+/)
+        .filter(Boolean);
+      let best: FuzzyMatchResult | null = null;
+      for (let len = 3; len >= 1; len--) {
+        for (let i = 0; i <= words.length - len; i++) {
+          const ngram = words.slice(i, i + len).join(' ');
+          if (ngram.length < 2) continue;
+          const results = fuse.search(ngram, { limit: 1 });
+          if (results.length > 0) {
+            const score = results[0].score ?? 1;
+            if (!best || score < best.score) {
+              best = { team: results[0].item, score };
+            }
+          }
+        }
+      }
+      return best;
     },
 
     isAmbiguous: (query: string, ambiguityGap: number = 0.1): boolean => {
