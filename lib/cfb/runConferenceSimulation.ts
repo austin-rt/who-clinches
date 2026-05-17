@@ -89,7 +89,10 @@ export const runConferenceSimulation = async ({
       championship = [standings[0]?.teamId || '', standings[1]?.teamId || ''];
     }
   } else {
-    championship = [standings[0]?.teamId ?? '', standings[1]?.teamId ?? ''];
+    if (standings.length < 2) {
+      throw new Error('Not enough teams with results to determine championship contenders');
+    }
+    championship = [standings[0].teamId, standings[1].teamId];
   }
 
   return { standings, championship, tieLogs, tieFlowGraphs };

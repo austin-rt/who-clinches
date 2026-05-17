@@ -169,7 +169,7 @@ const ConferencePage = () => {
       {hasConversation && !chatOpen && (
         <button
           onClick={() => setChatOpen(true)}
-          className="chat-tab fixed right-0 top-1/2 z-30 flex -translate-y-1/2 items-center gap-1.5 rounded-l-lg px-2 py-3 shadow-md transition-opacity hover:opacity-90"
+          className="chat-tab fixed right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center justify-center rounded-l-xl px-2.5 py-10 shadow-lg transition-opacity hover:opacity-90"
           aria-label="Reopen chat"
         >
           <IoChatbubblesOutline className="h-4 w-4" />

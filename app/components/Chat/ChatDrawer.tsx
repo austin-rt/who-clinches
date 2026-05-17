@@ -40,9 +40,9 @@ const TypingIndicator = () => (
   </div>
 );
 
-const TYPING_SHOW_DELAY_MIN = 400;
-const TYPING_SHOW_DELAY_MAX = 900;
-const TYPING_MIN_VISIBLE = 600;
+const TYPING_SHOW_DELAY_MIN = 300;
+const TYPING_SHOW_DELAY_MAX = 500;
+const TYPING_MIN_VISIBLE = 1500;
 
 const makeSession = (label: string): ChatSession => ({
   id: crypto.randomUUID(),
@@ -108,6 +108,7 @@ const ChatDrawer = ({
 
   useEffect(() => {
     if (open) {
+      document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setVisible(true);
@@ -115,10 +116,51 @@ const ChatDrawer = ({
         });
       });
     } else {
+      document.body.style.overflow = '';
       setVisible(false);
       if (abortRef.current) abortRef.current.abort();
     }
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, [open, onClose]);
+
+  useEffect(() => {
+    if (!visible) return;
+    const drawer = drawerRef.current;
+    if (!drawer) return;
+    const focusable = drawer.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    drawer.addEventListener('keydown', trap);
+    return () => drawer.removeEventListener('keydown', trap);
+  }, [visible]);
 
   const sendMessage = useCallback(
     async (text: string, opts?: { skipBubble?: boolean }) => {
@@ -135,7 +177,7 @@ const ChatDrawer = ({
       const typingTimer = setTimeout(() => setShowTyping(true), typingDelay);
       const typingShownAt = Date.now() + typingDelay;
 
-      const assistantId = `assistant-${Date.now()}`;
+      let assistantId = `assistant-${Date.now()}`;
 
       const doFetch = async (): Promise<void> => {
         const controller = new AbortController();
@@ -184,6 +226,8 @@ const ChatDrawer = ({
 
         const decoder = new TextDecoder();
         let buffer = '';
+        let needsNewBubble = false;
+        let breakShownAt = 0;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -198,11 +242,29 @@ const ChatDrawer = ({
             const data = JSON.parse(line.slice(6));
 
             if (data.type === 'delta') {
-              setMessages((prev) =>
-                prev.map((m) =>
-                  m.id === assistantId ? { ...m, content: m.content + data.text } : m
-                )
-              );
+              if (needsNewBubble) {
+                const dotsElapsed = Date.now() - breakShownAt;
+                if (dotsElapsed < TYPING_MIN_VISIBLE) {
+                  await new Promise((r) => setTimeout(r, TYPING_MIN_VISIBLE - dotsElapsed));
+                }
+                needsNewBubble = false;
+                setShowTyping(false);
+                assistantId = `assistant-${Date.now()}`;
+                setMessages((prev) => [
+                  ...prev,
+                  { id: assistantId, role: 'assistant', content: data.text },
+                ]);
+              } else {
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === assistantId ? { ...m, content: m.content + data.text } : m
+                  )
+                );
+              }
+            } else if (data.type === 'break') {
+              needsNewBubble = true;
+              breakShownAt = Date.now();
+              setShowTyping(true);
             } else if (data.type === 'error') {
               throw new Error(data.error);
             }
@@ -288,8 +350,21 @@ const ChatDrawer = ({
     setInput('');
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') onClose();
+  const handleCloseSession = (index: number) => {
+    if (isStreaming) return;
+    if (sessions.length === 1) {
+      setSessions([makeSession('New chat')]);
+      setActiveIndex(0);
+      setInput('');
+      return;
+    }
+    setSessions((prev) => prev.filter((_, i) => i !== index));
+    if (index < activeIndex) {
+      setActiveIndex(activeIndex - 1);
+    } else if (index === activeIndex) {
+      setActiveIndex(Math.min(index, sessions.length - 2));
+    }
+    setInput('');
   };
 
   const showTabs = sessions.length > 1 || messages.length > 0;
@@ -306,7 +381,6 @@ const ChatDrawer = ({
           transitionDelay: visible ? '0ms' : '0ms, 300ms',
         }}
         onClick={onClose}
-        onKeyDown={handleKeyDown}
         role="button"
         tabIndex={-1}
         aria-label="Close chat"
@@ -334,17 +408,31 @@ const ChatDrawer = ({
           <div className="flex min-w-0 flex-1 items-center gap-1">
             {showTabs &&
               sessions.map((session, i) => (
-                <button
+                <div
                   key={session.id}
-                  onClick={() => handleSwitchSession(i)}
-                  className={`max-w-[7rem] truncate rounded-md px-2 py-1 text-xs transition-colors ${
+                  className={`group flex max-w-[8rem] items-center rounded-md text-xs transition-colors ${
                     i === activeIndex
                       ? 'bg-base-300 font-medium text-base-content'
                       : 'text-base-content/50 hover:text-base-content'
                   }`}
                 >
-                  {session.label}
-                </button>
+                  <button
+                    onClick={() => handleSwitchSession(i)}
+                    className="min-w-0 truncate py-1 pl-2 pr-1"
+                  >
+                    {session.label}
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCloseSession(i);
+                    }}
+                    className="hover:bg-base-content/10 flex h-4 w-4 shrink-0 items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100"
+                    aria-label={`Close ${session.label}`}
+                  >
+                    <HiXMark className="h-3 w-3" />
+                  </button>
+                </div>
               ))}
             {showTabs && sessions.length < MAX_SESSIONS && (
               <button
@@ -412,7 +500,6 @@ const ChatDrawer = ({
                 e.preventDefault();
                 handleSubmit(e);
               }
-              if (e.key === 'Escape') onClose();
             }}
             maxLength={500}
             rows={1}

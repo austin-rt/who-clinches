@@ -22,6 +22,15 @@ import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
+const SIMULATING_QUIPS = [
+  'Running the numbers...',
+  'Let me simulate that real quick.',
+  'Hold on, crunching the scenarios.',
+  'Give me a sec — running it through the engine.',
+  'Let me plug that in and see what shakes out.',
+];
+let lastQuipIndex = -1;
+
 const CHAT_RATE_LIMIT_MS = 8_000;
 const chatRateMap = new Map<string, number>();
 
@@ -113,10 +122,12 @@ export const POST = async (request: NextRequest) => {
           conference: m.team.conference,
         }));
       } else {
-        targetTeamId = String(match.team.id);
-        targetTeamName = match.team.school;
         const teamConf = resolveTeamConference(match.team);
-        if (teamConf) conf = teamConf;
+        if (!conferenceHint || teamConf === conferenceHint) {
+          targetTeamId = String(match.team.id);
+          targetTeamName = match.team.school;
+          if (teamConf) conf = teamConf;
+        }
       }
     }
 
@@ -245,7 +256,7 @@ export const POST = async (request: NextRequest) => {
         const streamResponse = async (msgs: Anthropic.MessageParam[]) => {
           const stream = anthropic.messages.stream({
             model: 'claude-haiku-4-5-20251001',
-            max_tokens: 512,
+            max_tokens: 8192,
             system: systemPrompt,
             messages: msgs,
             tools: [simulateTool],
@@ -280,6 +291,18 @@ export const POST = async (request: NextRequest) => {
           }
 
           if (toolUseBlock && toolUseBlock.name === 'simulate_scenario') {
+            if (!fullResponse.trim()) {
+              const eligible = SIMULATING_QUIPS.filter((_, i) => i !== lastQuipIndex);
+              const picked = Math.floor(Math.random() * eligible.length);
+              lastQuipIndex = SIMULATING_QUIPS.indexOf(eligible[picked]);
+              const quip = eligible[picked];
+              fullResponse += quip;
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
+              );
+            }
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
+            const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
             const toolInput = JSON.parse(toolUseBlock.input);
             const { resolved, unresolvable } = await resolveOverrides(toolInput.overrides);
 
@@ -342,6 +365,7 @@ export const POST = async (request: NextRequest) => {
               },
             ];
 
+            await minDots;
             await streamResponse(followupMsgs);
           }
         };
