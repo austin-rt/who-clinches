@@ -15,6 +15,9 @@ import {
 } from '@/lib/cfb/chat/context-assembly';
 import { resolveOverrides } from '@/lib/cfb/chat/resolve-overrides';
 import { runConferenceSimulation } from '@/lib/cfb/runConferenceSimulation';
+import { executeCfbdLookup } from '@/lib/cfb/chat/cfbd-lookup';
+import { CFBD_API_CATALOG } from '@/lib/cfb/chat/cfbd-api-catalog';
+import { buildTeamReferenceContext } from '@/lib/cfb/chat/cfbd-reference-data';
 import { retrieveRelevantChunks } from '@/lib/rag/retrieval';
 import { CFB_CONFERENCE_METADATA, type CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
@@ -22,12 +25,15 @@ import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const SIMULATING_QUIPS = [
+const TOOL_QUIPS = [
   'Running the numbers...',
   'Let me simulate that real quick.',
   'Hold on, crunching the scenarios.',
   'Give me a sec — running it through the engine.',
   'Let me plug that in and see what shakes out.',
+  'Let me pull up those stats.',
+  'Checking the data...',
+  'One sec, looking that up.',
 ];
 let lastQuipIndex = -1;
 
@@ -79,6 +85,118 @@ const streamFixtureResponse = (): ReadableStream => {
       controller.close();
     },
   });
+};
+
+interface SimulateToolInput {
+  scenario?: string;
+  team?: string;
+  overrides?: Array<{ home_team: string; away_team: string; winner: string }>;
+}
+
+const executeSimulateTool = async (
+  toolInput: SimulateToolInput,
+  data: Awaited<ReturnType<typeof loadConferenceData>>,
+  conf: CFBConferenceAbbreviation
+): Promise<string> => {
+  const scenario = toolInput.scenario ?? 'custom';
+
+  const overridesMap: Record<string, { homeScore: number; awayScore: number }> = {};
+  let presetLabel = '';
+  let unresolvable: Array<{ reason: string }> = [];
+  let totalResolved = 0;
+
+  const confGames = data.games.filter(
+    (g) =>
+      g.conferenceGame &&
+      g.gameType?.abbreviation !== 'post' &&
+      g.gameType?.abbreviation !== 'spring_post'
+  );
+
+  if (scenario === 'home_wins') {
+    presetLabel = 'all home teams win';
+    for (const g of confGames) {
+      overridesMap[g._id] = { homeScore: 1, awayScore: 0 };
+    }
+    totalResolved = Object.keys(overridesMap).length;
+  } else if (scenario === 'away_wins') {
+    presetLabel = 'all away teams win';
+    for (const g of confGames) {
+      overridesMap[g._id] = { homeScore: 0, awayScore: 1 };
+    }
+    totalResolved = Object.keys(overridesMap).length;
+  } else if (scenario === 'flip_results') {
+    presetLabel = 'all results flipped';
+    for (const g of confGames.filter((g) => g.completed)) {
+      const homeWon = (g.home.score ?? 0) > (g.away.score ?? 0);
+      overridesMap[g._id] = homeWon
+        ? { homeScore: 0, awayScore: 1 }
+        : { homeScore: 1, awayScore: 0 };
+    }
+    totalResolved = Object.keys(overridesMap).length;
+  } else if (scenario === 'team_wins_out' || scenario === 'team_loses_out') {
+    const teamMatcher = await getTeamMatcher();
+    const teamMatch = teamMatcher.bestMatch(toolInput.team ?? '');
+    if (!teamMatch || teamMatch.score > 0.4) {
+      unresolvable = [{ reason: `Could not identify team "${toolInput.team}"` }];
+    } else {
+      const tid = String(teamMatch.team.id);
+      presetLabel = `${teamMatch.team.school} ${scenario === 'team_wins_out' ? 'wins out' : 'loses out'}`;
+      for (const g of confGames.filter((g) => !g.completed)) {
+        if (g.home.teamId === tid || g.away.teamId === tid) {
+          const teamIsHome = g.home.teamId === tid;
+          const teamWins = scenario === 'team_wins_out';
+          overridesMap[g._id] =
+            teamIsHome === teamWins
+              ? { homeScore: 1, awayScore: 0 }
+              : { homeScore: 0, awayScore: 1 };
+        }
+      }
+      totalResolved = Object.keys(overridesMap).length;
+    }
+  } else {
+    const customResult = await resolveOverrides(toolInput.overrides ?? []);
+    unresolvable = customResult.unresolvable.map((u) => ({ reason: u.reason }));
+    for (const [, overrideList] of customResult.resolved) {
+      totalResolved += overrideList.length;
+      for (const o of overrideList) {
+        overridesMap[o.gameId] = { homeScore: o.homeScore, awayScore: o.awayScore };
+      }
+    }
+  }
+
+  const resultParts: string[] = [];
+
+  if (totalResolved > 0) {
+    const simResult = await runConferenceSimulation({
+      games: data.games,
+      teams: data.teams,
+      overrides: overridesMap,
+      conf,
+    });
+
+    const teamMap = new Map(data.teams.map((t) => [t._id, t]));
+    const standingsLines = simResult.standings.map((s) => {
+      const team = teamMap.get(s.teamId);
+      return `${s.rank}. ${team?.shortDisplayName ?? s.displayName} (${s.confRecord.wins}-${s.confRecord.losses})`;
+    });
+
+    const champ1 = teamMap.get(simResult.championship[0])?.shortDisplayName ?? '?';
+    const champ2 = teamMap.get(simResult.championship[1])?.shortDisplayName ?? '?';
+
+    resultParts.push(
+      `CHAMPIONSHIP GAME: ${champ1} vs ${champ2}\n\n` +
+        `Full ${conf.toUpperCase()} standings${presetLabel ? ` (${presetLabel}, ${totalResolved} games)` : ` (${totalResolved} games overridden)`}:\n${standingsLines.join('\n')}`
+    );
+  }
+
+  if (unresolvable.length > 0) {
+    resultParts.push(
+      `WARNING: ${unresolvable.length} overrides could not be applied (${totalResolved} succeeded):\n` +
+        unresolvable.map((u) => `- ${u.reason}`).join('\n')
+    );
+  }
+
+  return resultParts.join('\n\n');
 };
 
 export const POST = async (request: NextRequest) => {
@@ -160,6 +278,7 @@ export const POST = async (request: NextRequest) => {
     const contextParts: string[] = [
       formatStandingsContext(data.standings, data.teams),
       formatGamesContext(data.games, data.teams),
+      buildTeamReferenceContext(data.teams),
     ];
 
     if (ragChunks.length > 0) {
@@ -267,6 +386,32 @@ export const POST = async (request: NextRequest) => {
       },
     };
 
+    const cfbdLookupTool: Anthropic.Tool = {
+      name: 'cfbd_lookup',
+      description:
+        'Query the CFBD API for college football data not already in your context. ' +
+        'Use this for stats, ratings, recruiting, betting lines, rosters, historical records, etc. ' +
+        'The endpoint catalog is in your context — pick the right endpoint and params. ' +
+        'Be judicious: only call this when the question requires data beyond the standings/games/scenarios you already have.',
+      input_schema: {
+        type: 'object' as const,
+        properties: {
+          endpoint: {
+            type: 'string',
+            description: 'API path from the catalog, e.g. "/ratings/sp", "/records", "/lines"',
+          },
+          params: {
+            type: 'object',
+            additionalProperties: { type: 'string' },
+            description:
+              'Query parameters as key-value string pairs, e.g. {"year": "2024", "team": "Alabama"}',
+          },
+        },
+        required: ['endpoint', 'params'],
+      },
+    };
+
+    const systemWithCatalog = systemPrompt + '\n\n' + CFBD_API_CATALOG;
     const anthropic = new Anthropic();
 
     const encoder = new TextEncoder();
@@ -280,9 +425,9 @@ export const POST = async (request: NextRequest) => {
           const stream = anthropic.messages.stream({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 8192,
-            system: systemPrompt,
+            system: systemWithCatalog,
             messages: msgs,
-            tools: [simulateTool],
+            tools: [simulateTool, cfbdLookupTool],
           });
 
           let toolUseBlock: { id: string; name: string; input: string } | null = null;
@@ -313,11 +458,11 @@ export const POST = async (request: NextRequest) => {
             }
           }
 
-          if (toolUseBlock && toolUseBlock.name === 'simulate_scenario') {
+          if (toolUseBlock) {
             if (!fullResponse.trim()) {
-              const eligible = SIMULATING_QUIPS.filter((_, i) => i !== lastQuipIndex);
+              const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
               const picked = Math.floor(Math.random() * eligible.length);
-              lastQuipIndex = SIMULATING_QUIPS.indexOf(eligible[picked]);
+              lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
               const quip = eligible[picked];
               fullResponse += quip;
               controller.enqueue(
@@ -327,114 +472,26 @@ export const POST = async (request: NextRequest) => {
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
             const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
             const toolInput = JSON.parse(toolUseBlock.input);
-            const scenario: string = toolInput.scenario ?? 'custom';
 
-            const overridesMap: Record<string, { homeScore: number; awayScore: number }> = {};
-            let presetLabel = '';
-            let unresolvable: Array<{ reason: string }> = [];
-            let totalResolved = 0;
+            let toolResult: string;
 
-            const confGames = data.games.filter(
-              (g) =>
-                g.conferenceGame &&
-                g.gameType?.abbreviation !== 'post' &&
-                g.gameType?.abbreviation !== 'spring_post'
-            );
-
-            if (scenario === 'home_wins') {
-              presetLabel = 'all home teams win';
-              for (const g of confGames) {
-                overridesMap[g._id] = { homeScore: 1, awayScore: 0 };
-              }
-              totalResolved = Object.keys(overridesMap).length;
-            } else if (scenario === 'away_wins') {
-              presetLabel = 'all away teams win';
-              for (const g of confGames) {
-                overridesMap[g._id] = { homeScore: 0, awayScore: 1 };
-              }
-              totalResolved = Object.keys(overridesMap).length;
-            } else if (scenario === 'flip_results') {
-              presetLabel = 'all results flipped';
-              for (const g of confGames.filter((g) => g.completed)) {
-                const homeWon = (g.home.score ?? 0) > (g.away.score ?? 0);
-                overridesMap[g._id] = homeWon
-                  ? { homeScore: 0, awayScore: 1 }
-                  : { homeScore: 1, awayScore: 0 };
-              }
-              totalResolved = Object.keys(overridesMap).length;
-            } else if (scenario === 'team_wins_out' || scenario === 'team_loses_out') {
-              const teamMatcher = await getTeamMatcher();
-              const teamMatch = teamMatcher.bestMatch(toolInput.team ?? '');
-              if (!teamMatch || teamMatch.score > 0.4) {
-                unresolvable = [{ reason: `Could not identify team "${toolInput.team}"` }];
-              } else {
-                const tid = String(teamMatch.team.id);
-                presetLabel = `${teamMatch.team.school} ${scenario === 'team_wins_out' ? 'wins out' : 'loses out'}`;
-                for (const g of confGames.filter((g) => !g.completed)) {
-                  if (g.home.teamId === tid || g.away.teamId === tid) {
-                    const teamIsHome = g.home.teamId === tid;
-                    const teamWins = scenario === 'team_wins_out';
-                    overridesMap[g._id] =
-                      teamIsHome === teamWins
-                        ? { homeScore: 1, awayScore: 0 }
-                        : { homeScore: 0, awayScore: 1 };
-                  }
-                }
-                totalResolved = Object.keys(overridesMap).length;
-              }
+            if (toolUseBlock.name === 'simulate_scenario') {
+              toolResult = await executeSimulateTool(toolInput, data, conf);
+            } else if (toolUseBlock.name === 'cfbd_lookup') {
+              toolResult = await executeCfbdLookup(
+                toolInput.endpoint ?? '',
+                toolInput.params ?? {}
+              );
             } else {
-              const customResult = await resolveOverrides(toolInput.overrides ?? []);
-              unresolvable = customResult.unresolvable.map((u) => ({ reason: u.reason }));
-              for (const [, overrideList] of customResult.resolved) {
-                totalResolved += overrideList.length;
-                for (const o of overrideList) {
-                  overridesMap[o.gameId] = { homeScore: o.homeScore, awayScore: o.awayScore };
-                }
-              }
+              toolResult = 'Unknown tool';
             }
-
-            const resultParts: string[] = [];
-
-            if (totalResolved > 0) {
-              const simResult = await runConferenceSimulation({
-                games: data.games,
-                teams: data.teams,
-                overrides: overridesMap,
-                conf,
-              });
-
-              const teamMap = new Map(data.teams.map((t) => [t._id, t]));
-              const standingsLines = simResult.standings.map((s) => {
-                const team = teamMap.get(s.teamId);
-                return `${s.rank}. ${team?.shortDisplayName ?? s.displayName} (${s.confRecord.wins}-${s.confRecord.losses})`;
-              });
-
-              const champ1 = teamMap.get(simResult.championship[0])?.shortDisplayName ?? '?';
-              const champ2 = teamMap.get(simResult.championship[1])?.shortDisplayName ?? '?';
-
-              resultParts.push(
-                `CHAMPIONSHIP GAME: ${champ1} vs ${champ2}\n\n` +
-                  `Full ${conf.toUpperCase()} standings${presetLabel ? ` (${presetLabel}, ${totalResolved} games)` : ` (${totalResolved} games overridden)`}:\n${standingsLines.join('\n')}`
-              );
-            }
-
-            if (unresolvable.length > 0) {
-              resultParts.push(
-                `WARNING: ${unresolvable.length} overrides could not be applied (${totalResolved} succeeded):\n` +
-                  unresolvable.map((u) => `- ${u.reason}`).join('\n')
-              );
-            }
-
-            const toolResult = resultParts.join('\n\n');
 
             logMessage(
               'tool',
               JSON.stringify({
-                scenario,
-                team: toolInput.team ?? null,
-                resolved: totalResolved,
-                unresolvable: unresolvable.map((u) => u.reason),
-                result: toolResult,
+                tool: toolUseBlock.name,
+                input: toolInput,
+                result: toolResult.slice(0, 2000),
               })
             );
 

@@ -174,6 +174,8 @@ export const buildSystemPrompt = (confName: string, hasRagContext: boolean): str
     `- The top 2 teams in the final conference standings make the championship game.\n` +
     `- You have all the data — never ask the user for information.\n` +
     `- For "what if" questions, use the simulate_scenario tool. Never guess tiebreaker outcomes.\n` +
+    `- For stats, ratings, recruiting, betting lines, rosters, records, or any data not in your context, use the cfbd_lookup tool. ` +
+    `The endpoint catalog is appended below — pick the right endpoint and params. Be judicious: one targeted call beats three broad ones.\n` +
     `- CRITICAL: When the simulate_scenario tool returns results, report the EXACT championship matchup and standings from the tool output. ` +
     `The tool runs the real simulation engine — its output is authoritative. Never paraphrase, reinterpret, or guess differently from what the tool returned. ` +
     `If the tool says Team A vs Team B in the championship, that is the answer. Period.\n` +
