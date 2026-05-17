@@ -457,7 +457,7 @@ const ChatDrawer = ({
           <div className="bg-warning/10 mb-3 rounded-lg px-3 py-2 text-center text-xs text-warning">
             Experimental — results may be inaccurate.{' '}
             <a
-              href="mailto:feedback@whoclinches.com"
+              href={`mailto:feedback@whoclinches.com?subject=${encodeURIComponent(`Chat issue [${sessionId.slice(0, 8)}]`)}&body=${encodeURIComponent(`Session: ${sessionId}\n\nDescribe the issue:\n`)}`}
               className="underline hover:text-warning-content"
             >
               Report issues
