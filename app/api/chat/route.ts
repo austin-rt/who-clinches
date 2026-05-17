@@ -22,7 +22,7 @@ import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const CHAT_RATE_LIMIT_MS = 15_000;
+const CHAT_RATE_LIMIT_MS = 8_000;
 const chatRateMap = new Map<string, number>();
 
 const checkChatRateLimit = (ip: string): number | null => {

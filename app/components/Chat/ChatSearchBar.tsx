@@ -6,16 +6,25 @@ import { IoSendOutline } from 'react-icons/io5';
 interface ChatSearchBarProps {
   geoTeamName: string | null;
   fallbackTeamName: string | null;
+  hasConversation: boolean;
   onOpen: () => void;
   onSubmit: (message: string) => void;
 }
 
-const ChatSearchBar = ({ geoTeamName, fallbackTeamName, onOpen, onSubmit }: ChatSearchBarProps) => {
+const ChatSearchBar = ({
+  geoTeamName,
+  fallbackTeamName,
+  hasConversation,
+  onOpen,
+  onSubmit,
+}: ChatSearchBarProps) => {
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const teamName = geoTeamName ?? fallbackTeamName ?? 'your team';
-  const placeholder = `How does ${teamName} make the title?`;
+  const placeholder = hasConversation
+    ? 'Continue chatting...'
+    : `How does ${teamName} make the title?`;
 
   const handleSubmit = useCallback(() => {
     const text = value.trim();
@@ -33,6 +42,21 @@ const ChatSearchBar = ({ geoTeamName, fallbackTeamName, onOpen, onSubmit }: Chat
       handleSubmit();
     }
   };
+
+  if (hasConversation) {
+    return (
+      <div className="mx-auto w-full max-w-md">
+        <button
+          type="button"
+          onClick={onOpen}
+          className="chat-search-bar w-full cursor-pointer"
+          data-testid="chat-trigger"
+        >
+          <span className="chat-search-input text-left opacity-50">{placeholder}</span>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto w-full max-w-md">

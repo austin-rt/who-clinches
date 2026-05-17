@@ -476,6 +476,36 @@ export const FILE_CONFIGS: FileConfig[] = [
     strategy: 'stats-yearly',
     baseDir: 'docs/historical-stats',
   },
+  {
+    path: '2020-championships.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2021-championships.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2022-championships.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2023-championships.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2024-championships.txt',
+    conference: 'ALL',
+    strategy: 'single',
+    baseDir: 'docs/historical-stats',
+  },
 ];
 
 export const chunkDocument = (content: string, config: FileConfig): ChunkMetadata[] => {

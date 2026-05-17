@@ -1,6 +1,13 @@
+delete process.env.FIXTURE_YEAR;
+
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
-import { getSpFromCfbd, getFpiFromCfbd } from '../lib/cfb/cfbd-rest-client';
+import {
+  getSpFromCfbd,
+  getFpiFromCfbd,
+  getGamesFromCfbd,
+  getRankingsFromCfbd,
+} from '../lib/cfb/cfbd-rest-client';
 
 const YEARS = [2020, 2021, 2022, 2023, 2024];
 const OUTPUT_DIR = join(process.cwd(), 'docs', 'historical-stats');
@@ -45,6 +52,50 @@ const formatFpi = (fpi: Awaited<ReturnType<typeof getFpiFromCfbd>>, year: number
   return lines.join('\n');
 };
 
+const formatChampionships = (
+  games: Awaited<ReturnType<typeof getGamesFromCfbd>>,
+  year: number
+): string => {
+  const champGames = games.filter((g) => g.notes && /championship/i.test(g.notes) && g.completed);
+
+  if (champGames.length === 0) return '';
+
+  const lines: string[] = [`${year} Conference Championship Games`, ''];
+
+  for (const g of champGames) {
+    const winner = (g.homePoints ?? 0) > (g.awayPoints ?? 0) ? g.homeTeam : g.awayTeam;
+    const loser = winner === g.homeTeam ? g.awayTeam : g.homeTeam;
+    const winScore = Math.max(g.homePoints ?? 0, g.awayPoints ?? 0);
+    const loseScore = Math.min(g.homePoints ?? 0, g.awayPoints ?? 0);
+    lines.push(`${g.notes ?? 'Championship'}: ${winner} ${winScore}, ${loser} ${loseScore}`);
+  }
+
+  return lines.join('\n');
+};
+
+const formatPreseasonRankings = (
+  rankings: Awaited<ReturnType<typeof getRankingsFromCfbd>>,
+  year: number
+): string => {
+  if (rankings.length === 0) return '';
+
+  const lines: string[] = [`${year} Preseason Rankings`, ''];
+
+  for (const week of rankings) {
+    for (const poll of week.polls ?? []) {
+      lines.push(`${poll.poll}:`);
+      for (const rank of poll.ranks ?? []) {
+        if (rank.rank === null || rank.rank === undefined) continue;
+        const fvotes = rank.firstPlaceVotes ? ` (${rank.firstPlaceVotes} first-place votes)` : '';
+        lines.push(`  ${rank.rank}. ${rank.school} (${rank.conference ?? '?'})${fvotes}`);
+      }
+      lines.push('');
+    }
+  }
+
+  return lines.join('\n');
+};
+
 const run = async () => {
   mkdirSync(OUTPUT_DIR, { recursive: true });
   console.log(`Fetching historical stats for ${YEARS.join(', ')}...\n`);
@@ -60,16 +111,34 @@ const run = async () => {
     console.log(`  FPI: ${fpi.length} teams`);
     await delay(DELAY_MS);
 
+    const postseasonGames = await getGamesFromCfbd({ year, seasonType: 'postseason' });
+    console.log(`  Postseason games: ${postseasonGames.length}`);
+    await delay(DELAY_MS);
+
+    const preseasonRankings = await getRankingsFromCfbd({ year, week: 1 });
+    console.log(`  Preseason rankings: ${preseasonRankings.length} weeks`);
+    await delay(DELAY_MS);
+
     if (sp.length > 0) {
-      const spText = formatSp(sp, year);
-      writeFileSync(join(OUTPUT_DIR, `${year}-sp-plus.txt`), spText);
+      writeFileSync(join(OUTPUT_DIR, `${year}-sp-plus.txt`), formatSp(sp, year));
       console.log(`  Wrote ${year}-sp-plus.txt`);
     }
 
     if (fpi.length > 0) {
-      const fpiText = formatFpi(fpi, year);
-      writeFileSync(join(OUTPUT_DIR, `${year}-fpi.txt`), fpiText);
+      writeFileSync(join(OUTPUT_DIR, `${year}-fpi.txt`), formatFpi(fpi, year));
       console.log(`  Wrote ${year}-fpi.txt`);
+    }
+
+    const champText = formatChampionships(postseasonGames, year);
+    if (champText) {
+      writeFileSync(join(OUTPUT_DIR, `${year}-championships.txt`), champText);
+      console.log(`  Wrote ${year}-championships.txt`);
+    }
+
+    const rankingsText = formatPreseasonRankings(preseasonRankings, year);
+    if (rankingsText) {
+      writeFileSync(join(OUTPUT_DIR, `${year}-preseason-rankings.txt`), rankingsText);
+      console.log(`  Wrote ${year}-preseason-rankings.txt`);
     }
 
     console.log('');

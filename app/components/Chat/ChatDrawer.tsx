@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback } from 'react';
-import { HiXMark } from 'react-icons/hi2';
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
+import { HiXMark, HiPlus } from 'react-icons/hi2';
 import { IoSendOutline } from 'react-icons/io5';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 
@@ -11,6 +11,14 @@ interface ChatMessage {
   content: string;
   pending?: boolean;
 }
+
+interface ChatSession {
+  id: string;
+  messages: ChatMessage[];
+  label: string;
+}
+
+const MAX_SESSIONS = 3;
 
 interface ChatDrawerProps {
   open: boolean;
@@ -36,6 +44,19 @@ const TYPING_SHOW_DELAY_MIN = 400;
 const TYPING_SHOW_DELAY_MAX = 900;
 const TYPING_MIN_VISIBLE = 600;
 
+const makeSession = (label: string): ChatSession => ({
+  id: crypto.randomUUID(),
+  messages: [],
+  label,
+});
+
+const deriveLabel = (messages: ChatMessage[]): string => {
+  const first = messages.find((m) => m.role === 'user');
+  if (!first) return 'New chat';
+  const text = first.content.trim();
+  return text.length > 24 ? text.slice(0, 24) + '...' : text;
+};
+
 const ChatDrawer = ({
   open,
   onClose,
@@ -46,17 +67,34 @@ const ChatDrawer = ({
   onMessageSent,
 }: ChatDrawerProps) => {
   const [visible, setVisible] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [sessions, setSessions] = useState<ChatSession[]>(() => [makeSession('New chat')]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [showTyping, setShowTyping] = useState(false);
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
-  const sessionIdRef = useRef<string>(crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const pendingRef = useRef<string[]>([]);
+
+  const activeSession = sessions[activeIndex];
+  const messages = useMemo(() => activeSession?.messages ?? [], [activeSession]);
+  const sessionId = activeSession?.id ?? '';
+
+  const setMessages = useCallback(
+    (updater: ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[])) => {
+      setSessions((prev) =>
+        prev.map((s, i) => {
+          if (i !== activeIndex) return s;
+          const newMessages = typeof updater === 'function' ? updater(s.messages) : updater;
+          return { ...s, messages: newMessages, label: deriveLabel(newMessages) || s.label };
+        })
+      );
+    },
+    [activeIndex]
+  );
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -88,6 +126,7 @@ const ChatDrawer = ({
         setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: text }]);
       }
       setInput('');
+      if (inputRef.current) inputRef.current.style.height = 'auto';
       setIsStreaming(true);
       onMessageSent?.();
 
@@ -112,7 +151,7 @@ const ChatDrawer = ({
             history,
             conferenceHint,
             teamId,
-            sessionId: sessionIdRef.current,
+            sessionId,
           }),
           signal: controller.signal,
         });
@@ -198,7 +237,7 @@ const ChatDrawer = ({
         }
       }
     },
-    [messages, conferenceHint, teamId, onMessageSent]
+    [messages, conferenceHint, teamId, sessionId, onMessageSent, setMessages]
   );
 
   useEffect(() => {
@@ -228,9 +267,32 @@ const ChatDrawer = ({
     void sendMessage(text);
   };
 
+  const handleNewChat = () => {
+    if (isStreaming) return;
+    if (sessions.length >= MAX_SESSIONS) {
+      setSessions((prev) => {
+        const updated = [...prev.slice(1), makeSession('New chat')];
+        return updated;
+      });
+      setActiveIndex(sessions.length - 1);
+    } else {
+      setSessions((prev) => [...prev, makeSession('New chat')]);
+      setActiveIndex(sessions.length);
+    }
+    setInput('');
+  };
+
+  const handleSwitchSession = (index: number) => {
+    if (isStreaming || index === activeIndex) return;
+    setActiveIndex(index);
+    setInput('');
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Escape') onClose();
   };
+
+  const showTabs = sessions.length > 1 || messages.length > 0;
 
   return (
     <>
@@ -268,10 +330,35 @@ const ChatDrawer = ({
         aria-hidden={!visible}
         inert={!visible ? true : undefined}
       >
-        <div className="flex items-center justify-end border-b border-base-300 px-4 py-3">
+        <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            {showTabs &&
+              sessions.map((session, i) => (
+                <button
+                  key={session.id}
+                  onClick={() => handleSwitchSession(i)}
+                  className={`max-w-[7rem] truncate rounded-md px-2 py-1 text-xs transition-colors ${
+                    i === activeIndex
+                      ? 'bg-base-300 font-medium text-base-content'
+                      : 'text-base-content/50 hover:text-base-content'
+                  }`}
+                >
+                  {session.label}
+                </button>
+              ))}
+            {showTabs && sessions.length < MAX_SESSIONS && (
+              <button
+                onClick={handleNewChat}
+                className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
+                aria-label="New chat"
+              >
+                <HiPlus className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
           <button
             onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
             aria-label="Close"
           >
             <HiXMark className="h-5 w-5" />
