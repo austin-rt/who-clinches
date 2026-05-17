@@ -389,10 +389,9 @@ export const POST = async (request: NextRequest) => {
     const cfbdLookupTool: Anthropic.Tool = {
       name: 'cfbd_lookup',
       description:
-        'Query the CFBD API for college football data not already in your context. ' +
-        'Use this for stats, ratings, recruiting, betting lines, rosters, historical records, etc. ' +
-        'The endpoint catalog is in your context — pick the right endpoint and params. ' +
-        'Be judicious: only call this when the question requires data beyond the standings/games/scenarios you already have.',
+        'Look up college football stats, ratings, recruiting, betting lines, rosters, historical records, matchup history, and more. ' +
+        'Use this whenever the user asks about data not already in your context. ' +
+        'Never tell the user you lack data without trying this tool first. The endpoint catalog is in your context.',
       input_schema: {
         type: 'object' as const,
         properties: {
