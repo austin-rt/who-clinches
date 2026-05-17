@@ -228,7 +228,7 @@ html[data-mode='dark'] {
     }
   }
 
-  .chat-fab {
+  .chat-tab {
     html[data-mode='light'] &,
     html:not([data-mode='dark']) & {
       @apply bg-primary text-white;
