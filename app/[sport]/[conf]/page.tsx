@@ -119,9 +119,6 @@ const ConferencePage = () => {
             setChatOpen(true);
           }}
         />
-        <div className="flex w-full justify-end">
-          <ViewModeButton />
-        </div>
       </div>
 
       {simulateResponse && <SimulationDisclaimer />}
@@ -143,12 +140,13 @@ const ConferencePage = () => {
       <Standings simulateResponse={simulateResponse} />
 
       <div className="flex items-center justify-between gap-4 empty:hidden">
+        <ViewModeButton />
         {games.some((g) => g.completed) && <HideCompletedButton />}
         <ResetButton
           games={games}
           hasSimulationResults={!!simulateResponse}
           onReset={handleReset}
-          className="w-fit"
+          className="ml-auto w-fit"
         />
       </div>
 

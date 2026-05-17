@@ -77,19 +77,41 @@ export const loadConferenceData = async (
   const reshaped = reshapeCfbdGames(cfbdGames, teamMap);
   const games: GameLean[] = reshaped.games.map((g) => ({ _id: g.id, ...g }));
 
-  const result = await runConferenceSimulation({
-    games,
-    teams,
-    overrides: {},
-    conf,
-  });
+  const completedGames = games.filter((g) => g.completed && g.conferenceGame);
+
+  let standings: ConferenceData['standings'] = [];
+  let championship: string[] = [];
+
+  if (completedGames.length > 0) {
+    const result = await runConferenceSimulation({
+      games: completedGames,
+      teams,
+      overrides: {},
+      conf,
+    });
+    standings = result.standings;
+    championship = result.championship;
+  } else {
+    standings = teams.map((t, i) => ({
+      rank: i + 1,
+      teamId: t._id,
+      displayName: t.shortDisplayName,
+      abbrev: t.abbreviation,
+      logo: t.logo,
+      color: t.color,
+      confRecord: { wins: 0, losses: 0 },
+      record: { wins: 0, losses: 0 },
+      explainPosition: '',
+      nationalRank: null,
+    }));
+  }
 
   return {
     conf,
     games,
     teams,
-    standings: result.standings,
-    championship: result.championship,
+    standings,
+    championship,
   };
 };
 
