@@ -1,0 +1,392 @@
+2020 SP+ Ratings (Bill Connelly's efficiency model)
+
+1. Ohio State (Big Ten)
+  Overall: 28.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 45.3 (#2) | Defense: 16.7 (#7)
+2. Alabama (SEC)
+  Overall: 28.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 46.8 (#1) | Defense: 18.6 (#12)
+3. Wisconsin (Big Ten)
+  Overall: 26.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 38.7 (#9) | Defense: 12.2 (#2)
+4. Clemson (ACC)
+  Overall: 26.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 42.6 (#6) | Defense: 16.7 (#7)
+5. Notre Dame (FBS Independents)
+  Overall: 21.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 38.3 (#10) | Defense: 17.3 (#11)
+6. Florida (SEC)
+  Overall: 19.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 43.3 (#4) | Defense: 23.9 (#34)
+7. BYU (Big 12)
+  Overall: 19.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 39.2 (#8) | Defense: 20.3 (#20)
+8. Georgia (SEC)
+  Overall: 19.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.8 (#44) | Defense: 12.1 (#1)
+9. Cincinnati (Big 12)
+  Overall: 18.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 34.5 (#24) | Defense: 15.9 (#6)
+10. Oregon (Big Ten)
+  Overall: 18.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 35.1 (#20) | Defense: 16.9 (#10)
+11. North Carolina (ACC)
+  Overall: 18.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 43.7 (#3) | Defense: 25.6 (#47)
+12. Oklahoma (SEC)
+  Overall: 17.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 43.0 (#5) | Defense: 25.2 (#42)
+13. Iowa (Big Ten)
+  Overall: 16.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.7 (#55) | Defense: 13.5 (#3)
+14. Texas A&M (SEC)
+  Overall: 16.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 37.7 (#15) | Defense: 21.5 (#25)
+15. Oklahoma State (Big 12)
+  Overall: 14.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.7 (#45) | Defense: 16.7 (#7)
+16. Penn State (Big Ten)
+  Overall: 13.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 35.0 (#21) | Defense: 21.0 (#23)
+17. Virginia Tech (ACC)
+  Overall: 13.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 38.0 (#12) | Defense: 24.4 (#38)
+18. UCF (Big 12)
+  Overall: 13.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 39.4 (#7) | Defense: 25.7 (#51)
+19. Iowa State (Big 12)
+  Overall: 13.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 34.5 (#24) | Defense: 21.1 (#24)
+20. Miami (ACC)
+  Overall: 12.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 32.6 (#38) | Defense: 20.2 (#19)
+21. Auburn (SEC)
+  Overall: 12.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.0 (#34) | Defense: 20.7 (#22)
+22. USC (Big Ten)
+  Overall: 12.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 38.0 (#12) | Defense: 25.5 (#45)
+23. Utah (Big 12)
+  Overall: 11.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 36.1 (#18) | Defense: 24.3 (#37)
+24. Washington (Big Ten)
+  Overall: 11.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.9 (#43) | Defense: 19.1 (#17)
+25. Arizona State (Big 12)
+  Overall: 11.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.2 (#50) | Defense: 18.9 (#14)
+26. Indiana (Big Ten)
+  Overall: 11.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.6 (#31) | Defense: 22.6 (#28)
+27. Michigan (Big Ten)
+  Overall: 10.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.0 (#34) | Defense: 22.2 (#26)
+28. App State (Sun Belt)
+  Overall: 10.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.0 (#34) | Defense: 22.6 (#28)
+29. Texas (SEC)
+  Overall: 9.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 34.8 (#22) | Defense: 25.2 (#42)
+30. Marshall (Sun Belt)
+  Overall: 9.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.6 (#64) | Defense: 19.0 (#16)
+31. SMU (ACC)
+  Overall: 9.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 36.4 (#17) | Defense: 27.3 (#60)
+32. Northwestern (Big Ten)
+  Overall: 9.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.0 (#99) | Defense: 15.2 (#5)
+33. West Virginia (Big 12)
+  Overall: 8.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.9 (#72) | Defense: 19.4 (#18)
+34. Louisiana (Sun Belt)
+  Overall: 8.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.8 (#27) | Defense: 25.6 (#47)
+35. Nebraska (Big Ten)
+  Overall: 7.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.7 (#29) | Defense: 25.9 (#53)
+36. Boise State (Pac-12)
+  Overall: 6.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.1 (#33) | Defense: 26.4 (#54)
+37. Coastal Carolina (Sun Belt)
+  Overall: 6.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.7 (#29) | Defense: 27.3 (#60)
+38. Louisville (ACC)
+  Overall: 6.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 37.7 (#15) | Defense: 31.1 (#87)
+38. Liberty (Conference USA)
+  Overall: 6.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 34.2 (#26) | Defense: 27.6 (#64)
+40. UAB (American Athletic)
+  Overall: 6.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.7 (#89) | Defense: 18.7 (#13)
+41. LSU (SEC)
+  Overall: 6.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.8 (#27) | Defense: 28.3 (#69)
+41. Pittsburgh (ACC)
+  Overall: 6.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.7 (#89) | Defense: 18.9 (#14)
+43. Purdue (Big Ten)
+  Overall: 5.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 32.6 (#38) | Defense: 26.8 (#57)
+44. Memphis (American Athletic)
+  Overall: 5.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 34.8 (#22) | Defense: 29.4 (#73)
+45. Tulsa (American Athletic)
+  Overall: 5.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.5 (#56) | Defense: 23.5 (#31)
+46. San Diego State (Pac-12)
+  Overall: 5.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 20.2 (#114) | Defense: 15.0 (#4)
+47. Ole Miss (SEC)
+  Overall: 4.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 38.1 (#11) | Defense: 33.2 (#99)
+48. Minnesota (Big Ten)
+  Overall: 4.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 35.8 (#19) | Defense: 30.7 (#86)
+49. Tulane (American Athletic)
+  Overall: 4.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 33.2 (#32) | Defense: 29.1 (#72)
+49. Washington State (Pac-12)
+  Overall: 4.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 37.8 (#14) | Defense: 33.7 (#101)
+51. Houston (Big 12)
+  Overall: 3.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 32.2 (#40) | Defense: 29.0 (#71)
+52. Army (American Athletic)
+  Overall: 2.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.8 (#73) | Defense: 25.3 (#44)
+53. California (ACC)
+  Overall: 2.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.6 (#47) | Defense: 28.2 (#68)
+54. Troy (Sun Belt)
+  Overall: 2.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.4 (#67) | Defense: 25.8 (#52)
+55. Kentucky (SEC)
+  Overall: 2.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 25.9 (#85) | Defense: 24.1 (#35)
+56. Kansas State (Big 12)
+  Overall: 2.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 26.7 (#81) | Defense: 24.7 (#40)
+57. Nevada (Mountain West)
+  Overall: 1.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.5 (#75) | Defense: 25.6 (#47)
+58. Arkansas (SEC)
+  Overall: 1.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.5 (#66) | Defense: 26.7 (#56)
+58. Stanford (ACC)
+  Overall: 1.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.0 (#52) | Defense: 28.4 (#70)
+58. TCU (Big 12)
+  Overall: 1.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.3 (#93) | Defense: 22.8 (#30)
+61. Buffalo (Mid-American)
+  Overall: 1.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.1 (#79) | Defense: 25.6 (#47)
+62. Baylor (Big 12)
+  Overall: 1.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 25.6 (#86) | Defense: 24.2 (#36)
+63. Tennessee (SEC)
+  Overall: 0.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.3 (#93) | Defense: 23.6 (#32)
+63. Virginia (ACC)
+  Overall: 0.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.3 (#69) | Defense: 27.5 (#63)
+63. Boston College (ACC)
+  Overall: 0.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.7 (#45) | Defense: 29.7 (#76)
+66. Wake Forest (ACC)
+  Overall: 0.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.6 (#64) | Defense: 27.9 (#66)
+67. Western Michigan (Mid-American)
+  Overall: 0.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 31.6 (#41) | Defense: 31.2 (#88)
+68. Georgia Southern (Sun Belt)
+  Overall: 0.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.4 (#77) | Defense: 27.1 (#59)
+69. San José State (Mountain West)
+  Overall: 0.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.4 (#49) | Defense: 30.4 (#83)
+70. NC State (ACC)
+  Overall: 0.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.8 (#54) | Defense: 30.0 (#80)
+71. Maryland (Big Ten)
+  Overall: -0.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.8 (#73) | Defense: 28.0 (#67)
+72. Florida Atlantic (American Athletic)
+  Overall: -0.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.2 (#105) | Defense: 23.7 (#33)
+73. Colorado (Big 12)
+  Overall: -0.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.1 (#51) | Defense: 30.4 (#83)
+74. Oregon State (Pac-12)
+  Overall: -0.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.4 (#58) | Defense: 30.0 (#80)
+75. Missouri (SEC)
+  Overall: -1.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.4 (#103) | Defense: 24.6 (#39)
+75. Georgia Tech (ACC)
+  Overall: -1.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.2 (#78) | Defense: 27.8 (#65)
+77. UCLA (Big Ten)
+  Overall: -1.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 30.6 (#47) | Defense: 31.7 (#92)
+78. Mississippi State (SEC)
+  Overall: -1.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 25.4 (#88) | Defense: 26.9 (#58)
+79. Central Michigan (Mid-American)
+  Overall: -1.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 25.6 (#86) | Defense: 27.4 (#62)
+80. South Carolina (SEC)
+  Overall: -2.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.5 (#75) | Defense: 29.7 (#76)
+80. Michigan State (Big Ten)
+  Overall: -2.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 18.3 (#119) | Defense: 20.6 (#21)
+82. Wyoming (Mountain West)
+  Overall: -2.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 22.4 (#107) | Defense: 24.9 (#41)
+83. Ohio (Mid-American)
+  Overall: -3.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.9 (#53) | Defense: 33.0 (#96)
+83. Western Kentucky (Conference USA)
+  Overall: -3.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 18.9 (#117) | Defense: 22.3 (#27)
+85. Arizona (Big 12)
+  Overall: -3.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 32.8 (#37) | Defense: 36.4 (#116)
+86. Toledo (Mid-American)
+  Overall: -3.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.5 (#56) | Defense: 33.0 (#96)
+87. Duke (ACC)
+  Overall: -4.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 21.4 (#111) | Defense: 25.5 (#45)
+87. Texas Tech (Big 12)
+  Overall: -4.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.4 (#67) | Defense: 32.3 (#94)
+89. Florida State (ACC)
+  Overall: -4.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 26.4 (#82) | Defense: 31.3 (#89)
+90. Illinois (Big Ten)
+  Overall: -5.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.9 (#100) | Defense: 29.4 (#73)
+91. Fresno State (Pac-12)
+  Overall: -5.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.3 (#60) | Defense: 34.8 (#109)
+92. Air Force (Mountain West)
+  Overall: -5.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.1 (#98) | Defense: 29.8 (#78)
+93. Georgia State (Sun Belt)
+  Overall: -5.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.7 (#63) | Defense: 34.2 (#106)
+94. Arkansas State (Sun Belt)
+  Overall: -6.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 31.1 (#42) | Defense: 37.2 (#122)
+94. Colorado State (Pac-12)
+  Overall: -6.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.2 (#96) | Defense: 30.5 (#85)
+96. Charlotte (American Athletic)
+  Overall: -6.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.4 (#58) | Defense: 35.8 (#113)
+97. Ball State (Mid-American)
+  Overall: -6.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 27.0 (#80) | Defense: 33.8 (#104)
+98. Louisiana Tech (Conference USA)
+  Overall: -7.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.4 (#91) | Defense: 31.4 (#90)
+99. Hawai'i (Mountain West)
+  Overall: -7.1 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.2 (#71) | Defense: 35.2 (#111)
+100. Kent State (Mid-American)
+  Overall: -7.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 29.1 (#61) | Defense: 36.4 (#116)
+101. Southern Miss (Sun Belt)
+  Overall: -7.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.2 (#96) | Defense: 32.1 (#93)
+102. North Texas (American Athletic)
+  Overall: -8.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.9 (#62) | Defense: 36.7 (#118)
+103. Rice (American Athletic)
+  Overall: -9.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 17.3 (#124) | Defense: 26.5 (#55)
+104. Navy (American Athletic)
+  Overall: -9.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 26.2 (#83) | Defense: 35.4 (#112)
+105. UTSA (American Athletic)
+  Overall: -9.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.8 (#101) | Defense: 33.7 (#101)
+106. Syracuse (ACC)
+  Overall: -9.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 20.2 (#114) | Defense: 30.3 (#82)
+107. Temple (American Athletic)
+  Overall: -10.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.3 (#104) | Defense: 33.0 (#96)
+108. Rutgers (Big Ten)
+  Overall: -10.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 20.8 (#112) | Defense: 31.5 (#91)
+109. Florida International (Conference USA)
+  Overall: -10.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 21.6 (#109) | Defense: 32.4 (#95)
+110. East Carolina (American Athletic)
+  Overall: -11.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 26.0 (#84) | Defense: 37.1 (#121)
+111. South Alabama (Sun Belt)
+  Overall: -11.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 22.5 (#106) | Defense: 33.7 (#101)
+112. South Florida (American Athletic)
+  Overall: -11.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 18.2 (#120) | Defense: 29.5 (#75)
+113. Middle Tennessee (Conference USA)
+  Overall: -11.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.3 (#93) | Defense: 35.8 (#113)
+114. Eastern Michigan (Mid-American)
+  Overall: -12.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 28.3 (#69) | Defense: 40.5 (#127)
+115. Miami (OH) (Mid-American)
+  Overall: -12.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 20.7 (#113) | Defense: 33.6 (#100)
+116. Texas State (Pac-12)
+  Overall: -13.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 23.5 (#102) | Defense: 36.9 (#119)
+117. New Mexico (Mountain West)
+  Overall: -15.0 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 24.4 (#91) | Defense: 39.3 (#124)
+118. Old Dominion (Sun Belt)
+  Overall: -15.9 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 14.0 (#127) | Defense: 29.9 (#79)
+119. Kansas (Big 12)
+  Overall: -16.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 18.5 (#118) | Defense: 34.5 (#107)
+120. Utah State (Pac-12)
+  Overall: -16.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 20.2 (#114) | Defense: 37.0 (#120)
+121. Vanderbilt (SEC)
+  Overall: -16.8 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 17.7 (#122) | Defense: 34.1 (#105)
+122. Northern Illinois (Mountain West)
+  Overall: -18.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 16.0 (#126) | Defense: 34.5 (#107)
+122. UL Monroe (Sun Belt)
+  Overall: -18.4 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 21.6 (#109) | Defense: 39.6 (#125)
+124. UTEP (Mountain West)
+  Overall: -18.6 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 17.9 (#121) | Defense: 36.2 (#115)
+125. UNLV (Mountain West)
+  Overall: -19.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 22.0 (#108) | Defense: 41.5 (#128)
+126. UConn (FBS Independents)
+  Overall: -22.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 17.7 (#122) | Defense: 40.0 (#126)
+127. Akron (Mid-American)
+  Overall: -23.7 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 11.4 (#130) | Defense: 35.1 (#110)
+128. Bowling Green (Mid-American)
+  Overall: -26.2 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 12.8 (#128) | Defense: 39.0 (#123)
+129. Massachusetts (Mid-American)
+  Overall: -31.3 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 16.7 (#125) | Defense: 47.8 (#130)
+130. New Mexico State (Conference USA)
+  Overall: -31.5 | SOS: N/A | Second-Order Wins: N/A
+  Offense: 12.2 (#129) | Defense: 43.8 (#129)

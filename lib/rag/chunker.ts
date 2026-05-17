@@ -10,7 +10,7 @@ interface ChunkMetadata {
 interface FileConfig {
   path: string;
   conference: string;
-  strategy: 'single' | 'sec' | 'big10' | 'aac' | 'generic-headers' | 'pac12';
+  strategy: 'single' | 'sec' | 'big10' | 'aac' | 'generic-headers' | 'pac12' | 'stats-yearly';
   baseDir?: string;
 }
 
@@ -328,6 +328,63 @@ const pushSection = (
   }
 };
 
+const chunkStatsYearly = (
+  content: string,
+  sourceFile: string,
+  conference: string
+): ChunkMetadata[] => {
+  const chunks: ChunkMetadata[] = [];
+  const confGroups = new Map<string, string[]>();
+
+  const lines = content.split('\n');
+  const title = lines[0] ?? sourceFile;
+  let currentConf = '';
+
+  for (const line of lines.slice(1)) {
+    const confMatch = line.match(/^\d+\.\s+.+?\(([^)]+)\)/);
+    if (confMatch) {
+      currentConf = confMatch[1];
+      if (!confGroups.has(currentConf)) confGroups.set(currentConf, []);
+    }
+    if (currentConf && line.trim()) {
+      confGroups.get(currentConf)!.push(line);
+    }
+  }
+
+  for (const [conf, confLines] of confGroups) {
+    const text = `${title} - ${conf}\n\n${confLines.join('\n')}`;
+    const tokens = estimateTokens(text);
+    if (tokens <= MAX_CHUNK_TOKENS) {
+      chunks.push({
+        content: `[${conf} Stats]\n${text}`,
+        sourceFile,
+        conference,
+        section: `${title} - ${conf}`,
+        chunkIndex: chunks.length,
+        tokenCount: tokens,
+      });
+    } else {
+      const subChunks = splitByParagraph(text, MAX_CHUNK_TOKENS);
+      for (let j = 0; j < subChunks.length; j++) {
+        chunks.push({
+          content: `[${conf} Stats]\n${subChunks[j]}`,
+          sourceFile,
+          conference,
+          section: `${title} - ${conf} (Part ${j + 1})`,
+          chunkIndex: chunks.length,
+          tokenCount: estimateTokens(subChunks[j]),
+        });
+      }
+    }
+  }
+
+  if (chunks.length === 0) {
+    return chunkSingle(content, sourceFile, conference, 'Historical Stats');
+  }
+
+  return chunks;
+};
+
 const CONF_DISPLAY_NAMES: Record<string, string> = {
   SEC: 'SEC',
   ACC: 'ACC',
@@ -359,6 +416,66 @@ export const FILE_CONFIGS: FileConfig[] = [
     strategy: 'single',
     baseDir: 'docs/guides',
   },
+  {
+    path: '2020-sp-plus.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2021-sp-plus.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2022-sp-plus.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2023-sp-plus.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2024-sp-plus.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2020-fpi.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2021-fpi.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2022-fpi.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2023-fpi.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
+  {
+    path: '2024-fpi.txt',
+    conference: 'ALL',
+    strategy: 'stats-yearly',
+    baseDir: 'docs/historical-stats',
+  },
 ];
 
 export const chunkDocument = (content: string, config: FileConfig): ChunkMetadata[] => {
@@ -375,6 +492,8 @@ export const chunkDocument = (content: string, config: FileConfig): ChunkMetadat
       return chunkPac12(content, config.path);
     case 'generic-headers':
       return chunkGenericHeaders(content, config.path, config.conference, confName);
+    case 'stats-yearly':
+      return chunkStatsYearly(content, config.path, config.conference);
     case 'single':
       return chunkSingle(content, config.path, config.conference, confName);
   }

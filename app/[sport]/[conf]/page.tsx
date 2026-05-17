@@ -13,6 +13,7 @@ import ShareButton from '@/app/components/ShareButton';
 import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
 import ChatDrawer from '@/app/components/Chat/ChatDrawer';
 import ChatSearchBar from '@/app/components/Chat/ChatSearchBar';
+import { IoChatbubblesOutline } from 'react-icons/io5';
 import { useGeoTeam } from '@/app/components/Chat/GeoTeamProvider';
 import { useGamesData } from '@/app/hooks/useGamesData';
 import { useInSeason } from '@/app/hooks/useInSeason';
@@ -36,6 +37,7 @@ const ConferencePage = () => {
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const [hasConversation, setHasConversation] = useState(false);
   const geoTeam = useGeoTeam();
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
@@ -116,6 +118,7 @@ const ConferencePage = () => {
           onOpen={() => setChatOpen(true)}
           onSubmit={(msg) => {
             setInitialMessage(msg);
+            setHasConversation(true);
             setChatOpen(true);
           }}
         />
@@ -162,12 +165,23 @@ const ConferencePage = () => {
         <SimulateButton games={games} teams={teams} onSimulateComplete={handleSimulateComplete} />
       </div>
 
+      {hasConversation && !chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="chat-fab fixed bottom-6 right-6 z-30 flex h-12 w-12 items-center justify-center rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
+          aria-label="Reopen chat"
+        >
+          <IoChatbubblesOutline className="h-5 w-5" />
+        </button>
+      )}
+
       <ChatDrawer
         open={chatOpen}
         onClose={() => setChatOpen(false)}
         conferenceHint={conf}
         initialMessage={initialMessage}
         onInitialMessageSent={() => setInitialMessage(null)}
+        onMessageSent={() => setHasConversation(true)}
       />
     </div>
   );

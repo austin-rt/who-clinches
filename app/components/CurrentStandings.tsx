@@ -50,7 +50,10 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
         team,
         rank: team.rank ?? Infinity,
       }))
-      .sort((a: { rank: number }, b: { rank: number }) => a.rank - b.rank)
+      .sort(
+        (a: { rank: number; team: TeamMetadata }, b: { rank: number; team: TeamMetadata }) =>
+          a.rank - b.rank || a.team.shortDisplayName.localeCompare(b.team.shortDisplayName)
+      )
       .map((item: { team: TeamMetadata }) => item.team);
   }, [data]);
 
@@ -105,7 +108,7 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
                 {hasDivisions && division !== 'null' && (
                   <div className="text-base-content/80 text-sm font-bold uppercase">{division}</div>
                 )}
-                <div className="columns-1 gap-x-4 gap-y-1 text-xs sm:columns-2 md:columns-4">
+                <div className="columns-1 gap-x-4 text-xs sm:columns-2 md:columns-4">
                   {divisionTeams.map((team: TeamMetadata) => {
                     const isTopTeam = hasDivisions
                       ? team.rank === 1
@@ -114,11 +117,11 @@ const CurrentStandings = ({ isOpen }: CurrentStandingsProps) => {
                       <div
                         key={team.id}
                         className={cn(
-                          'flex items-center gap-1 whitespace-nowrap text-left',
+                          'flex items-baseline gap-1 whitespace-nowrap py-0.5 text-left',
                           isTopTeam ? 'font-bold' : ''
                         )}
                       >
-                        <span>{team.rank}.</span>
+                        <span className="min-w-[1.25rem] text-right">{team.rank}.</span>
                         <span>{team.shortDisplayName}</span>
                         <span className="text-base-content/70">
                           ({team.conferenceRecord})

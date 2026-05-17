@@ -1,0 +1,401 @@
+2023 FPI Ratings & Resume Rankings (ESPN's Football Power Index)
+
+1. Michigan (Big Ten)
+  FPI: 27.6 | SOS Rank: 33 | SOR Rank: 2
+  Offense Eff: 88.2 | Defense Eff: 91.4
+2. Ohio State (Big Ten)
+  FPI: 27.5 | SOS Rank: 7 | SOR Rank: 6
+  Offense Eff: 83.4 | Defense Eff: 86.7
+3. Penn State (Big Ten)
+  FPI: 25.6 | SOS Rank: 32 | SOR Rank: 11
+  Offense Eff: 66.9 | Defense Eff: 89.4
+4. Oregon (Pac-12)
+  FPI: 25.0 | SOS Rank: 52 | SOR Rank: 10
+  Offense Eff: 93.3 | Defense Eff: 73.6
+5. Alabama (SEC)
+  FPI: 24.9 | SOS Rank: 5 | SOR Rank: 4
+  Offense Eff: 76.2 | Defense Eff: 80.8
+6. Georgia (SEC)
+  FPI: 24.8 | SOS Rank: 37 | SOR Rank: 7
+  Offense Eff: 88.1 | Defense Eff: 74.5
+7. Texas (Big 12)
+  FPI: 23.2 | SOS Rank: 13 | SOR Rank: 5
+  Offense Eff: 76.6 | Defense Eff: 84.0
+8. Oklahoma (Big 12)
+  FPI: 22.5 | SOS Rank: 54 | SOR Rank: 12
+  Offense Eff: 84.4 | Defense Eff: 76.7
+9. LSU (SEC)
+  FPI: 20.9 | SOS Rank: 10 | SOR Rank: 13
+  Offense Eff: 97.5 | Defense Eff: 37.1
+10. Notre Dame (FBS Independents)
+  FPI: 20.8 | SOS Rank: 48 | SOR Rank: 17
+  Offense Eff: 78.3 | Defense Eff: 77.9
+11. Florida State (ACC)
+  FPI: 19.9 | SOS Rank: 55 | SOR Rank: 3
+  Offense Eff: 70.1 | Defense Eff: 84.4
+12. Kansas State (Big 12)
+  FPI: 18.8 | SOS Rank: 39 | SOR Rank: 26
+  Offense Eff: 77.7 | Defense Eff: 71.7
+13. Washington (Pac-12)
+  FPI: 17.5 | SOS Rank: 11 | SOR Rank: 1
+  Offense Eff: 86.1 | Defense Eff: 64.8
+14. Texas A&M (SEC)
+  FPI: 15.4 | SOS Rank: 15 | SOR Rank: 33
+  Offense Eff: 65.8 | Defense Eff: 76.3
+15. Ole Miss (SEC)
+  FPI: 15.3 | SOS Rank: 6 | SOR Rank: 8
+  Offense Eff: 76.7 | Defense Eff: 64.5
+16. Missouri (SEC)
+  FPI: 15.3 | SOS Rank: 34 | SOR Rank: 9
+  Offense Eff: 79.3 | Defense Eff: 68.0
+17. Tennessee (SEC)
+  FPI: 14.1 | SOS Rank: 16 | SOR Rank: 23
+  Offense Eff: 66.5 | Defense Eff: 68.5
+18. Oregon State (Pac-12)
+  FPI: 14.0 | SOS Rank: 45 | SOR Rank: 31
+  Offense Eff: 79.1 | Defense Eff: 67.8
+19. Clemson (ACC)
+  FPI: 13.9 | SOS Rank: 51 | SOR Rank: 27
+  Offense Eff: 48.1 | Defense Eff: 90.0
+20. SMU (American Athletic)
+  FPI: 13.8 | SOS Rank: 76 | SOR Rank: 19
+  Offense Eff: 68.4 | Defense Eff: 76.7
+21. USC (Pac-12)
+  FPI: 13.1 | SOS Rank: 18 | SOR Rank: 36
+  Offense Eff: 82.7 | Defense Eff: 42.1
+22. Arizona (Pac-12)
+  FPI: 11.4 | SOS Rank: 72 | SOR Rank: 24
+  Offense Eff: 77.6 | Defense Eff: 56.7
+23. Louisville (ACC)
+  FPI: 11.4 | SOS Rank: 53 | SOR Rank: 16
+  Offense Eff: 63.9 | Defense Eff: 75.7
+24. Miami (ACC)
+  FPI: 11.2 | SOS Rank: 56 | SOR Rank: 42
+  Offense Eff: 66.7 | Defense Eff: 63.2
+25. Utah (Pac-12)
+  FPI: 10.8 | SOS Rank: 30 | SOR Rank: 22
+  Offense Eff: 50.7 | Defense Eff: 74.8
+26. North Carolina (ACC)
+  FPI: 10.2 | SOS Rank: 77 | SOR Rank: 37
+  Offense Eff: 77.0 | Defense Eff: 45.5
+27. UCF (Big 12)
+  FPI: 9.7 | SOS Rank: 38 | SOR Rank: 52
+  Offense Eff: 76.0 | Defense Eff: 58.4
+28. TCU (Big 12)
+  FPI: 9.5 | SOS Rank: 17 | SOR Rank: 62
+  Offense Eff: 64.4 | Defense Eff: 51.4
+29. Kansas (Big 12)
+  FPI: 9.1 | SOS Rank: 36 | SOR Rank: 28
+  Offense Eff: 82.5 | Defense Eff: 54.8
+30. Auburn (SEC)
+  FPI: 8.9 | SOS Rank: 12 | SOR Rank: 43
+  Offense Eff: 49.1 | Defense Eff: 73.0
+31. Iowa State (Big 12)
+  FPI: 8.9 | SOS Rank: 27 | SOR Rank: 34
+  Offense Eff: 61.9 | Defense Eff: 67.5
+32. Duke (ACC)
+  FPI: 8.8 | SOS Rank: 49 | SOR Rank: 39
+  Offense Eff: 63.8 | Defense Eff: 63.7
+33. Maryland (Big Ten)
+  FPI: 8.1 | SOS Rank: 9 | SOR Rank: 40
+  Offense Eff: 64.8 | Defense Eff: 61.7
+34. Kentucky (SEC)
+  FPI: 7.3 | SOS Rank: 24 | SOR Rank: 35
+  Offense Eff: 60.5 | Defense Eff: 61.6
+35. UCLA (Pac-12)
+  FPI: 7.1 | SOS Rank: 66 | SOR Rank: 50
+  Offense Eff: 41.3 | Defense Eff: 82.5
+36. NC State (ACC)
+  FPI: 6.9 | SOS Rank: 65 | SOR Rank: 21
+  Offense Eff: 47.1 | Defense Eff: 75.7
+37. James Madison (Sun Belt)
+  FPI: 6.5 | SOS Rank: 119 | SOR Rank: 18
+  Offense Eff: 53.4 | Defense Eff: 70.7
+38. Florida (SEC)
+  FPI: 6.3 | SOS Rank: 4 | SOR Rank: 49
+  Offense Eff: 67.1 | Defense Eff: 43.1
+39. Texas Tech (Big 12)
+  FPI: 6.2 | SOS Rank: 23 | SOR Rank: 45
+  Offense Eff: 51.1 | Defense Eff: 66.3
+40. Oklahoma State (Big 12)
+  FPI: 6.1 | SOS Rank: 26 | SOR Rank: 20
+  Offense Eff: 55.0 | Defense Eff: 57.8
+41. Iowa (Big Ten)
+  FPI: 6.1 | SOS Rank: 21 | SOR Rank: 15
+  Offense Eff: 18.2 | Defense Eff: 86.2
+42. South Carolina (SEC)
+  FPI: 6.1 | SOS Rank: 14 | SOR Rank: 56
+  Offense Eff: 53.9 | Defense Eff: 54.7
+43. Wisconsin (Big Ten)
+  FPI: 6.0 | SOS Rank: 73 | SOR Rank: 53
+  Offense Eff: 46.9 | Defense Eff: 61.6
+44. West Virginia (Big 12)
+  FPI: 5.9 | SOS Rank: 19 | SOR Rank: 29
+  Offense Eff: 69.6 | Defense Eff: 53.6
+45. Troy (Sun Belt)
+  FPI: 5.7 | SOS Rank: 95 | SOR Rank: 30
+  Offense Eff: 50.6 | Defense Eff: 73.5
+46. Boise State (Mountain West)
+  FPI: 5.2 | SOS Rank: 88 | SOR Rank: 61
+  Offense Eff: 69.2 | Defense Eff: 55.0
+47. Virginia Tech (ACC)
+  FPI: 4.1 | SOS Rank: 67 | SOR Rank: 66
+  Offense Eff: 58.8 | Defense Eff: 47.9
+48. California (Pac-12)
+  FPI: 4.1 | SOS Rank: 25 | SOR Rank: 47
+  Offense Eff: 47.9 | Defense Eff: 63.0
+49. Liberty (Conference USA)
+  FPI: 3.8 | SOS Rank: 133 | SOR Rank: 14
+  Offense Eff: 83.5 | Defense Eff: 42.5
+50. Washington State (Pac-12)
+  FPI: 3.2 | SOS Rank: 41 | SOR Rank: 73
+  Offense Eff: 54.7 | Defense Eff: 62.1
+51. Tulane (American Athletic)
+  FPI: 3.0 | SOS Rank: 98 | SOR Rank: 25
+  Offense Eff: 46.8 | Defense Eff: 66.9
+52. Georgia Tech (ACC)
+  FPI: 3.0 | SOS Rank: 40 | SOR Rank: 48
+  Offense Eff: 64.5 | Defense Eff: 43.2
+53. Memphis (American Athletic)
+  FPI: 2.8 | SOS Rank: 101 | SOR Rank: 41
+  Offense Eff: 65.8 | Defense Eff: 40.4
+54. Rutgers (Big Ten)
+  FPI: 2.6 | SOS Rank: 2 | SOR Rank: 46
+  Offense Eff: 43.0 | Defense Eff: 59.3
+55. Syracuse (ACC)
+  FPI: 2.4 | SOS Rank: 62 | SOR Rank: 65
+  Offense Eff: 48.6 | Defense Eff: 56.8
+56. Arkansas (SEC)
+  FPI: 2.2 | SOS Rank: 8 | SOR Rank: 81
+  Offense Eff: 34.5 | Defense Eff: 61.7
+57. UTSA (American Athletic)
+  FPI: 1.1 | SOS Rank: 104 | SOR Rank: 60
+  Offense Eff: 48.4 | Defense Eff: 51.2
+58. Mississippi State (SEC)
+  FPI: 0.9 | SOS Rank: 31 | SOR Rank: 58
+  Offense Eff: 31.3 | Defense Eff: 62.3
+59. South Alabama (Sun Belt)
+  FPI: 0.8 | SOS Rank: 103 | SOR Rank: 91
+  Offense Eff: 50.4 | Defense Eff: 46.2
+60. Nebraska (Big Ten)
+  FPI: 0.7 | SOS Rank: 69 | SOR Rank: 80
+  Offense Eff: 30.8 | Defense Eff: 73.3
+61. Illinois (Big Ten)
+  FPI: 0.5 | SOS Rank: 60 | SOR Rank: 74
+  Offense Eff: 52.1 | Defense Eff: 44.3
+62. Toledo (Mid-American)
+  FPI: 0.5 | SOS Rank: 128 | SOR Rank: 38
+  Offense Eff: 55.5 | Defense Eff: 55.6
+63. San José State (Mountain West)
+  FPI: 0.2 | SOS Rank: 90 | SOR Rank: 63
+  Offense Eff: 63.5 | Defense Eff: 42.2
+64. Northwestern (Big Ten)
+  FPI: -0.3 | SOS Rank: 59 | SOR Rank: 44
+  Offense Eff: 44.6 | Defense Eff: 52.8
+65. Air Force (Mountain West)
+  FPI: -0.3 | SOS Rank: 126 | SOR Rank: 69
+  Offense Eff: 53.3 | Defense Eff: 54.9
+66. Pittsburgh (ACC)
+  FPI: -0.4 | SOS Rank: 47 | SOR Rank: 100
+  Offense Eff: 32.3 | Defense Eff: 60.0
+67. Minnesota (Big Ten)
+  FPI: -0.6 | SOS Rank: 20 | SOR Rank: 70
+  Offense Eff: 45.2 | Defense Eff: 46.4
+68. App State (Sun Belt)
+  FPI: -0.6 | SOS Rank: 99 | SOR Rank: 67
+  Offense Eff: 62.5 | Defense Eff: 40.9
+69. Purdue (Big Ten)
+  FPI: -0.6 | SOS Rank: 22 | SOR Rank: 84
+  Offense Eff: 48.2 | Defense Eff: 42.8
+70. Cincinnati (Big 12)
+  FPI: -1.1 | SOS Rank: 70 | SOR Rank: 103
+  Offense Eff: 51.6 | Defense Eff: 36.9
+71. Miami (OH) (Mid-American)
+  FPI: -1.3 | SOS Rank: 114 | SOR Rank: 32
+  Offense Eff: 38.8 | Defense Eff: 64.1
+72. Wake Forest (ACC)
+  FPI: -1.6 | SOS Rank: 46 | SOR Rank: 85
+  Offense Eff: 38.2 | Defense Eff: 52.7
+73. BYU (Big 12)
+  FPI: -1.8 | SOS Rank: 29 | SOR Rank: 59
+  Offense Eff: 36.3 | Defense Eff: 62.3
+74. UNLV (Mountain West)
+  FPI: -1.8 | SOS Rank: 68 | SOR Rank: 54
+  Offense Eff: 49.5 | Defense Eff: 43.0
+75. Colorado (Pac-12)
+  FPI: -2.1 | SOS Rank: 35 | SOR Rank: 77
+  Offense Eff: 50.5 | Defense Eff: 38.9
+76. Houston (Big 12)
+  FPI: -2.1 | SOS Rank: 50 | SOR Rank: 82
+  Offense Eff: 51.1 | Defense Eff: 36.9
+77. Wyoming (Mountain West)
+  FPI: -2.3 | SOS Rank: 78 | SOR Rank: 51
+  Offense Eff: 49.1 | Defense Eff: 53.9
+78. Indiana (Big Ten)
+  FPI: -2.8 | SOS Rank: 1 | SOR Rank: 99
+  Offense Eff: 48.1 | Defense Eff: 38.5
+79. Coastal Carolina (Sun Belt)
+  FPI: -2.8 | SOS Rank: 117 | SOR Rank: 76
+  Offense Eff: 57.8 | Defense Eff: 44.1
+80. Fresno State (Mountain West)
+  FPI: -3.5 | SOS Rank: 121 | SOR Rank: 64
+  Offense Eff: 49.6 | Defense Eff: 40.0
+81. Michigan State (Big Ten)
+  FPI: -3.5 | SOS Rank: 3 | SOR Rank: 75
+  Offense Eff: 32.8 | Defense Eff: 44.7
+82. Jacksonville State (Conference USA)
+  FPI: -3.7 | SOS Rank: 127 | SOR Rank: 71
+  Offense Eff: 35.0 | Defense Eff: 59.3
+83. Rice (American Athletic)
+  FPI: -3.9 | SOS Rank: 82 | SOR Rank: 88
+  Offense Eff: 54.2 | Defense Eff: 40.9
+84. Baylor (Big 12)
+  FPI: -4.9 | SOS Rank: 44 | SOR Rank: 101
+  Offense Eff: 31.7 | Defense Eff: 31.4
+85. Ohio (Mid-American)
+  FPI: -5.0 | SOS Rank: 130 | SOR Rank: 55
+  Offense Eff: 39.9 | Defense Eff: 60.4
+86. Boston College (ACC)
+  FPI: -5.1 | SOS Rank: 79 | SOR Rank: 68
+  Offense Eff: 51.3 | Defense Eff: 29.6
+87. Western Kentucky (Conference USA)
+  FPI: -5.2 | SOS Rank: 75 | SOR Rank: 78
+  Offense Eff: 48.4 | Defense Eff: 47.4
+88. Virginia (ACC)
+  FPI: -5.3 | SOS Rank: 57 | SOR Rank: 96
+  Offense Eff: 44.0 | Defense Eff: 50.9
+89. Louisiana (Sun Belt)
+  FPI: -5.4 | SOS Rank: 123 | SOR Rank: 102
+  Offense Eff: 53.2 | Defense Eff: 37.1
+90. Bowling Green (Mid-American)
+  FPI: -5.5 | SOS Rank: 71 | SOR Rank: 72
+  Offense Eff: 35.0 | Defense Eff: 57.1
+91. New Mexico State (Conference USA)
+  FPI: -5.6 | SOS Rank: 106 | SOR Rank: 57
+  Offense Eff: 63.9 | Defense Eff: 34.1
+92. Marshall (Sun Belt)
+  FPI: -5.7 | SOS Rank: 107 | SOR Rank: 83
+  Offense Eff: 30.0 | Defense Eff: 54.8
+93. Florida Atlantic (American Athletic)
+  FPI: -7.2 | SOS Rank: 102 | SOR Rank: 115
+  Offense Eff: 30.0 | Defense Eff: 43.7
+94. Northern Illinois (Mid-American)
+  FPI: -7.3 | SOS Rank: 131 | SOR Rank: 105
+  Offense Eff: 35.9 | Defense Eff: 43.6
+95. Arizona State (Pac-12)
+  FPI: -7.5 | SOS Rank: 43 | SOR Rank: 95
+  Offense Eff: 34.2 | Defense Eff: 47.9
+96. Georgia Southern (Sun Belt)
+  FPI: -7.6 | SOS Rank: 116 | SOR Rank: 97
+  Offense Eff: 45.9 | Defense Eff: 38.3
+97. Utah State (Mountain West)
+  FPI: -7.7 | SOS Rank: 115 | SOR Rank: 93
+  Offense Eff: 48.1 | Defense Eff: 32.7
+98. East Carolina (American Athletic)
+  FPI: -7.7 | SOS Rank: 61 | SOR Rank: 128
+  Offense Eff: 12.8 | Defense Eff: 52.9
+99. Texas State (Sun Belt)
+  FPI: -8.5 | SOS Rank: 125 | SOR Rank: 79
+  Offense Eff: 53.0 | Defense Eff: 32.3
+100. Georgia State (Sun Belt)
+  FPI: -8.6 | SOS Rank: 89 | SOR Rank: 86
+  Offense Eff: 48.1 | Defense Eff: 34.2
+101. Arkansas State (Sun Belt)
+  FPI: -9.0 | SOS Rank: 83 | SOR Rank: 90
+  Offense Eff: 40.1 | Defense Eff: 34.0
+102. Army (FBS Independents)
+  FPI: -9.0 | SOS Rank: 85 | SOR Rank: 92
+  Offense Eff: 31.6 | Defense Eff: 42.1
+103. Vanderbilt (SEC)
+  FPI: -9.1 | SOS Rank: 42 | SOR Rank: 110
+  Offense Eff: 23.6 | Defense Eff: 36.8
+104. Old Dominion (Sun Belt)
+  FPI: -9.5 | SOS Rank: 108 | SOR Rank: 87
+  Offense Eff: 23.4 | Defense Eff: 52.9
+105. Stanford (Pac-12)
+  FPI: -9.8 | SOS Rank: 28 | SOR Rank: 89
+  Offense Eff: 38.8 | Defense Eff: 28.2
+106. South Florida (American Athletic)
+  FPI: -9.9 | SOS Rank: 94 | SOR Rank: 94
+  Offense Eff: 42.7 | Defense Eff: 31.0
+107. Middle Tennessee (Conference USA)
+  FPI: -10.1 | SOS Rank: 64 | SOR Rank: 116
+  Offense Eff: 31.9 | Defense Eff: 45.0
+108. North Texas (American Athletic)
+  FPI: -10.2 | SOS Rank: 105 | SOR Rank: 109
+  Offense Eff: 55.2 | Defense Eff: 15.7
+109. San Diego State (Mountain West)
+  FPI: -10.9 | SOS Rank: 96 | SOR Rank: 111
+  Offense Eff: 26.5 | Defense Eff: 32.8
+110. UAB (American Athletic)
+  FPI: -10.9 | SOS Rank: 81 | SOR Rank: 114
+  Offense Eff: 51.3 | Defense Eff: 24.1
+111. Ball State (Mid-American)
+  FPI: -11.7 | SOS Rank: 80 | SOR Rank: 118
+  Offense Eff: 24.8 | Defense Eff: 43.9
+112. Colorado State (Mountain West)
+  FPI: -11.8 | SOS Rank: 122 | SOR Rank: 107
+  Offense Eff: 28.5 | Defense Eff: 37.7
+113. Navy (American Athletic)
+  FPI: -12.1 | SOS Rank: 86 | SOR Rank: 98
+  Offense Eff: 12.6 | Defense Eff: 53.5
+114. Central Michigan (Mid-American)
+  FPI: -13.0 | SOS Rank: 91 | SOR Rank: 104
+  Offense Eff: 36.2 | Defense Eff: 25.3
+115. Tulsa (American Athletic)
+  FPI: -13.3 | SOS Rank: 58 | SOR Rank: 106
+  Offense Eff: 33.2 | Defense Eff: 29.6
+116. Western Michigan (Mid-American)
+  FPI: -13.5 | SOS Rank: 111 | SOR Rank: 113
+  Offense Eff: 39.4 | Defense Eff: 26.1
+117. Buffalo (Mid-American)
+  FPI: -13.6 | SOS Rank: 118 | SOR Rank: 129
+  Offense Eff: 16.7 | Defense Eff: 40.2
+118. Sam Houston (Conference USA)
+  FPI: -14.1 | SOS Rank: 120 | SOR Rank: 127
+  Offense Eff: 20.2 | Defense Eff: 47.6
+119. Southern Miss (Sun Belt)
+  FPI: -14.2 | SOS Rank: 87 | SOR Rank: 119
+  Offense Eff: 32.1 | Defense Eff: 33.6
+120. New Mexico (Mountain West)
+  FPI: -14.5 | SOS Rank: 97 | SOR Rank: 117
+  Offense Eff: 51.2 | Defense Eff: 14.8
+121. UTEP (Conference USA)
+  FPI: -14.7 | SOS Rank: 112 | SOR Rank: 125
+  Offense Eff: 33.1 | Defense Eff: 27.0
+122. Eastern Michigan (Mid-American)
+  FPI: -14.7 | SOS Rank: 132 | SOR Rank: 108
+  Offense Eff: 24.0 | Defense Eff: 32.0
+123. Hawai'i (Mountain West)
+  FPI: -14.9 | SOS Rank: 74 | SOR Rank: 112
+  Offense Eff: 28.6 | Defense Eff: 28.7
+124. Charlotte (American Athletic)
+  FPI: -15.0 | SOS Rank: 92 | SOR Rank: 120
+  Offense Eff: 17.6 | Defense Eff: 42.5
+125. Louisiana Tech (Conference USA)
+  FPI: -15.2 | SOS Rank: 100 | SOR Rank: 126
+  Offense Eff: 29.4 | Defense Eff: 19.9
+126. UConn (FBS Independents)
+  FPI: -15.9 | SOS Rank: 93 | SOR Rank: 123
+  Offense Eff: 23.5 | Defense Eff: 35.9
+127. Massachusetts (FBS Independents)
+  FPI: -17.8 | SOS Rank: 63 | SOR Rank: 121
+  Offense Eff: 28.7 | Defense Eff: 21.0
+128. Nevada (Mountain West)
+  FPI: -19.1 | SOS Rank: 110 | SOR Rank: 131
+  Offense Eff: 11.8 | Defense Eff: 35.3
+129. Temple (American Athletic)
+  FPI: -19.4 | SOS Rank: 109 | SOR Rank: 124
+  Offense Eff: 30.8 | Defense Eff: 16.7
+130. UL Monroe (Sun Belt)
+  FPI: -19.6 | SOS Rank: 84 | SOR Rank: 130
+  Offense Eff: 15.5 | Defense Eff: 37.3
+131. Akron (Mid-American)
+  FPI: -20.0 | SOS Rank: 124 | SOR Rank: 132
+  Offense Eff: 14.7 | Defense Eff: 36.4
+132. Florida International (Conference USA)
+  FPI: -21.3 | SOS Rank: 129 | SOR Rank: 122
+  Offense Eff: 14.3 | Defense Eff: 28.4
+133. Kent State (Mid-American)
+  FPI: -24.0 | SOS Rank: 113 | SOR Rank: 133
+  Offense Eff: 17.5 | Defense Eff: 19.4

@@ -19,6 +19,7 @@ interface ChatDrawerProps {
   teamId?: string;
   initialMessage?: string | null;
   onInitialMessageSent?: () => void;
+  onMessageSent?: () => void;
 }
 
 const TypingIndicator = () => (
@@ -42,6 +43,7 @@ const ChatDrawer = ({
   teamId,
   initialMessage,
   onInitialMessageSent,
+  onMessageSent,
 }: ChatDrawerProps) => {
   const [visible, setVisible] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -87,6 +89,7 @@ const ChatDrawer = ({
       }
       setInput('');
       setIsStreaming(true);
+      onMessageSent?.();
 
       const typingDelay =
         TYPING_SHOW_DELAY_MIN + Math.random() * (TYPING_SHOW_DELAY_MAX - TYPING_SHOW_DELAY_MIN);
@@ -195,7 +198,7 @@ const ChatDrawer = ({
         }
       }
     },
-    [messages, conferenceHint, teamId]
+    [messages, conferenceHint, teamId, onMessageSent]
   );
 
   useEffect(() => {
