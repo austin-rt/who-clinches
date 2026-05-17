@@ -12,10 +12,10 @@ export interface RuntimeConfigData {
 }
 
 const DEFAULTS: RuntimeConfigData = {
-  fixtureYearOn: false,
-  fixtureYear: null,
+  fixtureYearOn: true,
+  fixtureYear: new Date().getFullYear(),
   graphqlOn: true,
-  redisOn: true,
+  redisOn: false,
   rateLimitOn: true,
   inSeasonOverride: false,
   aiChatOn: false,
@@ -35,6 +35,10 @@ const CACHE_TTL_MS = 5000;
 
 export const getRuntimeConfig = async (): Promise<RuntimeConfigData> => {
   if (process.env.VERCEL_ENV === 'production') return PRODUCTION_CONFIG;
+  if (process.env.FIXTURE_YEAR) {
+    const year = Number(process.env.FIXTURE_YEAR);
+    return { ...DEFAULTS, fixtureYear: Number.isNaN(year) ? null : year };
+  }
 
   if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
     return cached.data;

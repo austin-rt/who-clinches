@@ -92,7 +92,7 @@ const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProp
       size="md"
       color="primary"
       onClick={handleSimulate}
-      disabled={season === null}
+      disabled={season === null || games.length === 0}
       loading={isLoading}
       className="w-1/2 text-xs sm:w-fit"
     >

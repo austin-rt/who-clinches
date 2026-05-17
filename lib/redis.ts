@@ -13,7 +13,7 @@ export const redis = redisConfigured
   : (null as unknown as Redis);
 
 const isRedisEnabled = async (): Promise<boolean> => {
-  if (!redisConfigured) return false;
+  if (!redisConfigured || process.env.FIXTURE_YEAR) return false;
   if (process.env.VERCEL_ENV === 'production') return true;
   const config = await getRuntimeConfig();
   return config.redisOn;

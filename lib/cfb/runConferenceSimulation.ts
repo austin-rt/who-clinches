@@ -89,7 +89,7 @@ export const runConferenceSimulation = async ({
       championship = [standings[0]?.teamId || '', standings[1]?.teamId || ''];
     }
   } else {
-    championship = [standings[0].teamId, standings[1].teamId];
+    championship = [standings[0]?.teamId ?? '', standings[1]?.teamId ?? ''];
   }
 
   return { standings, championship, tieLogs, tieFlowGraphs };
