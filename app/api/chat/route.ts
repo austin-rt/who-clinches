@@ -27,13 +27,15 @@ export const dynamic = 'force-dynamic';
 
 const TOOL_QUIPS = [
   'Running the numbers...',
-  'Let me simulate that real quick.',
+  'One sec, simulating that.',
   'Hold on, crunching the scenarios.',
   'Give me a sec — running it through the engine.',
-  'Let me plug that in and see what shakes out.',
-  'Let me pull up those stats.',
+  'Pulling up those stats now.',
   'Checking the data...',
   'One sec, looking that up.',
+  'Hold tight, researching that.',
+  'Digging into the numbers...',
+  'Grabbing that data real quick.',
 ];
 let lastQuipIndex = -1;
 

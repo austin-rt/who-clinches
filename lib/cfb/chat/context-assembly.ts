@@ -184,9 +184,13 @@ export const buildSystemPrompt = (
     `- The top 2 teams in the final conference standings make the championship game.\n` +
     `- You have all the data — never ask the user for information.\n` +
     `- For "what if" questions, use the simulate_scenario tool. Never guess tiebreaker outcomes.\n` +
-    `- For stats, ratings, recruiting, betting lines, rosters, records, historical matchups, or any data not already in your context, ` +
+    `- For stats, ratings, recruiting, betting lines, rosters, records, historical matchups, coaches, or any data not already in your context, ` +
     `USE the cfbd_lookup tool. Do not say "I don't have that data" — look it up. ` +
     `The endpoint catalog is appended below. Be judicious: one targeted call beats three broad ones.\n` +
+    `- NEVER reference specific players, roster members, coaches, or coaching staff from memory. ` +
+    `Rosters and coaching staffs change constantly — your training data is stale. ` +
+    `If someone asks about a player, coach, depth chart, or roster, you MUST look it up via cfbd_lookup first. ` +
+    `Do not guess, do not rely on what you "think" you know. Look it up or say you'd need to check.\n` +
     `- CRITICAL: When the simulate_scenario tool returns results, report the EXACT championship matchup and standings from the tool output. ` +
     `The tool runs the real simulation engine — its output is authoritative. Never paraphrase, reinterpret, or guess differently from what the tool returned. ` +
     `If the tool says Team A vs Team B in the championship, that is the answer. Period.\n` +

@@ -141,6 +141,9 @@ const ChatDrawer = ({
     if (nonEmpty.length > 0) {
       dispatch(setReduxSessions(nonEmpty));
       dispatch(setReduxActiveIndex(activeIndex));
+    } else {
+      dispatch(setReduxSessions([]));
+      dispatch(setReduxActiveIndex(0));
     }
   }, [sessions, activeIndex, dispatch]);
 
@@ -401,9 +404,10 @@ const ChatDrawer = ({
   const handleCloseSession = (index: number) => {
     if (isStreaming) return;
     if (sessions.length === 1) {
-      setSessions([makeSession('New chat')]);
+      setSessions([makeSession('New chat', conferenceHint)]);
       setActiveIndex(0);
       setInput('');
+      onClose();
       return;
     }
     setSessions((prev) => prev.filter((_, i) => i !== index));
