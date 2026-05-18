@@ -38,7 +38,9 @@ const ConferencePage = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
   const persistedSessions = useAppSelector((s) => s.chat.sessions);
-  const hasConversation = persistedSessions.some((s) => s.messages.length > 0);
+  const chatHistory = useAppSelector((s) => s.chat.history ?? []);
+  const hasConversation =
+    persistedSessions.some((s) => s.messages.length > 0) || chatHistory.length > 0;
   const geoTeam = useGeoTeam();
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
