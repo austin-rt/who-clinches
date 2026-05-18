@@ -7,14 +7,21 @@ const CREDITS_PER_DOLLAR = 100;
 
 const MONEY_IN_EVENTS = new Set([
   'donation.created',
+  'extra_purchase.created',
+  'commission_order.created',
+  'wishlist_payment.created',
   'membership.started',
   'membership.updated',
-  'one_time_support',
-  'coffee_purchase',
-  'support',
 ]);
 
-const REFUND_EVENTS = new Set(['donation.refunded', 'refund', 'payment.refunded']);
+const REFUND_EVENTS = new Set([
+  'donation.refunded',
+  'extra_purchase.refunded',
+  'commission_order.refunded',
+  'wishlist_payment.refunded',
+]);
+
+const CANCEL_EVENTS = new Set(['membership.cancelled']);
 
 const verifySignature = (body: string, signature: string | null): boolean => {
   const secret = process.env.BMC_WEBHOOK_SECRET;
@@ -99,14 +106,15 @@ const handleRefund = async (payload: Record<string, unknown>): Promise<Response>
 export const POST = async (request: NextRequest) => {
   try {
     const rawBody = await request.text();
-    const signature = request.headers.get('x-bmc-signature');
+    const signature =
+      request.headers.get('x-signature-sha256') ?? request.headers.get('x-bmc-signature');
 
     if (!verifySignature(rawBody, signature)) {
       return Response.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     const payload = JSON.parse(rawBody);
-    const eventType = request.headers.get('x-bmc-event') ?? payload.type ?? 'unknown';
+    const eventType = String(payload.type ?? request.headers.get('x-bmc-event') ?? 'unknown');
 
     await logError(`BMC webhook received: ${eventType}`, {
       endpoint: '/api/webhooks/bmc',
@@ -121,6 +129,10 @@ export const POST = async (request: NextRequest) => {
 
     if (REFUND_EVENTS.has(eventType)) {
       return handleRefund(payload);
+    }
+
+    if (CANCEL_EVENTS.has(eventType)) {
+      return Response.json({ ok: true, eventType });
     }
 
     await logError(`Unhandled BMC event type: ${eventType}`, {
