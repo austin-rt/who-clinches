@@ -54,6 +54,10 @@ export const middleware = async (request: NextRequest) => {
     return NextResponse.next();
   }
 
+  if (pathname.startsWith('/api/webhooks/')) {
+    return NextResponse.next();
+  }
+
   if (vercelEnv !== 'production' && vercelEnv !== 'preview') {
     return NextResponse.next();
   }

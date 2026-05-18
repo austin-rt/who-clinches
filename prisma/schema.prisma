@@ -32,6 +32,7 @@ model RuntimeConfig {
   updatedAt        DateTime @updatedAt
   aiChatOn         Boolean  @default(false)
   ragOn            Boolean  @default(false)
+  chatRateLimitOn  Boolean  @default(true)
 }
 
 model ChatMessage {
@@ -49,6 +50,42 @@ model ChatMessage {
 
   @@index([sessionId])
   @@index([createdAt])
+}
+
+model ChatUser {
+  id               String    @id @default(cuid())
+  anonymousId      String    @unique
+  email            String?   @unique
+  purchasedCredits Int       @default(0)
+  freeUsedInWindow Int       @default(0)
+  windowExpiresAt  DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([email])
+}
+
+model Donation {
+  id         String   @id @default(cuid())
+  bmcId      String   @unique
+  email      String
+  amount     Float
+  credits    Int
+  chatUserId String?
+  createdAt  DateTime @default(now())
+
+  @@index([email])
+}
+
+model MagicLink {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  email     String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([token])
 }
 
 model KnowledgeChunk {

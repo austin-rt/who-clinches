@@ -21,6 +21,9 @@ import { buildTeamReferenceContext } from '@/lib/cfb/chat/cfbd-reference-data';
 import { retrieveRelevantChunks } from '@/lib/rag/retrieval';
 import { CFB_CONFERENCE_METADATA, type CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
+import { getOrCreateChatIdentity, buildCookieHeader } from '@/lib/chat/identity';
+import { checkAndDeductUsage, refundUsage, type UsageResult } from '@/lib/chat/usage';
+import { isProviderAvailable, markProviderCooldown } from '@/lib/chat/provider-status';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -268,6 +271,45 @@ export const POST = async (request: NextRequest) => {
           Connection: 'keep-alive',
         },
       });
+    }
+
+    const { chatUserId, setCookie } = getOrCreateChatIdentity(request);
+    const hasBypassToken =
+      request.nextUrl.searchParams.get('x-vercel-protection-bypass') ===
+      process.env.VERCEL_AUTOMATION_BYPASS_SECRET;
+    const skipUsageCheck = !runtimeConfig.chatRateLimitOn || hasBypassToken;
+
+    if (!skipUsageCheck) {
+      const providerStatus = await isProviderAvailable();
+      if (!providerStatus.available) {
+        return Response.json(
+          {
+            error: 'provider_limit',
+            retryAfter: providerStatus.retryAfter,
+            message: 'The AI analyst is taking a breather. Try again shortly.',
+          },
+          { status: 503, headers: { 'Retry-After': String(providerStatus.retryAfter ?? 60) } }
+        );
+      }
+    }
+
+    let usageResult: UsageResult | null = null;
+    if (!skipUsageCheck) {
+      usageResult = await checkAndDeductUsage(chatUserId);
+      if (!usageResult.allowed) {
+        const headers: HeadersInit = {};
+        if (setCookie) headers['Set-Cookie'] = buildCookieHeader(chatUserId);
+        return Response.json(
+          {
+            error: 'window_limit',
+            freeRemaining: usageResult.freeRemaining,
+            creditsRemaining: usageResult.creditsRemaining,
+            windowResetsIn: usageResult.windowResetsIn,
+            message: `Free messages refresh in ${Math.ceil((usageResult.windowResetsIn ?? 0) / 60_000)} min.`,
+          },
+          { status: 429, headers }
+        );
+      }
     }
 
     const confMeta = CFB_CONFERENCE_METADATA[conf];
@@ -534,9 +576,30 @@ export const POST = async (request: NextRequest) => {
           await streamResponse(anthropicMessages);
           logMessage('assistant', fullResponse, { inputTokens, outputTokens });
           await Promise.allSettled(pendingWrites);
-          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
+          const donePayload: Record<string, unknown> = { type: 'done' };
+          if (usageResult) {
+            donePayload.usage = {
+              freeRemaining: usageResult.source === 'free' ? usageResult.freeRemaining : 0,
+              creditsRemaining: usageResult.creditsRemaining,
+              source: usageResult.source,
+            };
+          }
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(donePayload)}\n\n`));
           controller.close();
         } catch (err) {
+          if (usageResult?.source) {
+            refundUsage(chatUserId, usageResult.source).catch(() => {});
+          }
+          const isAnthropicRateLimit =
+            err instanceof Anthropic.RateLimitError ||
+            (err instanceof Anthropic.APIError && err.status === 429);
+          if (isAnthropicRateLimit) {
+            const retryAfter =
+              err instanceof Anthropic.APIError
+                ? parseInt(err.headers?.['retry-after'] ?? '60', 10)
+                : 60;
+            markProviderCooldown(retryAfter).catch(() => {});
+          }
           const errorMsg = err instanceof Error ? err.message : 'Stream error';
           controller.enqueue(
             encoder.encode(`data: ${JSON.stringify({ type: 'error', error: errorMsg })}\n\n`)
@@ -561,13 +624,14 @@ export const POST = async (request: NextRequest) => {
       }
     });
 
-    return new Response(readable, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      },
-    });
+    const responseHeaders: HeadersInit = {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    };
+    if (setCookie) responseHeaders['Set-Cookie'] = buildCookieHeader(chatUserId);
+
+    return new Response(readable, { headers: responseHeaders });
   } catch (error) {
     const { logError } = await import('@/lib/errorLogger');
     await logError(error, { endpoint: '/api/chat', action: 'chat' });

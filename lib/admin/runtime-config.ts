@@ -9,6 +9,7 @@ export interface RuntimeConfigData {
   inSeasonOverride: boolean;
   aiChatOn: boolean;
   ragOn: boolean;
+  chatRateLimitOn: boolean;
 }
 
 const DEFAULTS: RuntimeConfigData = {
@@ -20,6 +21,7 @@ const DEFAULTS: RuntimeConfigData = {
   inSeasonOverride: false,
   aiChatOn: false,
   ragOn: false,
+  chatRateLimitOn: true,
 };
 
 const PRODUCTION_CONFIG: RuntimeConfigData = {
@@ -28,6 +30,7 @@ const PRODUCTION_CONFIG: RuntimeConfigData = {
   rateLimitOn: true,
   aiChatOn: true,
   ragOn: true,
+  chatRateLimitOn: true,
 };
 
 let cached: { data: RuntimeConfigData; timestamp: number } | null = null;
@@ -59,6 +62,7 @@ export const getRuntimeConfig = async (): Promise<RuntimeConfigData> => {
           inSeasonOverride: row.inSeasonOverride,
           aiChatOn: row.aiChatOn,
           ragOn: row.ragOn,
+          chatRateLimitOn: row.chatRateLimitOn,
         }
       : DEFAULTS;
 
@@ -87,6 +91,7 @@ export const updateRuntimeConfig = async (
     inSeasonOverride: row.inSeasonOverride,
     aiChatOn: row.aiChatOn,
     ragOn: row.ragOn,
+    chatRateLimitOn: row.chatRateLimitOn,
   };
 
   cached = { data, timestamp: Date.now() };

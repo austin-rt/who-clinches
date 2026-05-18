@@ -16,9 +16,18 @@ interface RuntimeConfig {
   inSeasonOverride: boolean;
   aiChatOn: boolean;
   ragOn: boolean;
+  chatRateLimitOn: boolean;
   environment: 'local' | 'preview' | 'production';
   availableFixtureYears: number[];
   cascadeEffects?: string[];
+}
+
+interface CreditStats {
+  totalUsers: number;
+  totalCreditsOutstanding: number;
+  totalDonations: number;
+  totalDonationAmount: number;
+  providerCooldownUntil: string | null;
 }
 
 interface KnowledgeStatus {
@@ -56,6 +65,10 @@ const friendlyName = (key: string): string => {
   const parts = key.split(':');
   if (parts[0] === 'ratelimit') return `Rate Limit (${parts[1]})`;
   if (parts[0] !== 'cfbd') return key;
+  if (parts[1] === 'chat') {
+    const endpoint = parts.slice(2, -1).join('/');
+    return `Chat: /${endpoint}`;
+  }
   const [, , type, ...rest] = parts;
   switch (type) {
     case 'games':
@@ -119,6 +132,7 @@ export default function AdminPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
   const [cfbdStatus, setCfbdStatus] = useState<CfbdStatus | null>(null);
   const [knowledgeStatus, setKnowledgeStatus] = useState<KnowledgeStatus | null>(null);
+  const [creditStats, setCreditStats] = useState<CreditStats | null>(null);
   const [redisKeys, setRedisKeys] = useState<RedisKey[]>([]);
   const [redisKeyCount, setRedisKeyCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -160,6 +174,16 @@ export default function AdminPage() {
     }
   }, []);
 
+  const fetchCreditStats = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/credit-stats');
+      const data = await res.json();
+      setCreditStats(data);
+    } catch {
+      /* Credit stats not available */
+    }
+  }, []);
+
   const fetchRedisKeys = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/redis-keys');
@@ -179,12 +203,13 @@ export default function AdminPage() {
         fetchConfig(),
         fetchCfbdStatus(),
         fetchKnowledgeStatus(),
+        fetchCreditStats(),
         fetchRedisKeys(),
       ]);
       setLoading(false);
     };
     void load();
-  }, [fetchConfig, fetchCfbdStatus, fetchKnowledgeStatus, fetchRedisKeys]);
+  }, [fetchConfig, fetchCfbdStatus, fetchKnowledgeStatus, fetchCreditStats, fetchRedisKeys]);
 
   const updateConfig = async (patch: Partial<RuntimeConfig>) => {
     const res = await fetch('/api/admin/config', {
@@ -374,9 +399,14 @@ export default function AdminPage() {
             checked={config.rateLimitOn}
             onChange={(v) => updateConfig({ rateLimitOn: v })}
           />
-          <Divider />
+        </div>
+      </Card>
+
+      {/* AI Chat */}
+      <Card title="AI Chat">
+        <div className="space-y-1">
           <Toggle
-            label="AI Chat"
+            label="Enabled"
             description="When off, chat uses fixture responses. When on, chat calls Claude Haiku"
             checked={config.aiChatOn}
             onChange={(v) => updateConfig({ aiChatOn: v })}
@@ -384,11 +414,29 @@ export default function AdminPage() {
           <Divider />
           <Toggle
             label="RAG Context"
-            description="When on, chat retrieves tiebreaker rule documents via vector search"
+            description="Chat retrieves tiebreaker rule documents via vector search"
             checked={config.ragOn}
             disabled={!config.aiChatOn}
             disabledReason="Requires AI Chat to be enabled"
             onChange={(v) => updateConfig({ ragOn: v })}
+          />
+          <Divider />
+          <Toggle
+            label="Rate Limiting"
+            description="Per-user 4 msg / 4 hr free window + credit system"
+            checked={config.chatRateLimitOn}
+            disabled={!config.aiChatOn}
+            disabledReason="Requires AI Chat to be enabled"
+            onChange={(v) => updateConfig({ chatRateLimitOn: v })}
+          />
+          <Divider />
+          <Toggle
+            label="CFBD Caching"
+            description="Chat API lookups cached in Redis until next Saturday 11 AM ET"
+            checked={config.redisOn}
+            disabled={true}
+            disabledReason="Follows Redis Cache toggle"
+            onChange={() => {}}
           />
         </div>
       </Card>
@@ -505,6 +553,27 @@ export default function AdminPage() {
               value={knowledgeStatus.tokenUsage.last7d.output.toLocaleString()}
             />
           </div>
+        </Card>
+      )}
+
+      {/* Credit System */}
+      {creditStats && (
+        <Card title="Credit System">
+          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+            <Stat label="Chat Users" value={creditStats.totalUsers} />
+            <Stat
+              label="Credits Outstanding"
+              value={creditStats.totalCreditsOutstanding.toLocaleString()}
+            />
+            <Stat label="Donations" value={creditStats.totalDonations} />
+            <Stat label="Donation Total" value={`$${creditStats.totalDonationAmount.toFixed(2)}`} />
+          </div>
+          {creditStats.providerCooldownUntil && (
+            <div className="bg-warning/10 mt-3 rounded px-3 py-2 text-xs text-warning">
+              Anthropic cooldown active until{' '}
+              {new Date(creditStats.providerCooldownUntil).toLocaleTimeString()}
+            </div>
+          )}
         </Card>
       )}
 

@@ -1,8 +1,18 @@
 import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
+import { fetch as redisFetch, persistRedisKey } from '@/lib/redis';
+import { calculateNextSaturdayRevalidate } from '@/lib/cfb/helpers/calculate-next-weekday-revalidate';
+import { createHash } from 'crypto';
 
 const CFBD_BASE_URL = 'https://apinext.collegefootballdata.com';
 const MAX_RESPONSE_CHARS = 8000;
 const MAX_ARRAY_ITEMS = 50;
+const CACHE_PREFIX = 'cfbd:chat';
+const isHistorical = (params: Record<string, string>): boolean => {
+  const year = params.year || params.season;
+  if (!year) return false;
+  const requested = parseInt(year, 10);
+  return !isNaN(requested) && requested < new Date().getFullYear();
+};
 
 const ALLOWED_PATHS = new Set([
   '/wepa/team/season',
@@ -107,26 +117,45 @@ export const executeCfbdLookup = async (
     }
   }
 
-  try {
-    const response = await fetch(url.toString(), {
-      headers: {
-        Authorization: `Bearer ${getActiveApiKey()}`,
-        Accept: 'application/json',
-      },
-    });
+  const paramHash = createHash('sha256')
+    .update(url.searchParams.toString())
+    .digest('hex')
+    .slice(0, 12);
+  const cacheKey = `${CACHE_PREFIX}:${path.slice(1).replace(/\//g, ':')}:${paramHash}`;
 
-    if (!response.ok) {
-      if (response.status === 400) {
-        const text = await response.text();
-        return `CFBD API error (400): ${text.slice(0, 500)}`;
-      }
-      return `CFBD API error: ${response.status} ${response.statusText}`;
+  const historical = isHistorical(params);
+
+  try {
+    const data = await redisFetch<unknown>(
+      cacheKey,
+      async () => {
+        const response = await fetch(url.toString(), {
+          headers: {
+            Authorization: `Bearer ${getActiveApiKey()}`,
+            Accept: 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          if (response.status === 400) {
+            const text = await response.text();
+            throw new Error(`CFBD API error (400): ${text.slice(0, 500)}`);
+          }
+          throw new Error(`CFBD API error: ${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+      },
+      calculateNextSaturdayRevalidate()
+    );
+
+    if (historical) {
+      await persistRedisKey(cacheKey);
     }
 
-    const data: unknown = await response.json();
     return truncateResponse(data);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    return `CFBD lookup failed: ${message}`;
+    return message.startsWith('CFBD API error') ? message : `CFBD lookup failed: ${message}`;
   }
 };

@@ -7,6 +7,8 @@ import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   setSessions as setReduxSessions,
   setActiveSessionIndex as setReduxActiveIndex,
+  setEmail as setReduxEmail,
+  setUsage as setReduxUsage,
 } from '@/app/store/chatSlice';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 
@@ -76,6 +78,8 @@ const ChatDrawer = ({
   const dispatch = useAppDispatch();
   const persistedSessions = useAppSelector((s) => s.chat.sessions);
   const persistedActiveIndex = useAppSelector((s) => s.chat.activeSessionIndex);
+  const email = useAppSelector((s) => s.chat.email);
+  const usage = useAppSelector((s) => s.chat.usage);
 
   const [visible, setVisible] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>(() =>
@@ -94,6 +98,11 @@ const ChatDrawer = ({
   const [isStreaming, setIsStreaming] = useState(false);
   const [showTyping, setShowTyping] = useState(false);
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
+  const [windowLimit, setWindowLimit] = useState<{ resetsIn: number } | null>(null);
+  const [providerLimit, setProviderLimit] = useState(false);
+  const [authEmail, setAuthEmail] = useState('');
+  const [authSending, setAuthSending] = useState(false);
+  const [authSent, setAuthSent] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -249,7 +258,31 @@ const ChatDrawer = ({
           signal: controller.signal,
         });
 
+        if (res.status === 503) {
+          const body = await res.json().catch(() => ({}));
+          if (body.error === 'provider_limit') {
+            setProviderLimit(true);
+            clearTimeout(typingTimer);
+            setShowTyping(false);
+            throw new Error('__provider_limit__');
+          }
+        }
+
         if (res.status === 429) {
+          const body = await res.json().catch(() => ({}));
+          if (body.error === 'window_limit') {
+            setWindowLimit({ resetsIn: body.windowResetsIn ?? 0 });
+            dispatch(
+              setReduxUsage({
+                freeRemaining: body.freeRemaining ?? 0,
+                creditsRemaining: body.creditsRemaining ?? 0,
+                source: null,
+              })
+            );
+            clearTimeout(typingTimer);
+            setShowTyping(false);
+            throw new Error('__window_limit__');
+          }
           const retrySeconds = parseInt(res.headers.get('Retry-After') ?? '60', 10);
           setRetryAfter(retrySeconds);
           await new Promise((r) => setTimeout(r, retrySeconds * 1000));
@@ -316,6 +349,10 @@ const ChatDrawer = ({
               needsNewBubble = true;
               breakShownAt = Date.now();
               setShowTyping(true);
+            } else if (data.type === 'done') {
+              if (data.usage) {
+                dispatch(setReduxUsage(data.usage));
+              }
             } else if (data.type === 'error') {
               throw new Error(data.error);
             }
@@ -328,7 +365,12 @@ const ChatDrawer = ({
       } catch (err) {
         clearTimeout(typingTimer);
         setShowTyping(false);
-        if ((err as Error).name !== 'AbortError') {
+        const errMsg = (err as Error).message;
+        if (
+          (err as Error).name !== 'AbortError' &&
+          errMsg !== '__window_limit__' &&
+          errMsg !== '__provider_limit__'
+        ) {
           setMessages((prev) => [
             ...prev,
             {
@@ -350,7 +392,7 @@ const ChatDrawer = ({
         }
       }
     },
-    [messages, conferenceHint, teamId, sessionId, onMessageSent, setMessages]
+    [messages, conferenceHint, teamId, sessionId, onMessageSent, setMessages, dispatch]
   );
 
   useEffect(() => {
@@ -418,6 +460,28 @@ const ChatDrawer = ({
     }
     setInput('');
   };
+
+  const handleSendMagicLink = async () => {
+    if (!authEmail || authSending) return;
+    setAuthSending(true);
+    try {
+      const res = await fetch('/api/chat/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: authEmail }),
+      });
+      if (res.ok) {
+        setAuthSent(true);
+        dispatch(setReduxEmail(authEmail.toLowerCase().trim()));
+      }
+    } catch {
+      // ignore
+    } finally {
+      setAuthSending(false);
+    }
+  };
+
+  const inputDisabled = isStreaming || !!windowLimit || providerLimit;
 
   const showTabs = sessions.length > 1 || messages.length > 0;
 
@@ -552,9 +616,95 @@ const ChatDrawer = ({
           <div ref={messagesEndRef} />
         </div>
 
+        {providerLimit && (
+          <div className="border-t border-base-300 px-4 py-3 text-center text-xs text-warning">
+            The AI is temporarily unavailable — a service-wide limit, not yours. Your credits are
+            safe. Try again in a few minutes.
+          </div>
+        )}
+
+        {windowLimit && !providerLimit && (
+          <div className="space-y-3 border-t border-base-300 px-4 py-3">
+            <p className="text-base-content/60 text-center text-xs">
+              Free messages reset in{' '}
+              {(() => {
+                const totalMin = Math.max(1, Math.ceil(windowLimit.resetsIn / 60_000));
+                const h = Math.floor(totalMin / 60);
+                const m = totalMin % 60;
+                return h > 0 ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`;
+              })()}
+              .
+            </p>
+            {!email ? (
+              <div className="space-y-2">
+                {!authSent ? (
+                  <>
+                    <p className="text-base-content/50 text-center text-xs">
+                      Want more? Sign in to link donations.
+                    </p>
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        value={authEmail}
+                        onChange={(e) => setAuthEmail(e.target.value)}
+                        placeholder="Email"
+                        className="flex-1 rounded-md border border-base-300 bg-base-100 px-3 py-1.5 text-sm"
+                      />
+                      <button
+                        onClick={handleSendMagicLink}
+                        disabled={authSending || !authEmail}
+                        className="whitespace-nowrap rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-content disabled:opacity-50"
+                      >
+                        {authSending ? '...' : 'Send link'}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-center text-xs text-success">
+                    Check your email for a sign-in link.
+                  </p>
+                )}
+                <a
+                  href="https://buymeacoffee.com/whoclinches"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-content/50 block text-center text-xs underline"
+                >
+                  Support on Buy Me a Coffee
+                </a>
+              </div>
+            ) : (
+              <div className="text-center">
+                <a
+                  href="https://buymeacoffee.com/whoclinches"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-base-content/50 text-xs underline"
+                >
+                  Get more credits on Buy Me a Coffee
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+
+        {usage && !windowLimit && !providerLimit && (
+          <div className="text-base-content/40 flex items-center justify-center gap-1.5 border-t border-base-300 px-4 py-1 text-[10px]">
+            <span>Remaining Requests:</span>
+            {usage.creditsRemaining > 0 ? (
+              <>
+                <span>{usage.freeRemaining}/4 free</span>
+                <span>{usage.creditsRemaining} donation</span>
+              </>
+            ) : (
+              <span>{usage.freeRemaining}/4</span>
+            )}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
-          className="flex items-stretch border-t border-base-300 px-4 py-3"
+          className={`flex items-stretch border-t border-base-300 px-4 py-3${inputDisabled ? 'pointer-events-none opacity-50' : ''}`}
         >
           <textarea
             ref={inputRef}
@@ -572,6 +722,7 @@ const ChatDrawer = ({
             }}
             maxLength={500}
             rows={1}
+            disabled={inputDisabled}
             className="chat-input"
           />
           <button type="submit" className="chat-send-btn" aria-label="Send">

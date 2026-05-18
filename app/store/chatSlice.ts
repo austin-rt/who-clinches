@@ -13,16 +13,26 @@ interface ChatSession {
   conf?: string;
 }
 
+interface UsageInfo {
+  freeRemaining: number;
+  creditsRemaining: number;
+  source: 'free' | 'credits' | null;
+}
+
 interface ChatState {
   sessions: ChatSession[];
   activeSessionIndex: number;
   drawerOpen: boolean;
+  email: string | null;
+  usage: UsageInfo | null;
 }
 
 const initialState: ChatState = {
   sessions: [],
   activeSessionIndex: 0,
   drawerOpen: true,
+  email: null,
+  usage: null,
 };
 
 const chatSlice = createSlice({
@@ -68,6 +78,12 @@ const chatSlice = createSlice({
       state.sessions = [];
       state.activeSessionIndex = 0;
     },
+    setEmail: (state, action: PayloadAction<string | null>) => {
+      state.email = action.payload;
+    },
+    setUsage: (state, action: PayloadAction<UsageInfo | null>) => {
+      state.usage = action.payload;
+    },
   },
 });
 
@@ -80,5 +96,7 @@ export const {
   addSession,
   removeSession,
   clearSessions,
+  setEmail,
+  setUsage,
 } = chatSlice.actions;
 export default chatSlice.reducer;
