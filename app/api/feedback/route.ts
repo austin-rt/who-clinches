@@ -9,11 +9,9 @@ export const POST = async (request: NextRequest) => {
     const body = await request.json();
     const { sessionId, message, conf } = body;
 
-    if (!message || typeof message !== 'string' || message.trim().length === 0) {
-      return Response.json({ error: 'Message is required' }, { status: 400 });
-    }
+    const content = typeof message === 'string' ? message.trim() : '';
 
-    if (message.length > 2000) {
+    if (content.length > 2000) {
       return Response.json({ error: 'Message too long' }, { status: 400 });
     }
 
@@ -21,7 +19,7 @@ export const POST = async (request: NextRequest) => {
       data: {
         sessionId: sessionId || 'anonymous',
         role: 'feedback',
-        content: message.trim(),
+        content,
         conf: conf || null,
       },
     });

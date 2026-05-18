@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, after } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { db } from '@/lib/db/client';
 import { createHash } from 'crypto';
@@ -304,6 +304,7 @@ export const POST = async (request: NextRequest) => {
     const logMeta = { sessionId, conf, teamId: targetTeamId, teamName: targetTeamName, promptHash };
 
     const CHAT_MESSAGE_CAP = 5000;
+    const pendingWrites: Promise<void>[] = [];
 
     const logMessage = (
       role: string,
@@ -311,7 +312,7 @@ export const POST = async (request: NextRequest) => {
       tokens?: { inputTokens: number; outputTokens: number }
     ) => {
       if (!sessionId) return;
-      db.chatMessage
+      const write = db.chatMessage
         .create({
           data: {
             sessionId,
@@ -324,23 +325,12 @@ export const POST = async (request: NextRequest) => {
             ...(tokens ?? {}),
           },
         })
-        .then(async () => {
-          const count = await db.chatMessage.count();
-          if (count > CHAT_MESSAGE_CAP) {
-            const oldest = await db.chatMessage.findMany({
-              orderBy: { createdAt: 'asc' },
-              take: count - CHAT_MESSAGE_CAP,
-              select: { id: true },
-            });
-            await db.chatMessage.deleteMany({
-              where: { id: { in: oldest.map((r) => r.id) } },
-            });
-          }
-        })
+        .then(() => {})
         .catch(async (err) => {
           const { logError } = await import('@/lib/errorLogger');
           await logError(err, { action: 'chat-log-message', sessionId, role });
         });
+      pendingWrites.push(write);
     };
 
     logMessage('user', message);
@@ -551,6 +541,21 @@ export const POST = async (request: NextRequest) => {
           controller.close();
         }
       },
+    });
+
+    after(async () => {
+      await Promise.allSettled(pendingWrites);
+      const count = await db.chatMessage.count();
+      if (count > CHAT_MESSAGE_CAP) {
+        const oldest = await db.chatMessage.findMany({
+          orderBy: { createdAt: 'asc' },
+          take: count - CHAT_MESSAGE_CAP,
+          select: { id: true },
+        });
+        await db.chatMessage.deleteMany({
+          where: { id: { in: oldest.map((r) => r.id) } },
+        });
+      }
     });
 
     return new Response(readable, {

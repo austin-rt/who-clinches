@@ -219,11 +219,23 @@ html[data-mode='dark'] {
 
   .chat-search-send {
     @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors;
-    color: color-mix(in srgb, var(--color-base-content) 50%, transparent);
 
-    &:hover {
-      color: var(--color-base-content);
-      background-color: color-mix(in srgb, var(--color-base-content) 8%, transparent);
+    html[data-mode='light'] &,
+    html:not([data-mode='dark']) & {
+      @apply bg-primary text-white;
+
+      &:hover {
+        background-color: hsl(var(--p) / 0.9);
+      }
+    }
+
+    html[data-mode='dark'] &,
+    [data-mode='dark'] & {
+      @apply bg-accent text-base-100;
+
+      &:hover {
+        background-color: hsl(var(--a) / 0.9);
+      }
     }
   }
 
