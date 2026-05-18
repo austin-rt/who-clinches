@@ -531,6 +531,7 @@ export const POST = async (request: NextRequest) => {
         try {
           await streamResponse(anthropicMessages);
           logMessage('assistant', fullResponse, { inputTokens, outputTokens });
+          await Promise.allSettled(pendingWrites);
           controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'done' })}\n\n`));
           controller.close();
         } catch (err) {
