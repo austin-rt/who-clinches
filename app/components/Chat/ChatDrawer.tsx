@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { HiXMark, HiPlus } from 'react-icons/hi2';
+import { HiXMark, HiPlus, HiClock } from 'react-icons/hi2';
 import { IoSendOutline } from 'react-icons/io5';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
@@ -9,6 +9,9 @@ import {
   setActiveSessionIndex as setReduxActiveIndex,
   setEmail as setReduxEmail,
   setUsage as setReduxUsage,
+  addToHistory,
+  removeFromHistory,
+  pruneExpiredSessions,
 } from '@/app/store/chatSlice';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 
@@ -24,6 +27,7 @@ interface ChatSession {
   messages: ChatMessage[];
   conf?: string;
   label: string;
+  lastActiveAt?: number;
 }
 
 const MAX_SESSIONS = 3;
@@ -57,6 +61,7 @@ const makeSession = (label: string, conf?: string): ChatSession => ({
   messages: [],
   label,
   conf,
+  lastActiveAt: Date.now(),
 });
 
 const deriveLabel = (messages: ChatMessage[]): string => {
@@ -80,6 +85,7 @@ const ChatDrawer = ({
   const persistedActiveIndex = useAppSelector((s) => s.chat.activeSessionIndex);
   const email = useAppSelector((s) => s.chat.email);
   const usage = useAppSelector((s) => s.chat.usage);
+  const history = useAppSelector((s) => s.chat.history ?? []);
 
   const [visible, setVisible] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>(() =>
@@ -103,7 +109,9 @@ const ChatDrawer = ({
   const [authEmail, setAuthEmail] = useState('');
   const [authSending, setAuthSending] = useState(false);
   const [authSent, setAuthSent] = useState(false);
+  const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const abortRef = useRef<AbortController | null>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -124,12 +132,17 @@ const ChatDrawer = ({
             messages: newMessages,
             label: deriveLabel(newMessages) || s.label,
             conf: s.conf || conferenceHint,
+            lastActiveAt: Date.now(),
           };
         })
       );
     },
     [activeIndex, conferenceHint]
   );
+
+  useEffect(() => {
+    dispatch(pruneExpiredSessions());
+  }, [dispatch]);
 
   useEffect(() => {
     if (!conferenceHint) return;
@@ -445,6 +458,10 @@ const ChatDrawer = ({
 
   const handleCloseSession = (index: number) => {
     if (isStreaming) return;
+    const session = sessions[index];
+    if (session && session.messages.length > 0) {
+      dispatch(addToHistory(session));
+    }
     if (sessions.length === 1) {
       setSessions([makeSession('New chat', conferenceHint)]);
       setActiveIndex(0);
@@ -458,6 +475,27 @@ const ChatDrawer = ({
     } else if (index === activeIndex) {
       setActiveIndex(Math.min(index, sessions.length - 2));
     }
+    setInput('');
+  };
+
+  const handleRestoreFromHistory = (id: string) => {
+    if (isStreaming) return;
+    const restored = history.find((s) => s.id === id);
+    if (!restored) return;
+    dispatch(removeFromHistory(id));
+    setSessions((prev) => {
+      const withTimestamp = { ...restored, lastActiveAt: Date.now() };
+      if (prev.length >= MAX_SESSIONS) {
+        const evicted = prev[0];
+        if (evicted.messages.length > 0) dispatch(addToHistory(evicted));
+        const updated = [...prev.slice(1), withTimestamp];
+        setActiveIndex(updated.length - 1);
+        return updated;
+      }
+      setActiveIndex(prev.length);
+      return [...prev, withTimestamp];
+    });
+    setHistoryOpen(false);
     setInput('');
   };
 
@@ -483,7 +521,14 @@ const ChatDrawer = ({
 
   const inputDisabled = isStreaming || !!windowLimit || providerLimit;
 
-  const showTabs = sessions.length > 1 || messages.length > 0;
+  const hasHistory = history.length > 0;
+
+  useEffect(() => {
+    if (!historyOpen) return;
+    const close = () => setHistoryOpen(false);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, [historyOpen]);
 
   return (
     <>
@@ -544,12 +589,53 @@ const ChatDrawer = ({
               </button>
             </div>
           </div>
-          {showTabs && (
-            <div className="flex items-center gap-1 px-4 pb-2">
+          <div className="flex items-center gap-1 px-4 pb-2">
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setHistoryOpen((p) => !p);
+                }}
+                disabled={!hasHistory}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
+                  hasHistory
+                    ? 'text-base-content/50 hover:bg-base-300 hover:text-base-content'
+                    : 'text-base-content/20 cursor-default'
+                }`}
+                aria-label="Chat history"
+              >
+                <HiClock className="h-3.5 w-3.5" />
+              </button>
+              {historyOpen && hasHistory && (
+                <div className="absolute left-0 top-full z-20 mt-1 max-h-48 w-56 overflow-y-auto rounded-lg border border-base-300 bg-base-100 py-1 shadow-lg">
+                  {history.map((s) => (
+                    <button
+                      key={s.id}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRestoreFromHistory(s.id);
+                      }}
+                      className="text-base-content/70 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors hover:bg-base-200"
+                    >
+                      <span className="min-w-0 truncate">{s.label}</span>
+                      {s.conf && (
+                        <span className="text-base-content/40 shrink-0 text-[10px] uppercase">
+                          {s.conf}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div
+              ref={tabsRef}
+              className="scrollbar-none flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
+            >
               {sessions.map((session, i) => (
                 <div
                   key={session.id}
-                  className={`group flex max-w-[8rem] items-center rounded-md text-xs transition-colors ${
+                  className={`group flex max-w-[8rem] shrink-0 items-center rounded-md text-xs transition-colors ${
                     i === activeIndex
                       ? 'bg-base-300 font-medium text-base-content'
                       : 'text-base-content/50 hover:text-base-content'
@@ -573,17 +659,20 @@ const ChatDrawer = ({
                   </button>
                 </div>
               ))}
-              {sessions.length < MAX_SESSIONS && (
-                <button
-                  onClick={handleNewChat}
-                  className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
-                  aria-label="New chat"
-                >
-                  <HiPlus className="h-3.5 w-3.5" />
-                </button>
-              )}
             </div>
-          )}
+            <button
+              onClick={handleNewChat}
+              disabled={sessions.length >= MAX_SESSIONS}
+              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
+                sessions.length < MAX_SESSIONS
+                  ? 'text-base-content/50 hover:bg-base-300 hover:text-base-content'
+                  : 'text-base-content/20 cursor-default'
+              }`}
+              aria-label="New chat"
+            >
+              <HiPlus className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4">

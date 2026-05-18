@@ -76,7 +76,7 @@ const ChatSearchBar = ({
   return (
     <div className="mx-auto w-full max-w-md">
       <div className="chat-search-bar" role="presentation">
-        <HiSparkles className="text-primary/60 ml-3 h-4 w-4 shrink-0" />
+        <HiSparkles className="h-4 w-4 shrink-0 text-primary dark:text-accent" />
         <input
           ref={inputRef}
           type="text"

@@ -11,6 +11,7 @@ interface ChatSession {
   messages: ChatMessage[];
   label: string;
   conf?: string;
+  lastActiveAt?: number;
 }
 
 interface UsageInfo {
@@ -25,6 +26,7 @@ interface ChatState {
   drawerOpen: boolean;
   email: string | null;
   usage: UsageInfo | null;
+  history: ChatSession[];
 }
 
 const initialState: ChatState = {
@@ -33,6 +35,7 @@ const initialState: ChatState = {
   drawerOpen: true,
   email: null,
   usage: null,
+  history: [],
 };
 
 const chatSlice = createSlice({
@@ -84,6 +87,31 @@ const chatSlice = createSlice({
     setUsage: (state, action: PayloadAction<UsageInfo | null>) => {
       state.usage = action.payload;
     },
+    addToHistory: (state, action: PayloadAction<ChatSession>) => {
+      state.history = [action.payload, ...state.history].slice(0, 20);
+    },
+    removeFromHistory: (state, action: PayloadAction<string>) => {
+      state.history = state.history.filter((s) => s.id !== action.payload);
+    },
+    pruneExpiredSessions: (state) => {
+      const cutoff = Date.now() - 24 * 60 * 60 * 1000;
+      const expired: ChatSession[] = [];
+      const kept: ChatSession[] = [];
+      for (const s of state.sessions) {
+        if (s.lastActiveAt && s.lastActiveAt < cutoff && s.messages.length > 0) {
+          expired.push(s);
+        } else {
+          kept.push(s);
+        }
+      }
+      if (expired.length > 0) {
+        state.history = [...expired, ...state.history].slice(0, 20);
+        state.sessions = kept;
+        if (state.activeSessionIndex >= state.sessions.length) {
+          state.activeSessionIndex = Math.max(0, state.sessions.length - 1);
+        }
+      }
+    },
   },
 });
 
@@ -98,5 +126,8 @@ export const {
   clearSessions,
   setEmail,
   setUsage,
+  addToHistory,
+  removeFromHistory,
+  pruneExpiredSessions,
 } = chatSlice.actions;
 export default chatSlice.reducer;
