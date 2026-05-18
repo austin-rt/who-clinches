@@ -582,6 +582,7 @@ export const POST = async (request: NextRequest) => {
               freeRemaining: usageResult.source === 'free' ? usageResult.freeRemaining : 0,
               creditsRemaining: usageResult.creditsRemaining,
               source: usageResult.source,
+              windowResetsIn: usageResult.windowResetsIn,
             };
           }
           controller.enqueue(encoder.encode(`data: ${JSON.stringify(donePayload)}\n\n`));

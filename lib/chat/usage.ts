@@ -1,6 +1,6 @@
 import { db } from '@/lib/db/client';
 
-const FREE_WINDOW_LIMIT = 4;
+const FREE_WINDOW_LIMIT = 8;
 const FREE_WINDOW_MS = 4 * 60 * 60 * 1000;
 
 export interface UsageResult {
@@ -33,8 +33,11 @@ export const checkAndDeductUsage = async (anonymousId: string): Promise<UsageRes
       source: 'free',
       freeRemaining: FREE_WINDOW_LIMIT - 1,
       creditsRemaining: updated.purchasedCredits,
+      windowResetsIn: FREE_WINDOW_MS,
     };
   }
+
+  const windowResetsIn = user.windowExpiresAt!.getTime() - now.getTime();
 
   if (user.freeUsedInWindow < FREE_WINDOW_LIMIT) {
     const updated = await db.chatUser.update({
@@ -46,6 +49,7 @@ export const checkAndDeductUsage = async (anonymousId: string): Promise<UsageRes
       source: 'free',
       freeRemaining: FREE_WINDOW_LIMIT - updated.freeUsedInWindow,
       creditsRemaining: updated.purchasedCredits,
+      windowResetsIn,
     };
   }
 
@@ -59,6 +63,7 @@ export const checkAndDeductUsage = async (anonymousId: string): Promise<UsageRes
       source: 'credits',
       freeRemaining: 0,
       creditsRemaining: updated.purchasedCredits,
+      windowResetsIn,
     };
   }
 

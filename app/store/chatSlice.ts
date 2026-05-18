@@ -18,6 +18,7 @@ interface UsageInfo {
   freeRemaining: number;
   creditsRemaining: number;
   source: 'free' | 'credits' | null;
+  windowResetsIn?: number;
 }
 
 interface ChatState {

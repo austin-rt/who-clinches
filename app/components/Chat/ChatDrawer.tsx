@@ -654,7 +654,7 @@ const ChatDrawer = ({
                           e.stopPropagation();
                           handleRestoreFromHistory(s.id);
                         }}
-                        className="text-base-content/70 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors hover:bg-base-200"
+                        className="text-base-content/70 hover:bg-base-content/10 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors"
                       >
                         <span className="min-w-0 truncate">{s.label}</span>
                         {s.conf && (
@@ -774,15 +774,42 @@ const ChatDrawer = ({
         )}
 
         {usage && !windowLimit && !providerLimit && (
-          <div className="text-base-content/40 flex items-center justify-center gap-1.5 border-t border-base-300 px-4 py-1 text-[10px]">
-            <span>Remaining Requests:</span>
-            {usage.creditsRemaining > 0 ? (
-              <>
-                <span>{usage.freeRemaining}/4 free</span>
-                <span>{usage.creditsRemaining} donation</span>
-              </>
-            ) : (
-              <span>{usage.freeRemaining}/4</span>
+          <div className="flex flex-col items-center border-t border-base-300 px-4 py-1">
+            <div className="text-base-content/40 flex items-center gap-1.5 text-[10px]">
+              <span>Remaining Messages:</span>
+              {usage.creditsRemaining > 0 ? (
+                <>
+                  <span>{usage.freeRemaining}/8 free</span>
+                  <span>{usage.creditsRemaining} donation</span>
+                </>
+              ) : (
+                <span>{usage.freeRemaining}/8</span>
+              )}
+              {usage.windowResetsIn && usage.windowResetsIn > 0 && (
+                <span>
+                  — resets in{' '}
+                  {(() => {
+                    const totalMin = Math.max(1, Math.ceil(usage.windowResetsIn / 60_000));
+                    const h = Math.floor(totalMin / 60);
+                    const m = totalMin % 60;
+                    return h > 0 ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`;
+                  })()}
+                </span>
+              )}
+            </div>
+            {usage.freeRemaining === 0 && usage.creditsRemaining === 0 && (
+              <p className="text-base-content/40 text-[10px]">
+                You&apos;ve run out of free messages. If you don&apos;t want to wait, you can{' '}
+                <a
+                  href="https://buymeacoffee.com/whoclinches"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline"
+                >
+                  donate to server costs here
+                </a>{' '}
+                and you&apos;ll regain immediate access.
+              </p>
             )}
           </div>
         )}
