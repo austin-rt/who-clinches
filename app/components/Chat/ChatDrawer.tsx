@@ -633,44 +633,41 @@ const ChatDrawer = ({
             >
               <HiPlus className="h-3.5 w-3.5" />
             </button>
-            <div className="relative">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setHistoryOpen((p) => !p);
-                }}
-                disabled={!hasHistory}
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
-                  hasHistory
-                    ? 'text-base-content/50 hover:bg-base-300 hover:text-base-content'
-                    : 'text-base-content/20 cursor-default'
-                }`}
-                aria-label="Chat history"
-              >
-                <HiClock className="h-3.5 w-3.5" />
-              </button>
-              {historyOpen && hasHistory && (
-                <div className="absolute right-0 top-full z-20 mt-1 max-h-48 w-56 overflow-y-auto rounded-lg border border-base-300 bg-base-100 py-1 shadow-lg">
-                  {history.map((s) => (
-                    <button
-                      key={s.id}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleRestoreFromHistory(s.id);
-                      }}
-                      className="text-base-content/70 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors hover:bg-base-200"
-                    >
-                      <span className="min-w-0 truncate">{s.label}</span>
-                      {s.conf && (
-                        <span className="text-base-content/40 shrink-0 text-[10px] uppercase">
-                          {s.conf}
-                        </span>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+            {hasHistory && (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setHistoryOpen((p) => !p);
+                  }}
+                  className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
+                  aria-label="Chat history"
+                >
+                  <HiClock className="h-3.5 w-3.5" />
+                </button>
+                {historyOpen && (
+                  <div className="absolute right-0 top-full z-20 mt-1 max-h-48 w-56 overflow-y-auto rounded-lg border border-base-300 bg-base-100 py-1 shadow-lg">
+                    {history.map((s) => (
+                      <button
+                        key={s.id}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRestoreFromHistory(s.id);
+                        }}
+                        className="text-base-content/70 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors hover:bg-base-200"
+                      >
+                        <span className="min-w-0 truncate">{s.label}</span>
+                        {s.conf && (
+                          <span className="text-base-content/40 shrink-0 text-[10px] uppercase">
+                            {s.conf}
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
