@@ -303,6 +303,8 @@ export const POST = async (request: NextRequest) => {
 
     const logMeta = { sessionId, conf, teamId: targetTeamId, teamName: targetTeamName, promptHash };
 
+    const CHAT_MESSAGE_CAP = 5000;
+
     const logMessage = (
       role: string,
       content: string,
@@ -321,6 +323,19 @@ export const POST = async (request: NextRequest) => {
             promptHash: logMeta.promptHash,
             ...(tokens ?? {}),
           },
+        })
+        .then(async () => {
+          const count = await db.chatMessage.count();
+          if (count > CHAT_MESSAGE_CAP) {
+            const oldest = await db.chatMessage.findMany({
+              orderBy: { createdAt: 'asc' },
+              take: count - CHAT_MESSAGE_CAP,
+              select: { id: true },
+            });
+            await db.chatMessage.deleteMany({
+              where: { id: { in: oldest.map((r) => r.id) } },
+            });
+          }
         })
         .catch(async (err) => {
           const { logError } = await import('@/lib/errorLogger');
