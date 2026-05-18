@@ -20,6 +20,7 @@ interface ChatMessage {
 interface ChatSession {
   id: string;
   messages: ChatMessage[];
+  conf?: string;
   label: string;
 }
 
@@ -49,10 +50,11 @@ const TYPING_SHOW_DELAY_MIN = 300;
 const TYPING_SHOW_DELAY_MAX = 500;
 const TYPING_MIN_VISIBLE = 1500;
 
-const makeSession = (label: string): ChatSession => ({
+const makeSession = (label: string, conf?: string): ChatSession => ({
   id: crypto.randomUUID(),
   messages: [],
   label,
+  conf,
 });
 
 const deriveLabel = (messages: ChatMessage[]): string => {
@@ -77,9 +79,17 @@ const ChatDrawer = ({
 
   const [visible, setVisible] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>(() =>
-    persistedSessions.length > 0 ? persistedSessions : [makeSession('New chat')]
+    persistedSessions.length > 0 ? persistedSessions : [makeSession('New chat', conferenceHint)]
   );
-  const [activeIndex, setActiveIndex] = useState(persistedActiveIndex);
+  const [activeIndex, setActiveIndex] = useState(() => {
+    if (conferenceHint) {
+      const confIdx = (persistedSessions.length > 0 ? persistedSessions : []).findIndex(
+        (s) => s.conf === conferenceHint
+      );
+      if (confIdx !== -1) return confIdx;
+    }
+    return persistedActiveIndex;
+  });
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [showTyping, setShowTyping] = useState(false);
@@ -100,12 +110,31 @@ const ChatDrawer = ({
         prev.map((s, i) => {
           if (i !== activeIndex) return s;
           const newMessages = typeof updater === 'function' ? updater(s.messages) : updater;
-          return { ...s, messages: newMessages, label: deriveLabel(newMessages) || s.label };
+          return {
+            ...s,
+            messages: newMessages,
+            label: deriveLabel(newMessages) || s.label,
+            conf: s.conf || conferenceHint,
+          };
         })
       );
     },
-    [activeIndex]
+    [activeIndex, conferenceHint]
   );
+
+  useEffect(() => {
+    if (!conferenceHint) return;
+    setSessions((prev) => {
+      const currentIdx = prev.findIndex((s) => s.conf === conferenceHint);
+      if (currentIdx !== -1) {
+        setActiveIndex(currentIdx);
+        return prev;
+      }
+      const newSession = makeSession('New chat', conferenceHint);
+      setActiveIndex(prev.length);
+      return [...prev, newSession];
+    });
+  }, [conferenceHint]);
 
   useEffect(() => {
     const nonEmpty = sessions.filter((s) => s.messages.length > 0);
@@ -352,12 +381,12 @@ const ChatDrawer = ({
     if (isStreaming) return;
     if (sessions.length >= MAX_SESSIONS) {
       setSessions((prev) => {
-        const updated = [...prev.slice(1), makeSession('New chat')];
+        const updated = [...prev.slice(1), makeSession('New chat', conferenceHint)];
         return updated;
       });
       setActiveIndex(sessions.length - 1);
     } else {
-      setSessions((prev) => [...prev, makeSession('New chat')]);
+      setSessions((prev) => [...prev, makeSession('New chat', conferenceHint)]);
       setActiveIndex(sessions.length);
     }
     setInput('');
