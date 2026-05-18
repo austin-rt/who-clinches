@@ -7,6 +7,10 @@ const CFBD_BASE_URL = 'https://apinext.collegefootballdata.com';
 const MAX_RESPONSE_CHARS = 8000;
 const MAX_ARRAY_ITEMS = 50;
 const CACHE_PREFIX = 'cfbd:chat';
+const ONE_HOUR_SECONDS = 60 * 60;
+
+const VOLATILE_PATHS = new Set(['/lines', '/scoreboard', '/live/plays']);
+
 const isHistorical = (params: Record<string, string>): boolean => {
   const year = params.year || params.season;
   if (!year) return false;
@@ -124,6 +128,8 @@ export const executeCfbdLookup = async (
   const cacheKey = `${CACHE_PREFIX}:${path.slice(1).replace(/\//g, ':')}:${paramHash}`;
 
   const historical = isHistorical(params);
+  const volatile = VOLATILE_PATHS.has(path);
+  const ttl = volatile ? ONE_HOUR_SECONDS : calculateNextSaturdayRevalidate();
 
   try {
     const data = await redisFetch<unknown>(
@@ -146,10 +152,10 @@ export const executeCfbdLookup = async (
 
         return response.json();
       },
-      calculateNextSaturdayRevalidate()
+      ttl
     );
 
-    if (historical) {
+    if (historical && !volatile) {
       await persistRedisKey(cacheKey);
     }
 
