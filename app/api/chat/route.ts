@@ -297,7 +297,7 @@ export const POST = async (request: NextRequest) => {
       contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
     }
 
-    const systemPrompt = buildSystemPrompt(confMeta.name, ragChunks.length > 0);
+    const systemPrompt = buildSystemPrompt(confMeta.name, data.season, ragChunks.length > 0);
     const contextBlock = contextParts.join('\n\n');
     const promptHash = createHash('sha256').update(systemPrompt).digest('hex').slice(0, 12);
 
