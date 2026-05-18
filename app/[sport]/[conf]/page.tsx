@@ -25,7 +25,7 @@ import {
   type SportSlug,
 } from '@/lib/constants';
 import { SimulateResponse } from '@/app/store/api';
-import { useAppDispatch } from '@/app/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks } from '@/app/store/gamePicksSlice';
 import { setStandingsOpen } from '@/app/store/uiSlice';
 const ConferencePage = () => {
@@ -37,7 +37,8 @@ const ConferencePage = () => {
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
-  const [hasConversation, setHasConversation] = useState(false);
+  const persistedSessions = useAppSelector((s) => s.chat.sessions);
+  const hasConversation = persistedSessions.some((s) => s.messages.length > 0);
   const geoTeam = useGeoTeam();
 
   const isValid = isValidSport(sportParam) && isValidConference(confParam);
@@ -119,7 +120,6 @@ const ConferencePage = () => {
           onOpen={() => setChatOpen(true)}
           onSubmit={(msg) => {
             setInitialMessage(msg);
-            setHasConversation(true);
             setChatOpen(true);
           }}
         />
@@ -182,7 +182,7 @@ const ConferencePage = () => {
         conferenceHint={conf}
         initialMessage={initialMessage}
         onInitialMessageSent={() => setInitialMessage(null)}
-        onMessageSent={() => setHasConversation(true)}
+        onMessageSent={() => {}}
       />
     </div>
   );

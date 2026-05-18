@@ -3,6 +3,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import uiReducer from './uiSlice';
 import appReducer from './appSlice';
+import chatReducer from './chatSlice';
 import gamePicksReducer from './gamePicksSlice';
 import { api } from './api';
 
@@ -18,12 +19,20 @@ const appPersistConfig = {
   blacklist: ['isInSeason', 'season', 'sessionRecordingURL'],
 };
 
+const chatPersistConfig = {
+  key: 'chat',
+  storage,
+  blacklist: ['drawerOpen'],
+};
+
 const persistedUiReducer = persistReducer(uiPersistConfig, uiReducer);
 const persistedAppReducer = persistReducer(appPersistConfig, appReducer);
+const persistedChatReducer = persistReducer(chatPersistConfig, chatReducer);
 
 const rootReducer = combineReducers({
   ui: persistedUiReducer,
   app: persistedAppReducer,
+  chat: persistedChatReducer,
   gamePicks: gamePicksReducer,
   [api.reducerPath]: api.reducer,
 });

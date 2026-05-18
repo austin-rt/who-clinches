@@ -3,6 +3,11 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { HiXMark, HiPlus } from 'react-icons/hi2';
 import { IoSendOutline } from 'react-icons/io5';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import {
+  setSessions as setReduxSessions,
+  setActiveSessionIndex as setReduxActiveIndex,
+} from '@/app/store/chatSlice';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 
 interface ChatMessage {
@@ -66,9 +71,15 @@ const ChatDrawer = ({
   onInitialMessageSent,
   onMessageSent,
 }: ChatDrawerProps) => {
+  const dispatch = useAppDispatch();
+  const persistedSessions = useAppSelector((s) => s.chat.sessions);
+  const persistedActiveIndex = useAppSelector((s) => s.chat.activeSessionIndex);
+
   const [visible, setVisible] = useState(false);
-  const [sessions, setSessions] = useState<ChatSession[]>(() => [makeSession('New chat')]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [sessions, setSessions] = useState<ChatSession[]>(() =>
+    persistedSessions.length > 0 ? persistedSessions : [makeSession('New chat')]
+  );
+  const [activeIndex, setActiveIndex] = useState(persistedActiveIndex);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [showTyping, setShowTyping] = useState(false);
@@ -95,6 +106,14 @@ const ChatDrawer = ({
     },
     [activeIndex]
   );
+
+  useEffect(() => {
+    const nonEmpty = sessions.filter((s) => s.messages.length > 0);
+    if (nonEmpty.length > 0) {
+      dispatch(setReduxSessions(nonEmpty));
+      dispatch(setReduxActiveIndex(activeIndex));
+    }
+  }, [sessions, activeIndex, dispatch]);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -404,10 +423,33 @@ const ChatDrawer = ({
         aria-hidden={!visible}
         inert={!visible ? true : undefined}
       >
-        <div className="flex items-center justify-between border-b border-base-300 px-4 py-3">
-          <div className="flex min-w-0 flex-1 items-center gap-1">
-            {showTabs &&
-              sessions.map((session, i) => (
+        <div className="sticky top-0 z-10 border-b border-base-300 bg-base-100">
+          <div className="flex items-center px-4 pb-1 pt-3">
+            <div className="flex-1" />
+            <p className="text-base-content/50 text-[10px]">
+              Experimental — results may be inaccurate.{' '}
+              <a
+                href={`/feedback?session=${sessionId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-base-content/70 underline"
+              >
+                Report an issue
+              </a>
+            </p>
+            <div className="flex flex-1 justify-end">
+              <button
+                onClick={onClose}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
+                aria-label="Close"
+              >
+                <HiXMark className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+          {showTabs && (
+            <div className="flex items-center gap-1 px-4 pb-2">
+              {sessions.map((session, i) => (
                 <div
                   key={session.id}
                   className={`group flex max-w-[8rem] items-center rounded-md text-xs transition-colors ${
@@ -434,35 +476,20 @@ const ChatDrawer = ({
                   </button>
                 </div>
               ))}
-            {showTabs && sessions.length < MAX_SESSIONS && (
-              <button
-                onClick={handleNewChat}
-                className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
-                aria-label="New chat"
-              >
-                <HiPlus className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
-            aria-label="Close"
-          >
-            <HiXMark className="h-5 w-5" />
-          </button>
+              {sessions.length < MAX_SESSIONS && (
+                <button
+                  onClick={handleNewChat}
+                  className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
+                  aria-label="New chat"
+                >
+                  <HiPlus className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="flex-1 overflow-y-auto px-4 py-4">
-          <div className="bg-base-content/5 text-base-content/60 mb-3 rounded-lg px-3 py-2 text-center text-xs">
-            Experimental — results may be inaccurate.{' '}
-            <a
-              href={`mailto:feedback@whoclinches.com?subject=${encodeURIComponent(`Chat issue [${sessionId.slice(0, 8)}]`)}&body=${encodeURIComponent(`Session: ${sessionId}\n\nDescribe the issue:\n`)}`}
-              className="text-base-content/80 underline"
-            >
-              Report issues
-            </a>
-          </div>
           {messages.length === 0 && !showTyping && (
             <div className="flex h-full items-center justify-center">
               <p className="text-base-content/50 text-center text-sm">

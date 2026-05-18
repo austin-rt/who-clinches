@@ -322,7 +322,10 @@ export const POST = async (request: NextRequest) => {
             ...(tokens ?? {}),
           },
         })
-        .catch(() => {});
+        .catch(async (err) => {
+          const { logError } = await import('@/lib/errorLogger');
+          await logError(err, { action: 'chat-log-message', sessionId, role });
+        });
     };
 
     logMessage('user', message);
