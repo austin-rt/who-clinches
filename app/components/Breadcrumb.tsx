@@ -19,7 +19,7 @@ const buildSegmentLabels = (pathname: string): string[] => {
     if (STATIC_LABELS[segment]) return STATIC_LABELS[segment];
     const confMeta = getConferenceMetadata(segment);
     if (confMeta) return confMeta.name;
-    return segment;
+    return segment.charAt(0).toUpperCase() + segment.slice(1);
   });
 };
 

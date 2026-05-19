@@ -11,7 +11,11 @@ export const GET = async () => {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const [byConference, latestChunk, tokenUsage24h, tokenUsage7d] = await Promise.all([
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+
+  const [byConference, latestChunk, tokenUsageMonth] = await Promise.all([
     db.knowledgeChunk.groupBy({
       by: ['conference'],
       _count: true,
@@ -22,11 +26,8 @@ export const GET = async () => {
     }),
     db.chatMessage.aggregate({
       _sum: { inputTokens: true, outputTokens: true },
-      where: { createdAt: { gte: new Date(Date.now() - 86_400_000) } },
-    }),
-    db.chatMessage.aggregate({
-      _sum: { inputTokens: true, outputTokens: true },
-      where: { createdAt: { gte: new Date(Date.now() - 604_800_000) } },
+      _count: true,
+      where: { createdAt: { gte: monthStart } },
     }),
   ]);
 
@@ -47,13 +48,10 @@ export const GET = async () => {
       voyage: { configured: !!process.env.VOYAGE_API_KEY },
     },
     tokenUsage: {
-      last24h: {
-        input: tokenUsage24h._sum.inputTokens ?? 0,
-        output: tokenUsage24h._sum.outputTokens ?? 0,
-      },
-      last7d: {
-        input: tokenUsage7d._sum.inputTokens ?? 0,
-        output: tokenUsage7d._sum.outputTokens ?? 0,
+      month: {
+        input: tokenUsageMonth._sum.inputTokens ?? 0,
+        output: tokenUsageMonth._sum.outputTokens ?? 0,
+        messages: tokenUsageMonth._count,
       },
     },
     lastEmbeddingError: getLastEmbeddingError(),

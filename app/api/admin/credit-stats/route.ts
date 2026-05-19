@@ -11,9 +11,11 @@ export const GET = async () => {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const [totalUsers, creditsAgg, donationAgg] = await Promise.all([
-    db.chatUser.count(),
-    db.chatUser.aggregate({ _sum: { purchasedCredits: true } }),
+  const [users, donationAgg] = await Promise.all([
+    db.chatUser.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 100,
+    }),
     db.donation.aggregate({ _count: true, _sum: { amount: true } }),
   ]);
 
@@ -30,8 +32,16 @@ export const GET = async () => {
   }
 
   return NextResponse.json({
-    totalUsers,
-    totalCreditsOutstanding: creditsAgg._sum.purchasedCredits ?? 0,
+    users: users.map((u) => ({
+      id: u.id,
+      anonymousId: u.anonymousId,
+      email: u.email,
+      purchasedCredits: u.purchasedCredits,
+      freeUsedInWindow: u.freeUsedInWindow,
+      windowExpiresAt: u.windowExpiresAt,
+      createdAt: u.createdAt,
+      updatedAt: u.updatedAt,
+    })),
     totalDonations: donationAgg._count,
     totalDonationAmount: donationAgg._sum.amount ?? 0,
     providerCooldownUntil,

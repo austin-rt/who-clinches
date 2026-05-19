@@ -30,7 +30,7 @@ const FlatButton: ForwardRefExoticComponent<FlatButtonProps> = forwardRef<
     ref
   ) => {
     const buttonClasses = cn(
-      'btn',
+      'btn disabled:cursor-not-allowed',
       'btn-flat',
       {
         'btn-primary': color === 'primary',

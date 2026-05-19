@@ -16,30 +16,24 @@ const SCENARIO_PLACEHOLDERS = [
 ];
 
 interface ChatSearchBarProps {
-  geoTeamName: string | null;
-  fallbackTeamName: string | null;
-  hasConversation: boolean;
+  geoTeamName?: string | null;
+  fallbackTeamName?: string | null;
   onOpen: () => void;
   onSubmit: (message: string) => void;
 }
 
-const ChatSearchBar = ({
-  geoTeamName,
-  fallbackTeamName,
-  hasConversation,
-  onOpen,
-  onSubmit,
-}: ChatSearchBarProps) => {
+const ChatSearchBar = ({ geoTeamName, fallbackTeamName, onOpen, onSubmit }: ChatSearchBarProps) => {
   const [value, setValue] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const teamName = geoTeamName ?? fallbackTeamName ?? 'your team';
-  const [placeholderIndex] = useState(() => Date.now() % (SCENARIO_PLACEHOLDERS.length + 1));
-  const placeholder = hasConversation
-    ? 'Continue chatting...'
-    : placeholderIndex === 0
+  const teamName = geoTeamName ?? fallbackTeamName;
+  const [placeholderIndex] = useState(
+    () => Date.now() % (SCENARIO_PLACEHOLDERS.length + (teamName ? 1 : 0))
+  );
+  const placeholder =
+    teamName && placeholderIndex === 0
       ? `How does ${teamName} make the title?`
-      : SCENARIO_PLACEHOLDERS[placeholderIndex - 1];
+      : SCENARIO_PLACEHOLDERS[teamName ? placeholderIndex - 1 : placeholderIndex];
 
   const handleSubmit = useCallback(() => {
     const text = value.trim();
@@ -57,21 +51,6 @@ const ChatSearchBar = ({
       handleSubmit();
     }
   };
-
-  if (hasConversation) {
-    return (
-      <div className="mx-auto w-full max-w-md">
-        <button
-          type="button"
-          onClick={onOpen}
-          className="chat-search-bar w-full cursor-pointer"
-          data-testid="chat-trigger"
-        >
-          <span className="chat-search-input text-left opacity-50">{placeholder}</span>
-        </button>
-      </div>
-    );
-  }
 
   return (
     <div className="mx-auto w-full max-w-md">

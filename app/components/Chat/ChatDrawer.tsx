@@ -86,6 +86,7 @@ const ChatDrawer = ({
   const email = useAppSelector((s) => s.chat.email);
   const usage = useAppSelector((s) => s.chat.usage);
   const history = useAppSelector((s) => s.chat.history ?? []);
+  const appSeason = useAppSelector((s) => s.app.season);
 
   const [visible, setVisible] = useState(false);
   const [sessions, setSessions] = useState<ChatSession[]>(() =>
@@ -283,6 +284,7 @@ const ChatDrawer = ({
             conferenceHint,
             teamId,
             sessionId,
+            season: appSeason ?? undefined,
           }),
           signal: controller.signal,
         });
@@ -425,7 +427,7 @@ const ChatDrawer = ({
         }
       }
     },
-    [messages, conferenceHint, teamId, sessionId, onMessageSent, setMessages, dispatch]
+    [messages, conferenceHint, teamId, sessionId, appSeason, onMessageSent, setMessages, dispatch]
   );
 
   useEffect(() => {

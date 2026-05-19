@@ -1,11 +1,18 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/Button';
+import { Input } from '@/app/components/Input';
 import Divider from '@/app/components/Divider';
-import { HiCheck } from 'react-icons/hi2';
+import { HiCheck, HiDocumentDuplicate } from 'react-icons/hi2';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import {
+  useReactTable,
+  getCoreRowModel,
+  createColumnHelper,
+  flexRender,
+} from '@tanstack/react-table';
 
 interface RuntimeConfig {
   fixtureYearOn: boolean;
@@ -22,9 +29,19 @@ interface RuntimeConfig {
   cascadeEffects?: string[];
 }
 
+interface ChatUserRow {
+  id: string;
+  anonymousId: string;
+  email: string | null;
+  purchasedCredits: number;
+  freeUsedInWindow: number;
+  windowExpiresAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface CreditStats {
-  totalUsers: number;
-  totalCreditsOutstanding: number;
+  users: ChatUserRow[];
   totalDonations: number;
   totalDonationAmount: number;
   providerCooldownUntil: string | null;
@@ -40,8 +57,7 @@ interface KnowledgeStatus {
     voyage: { configured: boolean };
   };
   tokenUsage: {
-    last24h: { input: number; output: number };
-    last7d: { input: number; output: number };
+    month: { input: number; output: number; messages: number };
   };
   lastEmbeddingError: { timestamp: string; message: string } | null;
 }
@@ -60,6 +76,16 @@ interface RedisKey {
   ttl: number;
   cachedAt: number | null;
 }
+
+const HAIKU_INPUT_COST_PER_MTOK = 1.0;
+const HAIKU_OUTPUT_COST_PER_MTOK = 5.0;
+
+const estimateCost = (input: number, output: number): string => {
+  const cost =
+    (input / 1_000_000) * HAIKU_INPUT_COST_PER_MTOK +
+    (output / 1_000_000) * HAIKU_OUTPUT_COST_PER_MTOK;
+  return `$${cost.toFixed(4)}`;
+};
 
 const friendlyName = (key: string): string => {
   const parts = key.split(':');
@@ -128,6 +154,36 @@ const formatExpiresIn = (ttlSeconds: number): string => {
   return parts.length ? parts.join(' ') : '<1m';
 };
 
+const CopyButton = ({ text, onCopy }: { text: string; onCopy: (t: string) => void }) => {
+  const [copied, setCopied] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  const handleClick = () => {
+    onCopy(text);
+    setCopied(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <button
+      onClick={copied ? undefined : handleClick}
+      className={cn(
+        'flex h-6 w-6 items-center justify-center rounded-full transition-colors',
+        copied ? 'text-success' : 'cursor-pointer text-base-content hover:bg-base-300'
+      )}
+      title={copied ? 'Copied!' : 'Copy'}
+      aria-label={copied ? 'Copied' : 'Copy'}
+      disabled={copied}
+    >
+      {copied ? <HiCheck className="h-3 w-3" /> : <HiDocumentDuplicate className="h-3 w-3" />}
+    </button>
+  );
+};
+
+const chatUserColumnHelper = createColumnHelper<ChatUserRow>();
+const redisColumnHelper = createColumnHelper<RedisKey>();
+
 export default function AdminPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
   const [cfbdStatus, setCfbdStatus] = useState<CfbdStatus | null>(null);
@@ -138,15 +194,79 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [cascadeMessages, setCascadeMessages] = useState<string[]>([]);
-  const [creditIdentifier, setCreditIdentifier] = useState('');
-  const [creditAmount, setCreditAmount] = useState('');
-  const [creditLookup, setCreditLookup] = useState<Record<string, unknown> | null>(null);
+  const [grantIdentifier, setGrantIdentifier] = useState('');
+  const [grantAmount, setGrantAmount] = useState('');
+  const [revokeIdentifier, setRevokeIdentifier] = useState('');
   const [creditActionLoading, setCreditActionLoading] = useState(false);
 
-  const showMessage = (msg: string) => {
+  const showMessage = useCallback((msg: string) => {
     setActionMessage(msg);
     setTimeout(() => setActionMessage(null), 3000);
-  };
+  }, []);
+
+  const copyToClipboard = useCallback(
+    (text: string) => {
+      void navigator.clipboard.writeText(text);
+      showMessage('Copied');
+    },
+    [showMessage]
+  );
+
+  const chatUserColumns = useMemo(
+    () => [
+      chatUserColumnHelper.accessor('anonymousId', {
+        header: 'ID',
+        size: 220,
+        cell: (info) => {
+          const val = info.getValue();
+          return (
+            <span className="flex items-center gap-1">
+              <span className="truncate font-mono" title={val}>
+                {val}
+              </span>
+              <CopyButton text={val} onCopy={copyToClipboard} />
+            </span>
+          );
+        },
+      }),
+      chatUserColumnHelper.accessor('email', {
+        header: 'Email',
+        size: 220,
+        cell: (info) => {
+          const val = info.getValue();
+          if (!val) return <span className="text-base-content/30">—</span>;
+          return (
+            <span className="flex items-center gap-1">
+              <span className="truncate" title={val}>
+                {val}
+              </span>
+              <CopyButton text={val} onCopy={copyToClipboard} />
+            </span>
+          );
+        },
+      }),
+      chatUserColumnHelper.accessor('purchasedCredits', { header: 'Credits' }),
+      chatUserColumnHelper.accessor('freeUsedInWindow', { header: 'Free Used' }),
+      chatUserColumnHelper.accessor('windowExpiresAt', {
+        header: 'Free Window',
+        cell: (info) => {
+          const val = info.getValue();
+          if (!val) return <span className="text-base-content/30">—</span>;
+          const d = new Date(val);
+          return d > new Date() ? formatExpiresIn((d.getTime() - Date.now()) / 1000) : 'reset';
+        },
+      }),
+      chatUserColumnHelper.accessor('createdAt', {
+        header: 'Created',
+        cell: (info) => formatRelativeTime(new Date(info.getValue()).getTime()),
+      }),
+      chatUserColumnHelper.accessor('updatedAt', {
+        header: 'Last Active',
+        cell: (info) => formatRelativeTime(new Date(info.getValue()).getTime()),
+      }),
+    ],
+    [copyToClipboard]
+  );
 
   const fetchConfig = useCallback(async () => {
     const res = await fetch('/api/admin/config');
@@ -201,8 +321,69 @@ export default function AdminPage() {
     }
   }, []);
 
-  const handleCreditAction = async (action: 'lookup' | 'grant' | 'revoke') => {
-    if (!creditIdentifier.trim()) return;
+  const deleteRedisKeys = useCallback(
+    async (keys: string[]) => {
+      const res = await fetch('/api/admin/redis-keys', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys }),
+      });
+      const data = await res.json();
+      showMessage(`Deleted ${data.deletedCount} keys`);
+      void fetchRedisKeys();
+    },
+    [showMessage, fetchRedisKeys]
+  );
+
+  const redisColumns = useMemo(
+    () => [
+      redisColumnHelper.accessor('key', {
+        header: 'Key',
+        cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
+      }),
+      redisColumnHelper.display({
+        id: 'name',
+        header: 'Name',
+        cell: (info) => (
+          <span className="whitespace-nowrap">{friendlyName(info.row.original.key)}</span>
+        ),
+      }),
+      redisColumnHelper.accessor('cachedAt', {
+        header: 'Last Cached',
+        cell: (info) => {
+          const val = info.getValue();
+          return <span className="whitespace-nowrap">{val ? formatRelativeTime(val) : '—'}</span>;
+        },
+      }),
+      redisColumnHelper.accessor('ttl', {
+        header: 'Expires In',
+        cell: (info) => (
+          <span className="whitespace-nowrap">{formatExpiresIn(info.getValue())}</span>
+        ),
+      }),
+      redisColumnHelper.display({
+        id: 'actions',
+        header: '',
+        cell: (info) => (
+          <Button
+            size="xs"
+            color="error"
+            onClick={() => void deleteRedisKeys([info.row.original.key])}
+          >
+            Delete
+          </Button>
+        ),
+      }),
+    ],
+    [deleteRedisKeys]
+  );
+
+  const handleCreditAction = async (
+    action: 'grant' | 'revoke',
+    identifier: string,
+    amount?: string
+  ) => {
+    if (!identifier.trim()) return;
     setCreditActionLoading(true);
     try {
       const res = await fetch('/api/admin/credit-stats', {
@@ -210,8 +391,8 @@ export default function AdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action,
-          identifier: creditIdentifier.trim(),
-          amount: action !== 'lookup' ? Number(creditAmount) : undefined,
+          identifier: identifier.trim(),
+          amount: amount ? Number(amount) : undefined,
         }),
       });
       const data = await res.json();
@@ -219,15 +400,10 @@ export default function AdminPage() {
         showMessage(data.error ?? 'Failed');
         return;
       }
-      if (action === 'lookup') {
-        setCreditLookup(data);
-      } else {
-        showMessage(
-          `${action === 'grant' ? 'Granted' : 'Revoked'} ${data.credits} credits → balance: ${data.newBalance}`
-        );
-        setCreditLookup(null);
-        void fetchCreditStats();
-      }
+      showMessage(
+        `${action === 'grant' ? 'Granted' : 'Revoked'} ${data.credits} credits → balance: ${data.newBalance}`
+      );
+      void fetchCreditStats();
     } catch {
       showMessage('Request failed');
     } finally {
@@ -280,16 +456,17 @@ export default function AdminPage() {
     showMessage(data.message ?? data.error);
   };
 
-  const deleteRedisKeys = async (keys: string[]) => {
-    const res = await fetch('/api/admin/redis-keys', {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keys }),
-    });
-    const data = await res.json();
-    showMessage(`Deleted ${data.deletedCount} keys`);
-    void fetchRedisKeys();
-  };
+  const creditTable = useReactTable({
+    data: creditStats?.users ?? [],
+    columns: chatUserColumns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  const redisTable = useReactTable({
+    data: redisKeys,
+    columns: redisColumns,
+    getCoreRowModel: getCoreRowModel(),
+  });
 
   if (loading || !config) {
     return (
@@ -303,7 +480,7 @@ export default function AdminPage() {
   const isPreview = config.environment === 'preview';
 
   return (
-    <div className="mx-auto max-w-3xl space-y-6">
+    <div className="mx-auto space-y-6 px-8">
       <h1 className="text-2xl font-bold">Admin Dashboard</h1>
 
       {actionMessage && (
@@ -323,7 +500,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Local Section */}
       {isLocal && (
         <Card title={config.environment}>
           <Toggle
@@ -388,7 +564,6 @@ export default function AdminPage() {
         </Card>
       )}
 
-      {/* Preview Section */}
       {isPreview && (
         <Card title={config.environment}>
           <h3 className="mb-3 font-semibold text-red-700">Danger Zone</h3>
@@ -403,7 +578,6 @@ export default function AdminPage() {
         </Card>
       )}
 
-      {/* Feature Toggles */}
       <Card title="Feature Toggles">
         <div className="space-y-1">
           <Toggle
@@ -440,7 +614,24 @@ export default function AdminPage() {
         </div>
       </Card>
 
-      {/* AI Chat */}
+      {cfbdStatus && (
+        <Card title="CFBD API Status">
+          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+            <Stat
+              label="API Calls"
+              value={
+                cfbdStatus.remainingCalls !== null && cfbdStatus.tierLimit !== null
+                  ? `${cfbdStatus.remainingCalls.toLocaleString()} / ${cfbdStatus.tierLimit.toLocaleString()}`
+                  : 'N/A'
+              }
+            />
+            <Stat label="Patron Level" value={cfbdStatus.patronLevel ?? 'N/A'} />
+            <Stat label="Active Key" value={`#${cfbdStatus.activeKeyIndex + 1}`} />
+            <Stat label="Pool Size" value={cfbdStatus.poolSize} />
+          </div>
+        </Card>
+      )}
+
       <Card title="AI Chat">
         <div className="space-y-1">
           <Toggle
@@ -477,197 +668,204 @@ export default function AdminPage() {
             onChange={() => {}}
           />
         </div>
-      </Card>
 
-      {/* CFBD API Status */}
-      {cfbdStatus && (
-        <Card title="CFBD API Status">
-          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <Stat
-              label="API Calls"
-              value={
-                cfbdStatus.remainingCalls !== null && cfbdStatus.tierLimit !== null
-                  ? `${cfbdStatus.remainingCalls.toLocaleString()} / ${cfbdStatus.tierLimit.toLocaleString()}`
-                  : 'N/A'
-              }
-            />
-            <Stat label="Patron Level" value={cfbdStatus.patronLevel ?? 'N/A'} />
-            <Stat label="Active Key" value={`#${cfbdStatus.activeKeyIndex + 1}`} />
-            <Stat label="Pool Size" value={cfbdStatus.poolSize} />
-          </div>
-        </Card>
-      )}
-
-      {/* Knowledge Base */}
-      {knowledgeStatus && (
-        <Card title="Knowledge Base">
-          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <Stat label="Total Chunks" value={knowledgeStatus.totalChunks} />
-            <Stat
-              label="Last Ingested"
-              value={
-                knowledgeStatus.lastIngestedAt
-                  ? formatRelativeTime(new Date(knowledgeStatus.lastIngestedAt).getTime())
-                  : 'Never'
-              }
-            />
-            <Stat label="Batch" value={knowledgeStatus.lastBatchId?.slice(0, 20) ?? 'None'} />
-            <Stat label="Conferences" value={Object.keys(knowledgeStatus.byConference).length} />
-          </div>
-          {Object.keys(knowledgeStatus.byConference).length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {Object.entries(knowledgeStatus.byConference)
-                .sort(([, a], [, b]) => b - a)
-                .map(([conf, count]) => (
-                  <span
-                    key={conf}
-                    className="rounded-full bg-base-300 px-2.5 py-0.5 text-xs font-medium"
-                  >
-                    {conf} ({count})
-                  </span>
-                ))}
-            </div>
-          )}
-          {knowledgeStatus.lastEmbeddingError && (
-            <div className="bg-error/10 mt-3 rounded px-3 py-2 text-xs text-error">
-              Embedding error: {knowledgeStatus.lastEmbeddingError.message}
-            </div>
-          )}
-          <p className="mt-3 text-xs text-text-secondary">
-            Run <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code> to
-            re-ingest
-          </p>
-        </Card>
-      )}
-
-      {/* API Keys & Usage */}
-      {knowledgeStatus && (
-        <Card title="API Keys & Usage">
-          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
-            <div>
-              <div className="text-xs text-text-secondary">Anthropic</div>
+        {knowledgeStatus && (
+          <>
+            <Divider className="my-4" />
+            <div className="mb-3 flex items-center gap-2">
+              <h3 className="font-medium">Anthropic</h3>
               <span
                 className={cn(
-                  'mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  'rounded-full px-2.5 py-0.5 text-xs font-medium',
                   knowledgeStatus.apiKeys.anthropic.configured
                     ? 'bg-success/20 text-success'
                     : 'bg-error/20 text-error'
                 )}
               >
-                {knowledgeStatus.apiKeys.anthropic.configured ? 'Configured' : 'Missing'}
+                {knowledgeStatus.apiKeys.anthropic.configured ? 'Key Configured' : 'Key Missing'}
               </span>
             </div>
-            <div>
-              <div className="text-xs text-text-secondary">Voyage AI</div>
+            <div className="mt-2 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+              <Stat
+                label="Messages"
+                value={knowledgeStatus.tokenUsage.month.messages.toLocaleString()}
+              />
+              <Stat
+                label="Input Tokens"
+                value={knowledgeStatus.tokenUsage.month.input.toLocaleString()}
+              />
+              <Stat
+                label="Output Tokens"
+                value={knowledgeStatus.tokenUsage.month.output.toLocaleString()}
+              />
+              <Stat
+                label="Est. Cost"
+                value={estimateCost(
+                  knowledgeStatus.tokenUsage.month.input,
+                  knowledgeStatus.tokenUsage.month.output
+                )}
+              />
+            </div>
+
+            <Divider className="my-3" />
+
+            <div className="mb-3 flex items-center gap-2">
+              <h3 className="font-medium">Voyage AI (Embeddings)</h3>
               <span
                 className={cn(
-                  'mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium',
+                  'rounded-full px-2.5 py-0.5 text-xs font-medium',
                   knowledgeStatus.apiKeys.voyage.configured
                     ? 'bg-success/20 text-success'
                     : 'bg-error/20 text-error'
                 )}
               >
-                {knowledgeStatus.apiKeys.voyage.configured ? 'Configured' : 'Missing'}
+                {knowledgeStatus.apiKeys.voyage.configured ? 'Key Configured' : 'Key Missing'}
               </span>
             </div>
-          </div>
-          <Divider className="my-4" />
-          <div className="text-xs text-text-secondary">Claude Haiku Token Usage</div>
-          <div className="mt-2 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <Stat
-              label="Input (24h)"
-              value={knowledgeStatus.tokenUsage.last24h.input.toLocaleString()}
-            />
-            <Stat
-              label="Output (24h)"
-              value={knowledgeStatus.tokenUsage.last24h.output.toLocaleString()}
-            />
-            <Stat
-              label="Input (7d)"
-              value={knowledgeStatus.tokenUsage.last7d.input.toLocaleString()}
-            />
-            <Stat
-              label="Output (7d)"
-              value={knowledgeStatus.tokenUsage.last7d.output.toLocaleString()}
-            />
-          </div>
-        </Card>
-      )}
-
-      {/* Credit System */}
-      {creditStats && (
-        <Card title="Credit System">
-          <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
-            <Stat label="Chat Users" value={creditStats.totalUsers} />
-            <Stat
-              label="Credits Outstanding"
-              value={creditStats.totalCreditsOutstanding.toLocaleString()}
-            />
-            <Stat label="Donations" value={creditStats.totalDonations} />
-            <Stat label="Donation Total" value={`$${creditStats.totalDonationAmount.toFixed(2)}`} />
-          </div>
-          {creditStats.providerCooldownUntil && (
-            <div className="bg-warning/10 mt-3 rounded px-3 py-2 text-xs text-warning">
-              Anthropic cooldown active until{' '}
-              {new Date(creditStats.providerCooldownUntil).toLocaleTimeString()}
-            </div>
-          )}
-          <Divider />
-          <div className="space-y-3">
-            <p className="text-base-content/70 text-xs font-semibold">Manage Credits</p>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={creditIdentifier}
-                onChange={(e) => setCreditIdentifier(e.target.value)}
-                placeholder="Email or anonymous ID"
-                className="flex-1 rounded border border-base-300 bg-base-100 px-2 py-1 text-sm"
+            <div className="mt-2 grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
+              <Stat label="Total Chunks" value={knowledgeStatus.totalChunks} />
+              <Stat
+                label="Last Ingested"
+                value={
+                  knowledgeStatus.lastIngestedAt
+                    ? formatRelativeTime(new Date(knowledgeStatus.lastIngestedAt).getTime())
+                    : 'Never'
+                }
               />
-              <input
-                type="number"
-                value={creditAmount}
-                onChange={(e) => setCreditAmount(e.target.value)}
-                placeholder="Credits"
-                className="w-24 rounded border border-base-300 bg-base-100 px-2 py-1 text-sm"
-              />
+              <Stat label="Batch" value={knowledgeStatus.lastBatchId?.slice(0, 20) ?? 'None'} />
+              <Stat label="Conferences" value={Object.keys(knowledgeStatus.byConference).length} />
             </div>
-            <div className="flex gap-2">
-              <Button.Stroked
-                size="xs"
-                onClick={() => handleCreditAction('lookup')}
-                disabled={creditActionLoading}
-              >
-                Lookup
-              </Button.Stroked>
-              <Button.Stroked
-                size="xs"
-                color="primary"
-                onClick={() => handleCreditAction('grant')}
-                disabled={creditActionLoading || !creditAmount}
-              >
-                Grant
-              </Button.Stroked>
-              <Button.Stroked
-                size="xs"
-                color="error"
-                onClick={() => handleCreditAction('revoke')}
-                disabled={creditActionLoading || !creditAmount}
-              >
-                Revoke
-              </Button.Stroked>
-            </div>
-            {creditLookup && (
-              <div className="rounded bg-base-200 p-3 text-xs">
-                <pre className="overflow-x-auto whitespace-pre-wrap">
-                  {JSON.stringify(creditLookup, null, 2)}
-                </pre>
+            {Object.keys(knowledgeStatus.byConference).length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {Object.entries(knowledgeStatus.byConference)
+                  .sort(([, a], [, b]) => b - a)
+                  .map(([conf, count]) => (
+                    <span
+                      key={conf}
+                      className="rounded-full bg-base-300 px-2.5 py-0.5 text-xs font-medium"
+                    >
+                      {conf} ({count})
+                    </span>
+                  ))}
               </div>
             )}
-          </div>
-        </Card>
-      )}
+            {knowledgeStatus.lastEmbeddingError && (
+              <div className="bg-error/10 mt-3 rounded px-3 py-2 text-xs text-error">
+                Embedding error: {knowledgeStatus.lastEmbeddingError.message}
+              </div>
+            )}
+            <p className="mt-3 text-xs text-base-content">
+              Run <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code> to
+              re-ingest
+            </p>
+          </>
+        )}
 
-      {/* Redis Cache Inspector */}
+        {creditStats && (
+          <>
+            <Divider className="my-4" />
+            <h3 className="mb-3 font-medium">Chat Credits ({creditStats.users.length} users)</h3>
+
+            <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
+              <Stat label="Donations" value={creditStats.totalDonations} />
+              <Stat
+                label="Donation Total"
+                value={`$${creditStats.totalDonationAmount.toFixed(2)}`}
+              />
+              {creditStats.providerCooldownUntil && (
+                <div className="bg-warning/10 rounded px-3 py-2 text-xs text-warning">
+                  Anthropic cooldown until{' '}
+                  {new Date(creditStats.providerCooldownUntil).toLocaleTimeString()}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-3 overflow-x-auto">
+              <table className="table table-xs">
+                <thead>
+                  {creditTable.getHeaderGroups().map((headerGroup) => (
+                    <tr key={headerGroup.id}>
+                      {headerGroup.headers.map((header) => (
+                        <th key={header.id} style={{ width: header.getSize() }}>
+                          {flexRender(header.column.columnDef.header, header.getContext())}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody>
+                  {creditTable.getRowModel().rows.map((row) => (
+                    <tr key={row.id}>
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          style={{ width: cell.column.getSize(), maxWidth: cell.column.getSize() }}
+                        >
+                          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <Divider className="my-3" />
+
+            <div className="space-y-2">
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <Input
+                    size="sm"
+                    label="User ID or email"
+                    value={grantIdentifier}
+                    onChange={(e) => setGrantIdentifier(e.target.value)}
+                    placeholder="778ffdda-9020-4016-91cc-13bf8edc21af"
+                    className="h-9"
+                  />
+                </div>
+                <div className="w-28">
+                  <Input.Number
+                    size="sm"
+                    label="Credits"
+                    value={grantAmount}
+                    onChange={setGrantAmount}
+                  />
+                </div>
+                <Button.Stroked
+                  size="sm"
+                  color="primary"
+                  onClick={() => handleCreditAction('grant', grantIdentifier, grantAmount)}
+                  disabled={creditActionLoading || !grantIdentifier || !grantAmount}
+                >
+                  Grant
+                </Button.Stroked>
+              </div>
+              <div className="flex items-end gap-2">
+                <div className="flex-1">
+                  <Input
+                    size="sm"
+                    label="User ID or email"
+                    value={revokeIdentifier}
+                    onChange={(e) => setRevokeIdentifier(e.target.value)}
+                    placeholder="778ffdda-9020-4016-91cc-13bf8edc21af"
+                    className="h-9"
+                  />
+                </div>
+                <Button.Stroked
+                  size="sm"
+                  color="error"
+                  onClick={() => handleCreditAction('revoke', revokeIdentifier)}
+                  disabled={creditActionLoading || !revokeIdentifier}
+                >
+                  Revoke
+                </Button.Stroked>
+              </div>
+            </div>
+          </>
+        )}
+      </Card>
+
       <Card
         title={`Redis Cache (${redisKeyCount} keys)`}
         action={
@@ -677,45 +875,39 @@ export default function AdminPage() {
         }
       >
         {config.fixtureYearOn && (
-          <p className="mb-3 text-xs text-text-secondary">
+          <p className="mb-3 text-xs text-base-content">
             Redis is disabled while fixtures are active — cache is empty.
           </p>
         )}
         {redisKeys.length > 0 ? (
-          <div className="max-h-64 overflow-y-auto">
+          <div className="overflow-x-auto">
             <table className="table table-xs">
               <thead>
-                <tr>
-                  <th>Key</th>
-                  <th>Name</th>
-                  <th>Last Cached</th>
-                  <th>Expires In</th>
-                  <th />
-                </tr>
+                {redisTable.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th key={header.id}>
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
               </thead>
               <tbody>
-                {redisKeys.map((entry) => (
-                  <tr key={entry.key}>
-                    <td className="font-mono text-xs">{entry.key}</td>
-                    <td className="whitespace-nowrap">{friendlyName(entry.key)}</td>
-                    <td className="whitespace-nowrap text-text-secondary">
-                      {entry.cachedAt ? formatRelativeTime(entry.cachedAt) : '—'}
-                    </td>
-                    <td className="whitespace-nowrap text-text-secondary">
-                      {formatExpiresIn(entry.ttl)}
-                    </td>
-                    <td>
-                      <Button size="xs" color="error" onClick={() => deleteRedisKeys([entry.key])}>
-                        Delete
-                      </Button>
-                    </td>
+                {redisTable.getRowModel().rows.map((row) => (
+                  <tr key={row.id}>
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id}>
+                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                      </td>
+                    ))}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <p className="text-sm text-text-secondary">No cached keys found</p>
+          <p className="text-sm text-base-content">No cached keys found</p>
         )}
       </Card>
     </div>
@@ -766,9 +958,9 @@ const Toggle = ({
     <div className="flex items-center justify-between py-3">
       <div className="flex-1 pr-4">
         <span className="font-medium">{label}</span>
-        <p className="text-xs text-text-secondary">{description}</p>
+        <p className="text-xs text-base-content">{description}</p>
         {disabled && disabledReason && (
-          <p className="text-xs text-text-secondary">{disabledReason}</p>
+          <p className="text-xs text-base-content">{disabledReason}</p>
         )}
       </div>
       <label
@@ -795,7 +987,7 @@ const Toggle = ({
 const Stat = ({ label, value }: { label: string; value: string | number }) => {
   return (
     <div>
-      <div className="text-xs text-text-secondary">{label}</div>
+      <div className="text-xs text-base-content">{label}</div>
       <div className="text-lg font-semibold">{String(value)}</div>
     </div>
   );

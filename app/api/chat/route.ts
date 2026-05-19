@@ -67,6 +67,7 @@ interface ChatRequestBody {
   conferenceHint?: CFBConferenceAbbreviation;
   teamId?: string;
   sessionId?: string;
+  season?: number;
 }
 
 const FIXTURE_RESPONSE =
@@ -219,7 +220,14 @@ export const POST = async (request: NextRequest) => {
     }
 
     const body: ChatRequestBody = await request.json();
-    const { message, history = [], conferenceHint, teamId: explicitTeamId, sessionId } = body;
+    const {
+      message,
+      history = [],
+      conferenceHint,
+      teamId: explicitTeamId,
+      sessionId,
+      season: clientSeason,
+    } = body;
 
     if (!message || typeof message !== 'string' || message.trim().length === 0) {
       return Response.json({ error: 'Message is required' }, { status: 400 });
@@ -341,7 +349,11 @@ export const POST = async (request: NextRequest) => {
       contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
     }
 
-    const systemPrompt = buildSystemPrompt(confMeta.name, data.season, ragChunks.length > 0);
+    const systemPrompt = buildSystemPrompt(
+      confMeta.name,
+      clientSeason ?? data.season,
+      ragChunks.length > 0
+    );
     const contextBlock = contextParts.join('\n\n');
     const promptHash = createHash('sha256').update(systemPrompt).digest('hex').slice(0, 12);
 

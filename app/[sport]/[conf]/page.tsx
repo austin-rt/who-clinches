@@ -118,7 +118,6 @@ const ConferencePage = () => {
         <ChatSearchBar
           geoTeamName={geoTeam.teamName}
           fallbackTeamName={teams[0]?.shortDisplayName ?? null}
-          hasConversation={hasConversation}
           onOpen={() => setChatOpen(true)}
           onSubmit={(msg) => {
             setInitialMessage(msg);

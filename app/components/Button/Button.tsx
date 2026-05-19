@@ -20,7 +20,7 @@ const Button: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
     ref
   ) => {
     const buttonClasses = cn(
-      'btn relative',
+      'btn relative disabled:cursor-not-allowed',
       {
         'btn-primary': color === 'primary',
         'btn-secondary': color === 'secondary',

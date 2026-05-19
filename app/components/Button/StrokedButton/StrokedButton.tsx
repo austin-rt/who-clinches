@@ -23,7 +23,7 @@ const StrokedButton: ForwardRefExoticComponent<BaseButtonProps> = forwardRef<
     ref
   ) => {
     const buttonClasses = cn(
-      'btn',
+      'btn disabled:cursor-not-allowed',
       'btn-stroke',
       {
         'btn-primary': color === 'primary',

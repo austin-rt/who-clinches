@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import TechStack from './TechStack';
+import ApiKeys from './ApiKeys';
 
 export const metadata: Metadata = {
   title: 'Contribute - Who Clinches',
@@ -35,59 +36,48 @@ const steps = [
   },
 ];
 
-const apiKeys = [
-  {
-    name: 'CFBD API Key',
-    service: 'collegefootballdata.com',
-    url: 'https://collegefootballdata.com/key',
-    description:
-      'Free account — your key is on your account page. The free Patreon tier is enough for development.',
-    required: true,
-  },
-  {
-    name: 'Neon Database URLs',
-    service: 'neon.tech',
-    url: 'https://console.neon.tech/',
-    description:
-      'Create a free Postgres project. You need both the pooled (DATABASE_URL) and direct (DIRECT_URL) connection strings from the dashboard.',
-    required: true,
-  },
-  {
-    name: 'Upstash Redis',
-    service: 'upstash.com',
-    url: 'https://console.upstash.com/',
-    description:
-      'Free Redis database for caching and rate limiting. Without this, the app skips caching — still works fine for development.',
-    required: false,
-  },
-  {
-    name: 'Resend (Email)',
-    service: 'resend.com',
-    url: 'https://resend.com/api-keys',
-    description:
-      'Only needed for CFBD API key usage alert emails. Skip this for most contributions.',
-    required: false,
-  },
-];
-
 export default function ContributePage() {
   return (
-    <div className="mx-auto max-w-3xl px-4 py-12">
+    <div className="mx-auto px-4 py-12 sm:px-8 lg:px-16">
       <h1 className="text-3xl font-bold">Contribute</h1>
-      <p className="mt-3 text-text-secondary">
+      <p className="text-base-content/60 mt-3">
         Who Clinches is open source and contributions are welcome. Whether it&apos;s fixing a bug,
         adding a feature, or improving documentation — every contribution helps.
       </p>
 
+      <div className="mt-10 rounded-lg border border-stroke bg-base-200 p-6">
+        <h2 className="text-xl font-semibold">Have an Idea?</h2>
+        <p className="text-base-content/60 mt-2 text-sm">
+          Not all contributions start with code. If you have ideas for new features, new sports or
+          conferences to support, UX improvements, or anything else — we want to hear them. Open a{' '}
+          <a
+            href={`${REPO_URL}/issues/new?template=feature.yml`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-primary/80 font-medium text-primary underline underline-offset-2"
+          >
+            feature request
+          </a>{' '}
+          or reach out directly at{' '}
+          <a
+            href="mailto:contribute@whoclinches.com"
+            className="hover:text-primary/80 font-medium text-primary underline underline-offset-2"
+          >
+            contribute@whoclinches.com
+          </a>
+          .
+        </p>
+      </div>
+
       <div className="mt-10 space-y-6">
         {steps.map((step) => (
           <div key={step.number} className="flex gap-4">
-            <span className="mt-0.5 shrink-0 text-2xl font-bold tabular-nums text-text-secondary">
+            <span className="text-base-content/60 mt-0.5 shrink-0 text-2xl font-bold tabular-nums">
               {step.number}
             </span>
             <div>
               <h3 className="text-lg font-semibold">{step.title}</h3>
-              <p className="mt-1 text-sm text-text-secondary">{step.description}</p>
+              <p className="text-base-content/60 mt-1 text-sm">{step.description}</p>
             </div>
           </div>
         ))}
@@ -95,32 +85,21 @@ export default function ContributePage() {
 
       <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
         <h2 className="text-xl font-semibold">Getting Started</h2>
-        <p className="mt-2 text-sm text-text-secondary">
+        <p className="text-base-content/60 mt-2 text-sm">
           Copy <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.example</code> to{' '}
           <code className="rounded bg-base-300 px-1.5 py-0.5 text-xs">.env.local</code> and fill in
-          your API keys. Only the CFBD key and a Neon database are required to run locally.
+          your API keys. Only the CFBD key is required to run the simulator locally.
         </p>
-        <div className="mt-4 space-y-3">
-          {apiKeys.map((key) => (
-            <a
-              key={key.name}
-              href={key.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block rounded-lg border border-stroke bg-base-100 p-4 transition-colors hover:bg-base-300"
-            >
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{key.name}</span>
-                {key.required ? (
-                  <span className="bg-error/10 rounded px-1.5 py-0.5 text-[10px] font-medium text-error">
-                    required
-                  </span>
-                ) : null}
-              </div>
-              <p className="mt-1 text-xs text-text-secondary">{key.description}</p>
-            </a>
-          ))}
-        </div>
+        <ApiKeys />
+      </div>
+
+      <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
+        <h2 className="text-xl font-semibold">Relevant Docs</h2>
+        <p className="text-base-content/60 mt-2 text-sm">
+          Familiarity with any of these is helpful but not required — we&apos;re happy to help you
+          get oriented.
+        </p>
+        <TechStack />
       </div>
 
       <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
@@ -164,15 +143,6 @@ export default function ContributePage() {
           />
         </div>
       </div>
-
-      <div className="mt-12 rounded-lg border border-stroke bg-base-200 p-6">
-        <h2 className="text-xl font-semibold">Relevant Docs</h2>
-        <p className="mt-2 text-sm text-text-secondary">
-          Familiarity with any of these is helpful but not required — we&apos;re happy to help you
-          get oriented.
-        </p>
-        <TechStack />
-      </div>
     </div>
   );
 }
@@ -197,7 +167,7 @@ const QuickLink = ({
     <div className="mt-0.5 shrink-0 text-base-content">{icon}</div>
     <div>
       <div className="font-semibold">{title}</div>
-      <div className="text-xs text-text-secondary">{description}</div>
+      <div className="text-base-content/60 text-xs">{description}</div>
     </div>
   </a>
 );

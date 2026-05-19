@@ -14,9 +14,13 @@ import {
   SiUpstash,
   SiResend,
   SiGraphql,
+  SiAnthropic,
+  SiJest,
 } from 'react-icons/si';
 import type { IconType } from 'react-icons';
 import { VscPulse } from 'react-icons/vsc';
+import { HiMiniTableCells, HiPlay } from 'react-icons/hi2';
+import { LuCompass } from 'react-icons/lu';
 
 const techStack: { name: string; url: string; icon: IconType }[] = [
   { name: 'TypeScript', url: 'https://www.typescriptlang.org/docs/', icon: SiTypescript },
@@ -26,10 +30,15 @@ const techStack: { name: string; url: string; icon: IconType }[] = [
   { name: 'Redis', url: 'https://redis.io/docs/', icon: SiRedis },
   { name: 'Upstash', url: 'https://upstash.com/docs/redis', icon: SiUpstash },
   { name: 'Redux Toolkit', url: 'https://redux-toolkit.js.org/', icon: SiRedux },
+  { name: 'TanStack Table', url: 'https://tanstack.com/table/latest', icon: HiMiniTableCells },
   { name: 'Tailwind CSS', url: 'https://tailwindcss.com/docs', icon: SiTailwindcss },
   { name: 'DaisyUI', url: 'https://daisyui.com/components/', icon: SiDaisyui },
   { name: 'GraphQL', url: 'https://graphql.org/learn/', icon: SiGraphql },
+  { name: 'Anthropic', url: 'https://docs.anthropic.com/', icon: SiAnthropic },
+  { name: 'Voyage AI', url: 'https://docs.voyageai.com/', icon: LuCompass },
   { name: 'Resend', url: 'https://resend.com/docs', icon: SiResend },
+  { name: 'Jest', url: 'https://jestjs.io/docs/getting-started', icon: SiJest },
+  { name: 'Playwright', url: 'https://playwright.dev/docs/intro', icon: HiPlay },
   { name: 'Vercel', url: 'https://vercel.com/docs', icon: SiVercel },
   { name: 'Hotjar', url: 'https://www.hotjar.com/', icon: SiHotjar },
   { name: 'LogRocket', url: 'https://logrocket.com/', icon: VscPulse },
@@ -49,7 +58,7 @@ export default function TechStack() {
             className="flex flex-col items-center gap-1.5 rounded-lg p-2 transition-colors hover:bg-base-300"
           >
             <Icon className="h-6 w-6 text-base-content" />
-            <span className="text-center text-[10px] leading-tight text-text-secondary">
+            <span className="text-base-content/60 text-center text-[10px] leading-tight">
               {tech.name}
             </span>
           </a>
