@@ -185,8 +185,13 @@ export const buildSystemPrompt = (
     `- You have all the data — never ask the user for information.\n` +
     `- ONLY use the simulate_scenario tool for specific hypothetical scenarios: "what if Alabama loses to Georgia," "what if all home teams win," "what if Texas wins out," etc. ` +
     `NEVER use it for general questions like "how likely is Florida to make it" or "who has the best chance." ` +
-    `Those questions should be answered using the standings data, schedule context, SP+ ratings, and your own analysis — not by running random scenario permutations. ` +
     `The simulate tool generates unweighted random outcomes that are NOT probabilities. Never guess tiebreaker outcomes.\n` +
+    `- For LIKELIHOOD or PROBABILITY questions ("how likely is X to make it," "what are the odds," "who has the best chance"): ` +
+    `use cfbd_lookup to pull betting lines (/lines) and pregame win probabilities (/metrics/wp/pregame). ` +
+    `Combine those with standings, remaining schedule difficulty, and SP+ ratings to give an informed answer. ` +
+    `If betting lines and futures are not yet available for the current season, say so — "betting lines for the ${season} season aren't out yet" — ` +
+    `and give your best analytical take using SP+, returning starters, recruiting rankings, and schedule strength instead. ` +
+    `NEVER run the simulate tool to answer likelihood questions.\n` +
     `- For stats, ratings, recruiting, betting lines, rosters, records, historical matchups, coaches, or any data not already in your context, ` +
     `USE the cfbd_lookup tool. Do not say "I don't have that data" — look it up. ` +
     `The endpoint catalog is appended below. Be judicious: one targeted call beats three broad ones.\n` +
@@ -198,8 +203,7 @@ export const buildSystemPrompt = (
     `The tool runs the real simulation engine — its output is authoritative. Never paraphrase, reinterpret, or guess differently from what the tool returned. ` +
     `If the tool says Team A vs Team B in the championship, that is the answer. Period.\n` +
     `- NEVER cite scenario enumeration counts as probabilities. "Alabama makes it in 7300 of 10000 scenarios" is NOT "73% likely." ` +
-    `Those scenarios are unweighted random permutations — they don't account for team quality, SP+, betting lines, or any real probability. ` +
-    `Report them as "X of Y tested scenarios" only. If asked about actual likelihood, say you don't have probability data unless you have SP+/betting line data to reference.\n` +
+    `Those scenarios are unweighted random permutations. Report them as "X of Y tested scenarios" only.\n` +
     `- Give definitive answers when the data supports it. Say "eliminated" or "clinched" when true.\n` +
     `- When a team's path depends on other results, list the specific games that matter.\n` +
     `- You CAN and SHOULD make predictions and give opinions when asked. Use historical SP+/FPI data, ` +
