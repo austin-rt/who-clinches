@@ -109,6 +109,8 @@ const ChatDrawer = ({
   const [authEmail, setAuthEmail] = useState('');
   const [authSending, setAuthSending] = useState(false);
   const [authSent, setAuthSent] = useState(false);
+  const [devVerifyUrl, setDevVerifyUrl] = useState<string | null>(null);
+  const [authToast, setAuthToast] = useState<string | null>(null);
   const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -143,6 +145,20 @@ const ChatDrawer = ({
   useEffect(() => {
     dispatch(pruneExpiredSessions());
   }, [dispatch]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get('auth');
+    if (auth === 'success') {
+      const credited = params.get('credited');
+      setAuthToast(credited ? `Verified! ${credited} credits added.` : 'Email verified!');
+      setTimeout(() => setAuthToast(null), 5000);
+      params.delete('auth');
+      params.delete('credited');
+      const clean = params.toString();
+      window.history.replaceState({}, '', `${window.location.pathname}${clean ? `?${clean}` : ''}`);
+    }
+  }, []);
 
   useEffect(() => {
     if (!conferenceHint) return;
@@ -512,8 +528,12 @@ const ChatDrawer = ({
         body: JSON.stringify({ email: authEmail }),
       });
       if (res.ok) {
+        const data = await res.json();
         setAuthSent(true);
         dispatch(setReduxEmail(authEmail.toLowerCase().trim()));
+        if (data.verifyUrl) {
+          setDevVerifyUrl(data.verifyUrl);
+        }
       }
     } catch {
       // ignore
@@ -705,6 +725,12 @@ const ChatDrawer = ({
           <div ref={messagesEndRef} />
         </div>
 
+        {authToast && (
+          <div className="border-t border-base-300 px-4 py-2 text-center text-xs text-success">
+            {authToast}
+          </div>
+        )}
+
         {providerLimit && (
           <div className="border-t border-base-300 px-4 py-3 text-center text-xs text-warning">
             The AI is temporarily unavailable — a service-wide limit, not yours. Your credits are
@@ -749,9 +775,14 @@ const ChatDrawer = ({
                     </div>
                   </>
                 ) : (
-                  <p className="text-center text-xs text-success">
-                    Check your email for a sign-in link.
-                  </p>
+                  <div className="space-y-1 text-center">
+                    <p className="text-xs text-success">Check your email for a sign-in link.</p>
+                    {devVerifyUrl && (
+                      <a href={devVerifyUrl} className="text-xs text-primary underline">
+                        Dev: click to verify
+                      </a>
+                    )}
+                  </div>
                 )}
                 <a
                   href="https://buymeacoffee.com/whoclinches"

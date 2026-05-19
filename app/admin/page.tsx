@@ -138,6 +138,10 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [cascadeMessages, setCascadeMessages] = useState<string[]>([]);
+  const [creditIdentifier, setCreditIdentifier] = useState('');
+  const [creditAmount, setCreditAmount] = useState('');
+  const [creditLookup, setCreditLookup] = useState<Record<string, unknown> | null>(null);
+  const [creditActionLoading, setCreditActionLoading] = useState(false);
 
   const showMessage = (msg: string) => {
     setActionMessage(msg);
@@ -196,6 +200,40 @@ export default function AdminPage() {
       /* Redis not available */
     }
   }, []);
+
+  const handleCreditAction = async (action: 'lookup' | 'grant' | 'revoke') => {
+    if (!creditIdentifier.trim()) return;
+    setCreditActionLoading(true);
+    try {
+      const res = await fetch('/api/admin/credit-stats', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action,
+          identifier: creditIdentifier.trim(),
+          amount: action !== 'lookup' ? Number(creditAmount) : undefined,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showMessage(data.error ?? 'Failed');
+        return;
+      }
+      if (action === 'lookup') {
+        setCreditLookup(data);
+      } else {
+        showMessage(
+          `${action === 'grant' ? 'Granted' : 'Revoked'} ${data.credits} credits → balance: ${data.newBalance}`
+        );
+        setCreditLookup(null);
+        void fetchCreditStats();
+      }
+    } catch {
+      showMessage('Request failed');
+    } finally {
+      setCreditActionLoading(false);
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -423,7 +461,7 @@ export default function AdminPage() {
           <Divider />
           <Toggle
             label="Rate Limiting"
-            description="Per-user 4 msg / 4 hr free window + credit system"
+            description="Per-user 8 msg / 4 hr free window + credit system"
             checked={config.chatRateLimitOn}
             disabled={!config.aiChatOn}
             disabledReason="Requires AI Chat to be enabled"
@@ -574,6 +612,58 @@ export default function AdminPage() {
               {new Date(creditStats.providerCooldownUntil).toLocaleTimeString()}
             </div>
           )}
+          <Divider />
+          <div className="space-y-3">
+            <p className="text-base-content/70 text-xs font-semibold">Manage Credits</p>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={creditIdentifier}
+                onChange={(e) => setCreditIdentifier(e.target.value)}
+                placeholder="Email or anonymous ID"
+                className="flex-1 rounded border border-base-300 bg-base-100 px-2 py-1 text-sm"
+              />
+              <input
+                type="number"
+                value={creditAmount}
+                onChange={(e) => setCreditAmount(e.target.value)}
+                placeholder="Credits"
+                className="w-24 rounded border border-base-300 bg-base-100 px-2 py-1 text-sm"
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button.Stroked
+                size="xs"
+                onClick={() => handleCreditAction('lookup')}
+                disabled={creditActionLoading}
+              >
+                Lookup
+              </Button.Stroked>
+              <Button.Stroked
+                size="xs"
+                color="primary"
+                onClick={() => handleCreditAction('grant')}
+                disabled={creditActionLoading || !creditAmount}
+              >
+                Grant
+              </Button.Stroked>
+              <Button.Stroked
+                size="xs"
+                color="error"
+                onClick={() => handleCreditAction('revoke')}
+                disabled={creditActionLoading || !creditAmount}
+              >
+                Revoke
+              </Button.Stroked>
+            </div>
+            {creditLookup && (
+              <div className="rounded bg-base-200 p-3 text-xs">
+                <pre className="overflow-x-auto whitespace-pre-wrap">
+                  {JSON.stringify(creditLookup, null, 2)}
+                </pre>
+              </div>
+            )}
+          </div>
         </Card>
       )}
 
