@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Button } from '@/app/components/Button';
 
 const FeedbackPage = () => {
   const searchParams = useSearchParams();
@@ -74,26 +75,18 @@ const FeedbackPage = () => {
             placeholder="What went wrong? Be as specific as you can — e.g. 'I asked about Ole Miss recruiting and it gave me 2024 data instead of 2025'"
             maxLength={2000}
             rows={5}
-            className="placeholder:text-base-content/40 focus:ring-primary/50 w-full resize-none rounded-lg border-0 bg-base-200 p-3 text-sm text-base-content focus:outline-none focus:ring-2"
+            className="placeholder:text-base-content/40 focus:ring-primary/50 w-full resize-none rounded-lg border-0 bg-base-200 p-3 text-base text-base-content focus:outline-none focus:ring-2"
           />
 
           {error && <p className="text-xs text-error">{error}</p>}
 
           <div className="flex items-center justify-between">
-            <button
-              type="button"
-              onClick={() => window.close()}
-              className="text-base-content/50 text-xs underline hover:text-base-content"
-            >
+            <Button.Stroked type="button" size="sm" onClick={() => window.close()}>
               Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="hover:bg-primary/90 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-content disabled:opacity-50"
-            >
-              {submitting ? 'Sending...' : 'Submit'}
-            </button>
+            </Button.Stroked>
+            <Button type="submit" disabled={submitting} loading={submitting} size="sm">
+              Submit
+            </Button>
           </div>
         </form>
       </div>

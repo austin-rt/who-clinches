@@ -510,16 +510,20 @@ export const POST = async (request: NextRequest) => {
           }
 
           if (toolUseBlock) {
-            if (!fullResponse.trim()) {
-              const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
-              const picked = Math.floor(Math.random() * eligible.length);
-              lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
-              const quip = eligible[picked];
-              fullResponse += quip;
+            const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
+            const picked = Math.floor(Math.random() * eligible.length);
+            lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
+            const quip = eligible[picked];
+            if (fullResponse.trim()) {
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: 'replace', text: quip })}\n\n`)
+              );
+            } else {
               controller.enqueue(
                 encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
               );
             }
+            fullResponse = quip;
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
             const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
             const toolInput = JSON.parse(toolUseBlock.input);

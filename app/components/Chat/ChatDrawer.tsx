@@ -30,7 +30,7 @@ interface ChatSession {
   lastActiveAt?: number;
 }
 
-const MAX_SESSIONS = 3;
+const MAX_SESSIONS = 5;
 
 interface ChatDrawerProps {
   open: boolean;
@@ -358,6 +358,10 @@ const ChatDrawer = ({
                   )
                 );
               }
+            } else if (data.type === 'replace') {
+              setMessages((prev) =>
+                prev.map((m) => (m.id === assistantId ? { ...m, content: data.text } : m))
+              );
             } else if (data.type === 'break') {
               needsNewBubble = true;
               breakShownAt = Date.now();

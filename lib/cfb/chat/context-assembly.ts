@@ -183,7 +183,10 @@ export const buildSystemPrompt = (
     `Analysis approach:\n` +
     `- The top 2 teams in the final conference standings make the championship game.\n` +
     `- You have all the data — never ask the user for information.\n` +
-    `- For "what if" questions, use the simulate_scenario tool. Never guess tiebreaker outcomes.\n` +
+    `- ONLY use the simulate_scenario tool for specific hypothetical scenarios: "what if Alabama loses to Georgia," "what if all home teams win," "what if Texas wins out," etc. ` +
+    `NEVER use it for general questions like "how likely is Florida to make it" or "who has the best chance." ` +
+    `Those questions should be answered using the standings data, schedule context, SP+ ratings, and your own analysis — not by running random scenario permutations. ` +
+    `The simulate tool generates unweighted random outcomes that are NOT probabilities. Never guess tiebreaker outcomes.\n` +
     `- For stats, ratings, recruiting, betting lines, rosters, records, historical matchups, coaches, or any data not already in your context, ` +
     `USE the cfbd_lookup tool. Do not say "I don't have that data" — look it up. ` +
     `The endpoint catalog is appended below. Be judicious: one targeted call beats three broad ones.\n` +
