@@ -1,14 +1,13 @@
 import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
 import { fetch as redisFetch, persistRedisKey } from '@/lib/redis';
-import { calculateNextSaturdayRevalidate } from '@/lib/cfb/helpers/calculate-next-weekday-revalidate';
+import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
 import { createHash } from 'crypto';
 
 const CFBD_BASE_URL = 'https://apinext.collegefootballdata.com';
 const MAX_RESPONSE_CHARS = 8000;
 const MAX_ARRAY_ITEMS = 50;
 const CACHE_PREFIX = 'cfbd:chat';
-const THIRTY_MIN_SECONDS = 30 * 60;
-const SHORT_TTL_PATHS = new Set(['/lines', '/scoreboard', '/live/plays']);
+const NEVER_CACHE_PATHS = new Set(['/lines', '/scoreboard', '/live/plays']);
 
 const isHistorical = (params: Record<string, string>): boolean => {
   const year = params.year || params.season;
@@ -127,35 +126,39 @@ export const executeCfbdLookup = async (
   const cacheKey = `${CACHE_PREFIX}:${path.slice(1).replace(/\//g, ':')}:${paramHash}`;
 
   const historical = isHistorical(params);
-  const shortTtl = SHORT_TTL_PATHS.has(path);
-  const ttl = shortTtl ? THIRTY_MIN_SECONDS : calculateNextSaturdayRevalidate();
+  const neverCache = NEVER_CACHE_PATHS.has(path);
+
+  const fetchFromCfbd = async () => {
+    const response = await fetch(url.toString(), {
+      headers: {
+        Authorization: `Bearer ${getActiveApiKey()}`,
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      if (response.status === 400) {
+        const text = await response.text();
+        throw new Error(`CFBD API error (400): ${text.slice(0, 500)}`);
+      }
+      throw new Error(`CFBD API error: ${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  };
 
   try {
-    const data = await redisFetch<unknown>(
-      cacheKey,
-      async () => {
-        const response = await fetch(url.toString(), {
-          headers: {
-            Authorization: `Bearer ${getActiveApiKey()}`,
-            Accept: 'application/json',
-          },
-        });
+    let data: unknown;
 
-        if (!response.ok) {
-          if (response.status === 400) {
-            const text = await response.text();
-            throw new Error(`CFBD API error (400): ${text.slice(0, 500)}`);
-          }
-          throw new Error(`CFBD API error: ${response.status} ${response.statusText}`);
-        }
+    if (neverCache) {
+      data = await fetchFromCfbd();
+    } else {
+      const ttl = await getSeasonAwareTtl();
+      data = await redisFetch<unknown>(cacheKey, fetchFromCfbd, ttl);
 
-        return response.json();
-      },
-      ttl
-    );
-
-    if (historical && !shortTtl) {
-      await persistRedisKey(cacheKey);
+      if (historical) {
+        await persistRedisKey(cacheKey);
+      }
     }
 
     return truncateResponse(data);
