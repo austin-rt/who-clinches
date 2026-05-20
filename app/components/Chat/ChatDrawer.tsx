@@ -197,11 +197,10 @@ const ChatDrawer = ({
   }, [messages, showTyping, scrollToBottom]);
 
   const initialMessageSentRef = useRef(false);
-  const forceNewChatHandled = useRef(false);
+  const [newChatReady, setNewChatReady] = useState(false);
 
   useEffect(() => {
-    if (open && forceNewChat && !forceNewChatHandled.current) {
-      forceNewChatHandled.current = true;
+    if (open && forceNewChat && !newChatReady) {
       setSessions((prev) => {
         if (prev.length >= MAX_SESSIONS) {
           const updated = [...prev.slice(1), makeSession('New chat', conferenceHint)];
@@ -212,12 +211,13 @@ const ChatDrawer = ({
         return [...prev, makeSession('New chat', conferenceHint)];
       });
       setInput('');
+      setNewChatReady(true);
     }
     if (!open) {
-      forceNewChatHandled.current = false;
+      setNewChatReady(false);
       initialMessageSentRef.current = false;
     }
-  }, [open, forceNewChat, conferenceHint]);
+  }, [open, forceNewChat, conferenceHint, newChatReady]);
 
   useEffect(() => {
     if (open) {
@@ -461,6 +461,7 @@ const ChatDrawer = ({
 
   useEffect(() => {
     if (!open || !initialMessage || initialMessageSentRef.current || isStreaming) return;
+    if (forceNewChat && !newChatReady) return;
     if (forceNewChat && messages.length > 0) return;
     initialMessageSentRef.current = true;
     void sendMessage(initialMessage);
@@ -470,6 +471,7 @@ const ChatDrawer = ({
     initialMessage,
     isStreaming,
     forceNewChat,
+    newChatReady,
     messages.length,
     onInitialMessageSent,
     sendMessage,

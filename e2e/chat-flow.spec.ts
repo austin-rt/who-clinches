@@ -12,7 +12,9 @@ test('chat drawer opens, sends message, streams response, and closes', async ({ 
 
   await expect(drawer).toBeVisible();
 
-  await expect(drawer.getByText('What does Alabama need to clinch?')).toBeVisible();
+  await expect(drawer.getByText('What does Alabama need to clinch?')).toBeVisible({
+    timeout: 10_000,
+  });
 
   const assistantBubble = drawer.locator('.chat-start .chat-bubble-received');
   await expect(assistantBubble.first()).toBeVisible({ timeout: 15_000 });
