@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\"",
+    "dev": "lsof -ti:3000,3001 | xargs kill -9 2>/dev/null; concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\"",
     "dev:next": "next dev --hostname 0.0.0.0",
     "dev:tunnel": "concurrently \"npm run json-server\" \"next dev --hostname 0.0.0.0\" \"npm run tunnel\"",
     "build": "prisma generate && next build",
