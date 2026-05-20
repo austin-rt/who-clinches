@@ -15,11 +15,10 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ error: 'Message too long' }, { status: 400 });
     }
 
-    await db.chatMessage.create({
+    await db.feedback.create({
       data: {
-        sessionId: sessionId || 'anonymous',
-        role: 'feedback',
-        content,
+        sessionId: sessionId || null,
+        message: content,
         conf: conf || null,
       },
     });

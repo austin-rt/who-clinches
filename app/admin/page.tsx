@@ -7,6 +7,7 @@ import { Input } from '@/app/components/Input';
 import Divider from '@/app/components/Divider';
 import { HiCheck, HiDocumentDuplicate } from 'react-icons/hi2';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { timeAgo, timeLeft, ttlLeft, shortDateTime } from '@/lib/format-time';
 import {
   useReactTable,
   getCoreRowModel,
@@ -77,6 +78,15 @@ interface RedisKey {
   cachedAt: number | null;
 }
 
+interface FeedbackRow {
+  id: string;
+  sessionId: string | null;
+  message: string;
+  conf: string | null;
+  resolved: boolean;
+  createdAt: string;
+}
+
 const HAIKU_INPUT_COST_PER_MTOK = 1.0;
 const HAIKU_OUTPUT_COST_PER_MTOK = 5.0;
 
@@ -110,48 +120,6 @@ const friendlyName = (key: string): string => {
     default:
       return key;
   }
-};
-
-const formatRelativeTime = (timestamp: number): string => {
-  const totalMinutes = Math.floor((Date.now() - timestamp) / 60000);
-  if (totalMinutes < 1) return 'just now';
-  const units: [number, string][] = [
-    [525960, 'y'],
-    [43830, 'mo'],
-    [1440, 'd'],
-    [1, 'm'],
-  ];
-  const parts: string[] = [];
-  let remaining = totalMinutes;
-  for (const [size, label] of units) {
-    if (remaining >= size) {
-      const count = Math.floor(remaining / size);
-      parts.push(`${count}${label}`);
-      remaining -= count * size;
-    }
-  }
-  return `${parts.join(' ')} ago`;
-};
-
-const formatExpiresIn = (ttlSeconds: number): string => {
-  if (ttlSeconds < 0) return 'never';
-  let remaining = Math.floor(ttlSeconds / 60);
-  const units: [number, string][] = [
-    [525960, 'y'],
-    [43830, 'mo'],
-    [1440, 'd'],
-    [60, 'h'],
-    [1, 'm'],
-  ];
-  const parts: string[] = [];
-  for (const [size, label] of units) {
-    if (remaining >= size) {
-      const count = Math.floor(remaining / size);
-      parts.push(`${count}${label}`);
-      remaining -= count * size;
-    }
-  }
-  return parts.length ? parts.join(' ') : '<1m';
 };
 
 const CopyButton = ({ text, onCopy }: { text: string; onCopy: (t: string) => void }) => {
@@ -198,6 +166,7 @@ export default function AdminPage() {
   const [grantAmount, setGrantAmount] = useState('');
   const [revokeIdentifier, setRevokeIdentifier] = useState('');
   const [creditActionLoading, setCreditActionLoading] = useState(false);
+  const [feedbackItems, setFeedbackItems] = useState<FeedbackRow[]>([]);
 
   const showMessage = useCallback((msg: string) => {
     setActionMessage(msg);
@@ -253,16 +222,16 @@ export default function AdminPage() {
           const val = info.getValue();
           if (!val) return <span className="text-base-content/30">—</span>;
           const d = new Date(val);
-          return d > new Date() ? formatExpiresIn((d.getTime() - Date.now()) / 1000) : 'reset';
+          return d > new Date() ? timeLeft(d) : 'reset';
         },
       }),
       chatUserColumnHelper.accessor('createdAt', {
         header: 'Created',
-        cell: (info) => formatRelativeTime(new Date(info.getValue()).getTime()),
+        cell: (info) => timeAgo(info.getValue()),
       }),
       chatUserColumnHelper.accessor('updatedAt', {
         header: 'Last Active',
-        cell: (info) => formatRelativeTime(new Date(info.getValue()).getTime()),
+        cell: (info) => timeAgo(info.getValue()),
       }),
     ],
     [copyToClipboard]
@@ -321,6 +290,16 @@ export default function AdminPage() {
     }
   }, []);
 
+  const fetchFeedback = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/feedback');
+      const data = await res.json();
+      if (data.feedback) setFeedbackItems(data.feedback);
+    } catch {
+      /* feedback not available */
+    }
+  }, []);
+
   const deleteRedisKeys = useCallback(
     async (keys: string[]) => {
       const res = await fetch('/api/admin/redis-keys', {
@@ -352,14 +331,12 @@ export default function AdminPage() {
         header: 'Last Cached',
         cell: (info) => {
           const val = info.getValue();
-          return <span className="whitespace-nowrap">{val ? formatRelativeTime(val) : '—'}</span>;
+          return <span className="whitespace-nowrap">{val ? timeAgo(val) : '—'}</span>;
         },
       }),
       redisColumnHelper.accessor('ttl', {
         header: 'Expires In',
-        cell: (info) => (
-          <span className="whitespace-nowrap">{formatExpiresIn(info.getValue())}</span>
-        ),
+        cell: (info) => <span className="whitespace-nowrap">{ttlLeft(info.getValue())}</span>,
       }),
       redisColumnHelper.display({
         id: 'actions',
@@ -419,11 +396,19 @@ export default function AdminPage() {
         fetchKnowledgeStatus(),
         fetchCreditStats(),
         fetchRedisKeys(),
+        fetchFeedback(),
       ]);
       setLoading(false);
     };
     void load();
-  }, [fetchConfig, fetchCfbdStatus, fetchKnowledgeStatus, fetchCreditStats, fetchRedisKeys]);
+  }, [
+    fetchConfig,
+    fetchCfbdStatus,
+    fetchKnowledgeStatus,
+    fetchCreditStats,
+    fetchRedisKeys,
+    fetchFeedback,
+  ]);
 
   const updateConfig = async (patch: Partial<RuntimeConfig>) => {
     const res = await fetch('/api/admin/config', {
@@ -727,9 +712,7 @@ export default function AdminPage() {
               <Stat
                 label="Last Ingested"
                 value={
-                  knowledgeStatus.lastIngestedAt
-                    ? formatRelativeTime(new Date(knowledgeStatus.lastIngestedAt).getTime())
-                    : 'Never'
+                  knowledgeStatus.lastIngestedAt ? timeAgo(knowledgeStatus.lastIngestedAt) : 'Never'
                 }
               />
               <Stat label="Batch" value={knowledgeStatus.lastBatchId?.slice(0, 20) ?? 'None'} />
@@ -774,8 +757,7 @@ export default function AdminPage() {
               />
               {creditStats.providerCooldownUntil && (
                 <div className="bg-warning/10 rounded px-3 py-2 text-xs text-warning">
-                  Anthropic cooldown until{' '}
-                  {new Date(creditStats.providerCooldownUntil).toLocaleTimeString()}
+                  Anthropic cooldown until {shortDateTime(creditStats.providerCooldownUntil)}
                 </div>
               )}
             </div>
@@ -863,6 +845,74 @@ export default function AdminPage() {
               </div>
             </div>
           </>
+        )}
+      </Card>
+
+      <Card
+        title={`Feedback (${feedbackItems.filter((f) => !f.resolved).length} open)`}
+        action={
+          <Button.Stroked size="xs" color="primary" onClick={fetchFeedback}>
+            Refresh
+          </Button.Stroked>
+        }
+      >
+        {feedbackItems.length > 0 ? (
+          <div className="space-y-3">
+            {feedbackItems.map((fb) => (
+              <div
+                key={fb.id}
+                className={cn(
+                  'rounded-lg border border-stroke bg-base-100 p-3',
+                  fb.resolved && 'opacity-50'
+                )}
+              >
+                <div className="mb-1 flex items-center justify-between gap-2">
+                  <div className="text-base-content/50 flex items-center gap-2 text-[10px]">
+                    <span>{shortDateTime(fb.createdAt)}</span>
+                    {fb.conf && <span className="uppercase">{fb.conf}</span>}
+                    {fb.sessionId && (
+                      <span className="truncate font-mono" title={fb.sessionId}>
+                        {fb.sessionId.slice(0, 8)}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Button
+                      size="xs"
+                      color={fb.resolved ? 'primary' : 'success'}
+                      onClick={async () => {
+                        await fetch('/api/admin/feedback', {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ id: fb.id, resolved: !fb.resolved }),
+                        });
+                        void fetchFeedback();
+                      }}
+                    >
+                      {fb.resolved ? 'Reopen' : 'Resolve'}
+                    </Button>
+                    <Button
+                      size="xs"
+                      color="error"
+                      onClick={async () => {
+                        await fetch('/api/admin/feedback', {
+                          method: 'DELETE',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ id: fb.id }),
+                        });
+                        void fetchFeedback();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+                <p className="text-sm text-base-content">{fb.message}</p>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-base-content">No feedback submitted</p>
         )}
       </Card>
 

@@ -88,6 +88,18 @@ model MagicLink {
   @@index([token])
 }
 
+model Feedback {
+  id        String   @id @default(cuid())
+  sessionId String?
+  message   String
+  conf      String?
+  resolved  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([resolved])
+  @@index([createdAt])
+}
+
 model KnowledgeChunk {
   id         String                @id @default(cuid())
   sourceFile String
