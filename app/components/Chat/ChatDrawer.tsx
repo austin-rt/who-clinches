@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { HiXMark, HiPlus, HiClock } from 'react-icons/hi2';
-import { IoSendOutline } from 'react-icons/io5';
+import { IoSendOutline, IoStopOutline } from 'react-icons/io5';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import {
   setSessions as setReduxSessions,
@@ -578,7 +578,7 @@ const ChatDrawer = ({
     }
   };
 
-  const inputDisabled = isStreaming || !!windowResetsAt || providerLimit;
+  const inputDisabled = !!windowResetsAt || providerLimit;
 
   const [countdown, setCountdown] = useState('');
 
@@ -917,9 +917,20 @@ const ChatDrawer = ({
             disabled={inputDisabled}
             className="chat-input"
           />
-          <button type="submit" className="chat-send-btn" aria-label="Send">
-            <IoSendOutline className="h-4 w-4 -rotate-45" />
-          </button>
+          {isStreaming ? (
+            <button
+              type="button"
+              className="chat-send-btn"
+              aria-label="Stop"
+              onClick={() => abortRef.current?.abort()}
+            >
+              <IoStopOutline className="h-4 w-4" />
+            </button>
+          ) : (
+            <button type="submit" className="chat-send-btn" aria-label="Send">
+              <IoSendOutline className="h-4 w-4 -rotate-45" />
+            </button>
+          )}
         </form>
       </div>
     </>

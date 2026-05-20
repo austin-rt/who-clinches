@@ -1,13 +1,13 @@
 import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
 import { fetch as redisFetch, persistRedisKey } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
+import { ALLOWED_PATHS, NEVER_CACHE_PATHS } from './cfbd-api-catalog';
 import { createHash } from 'crypto';
 
 const CFBD_BASE_URL = 'https://apinext.collegefootballdata.com';
 const MAX_RESPONSE_CHARS = 8000;
 const MAX_ARRAY_ITEMS = 50;
 const CACHE_PREFIX = 'cfbd:chat';
-const NEVER_CACHE_PATHS = new Set(['/lines', '/scoreboard', '/live/plays']);
 
 const isHistorical = (params: Record<string, string>): boolean => {
   const year = params.year || params.season;
@@ -15,69 +15,6 @@ const isHistorical = (params: Record<string, string>): boolean => {
   const requested = parseInt(year, 10);
   return !isNaN(requested) && requested < new Date().getFullYear();
 };
-
-const ALLOWED_PATHS = new Set([
-  '/wepa/team/season',
-  '/wepa/players/passing',
-  '/wepa/players/rushing',
-  '/wepa/players/kicking',
-  '/teams',
-  '/teams/fbs',
-  '/teams/matchup',
-  '/teams/ats',
-  '/roster',
-  '/conferences',
-  '/talent',
-  '/venues',
-  '/stats/player/season',
-  '/stats/season',
-  '/stats/categories',
-  '/stats/season/advanced',
-  '/stats/game/advanced',
-  '/stats/game/havoc',
-  '/recruiting/players',
-  '/recruiting/teams',
-  '/recruiting/groups',
-  '/ratings/sp',
-  '/ratings/sp/conferences',
-  '/ratings/srs',
-  '/ratings/elo',
-  '/ratings/fpi',
-  '/rankings',
-  '/plays',
-  '/plays/types',
-  '/plays/stats',
-  '/plays/stats/types',
-  '/player/search',
-  '/player/usage',
-  '/player/returning',
-  '/player/portal',
-  '/ppa/predicted',
-  '/ppa/teams',
-  '/ppa/games',
-  '/ppa/players/games',
-  '/ppa/players/season',
-  '/metrics/wp',
-  '/metrics/wp/pregame',
-  '/metrics/fg/ep',
-  '/live/plays',
-  '/lines',
-  '/info',
-  '/games',
-  '/games/teams',
-  '/games/players',
-  '/games/media',
-  '/games/weather',
-  '/records',
-  '/calendar',
-  '/scoreboard',
-  '/drives',
-  '/draft/teams',
-  '/draft/positions',
-  '/draft/picks',
-  '/coaches',
-  '/game/box/advanced',
-]);
 
 const truncateResponse = (data: unknown): string => {
   if (Array.isArray(data)) {

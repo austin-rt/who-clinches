@@ -1,4 +1,5 @@
 import { db } from '@/lib/db/client';
+import { sendEmail } from '@/lib/email';
 
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 
@@ -29,9 +30,6 @@ export const verifyMagicLink = async (token: string): Promise<string | null> => 
 };
 
 export const sendMagicLinkEmail = async (email: string, token: string): Promise<void> => {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) throw new Error('RESEND_API_KEY is not configured');
-
   const baseUrl =
     process.env.VERCEL_ENV === 'production'
       ? 'https://whoclinches.com'
@@ -41,32 +39,19 @@ export const sendMagicLinkEmail = async (email: string, token: string): Promise<
 
   const verifyUrl = `${baseUrl}/auth/verify?token=${token}`;
 
-  const res = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: 'whoclinches <noreply@whoclinches.com>',
-      to: email,
-      subject: 'Sign in to whoclinches.com',
-      text: [
-        'Click the link below to sign in and manage your chat credits:',
-        '',
-        verifyUrl,
-        '',
-        'This link expires in 15 minutes.',
-        '',
-        "If you didn't request this, you can ignore this email.",
-      ].join('\n'),
-    }),
+  await sendEmail({
+    to: email,
+    subject: 'Sign in to whoclinches.com',
+    text: [
+      'Click the link below to sign in and manage your chat credits:',
+      '',
+      verifyUrl,
+      '',
+      'This link expires in 15 minutes.',
+      '',
+      "If you didn't request this, you can ignore this email.",
+    ].join('\n'),
   });
-
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Failed to send magic link email: ${res.status} ${body}`);
-  }
 };
 
 export const claimPendingDonations = async (email: string, chatUserId: string): Promise<number> => {

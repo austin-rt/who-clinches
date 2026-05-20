@@ -263,10 +263,17 @@ export const POST = async (request: NextRequest) => {
     }
 
     if (!conf) {
-      return Response.json(
-        { error: 'Could not determine conference. Please specify a team or conference.' },
-        { status: 400 }
-      );
+      const msgLower = message.toLowerCase();
+      for (const [abbr, meta] of Object.entries(CFB_CONFERENCE_METADATA)) {
+        if (
+          msgLower.includes(abbr) ||
+          msgLower.includes(meta.name.toLowerCase()) ||
+          msgLower.includes(meta.cfbdId.toLowerCase())
+        ) {
+          conf = abbr as CFBConferenceAbbreviation;
+          break;
+        }
+      }
     }
 
     const runtimeConfig = await getRuntimeConfig();
@@ -320,39 +327,52 @@ export const POST = async (request: NextRequest) => {
       }
     }
 
-    const confMeta = CFB_CONFERENCE_METADATA[conf];
+    const confMeta = conf ? CFB_CONFERENCE_METADATA[conf] : null;
 
-    const [data, ragChunks] = await Promise.all([
-      loadConferenceData(conf),
-      runtimeConfig.ragOn ? retrieveRelevantChunks(message, confMeta.cfbdId) : Promise.resolve([]),
-    ]);
+    const contextParts: string[] = [];
+    let confData: Awaited<ReturnType<typeof loadConferenceData>> | null = null;
 
-    const contextParts: string[] = [
-      formatStandingsContext(data.standings, data.teams),
-      formatGamesContext(data.games, data.teams),
-      buildTeamReferenceContext(data.teams),
-    ];
+    if (conf && confMeta) {
+      const [data, ragChunks] = await Promise.all([
+        loadConferenceData(conf),
+        runtimeConfig.ragOn
+          ? retrieveRelevantChunks(message, confMeta.cfbdId)
+          : Promise.resolve([]),
+      ]);
+      confData = data;
 
-    if (ragChunks.length > 0) {
-      contextParts.push(formatRagContext(ragChunks));
-    }
+      contextParts.push(
+        formatStandingsContext(data.standings, data.teams),
+        formatGamesContext(data.games, data.teams),
+        buildTeamReferenceContext(data.teams)
+      );
 
-    if (ambiguousMatches) {
+      if (ragChunks.length > 0) {
+        contextParts.push(formatRagContext(ragChunks));
+      }
+
+      if (ambiguousMatches) {
+        contextParts.push(
+          `The user may be referring to one of these teams: ${ambiguousMatches.map((m) => `${m.school} (${m.conference})`).join(', ')}. ` +
+            'Ask them to clarify which team they mean.'
+        );
+      }
+
+      if (targetTeamId && targetTeamName) {
+        const scenarios = await loadTeamScenarios(conf, targetTeamId, data.games, data.teams);
+        contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
+      }
+    } else if (ambiguousMatches) {
       contextParts.push(
         `The user may be referring to one of these teams: ${ambiguousMatches.map((m) => `${m.school} (${m.conference})`).join(', ')}. ` +
           'Ask them to clarify which team they mean.'
       );
     }
 
-    if (targetTeamId && targetTeamName) {
-      const scenarios = await loadTeamScenarios(conf, targetTeamId, data.games, data.teams);
-      contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
-    }
-
     const systemPrompt = buildSystemPrompt(
-      confMeta.name,
-      clientSeason ?? data.season,
-      ragChunks.length > 0
+      confMeta?.name ?? 'College Football',
+      clientSeason ?? new Date().getFullYear(),
+      contextParts.some((p) => p.includes('[Tiebreaker Rules]'))
     );
     const contextBlock = contextParts.join('\n\n');
     const promptHash = createHash('sha256').update(systemPrompt).digest('hex').slice(0, 12);
@@ -474,6 +494,9 @@ export const POST = async (request: NextRequest) => {
       },
     };
 
+    const tools: Anthropic.Tool[] = [cfbdLookupTool];
+    if (conf && confData) tools.unshift(simulateTool);
+
     const systemWithCatalog = systemPrompt + '\n\n' + CFBD_API_CATALOG;
     const anthropic = new Anthropic();
 
@@ -490,7 +513,7 @@ export const POST = async (request: NextRequest) => {
             max_tokens: 8192,
             system: systemWithCatalog,
             messages: msgs,
-            tools: [simulateTool, cfbdLookupTool],
+            tools,
           });
 
           let toolUseBlock: { id: string; name: string; input: string } | null = null;
@@ -542,8 +565,8 @@ export const POST = async (request: NextRequest) => {
 
             let toolResult: string;
 
-            if (toolUseBlock.name === 'simulate_scenario') {
-              toolResult = await executeSimulateTool(toolInput, data, conf);
+            if (toolUseBlock.name === 'simulate_scenario' && confData && conf) {
+              toolResult = await executeSimulateTool(toolInput, confData, conf);
             } else if (toolUseBlock.name === 'cfbd_lookup') {
               toolResult = await executeCfbdLookup(
                 toolInput.endpoint ?? '',

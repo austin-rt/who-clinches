@@ -1,5 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, after } from 'next/server';
 import { db } from '@/lib/db/client';
+import { notifyAdmin } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -15,13 +16,28 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ error: 'Message too long' }, { status: 400 });
     }
 
-    await db.feedback.create({
+    const feedback = await db.feedback.create({
       data: {
         sessionId: sessionId || null,
         message: content,
         conf: conf || null,
       },
     });
+
+    after(() =>
+      notifyAdmin(
+        `[Feedback] ${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 60)}`,
+        [
+          `New feedback submitted`,
+          '',
+          `Message: ${content}`,
+          `Conference: ${conf || 'none'}`,
+          `Session: ${sessionId || 'none'}`,
+          `ID: ${feedback.id}`,
+          `Time: ${new Date().toISOString()}`,
+        ].join('\n')
+      )
+    );
 
     return Response.json({ ok: true });
   } catch {

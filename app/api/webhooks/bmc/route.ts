@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 import { createHmac } from 'crypto';
 import { db } from '@/lib/db/client';
 import { logError } from '@/lib/errorLogger';
+import { notifyAdmin } from '@/lib/email';
 
 const CREDITS_PER_DOLLAR = 100;
 
@@ -76,6 +77,19 @@ const handleMoneyIn = async (payload: Record<string, unknown>): Promise<Response
     });
   }
 
+  void notifyAdmin(
+    `[Donation] $${amount} from ${email} (${credits} credits)`,
+    [
+      `New donation received`,
+      '',
+      `Email: ${email}`,
+      `Amount: $${amount}`,
+      `Credits: ${credits}`,
+      `Account linked: ${chatUser ? 'yes' : 'no — credits pending until email verified'}`,
+      `BMC ID: ${bmcId}`,
+    ].join('\n')
+  );
+
   return Response.json({ ok: true, credits, matched: !!chatUser });
 };
 
@@ -99,6 +113,17 @@ const handleRefund = async (payload: Record<string, unknown>): Promise<Response>
   }
 
   await db.donation.delete({ where: { bmcId } });
+
+  void notifyAdmin(
+    `[Refund] ${donation.credits} credits revoked (${donation.email})`,
+    [
+      `Donation refunded`,
+      '',
+      `Email: ${donation.email}`,
+      `Credits revoked: ${donation.credits}`,
+      `BMC ID: ${bmcId}`,
+    ].join('\n')
+  );
 
   return Response.json({ ok: true, refunded: true, credits: donation.credits });
 };
