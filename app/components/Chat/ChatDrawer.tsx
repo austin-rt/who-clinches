@@ -215,6 +215,7 @@ const ChatDrawer = ({
     }
     if (!open) {
       forceNewChatHandled.current = false;
+      initialMessageSentRef.current = false;
     }
   }, [open, forceNewChat, conferenceHint]);
 
@@ -459,15 +460,20 @@ const ChatDrawer = ({
   );
 
   useEffect(() => {
-    if (open && initialMessage && !initialMessageSentRef.current && !isStreaming) {
-      initialMessageSentRef.current = true;
-      void sendMessage(initialMessage);
-      onInitialMessageSent?.();
-    }
-    if (!open) {
-      initialMessageSentRef.current = false;
-    }
-  }, [open, initialMessage, isStreaming, onInitialMessageSent, sendMessage]);
+    if (!open || !initialMessage || initialMessageSentRef.current || isStreaming) return;
+    if (forceNewChat && messages.length > 0) return;
+    initialMessageSentRef.current = true;
+    void sendMessage(initialMessage);
+    onInitialMessageSent?.();
+  }, [
+    open,
+    initialMessage,
+    isStreaming,
+    forceNewChat,
+    messages.length,
+    onInitialMessageSent,
+    sendMessage,
+  ]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
