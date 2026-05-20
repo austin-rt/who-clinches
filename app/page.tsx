@@ -30,6 +30,7 @@ const CONFERENCE_LOGOS: Record<string, string> = {
 const Home = () => {
   const [chatOpen, setChatOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const [forceNewChat, setForceNewChat] = useState(false);
   const [cfbOpen, setCfbOpen] = useState(true);
   const persistedSessions = useAppSelector((s) => s.chat.sessions);
   const chatHistory = useAppSelector((s) => s.chat.history ?? []);
@@ -49,8 +50,12 @@ const Home = () => {
         </div>
 
         <ChatSearchBar
-          onOpen={() => setChatOpen(true)}
+          onOpen={() => {
+            setForceNewChat(true);
+            setChatOpen(true);
+          }}
           onSubmit={(msg) => {
+            setForceNewChat(true);
             setInitialMessage(msg);
             setChatOpen(true);
           }}
@@ -128,9 +133,11 @@ const Home = () => {
         onClose={() => {
           setChatOpen(false);
           setInitialMessage(null);
+          setForceNewChat(false);
         }}
         initialMessage={initialMessage}
         onInitialMessageSent={() => setInitialMessage(null)}
+        forceNewChat={forceNewChat}
       />
     </>
   );

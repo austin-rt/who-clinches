@@ -37,6 +37,7 @@ const ConferencePage = () => {
   const [simulateResponse, setSimulateResponse] = useState<SimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const [forceNewChat, setForceNewChat] = useState(false);
   const persistedSessions = useAppSelector((s) => s.chat.sessions);
   const chatHistory = useAppSelector((s) => s.chat.history ?? []);
   const hasConversation =
@@ -118,8 +119,12 @@ const ConferencePage = () => {
         <ChatSearchBar
           geoTeamName={geoTeam.teamName}
           fallbackTeamName={teams[0]?.shortDisplayName ?? null}
-          onOpen={() => setChatOpen(true)}
+          onOpen={() => {
+            setForceNewChat(true);
+            setChatOpen(true);
+          }}
           onSubmit={(msg) => {
+            setForceNewChat(true);
             setInitialMessage(msg);
             setChatOpen(true);
           }}
@@ -179,11 +184,15 @@ const ConferencePage = () => {
 
       <ChatDrawer
         open={chatOpen}
-        onClose={() => setChatOpen(false)}
+        onClose={() => {
+          setChatOpen(false);
+          setForceNewChat(false);
+        }}
         conferenceHint={conf}
         initialMessage={initialMessage}
         onInitialMessageSent={() => setInitialMessage(null)}
         onMessageSent={() => {}}
+        forceNewChat={forceNewChat}
       />
     </div>
   );

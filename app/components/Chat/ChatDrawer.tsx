@@ -40,6 +40,7 @@ interface ChatDrawerProps {
   initialMessage?: string | null;
   onInitialMessageSent?: () => void;
   onMessageSent?: () => void;
+  forceNewChat?: boolean;
 }
 
 const TypingIndicator = () => (
@@ -79,6 +80,7 @@ const ChatDrawer = ({
   initialMessage,
   onInitialMessageSent,
   onMessageSent,
+  forceNewChat,
 }: ChatDrawerProps) => {
   const dispatch = useAppDispatch();
   const persistedSessions = useAppSelector((s) => s.chat.sessions);
@@ -105,7 +107,7 @@ const ChatDrawer = ({
   const [isStreaming, setIsStreaming] = useState(false);
   const [showTyping, setShowTyping] = useState(false);
   const [retryAfter, setRetryAfter] = useState<number | null>(null);
-  const [windowLimit, setWindowLimit] = useState<{ resetsIn: number } | null>(null);
+  const [windowResetsAt, setWindowResetsAt] = useState<number | null>(null);
   const [providerLimit, setProviderLimit] = useState(false);
   const [authEmail, setAuthEmail] = useState('');
   const [authSending, setAuthSending] = useState(false);
@@ -195,6 +197,26 @@ const ChatDrawer = ({
   }, [messages, showTyping, scrollToBottom]);
 
   const initialMessageSentRef = useRef(false);
+  const forceNewChatHandled = useRef(false);
+
+  useEffect(() => {
+    if (open && forceNewChat && !forceNewChatHandled.current) {
+      forceNewChatHandled.current = true;
+      setSessions((prev) => {
+        if (prev.length >= MAX_SESSIONS) {
+          const updated = [...prev.slice(1), makeSession('New chat', conferenceHint)];
+          setActiveIndex(updated.length - 1);
+          return updated;
+        }
+        setActiveIndex(prev.length);
+        return [...prev, makeSession('New chat', conferenceHint)];
+      });
+      setInput('');
+    }
+    if (!open) {
+      forceNewChatHandled.current = false;
+    }
+  }, [open, forceNewChat, conferenceHint]);
 
   useEffect(() => {
     if (open) {
@@ -302,7 +324,7 @@ const ChatDrawer = ({
         if (res.status === 429) {
           const body = await res.json().catch(() => ({}));
           if (body.error === 'window_limit') {
-            setWindowLimit({ resetsIn: body.windowResetsIn ?? 0 });
+            setWindowResetsAt(Date.now() + (body.windowResetsIn ?? 0));
             dispatch(
               setReduxUsage({
                 freeRemaining: body.freeRemaining ?? 0,
@@ -386,7 +408,13 @@ const ChatDrawer = ({
               setShowTyping(true);
             } else if (data.type === 'done') {
               if (data.usage) {
-                dispatch(setReduxUsage(data.usage));
+                const { windowResetsIn, ...rest } = data.usage;
+                dispatch(
+                  setReduxUsage({
+                    ...rest,
+                    windowResetsAt: windowResetsIn ? Date.now() + windowResetsIn : undefined,
+                  })
+                );
               }
             } else if (data.type === 'error') {
               throw new Error(data.error);
@@ -544,7 +572,33 @@ const ChatDrawer = ({
     }
   };
 
-  const inputDisabled = isStreaming || !!windowLimit || providerLimit;
+  const inputDisabled = isStreaming || !!windowResetsAt || providerLimit;
+
+  const [countdown, setCountdown] = useState('');
+
+  const resetsAt = windowResetsAt ?? usage?.windowResetsAt ?? null;
+
+  useEffect(() => {
+    if (!resetsAt) {
+      setCountdown('');
+      return;
+    }
+    const tick = () => {
+      const diff = resetsAt - Date.now();
+      if (diff <= 0) {
+        setWindowResetsAt(null);
+        setCountdown('');
+        return;
+      }
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      setCountdown(h > 0 ? `${h}h ${m}m ${s}s` : m > 0 ? `${m}m ${s}s` : `${s}s`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [resetsAt]);
 
   const hasHistory = history.length > 0;
 
@@ -740,17 +794,10 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {windowLimit && !providerLimit && (
+        {windowResetsAt && !providerLimit && (
           <div className="space-y-3 border-t border-base-300 px-4 py-3">
             <p className="text-base-content/60 text-center text-xs">
-              Free messages reset in{' '}
-              {(() => {
-                const totalMin = Math.max(1, Math.ceil(windowLimit.resetsIn / 60_000));
-                const h = Math.floor(totalMin / 60);
-                const m = totalMin % 60;
-                return h > 0 ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`;
-              })()}
-              .
+              Free messages reset in {countdown}.
             </p>
             {!email ? (
               <div className="space-y-2">
@@ -810,7 +857,7 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {usage && !windowLimit && !providerLimit && (
+        {usage && !windowResetsAt && !providerLimit && (
           <div className="flex flex-col items-center border-t border-base-300 px-4 py-1">
             <div className="text-base-content/40 flex items-center gap-1.5 text-[10px]">
               <span>Remaining Messages:</span>
@@ -822,17 +869,7 @@ const ChatDrawer = ({
               ) : (
                 <span>{usage.freeRemaining}/8</span>
               )}
-              {usage.windowResetsIn && usage.windowResetsIn > 0 && (
-                <span>
-                  — resets in{' '}
-                  {(() => {
-                    const totalMin = Math.max(1, Math.ceil(usage.windowResetsIn / 60_000));
-                    const h = Math.floor(totalMin / 60);
-                    const m = totalMin % 60;
-                    return h > 0 ? `${h}h ${String(m).padStart(2, '0')}m` : `${m}m`;
-                  })()}
-                </span>
-              )}
+              {countdown && <span>— resets in {countdown}</span>}
             </div>
             {usage.freeRemaining === 0 && usage.creditsRemaining === 0 && (
               <p className="text-base-content/40 text-[10px]">
