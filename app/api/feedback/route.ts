@@ -1,6 +1,6 @@
 import { NextRequest, after } from 'next/server';
 import { db } from '@/lib/db/client';
-import { notifyAdmin } from '@/lib/email';
+import { sendEmail } from '@/lib/email';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -25,18 +25,10 @@ export const POST = async (request: NextRequest) => {
     });
 
     after(() =>
-      notifyAdmin(
-        `[Feedback] ${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 60)}`,
-        [
-          `New feedback submitted`,
-          '',
-          `Message: ${content}`,
-          `Conference: ${conf || 'none'}`,
-          `Session: ${sessionId || 'none'}`,
-          `ID: ${feedback.id}`,
-          `Time: ${new Date().toISOString()}`,
-        ].join('\n')
-      )
+      sendEmail({
+        subject: `[Feedback] ${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 60)}`,
+        text: `${content}\n\nConference: ${conf || 'none'}\nSession: ${sessionId || 'none'}\nID: ${feedback.id}`,
+      }).catch(() => {})
     );
 
     return Response.json({ ok: true });

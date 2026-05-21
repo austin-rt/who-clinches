@@ -32,6 +32,3 @@ export const sendEmail = async (params: EmailParams): Promise<void> => {
     throw new Error(`Resend error: ${res.status} ${body}`);
   }
 };
-
-export const notifyAdmin = (subject: string, text: string): Promise<void> =>
-  sendEmail({ subject, text }).catch(() => {});

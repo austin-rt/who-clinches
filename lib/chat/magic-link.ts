@@ -1,5 +1,6 @@
 import { db } from '@/lib/db/client';
 import { sendEmail } from '@/lib/email';
+import { magicLinkHtml } from '@/lib/email-templates';
 
 const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;
 
@@ -41,16 +42,8 @@ export const sendMagicLinkEmail = async (email: string, token: string): Promise<
 
   await sendEmail({
     to: email,
-    subject: 'Sign in to whoclinches.com',
-    text: [
-      'Click the link below to sign in and manage your chat credits:',
-      '',
-      verifyUrl,
-      '',
-      'This link expires in 15 minutes.',
-      '',
-      "If you didn't request this, you can ignore this email.",
-    ].join('\n'),
+    subject: 'Claim your credits — Who Clinches',
+    html: magicLinkHtml(verifyUrl),
   });
 };
 
