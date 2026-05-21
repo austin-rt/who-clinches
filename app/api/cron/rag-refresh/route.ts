@@ -1,15 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { db } from '@/lib/db/client';
-import { redis } from '@/lib/redis';
 import { chunkDocument, type FileConfig } from '@/lib/rag/chunker';
 import { embedSmallBatch } from '@/lib/rag/embedding';
 import { fetchSourceText, SOURCE_CONFIG, type StaticSource } from '@/lib/cfb/cfbd-static-fetcher';
 import { logError } from '@/lib/errorLogger';
 import { sendEmail } from '@/lib/email';
 import { notificationHtml } from '@/lib/email-templates';
-
-const HASH_PREFIX = 'rag:hash';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,13 +23,10 @@ const updateSource = async (
   const text = await fetchSourceText(source);
 
   const newHash = hashText(text);
-  const hashKey = `${HASH_PREFIX}:${source}`;
 
-  if (redis) {
-    const storedHash = await redis.get<string>(hashKey);
-    if (storedHash === newHash) {
-      return { chunks: 0, skipped: true };
-    }
+  const existing = await db.ragSource.findUnique({ where: { source } });
+  if (existing?.contentHash === newHash) {
+    return { chunks: 0, skipped: true };
   }
 
   const config: FileConfig = {
@@ -67,7 +61,11 @@ const updateSource = async (
     }
   });
 
-  if (redis) await redis.set(hashKey, newHash);
+  await db.ragSource.upsert({
+    where: { source },
+    create: { source, contentHash: newHash, chunkCount: chunks.length, updatedAt: new Date() },
+    update: { contentHash: newHash, chunkCount: chunks.length, updatedAt: new Date() },
+  });
 
   return { chunks: chunks.length, skipped: false };
 };

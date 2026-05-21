@@ -118,3 +118,10 @@ model KnowledgeChunk {
   @@index([batchId])
   @@index([embedding])
 }
+
+model RagSource {
+  source      String    @id
+  contentHash String?
+  chunkCount  Int       @default(0)
+  updatedAt   DateTime?
+}

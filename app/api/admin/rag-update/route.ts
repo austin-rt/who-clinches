@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createHash } from 'crypto';
 import { isAdminAllowed } from '@/lib/admin/is-admin-allowed';
 import { db } from '@/lib/db/client';
-import { redis } from '@/lib/redis';
 import { chunkDocument, type FileConfig } from '@/lib/rag/chunker';
 import { embedSmallBatch } from '@/lib/rag/embedding';
 import { fetchSourceText, SOURCE_CONFIG, type StaticSource } from '@/lib/cfb/cfbd-static-fetcher';
@@ -11,7 +10,6 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const HASH_PREFIX = 'rag:hash';
 const VALID_SOURCES = Object.keys(SOURCE_CONFIG) as StaticSource[];
 
 const updateSource = async (source: StaticSource, force = false) => {
@@ -19,11 +17,10 @@ const updateSource = async (source: StaticSource, force = false) => {
   const text = await fetchSourceText(source);
 
   const newHash = createHash('sha256').update(text).digest('hex');
-  const hashKey = `${HASH_PREFIX}:${source}`;
 
-  if (!force && redis) {
-    const storedHash = await redis.get<string>(hashKey);
-    if (storedHash === newHash) {
+  if (!force) {
+    const existing = await db.ragSource.findUnique({ where: { source } });
+    if (existing?.contentHash === newHash) {
       return { source, chunks: 0, skipped: true };
     }
   }
@@ -65,7 +62,11 @@ const updateSource = async (source: StaticSource, force = false) => {
     }
   });
 
-  if (redis) await redis.set(hashKey, newHash);
+  await db.ragSource.upsert({
+    where: { source },
+    create: { source, contentHash: newHash, chunkCount: chunks.length, updatedAt: new Date() },
+    update: { contentHash: newHash, chunkCount: chunks.length, updatedAt: new Date() },
+  });
 
   return { source, chunks: chunks.length, skipped: false };
 };
@@ -75,19 +76,20 @@ export const GET = async () => {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const stats = await db.knowledgeChunk.groupBy({
-    by: ['sourceFile'],
-    _count: true,
-    _max: { createdAt: true },
-    where: { sourceFile: { in: VALID_SOURCES.map((s) => SOURCE_CONFIG[s].sourceFile) } },
+  const rows = await db.ragSource.findMany({
+    where: { source: { in: VALID_SOURCES } },
   });
 
-  const sources: Record<string, { chunks: number; lastUpdated: string | null }> = {};
+  const sources: Record<
+    string,
+    { chunks: number; lastUpdated: string | null; hash: string | null }
+  > = {};
   for (const s of VALID_SOURCES) {
-    const row = stats.find((r) => r.sourceFile === SOURCE_CONFIG[s].sourceFile);
+    const row = rows.find((r) => r.source === s);
     sources[s] = {
-      chunks: row?._count ?? 0,
-      lastUpdated: row?._max.createdAt?.toISOString() ?? null,
+      chunks: row?.chunkCount ?? 0,
+      lastUpdated: row?.updatedAt?.toISOString() ?? null,
+      hash: row?.contentHash ?? null,
     };
   }
 
