@@ -6,12 +6,13 @@ import {
   calculateNextSundayRevalidate,
 } from './calculate-next-weekday-revalidate';
 
-type SeasonPhase = 'preseason' | 'inseason' | 'postseason';
+export type SeasonPhase = 'preseason' | 'inseason' | 'postseason';
 
 interface PhaseResult {
   phase: SeasonPhase;
   seasonStartMs: number;
   seasonEndMs: number;
+  currentWeek: number | null;
 }
 
 let cached: { result: PhaseResult; expiresAt: number } | null = null;
@@ -22,7 +23,12 @@ export const getSeasonPhase = async (): Promise<PhaseResult> => {
 
   const fixtureYear = await getFixtureYear();
   if (fixtureYear !== null) {
-    const result: PhaseResult = { phase: 'inseason', seasonStartMs: 0, seasonEndMs: Infinity };
+    const result: PhaseResult = {
+      phase: 'inseason',
+      seasonStartMs: 0,
+      seasonEndMs: Infinity,
+      currentWeek: null,
+    };
     cached = { result, expiresAt: Date.now() + CACHE_MS };
     return result;
   }
@@ -30,7 +36,12 @@ export const getSeasonPhase = async (): Promise<PhaseResult> => {
   if (process.env.VERCEL_ENV !== 'production') {
     const config = await getRuntimeConfig();
     if (config.inSeasonOverride) {
-      const result: PhaseResult = { phase: 'inseason', seasonStartMs: 0, seasonEndMs: Infinity };
+      const result: PhaseResult = {
+        phase: 'inseason',
+        seasonStartMs: 0,
+        seasonEndMs: Infinity,
+        currentWeek: null,
+      };
       cached = { result, expiresAt: Date.now() + CACHE_MS };
       return result;
     }
@@ -44,13 +55,34 @@ export const getSeasonPhase = async (): Promise<PhaseResult> => {
     if (calendar.length === 0) return null;
     const seasonStartMs = new Date(calendar[0].startDate).getTime();
     const seasonEndMs = new Date(calendar[calendar.length - 1].endDate).getTime();
-    if (now < seasonStartMs) return { phase: 'preseason', seasonStartMs, seasonEndMs };
-    if (now <= seasonEndMs) return { phase: 'inseason', seasonStartMs, seasonEndMs };
-    return { phase: 'postseason', seasonStartMs, seasonEndMs };
+
+    if (now < seasonStartMs) {
+      return { phase: 'preseason', seasonStartMs, seasonEndMs, currentWeek: null };
+    }
+    if (now > seasonEndMs) {
+      return { phase: 'postseason', seasonStartMs, seasonEndMs, currentWeek: null };
+    }
+
+    let currentWeek: number | null = null;
+    for (const entry of calendar) {
+      const weekStart = new Date(entry.startDate).getTime();
+      const weekEnd = new Date(entry.endDate).getTime();
+      if (now >= weekStart && now <= weekEnd) {
+        currentWeek = entry.week;
+        break;
+      }
+    }
+
+    return { phase: 'inseason', seasonStartMs, seasonEndMs, currentWeek };
   };
 
   const result = (await resolve(currentYear)) ??
-    (await resolve(currentYear - 1)) ?? { phase: 'postseason', seasonStartMs: 0, seasonEndMs: 0 };
+    (await resolve(currentYear - 1)) ?? {
+      phase: 'postseason' as const,
+      seasonStartMs: 0,
+      seasonEndMs: 0,
+      currentWeek: null,
+    };
 
   cached = { result, expiresAt: Date.now() + CACHE_MS };
   return result;

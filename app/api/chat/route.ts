@@ -12,7 +12,9 @@ import {
   formatScenarioContext,
   formatRagContext,
   resolveTeamConference,
+  resolveConferenceFromMessage,
 } from '@/lib/cfb/chat/context-assembly';
+import { getSeasonPhase } from '@/lib/cfb/helpers/season-phase';
 import { resolveOverrides } from '@/lib/cfb/chat/resolve-overrides';
 import { runConferenceSimulation } from '@/lib/cfb/runConferenceSimulation';
 import { executeCfbdLookup } from '@/lib/cfb/chat/cfbd-lookup';
@@ -263,17 +265,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     if (!conf) {
-      const msgLower = message.toLowerCase();
-      for (const [abbr, meta] of Object.entries(CFB_CONFERENCE_METADATA)) {
-        if (
-          msgLower.includes(abbr) ||
-          msgLower.includes(meta.name.toLowerCase()) ||
-          msgLower.includes(meta.cfbdId.toLowerCase())
-        ) {
-          conf = abbr as CFBConferenceAbbreviation;
-          break;
-        }
-      }
+      conf = resolveConferenceFromMessage(message);
     }
 
     const runtimeConfig = await getRuntimeConfig();
@@ -328,6 +320,8 @@ export const POST = async (request: NextRequest) => {
     }
 
     const confMeta = conf ? CFB_CONFERENCE_METADATA[conf] : null;
+    const season = clientSeason ?? new Date().getFullYear();
+    const phaseInfo = await getSeasonPhase();
 
     const contextParts: string[] = [];
     let confData: Awaited<ReturnType<typeof loadConferenceData>> | null = null;
@@ -371,8 +365,9 @@ export const POST = async (request: NextRequest) => {
 
     const systemPrompt = buildSystemPrompt(
       confMeta?.name ?? 'College Football',
-      clientSeason ?? new Date().getFullYear(),
-      contextParts.some((p) => p.includes('[Tiebreaker Rules]'))
+      season,
+      contextParts.some((p) => p.includes('[Tiebreaker Rules]')),
+      phaseInfo
     );
     const contextBlock = contextParts.join('\n\n');
     const promptHash = createHash('sha256').update(systemPrompt).digest('hex').slice(0, 12);

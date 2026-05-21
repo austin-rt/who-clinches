@@ -913,12 +913,12 @@ export default function AdminPage() {
         }
       >
         <p className="mb-3 text-xs text-base-content">
-          Cron: March 1 at noon UTC. Tiebreaker rules are manual — run{' '}
+          Cron: 1st of each month (staggered 4-11 UTC). Tiebreaker rules are manual — run{' '}
           <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code>.
         </p>
         {ragSources ? (
           <div className="space-y-2">
-            {(['venues', 'conferences', 'teams', 'coaches'] as const).map((source) => {
+            {Object.keys(ragSources).map((source) => {
               const info = ragSources[source];
               return (
                 <div

@@ -10,6 +10,7 @@ import {
 } from '@/lib/cfb/constants';
 import { CFBD_SEASON_TYPE } from '@/lib/constants';
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
+import type { SeasonPhase } from '@/lib/cfb/helpers/season-phase';
 import type { TeamIndexEntry } from '@/lib/cfb/helpers/fuzzy-team-matcher';
 import type { StandingEntry } from '@/lib/api-types';
 import type { GameLean, TeamLean } from '@/lib/types';
@@ -28,6 +29,40 @@ export const resolveConferenceSlug = (
     return CFBD_NAME_TO_ROUTE_SLUG[abbr] ?? null;
   }
   return CFBD_NAME_TO_ROUTE_SLUG[cfbdConferenceName] ?? null;
+};
+
+const CONFERENCE_ALIASES: Record<string, CFBConferenceAbbreviation> = {
+  'big 10': 'b1g',
+  'big ten': 'b1g',
+  'big 12': 'big12',
+  'big twelve': 'big12',
+  'pac 12': 'pac',
+  'pac twelve': 'pac',
+  'sun belt': 'sunbelt',
+  'mountain west': 'mwc',
+  'conference usa': 'cusa',
+  'c-usa': 'cusa',
+  'american athletic': 'aac',
+};
+
+export const resolveConferenceFromMessage = (message: string): CFBConferenceAbbreviation | null => {
+  const msgLower = message.toLowerCase();
+
+  for (const [alias, conf] of Object.entries(CONFERENCE_ALIASES)) {
+    if (msgLower.includes(alias)) return conf;
+  }
+
+  for (const [abbr, meta] of Object.entries(CFB_CONFERENCE_METADATA)) {
+    if (
+      msgLower.includes(abbr) ||
+      msgLower.includes(meta.name.toLowerCase()) ||
+      msgLower.includes(meta.cfbdId.toLowerCase())
+    ) {
+      return abbr as CFBConferenceAbbreviation;
+    }
+  }
+
+  return null;
 };
 
 interface ConferenceData {
@@ -148,10 +183,18 @@ export const loadTeamScenarios = async (
   };
 };
 
+interface SeasonPhaseInfo {
+  phase: SeasonPhase;
+  seasonStartMs: number;
+  seasonEndMs: number;
+  currentWeek: number | null;
+}
+
 export const buildSystemPrompt = (
   confName: string,
   season: number,
-  hasRagContext: boolean
+  hasRagContext: boolean,
+  phaseInfo: SeasonPhaseInfo
 ): string => {
   const dataGuidance = hasRagContext
     ? `You have access to official tiebreaker rule documents, historical SP+ and FPI ratings (2020-2024), ` +
@@ -161,12 +204,43 @@ export const buildSystemPrompt = (
     : `The standings in the context data are computed by the app's simulation engine using the official ${confName} tiebreaker rules — they are authoritative. ` +
       `If asked about tiebreaker rules, explain that the simulation handles them automatically.`;
 
+  const today = new Date().toLocaleDateString('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  });
+
+  let seasonStatus: string;
+  if (phaseInfo.phase === 'preseason') {
+    const startDate =
+      phaseInfo.seasonStartMs > 0
+        ? new Date(phaseInfo.seasonStartMs).toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+          })
+        : 'late August';
+    seasonStatus =
+      `SEASON PHASE: Preseason. The ${season} season has NOT started yet. ` +
+      `The regular season begins around ${startDate}. No games have been played — all teams are 0-0. ` +
+      `Use preseason analytics (SP+ ratings, recruiting rankings, returning production, preseason polls) for analysis, not standings.`;
+  } else if (phaseInfo.phase === 'postseason') {
+    seasonStatus =
+      `SEASON PHASE: Postseason. The ${season} regular season is over. ` +
+      `Conference championships have been decided. Standings and results are final.`;
+  } else {
+    const weekStr = phaseInfo.currentWeek ? `, Week ${phaseInfo.currentWeek}` : '';
+    seasonStatus =
+      `SEASON PHASE: Regular season in progress${weekStr}. ` +
+      `Games are being played. Use current standings and results for analysis.`;
+  }
+
   return (
     `You are the analyst built into whoclinches.com, a college football conference championship simulator. ` +
     `The app computes tiebreaker standings and championship scenarios for every FBS conference. ` +
     `The user is currently viewing the ${confName} page, so your context data is for that conference. ` +
     `But you can answer questions about ANY conference or team using the cfbd_lookup tool — don't limit yourself to ${confName}. ` +
-    `The app is currently tracking the ${season} season. Today is ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}. ` +
+    `The app is currently tracking the ${season} season. Today is ${today}. ` +
+    `${seasonStatus}\n` +
     `Use the appropriate year for any data lookups based on what the user is asking about.\n\n` +
     `The context data below is provided by the app — the user did not supply it, and they cannot see it. ` +
     `You have: current standings, completed game scores, the remaining schedule, and (when available) historical analytics.\n\n` +
@@ -285,8 +359,10 @@ export const formatGamesContext = (games: GameLean[], teams: TeamLean[]): string
       return `Week ${g.week}: ${away} at ${home}`;
     });
     parts.push(`Remaining conference games (${remaining.length}):\n` + remainingLines.join('\n'));
-  } else {
+  } else if (completed.length > 0) {
     parts.push('All conference games have been played.');
+  } else {
+    parts.push('No conference games have been scheduled yet for this season.');
   }
 
   return parts.join('\n\n');
