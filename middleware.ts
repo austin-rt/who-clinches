@@ -54,7 +54,7 @@ export const middleware = async (request: NextRequest) => {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith('/api/webhooks/')) {
+  if (pathname.startsWith('/api/webhooks/') || pathname.startsWith('/api/cron/')) {
     return NextResponse.next();
   }
 

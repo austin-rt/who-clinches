@@ -61,6 +61,7 @@ interface KnowledgeStatus {
     month: { input: number; output: number; messages: number };
   };
   lastEmbeddingError: { timestamp: string; message: string } | null;
+  cfbdAiUsage: Array<{ endpoint: string; calls: number }>;
 }
 
 interface CfbdStatus {
@@ -167,6 +168,11 @@ export default function AdminPage() {
   const [revokeIdentifier, setRevokeIdentifier] = useState('');
   const [creditActionLoading, setCreditActionLoading] = useState(false);
   const [feedbackItems, setFeedbackItems] = useState<FeedbackRow[]>([]);
+  const [ragSources, setRagSources] = useState<Record<
+    string,
+    { chunks: number; lastUpdated: string | null }
+  > | null>(null);
+  const [ragUpdating, setRagUpdating] = useState<Record<string, boolean>>({});
 
   const showMessage = useCallback((msg: string) => {
     setActionMessage(msg);
@@ -290,6 +296,38 @@ export default function AdminPage() {
     }
   }, []);
 
+  const fetchRagSources = useCallback(async () => {
+    try {
+      const res = await fetch('/api/admin/rag-update');
+      const data = await res.json();
+      if (data.sources) setRagSources(data.sources);
+    } catch {
+      /* rag sources not available */
+    }
+  }, []);
+
+  const updateRagSource = async (source: string) => {
+    setRagUpdating((prev) => ({ ...prev, [source]: true }));
+    try {
+      const res = await fetch('/api/admin/rag-update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ source }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        showMessage(data.error ?? 'Update failed');
+        return;
+      }
+      showMessage(`${source}: ${data.chunks} chunks updated`);
+      void fetchRagSources();
+    } catch {
+      showMessage(`${source}: update failed`);
+    } finally {
+      setRagUpdating((prev) => ({ ...prev, [source]: false }));
+    }
+  };
+
   const fetchFeedback = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/feedback');
@@ -397,6 +435,7 @@ export default function AdminPage() {
         fetchCreditStats(),
         fetchRedisKeys(),
         fetchFeedback(),
+        fetchRagSources(),
       ]);
       setLoading(false);
     };
@@ -408,6 +447,7 @@ export default function AdminPage() {
     fetchCreditStats,
     fetchRedisKeys,
     fetchFeedback,
+    fetchRagSources,
   ]);
 
   const updateConfig = async (patch: Partial<RuntimeConfig>) => {
@@ -737,6 +777,20 @@ export default function AdminPage() {
                 Embedding error: {knowledgeStatus.lastEmbeddingError.message}
               </div>
             )}
+            {knowledgeStatus.cfbdAiUsage?.length > 0 && (
+              <>
+                <Divider className="my-3" />
+                <h3 className="mb-2 font-medium">CFBD AI Endpoint Usage</h3>
+                <div className="space-y-1">
+                  {knowledgeStatus.cfbdAiUsage.map((u) => (
+                    <div key={u.endpoint} className="flex items-center justify-between text-xs">
+                      <span className="font-mono">{u.endpoint}</span>
+                      <span className="font-semibold">{u.calls}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
             <p className="mt-3 text-xs text-base-content">
               Run <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code> to
               re-ingest
@@ -845,6 +899,55 @@ export default function AdminPage() {
               </div>
             </div>
           </>
+        )}
+      </Card>
+
+      <Card
+        title="CFBD Static Data"
+        action={
+          <Button.Stroked size="xs" color="primary" onClick={fetchRagSources}>
+            Refresh
+          </Button.Stroked>
+        }
+      >
+        <p className="mb-3 text-xs text-base-content">
+          Cron: March 1 at noon UTC. Tiebreaker rules are manual — run{' '}
+          <code className="rounded bg-base-300 px-1">npm run ingest:knowledge</code>.
+        </p>
+        {ragSources ? (
+          <div className="space-y-2">
+            {(['venues', 'conferences', 'teams', 'coaches'] as const).map((source) => {
+              const info = ragSources[source];
+              return (
+                <div
+                  key={source}
+                  className="flex items-center justify-between rounded-lg border border-stroke bg-base-100 px-4 py-3"
+                >
+                  <div>
+                    <span className="font-medium capitalize">{source}</span>
+                    <span className="ml-2 text-xs text-base-content">
+                      {info?.chunks ?? 0} chunks
+                    </span>
+                    <p className="text-base-content/50 text-xs">
+                      {info?.lastUpdated
+                        ? `Updated ${timeAgo(info.lastUpdated)}`
+                        : 'Never ingested'}
+                    </p>
+                  </div>
+                  <Button.Stroked
+                    size="xs"
+                    color="primary"
+                    onClick={() => updateRagSource(source)}
+                    disabled={!!ragUpdating[source]}
+                  >
+                    {ragUpdating[source] ? 'Updating…' : 'Update'}
+                  </Button.Stroked>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <p className="text-sm text-base-content">Loading…</p>
         )}
       </Card>
 

@@ -51,6 +51,21 @@ export const embedQuery = async (text: string): Promise<number[]> => {
   return embedding;
 };
 
+export const embedSmallBatch = async (texts: string[]): Promise<number[][]> => {
+  const client = await getClient();
+  const response = await client.embed({
+    input: texts,
+    model: MODEL,
+    inputType: 'document',
+    outputDimension: OUTPUT_DIMENSION,
+  });
+  const embeddings = response.data?.map((d) => d.embedding).filter(Boolean) as number[][];
+  if (!embeddings || embeddings.length !== texts.length) {
+    throw new Error(`Expected ${texts.length} embeddings, got ${embeddings?.length ?? 0}`);
+  }
+  return embeddings;
+};
+
 export const embedDocuments = async (texts: string[]): Promise<number[][]> => {
   const results: number[][] = [];
 

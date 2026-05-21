@@ -1,8 +1,14 @@
 import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
-import { fetch as redisFetch, persistRedisKey } from '@/lib/redis';
+import { fetch as redisFetch, persistRedisKey, redis } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
 import { ALLOWED_PATHS, NEVER_CACHE_PATHS } from './cfbd-api-catalog';
 import { createHash } from 'crypto';
+
+const USAGE_KEY = 'cfbd:ai-usage';
+
+const trackUsage = (path: string) => {
+  if (redis) void redis.zincrby(USAGE_KEY, 1, path).catch(() => {});
+};
 
 const CFBD_BASE_URL = 'https://apinext.collegefootballdata.com';
 const MAX_RESPONSE_CHARS = 8000;
@@ -98,6 +104,7 @@ export const executeCfbdLookup = async (
       }
     }
 
+    trackUsage(path);
     return truncateResponse(data);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

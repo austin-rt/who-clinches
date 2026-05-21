@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { isAdminAllowed } from '@/lib/admin/is-admin-allowed';
 import { db } from '@/lib/db/client';
+import { redis } from '@/lib/redis';
 import { getLastEmbeddingError } from '@/lib/rag/retrieval';
 
 export const runtime = 'nodejs';
@@ -38,6 +39,18 @@ export const GET = async () => {
     totalChunks += row._count;
   }
 
+  let cfbdAiUsage: Array<{ endpoint: string; calls: number }> = [];
+  if (redis) {
+    try {
+      const raw = await redis.zrange('cfbd:ai-usage', 0, 19, { rev: true, withScores: true });
+      for (let i = 0; i < raw.length; i += 2) {
+        cfbdAiUsage.push({ endpoint: String(raw[i]), calls: Number(raw[i + 1]) });
+      }
+    } catch {
+      cfbdAiUsage = [];
+    }
+  }
+
   return NextResponse.json({
     totalChunks,
     lastBatchId: latestChunk?.batchId ?? null,
@@ -55,5 +68,6 @@ export const GET = async () => {
       },
     },
     lastEmbeddingError: getLastEmbeddingError(),
+    cfbdAiUsage,
   });
 };

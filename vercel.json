@@ -1,3 +1,13 @@
 {
-  "buildCommand": "prisma migrate deploy && prisma generate && next build"
+  "buildCommand": "prisma migrate deploy && prisma generate && next build",
+  "crons": [
+    {
+      "path": "/api/cron/rag-refresh",
+      "schedule": "0 12 1 3 *"
+    },
+    {
+      "path": "/api/cron/rag-refresh?source=coaches",
+      "schedule": "0 12 1 * *"
+    }
+  ]
 }
