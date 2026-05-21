@@ -1,6 +1,7 @@
 import { NextRequest, after } from 'next/server';
 import { db } from '@/lib/db/client';
 import { sendEmail } from '@/lib/email';
+import { notificationHtml } from '@/lib/email-templates';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -16,18 +17,32 @@ export const POST = async (request: NextRequest) => {
       return Response.json({ error: 'Message too long' }, { status: 400 });
     }
 
+    const vercelEnv = process.env.VERCEL_ENV ?? null;
+    const nodeEnv = process.env.NODE_ENV ?? null;
+
     const feedback = await db.feedback.create({
       data: {
         sessionId: sessionId || null,
         message: content,
         conf: conf || null,
+        vercelEnv,
+        nodeEnv,
       },
     });
 
     after(() =>
       sendEmail({
         subject: `[Feedback] ${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 60)}`,
-        text: `${content}\n\nConference: ${conf || 'none'}\nSession: ${sessionId || 'none'}\nID: ${feedback.id}`,
+        html: notificationHtml(
+          'New Feedback',
+          [
+            ...(conf ? [{ label: 'Conference', value: conf.toUpperCase() }] : []),
+            { label: 'Session', value: sessionId || 'none' },
+            { label: 'Env', value: `${vercelEnv ?? 'local'} / ${nodeEnv ?? '?'}` },
+            { label: 'ID', value: feedback.id },
+          ],
+          content
+        ),
       }).catch(() => {})
     );
 

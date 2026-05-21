@@ -84,6 +84,8 @@ interface FeedbackRow {
   sessionId: string | null;
   message: string;
   conf: string | null;
+  vercelEnv: string | null;
+  nodeEnv: string | null;
   resolved: boolean;
   createdAt: string;
 }
@@ -973,6 +975,9 @@ export default function AdminPage() {
                   <div className="text-base-content/50 flex items-center gap-2 text-[10px]">
                     <span>{shortDateTime(fb.createdAt)}</span>
                     {fb.conf && <span className="uppercase">{fb.conf}</span>}
+                    {fb.vercelEnv && (
+                      <span className="rounded bg-base-200 px-1">{fb.vercelEnv}</span>
+                    )}
                     {fb.sessionId && (
                       <span className="truncate font-mono" title={fb.sessionId}>
                         {fb.sessionId.slice(0, 8)}

@@ -38,6 +38,28 @@ const layout = (content: string) => `
 </body>
 </html>`;
 
+interface NotificationRow {
+  label: string;
+  value: string;
+}
+
+export const notificationHtml = (title: string, rows: NotificationRow[], body?: string) =>
+  layout(`
+    <h1 style="margin:0 0 16px;font-size:18px;font-weight:700;color:${BRAND_COLOR};">${title}</h1>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      ${rows
+        .map(
+          (r) =>
+            `<tr>
+              <td style="padding:6px 12px 6px 0;color:#71717a;font-size:13px;white-space:nowrap;vertical-align:top;">${r.label}</td>
+              <td style="padding:6px 0;color:#18181b;font-size:13px;word-break:break-word;">${r.value}</td>
+            </tr>`
+        )
+        .join('')}
+    </table>
+    ${body ? `<div style="margin-top:16px;padding:12px;background:${BG_COLOR};border-radius:8px;color:#18181b;font-size:13px;line-height:1.6;white-space:pre-wrap;">${body}</div>` : ''}
+  `);
+
 export const magicLinkHtml = (verifyUrl: string) =>
   layout(`
     <h1 style="margin:0 0 8px;font-size:22px;font-weight:700;color:${BRAND_COLOR};">Claim your credits</h1>

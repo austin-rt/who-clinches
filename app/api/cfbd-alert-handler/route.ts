@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { logError } from '@/lib/errorLogger';
 import { sendEmail } from '@/lib/email';
+import { notificationHtml } from '@/lib/email-templates';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -12,14 +13,13 @@ export const POST = async (request: NextRequest) => {
 
     await sendEmail({
       subject: `[CFBD API] Low Remaining Calls: ${remainingCalls}`,
-      html: `
-        <h2>CFBD API Alert</h2>
-        <p><strong>Patron Level:</strong> ${patronLevel}</p>
-        <p><strong>Remaining Calls:</strong> ${remainingCalls}</p>
-        <p><strong>Threshold:</strong> ${threshold}</p>
-        <p>${message}</p>
-        <p><small>Timestamp: ${timestamp || new Date().toISOString()}</small></p>
-      `,
+      html: notificationHtml('CFBD API Alert', [
+        { label: 'Remaining Calls', value: String(remainingCalls) },
+        { label: 'Patron Level', value: String(patronLevel) },
+        { label: 'Threshold', value: String(threshold) },
+        { label: 'Message', value: String(message) },
+        { label: 'Timestamp', value: String(timestamp || new Date().toISOString()) },
+      ]),
     });
 
     return NextResponse.json({ success: true });

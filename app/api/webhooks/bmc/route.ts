@@ -3,6 +3,7 @@ import { createHmac } from 'crypto';
 import { db } from '@/lib/db/client';
 import { logError } from '@/lib/errorLogger';
 import { sendEmail } from '@/lib/email';
+import { notificationHtml } from '@/lib/email-templates';
 
 const CREDITS_PER_DOLLAR = 100;
 
@@ -79,7 +80,13 @@ const handleMoneyIn = async (payload: Record<string, unknown>): Promise<Response
 
   void sendEmail({
     subject: `[Donation] $${amount} from ${email} (${credits} credits)`,
-    text: `Email: ${email}\nAmount: $${amount}\nCredits: ${credits}\nLinked: ${chatUser ? 'yes' : 'pending verification'}\nBMC ID: ${bmcId}`,
+    html: notificationHtml('New Donation', [
+      { label: 'Email', value: email },
+      { label: 'Amount', value: `$${amount}` },
+      { label: 'Credits', value: String(credits) },
+      { label: 'Linked', value: chatUser ? 'yes' : 'pending verification' },
+      { label: 'BMC ID', value: bmcId },
+    ]),
   }).catch(() => {});
 
   return Response.json({ ok: true, credits, matched: !!chatUser });
@@ -108,7 +115,11 @@ const handleRefund = async (payload: Record<string, unknown>): Promise<Response>
 
   void sendEmail({
     subject: `[Refund] ${donation.credits} credits revoked (${donation.email})`,
-    text: `Email: ${donation.email}\nCredits revoked: ${donation.credits}\nBMC ID: ${bmcId}`,
+    html: notificationHtml('Refund Processed', [
+      { label: 'Email', value: donation.email },
+      { label: 'Credits Revoked', value: String(donation.credits) },
+      { label: 'BMC ID', value: bmcId },
+    ]),
   }).catch(() => {});
 
   return Response.json({ ok: true, refunded: true, credits: donation.credits });

@@ -399,10 +399,6 @@ const ChatDrawer = ({
                   )
                 );
               }
-            } else if (data.type === 'replace') {
-              setMessages((prev) =>
-                prev.map((m) => (m.id === assistantId ? { ...m, content: data.text } : m))
-              );
             } else if (data.type === 'break') {
               needsNewBubble = true;
               breakShownAt = Date.now();

@@ -93,6 +93,8 @@ model Feedback {
   sessionId String?
   message   String
   conf      String?
+  vercelEnv String?
+  nodeEnv   String?
   resolved  Boolean  @default(false)
   createdAt DateTime @default(now())
 

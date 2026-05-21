@@ -507,7 +507,10 @@ export const POST = async (request: NextRequest) => {
         let inputTokens = 0;
         let outputTokens = 0;
 
-        const streamResponse = async (msgs: Anthropic.MessageParam[]) => {
+        const streamResponse = async (
+          msgs: Anthropic.MessageParam[],
+          streamImmediately = false
+        ) => {
           const stream = anthropic.messages.stream({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 8192,
@@ -517,6 +520,7 @@ export const POST = async (request: NextRequest) => {
           });
 
           let toolUseBlock: { id: string; name: string; input: string } | null = null;
+          let bufferedText = '';
 
           for await (const event of stream) {
             if (event.type === 'message_start') {
@@ -539,9 +543,19 @@ export const POST = async (request: NextRequest) => {
               if (toolUseBlock) toolUseBlock.input += event.delta.partial_json;
             } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
               fullResponse += event.delta.text;
-              const chunk = `data: ${JSON.stringify({ type: 'delta', text: event.delta.text })}\n\n`;
-              controller.enqueue(encoder.encode(chunk));
+              if (streamImmediately) {
+                const chunk = `data: ${JSON.stringify({ type: 'delta', text: event.delta.text })}\n\n`;
+                controller.enqueue(encoder.encode(chunk));
+              } else {
+                bufferedText += event.delta.text;
+              }
             }
+          }
+
+          if (!streamImmediately && !toolUseBlock && bufferedText) {
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: bufferedText })}\n\n`)
+            );
           }
 
           if (toolUseBlock) {
@@ -549,15 +563,9 @@ export const POST = async (request: NextRequest) => {
             const picked = Math.floor(Math.random() * eligible.length);
             lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
             const quip = eligible[picked];
-            if (fullResponse.trim()) {
-              controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ type: 'replace', text: quip })}\n\n`)
-              );
-            } else {
-              controller.enqueue(
-                encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
-              );
-            }
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
+            );
             fullResponse = quip;
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
             const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
@@ -607,7 +615,7 @@ export const POST = async (request: NextRequest) => {
             ];
 
             await minDots;
-            await streamResponse(followupMsgs);
+            await streamResponse(followupMsgs, true);
           }
         };
 

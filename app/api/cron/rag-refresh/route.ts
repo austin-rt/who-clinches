@@ -5,6 +5,7 @@ import { embedSmallBatch } from '@/lib/rag/embedding';
 import { fetchSourceText, SOURCE_CONFIG, type StaticSource } from '@/lib/cfb/cfbd-static-fetcher';
 import { logError } from '@/lib/errorLogger';
 import { sendEmail } from '@/lib/email';
+import { notificationHtml } from '@/lib/email-templates';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -76,11 +77,13 @@ export const GET = async (request: NextRequest) => {
     }
   }
 
-  const summary = targets.map((s) => `${s}: ${results[s]} chunks`).join(', ');
-
   void sendEmail({
     subject: `[Cron] RAG refresh ${errors.length ? 'partial' : 'complete'}`,
-    text: `${summary}${errors.length ? `\n\nErrors:\n${errors.join('\n')}` : ''}`,
+    html: notificationHtml(
+      `RAG Refresh ${errors.length ? '(Partial)' : 'Complete'}`,
+      targets.map((s) => ({ label: s, value: String(results[s]) + ' chunks' })),
+      errors.length ? `Errors:\n${errors.join('\n')}` : undefined
+    ),
   }).catch(() => {});
 
   return NextResponse.json({ ok: true, results });
