@@ -5,11 +5,7 @@
     { "path": "/api/cron/rag-refresh?source=conferences", "schedule": "0 11 1 * *" },
     { "path": "/api/cron/rag-refresh?source=teams", "schedule": "0 12 1 * *" },
     { "path": "/api/cron/rag-refresh?source=coaches", "schedule": "0 13 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=rankings", "schedule": "0 14 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=sp-ratings", "schedule": "0 15 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=srs-ratings", "schedule": "0 16 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=talent", "schedule": "0 17 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=recruiting", "schedule": "0 18 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=records", "schedule": "0 19 1 * *" }
+    { "path": "/api/cron/rag-refresh?source=talent", "schedule": "0 14 1 * *" },
+    { "path": "/api/cron/rag-refresh?source=recruiting", "schedule": "0 15 1 * *" }
   ]
 }

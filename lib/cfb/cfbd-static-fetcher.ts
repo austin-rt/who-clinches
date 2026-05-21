@@ -81,58 +81,6 @@ const currentSeason = () => {
   return now.getMonth() >= 7 ? now.getFullYear() : now.getFullYear() - 1;
 };
 
-export const fetchRankingsText = async (): Promise<string> => {
-  const year = String(currentSeason());
-  const rankings = (await cfbdGet('/rankings', { year })) as R[];
-  const lines = rankings
-    .sort((a, b) => (b.week as number) - (a.week as number))
-    .slice(0, 1)
-    .flatMap((week) => {
-      const polls = week.polls as R[] | undefined;
-      if (!polls) return [];
-      return polls.flatMap((poll) => {
-        const header = `### ${poll.poll} (Week ${week.week}, ${week.season})`;
-        const ranks = (poll.ranks as R[])
-          .slice(0, 25)
-          .map(
-            (r) =>
-              `${r.rank}. ${r.school} (${r.conference}) — ${r.wins}-${r.losses}${r.firstPlaceVotes ? `, ${r.firstPlaceVotes} 1st` : ''}`
-          );
-        return [header, ...ranks, ''];
-      });
-    });
-  return `College Football Rankings (${year} Season)\n\n${lines.join('\n')}\n`;
-};
-
-export const fetchSpRatingsText = async (): Promise<string> => {
-  const year = String(currentSeason());
-  const ratings = (await cfbdGet('/ratings/sp', { year })) as R[];
-  const lines = ratings
-    .sort((a, b) => (a.ranking as number) - (b.ranking as number))
-    .slice(0, 50)
-    .map(
-      (r) =>
-        `${r.ranking}. ${r.team} (${r.conference}) — Overall: ${(r.rating as number).toFixed(1)}` +
-        `, Off: ${((r.offense as R)?.rating as number)?.toFixed(1) ?? 'N/A'}` +
-        `, Def: ${((r.defense as R)?.rating as number)?.toFixed(1) ?? 'N/A'}`
-    );
-  return `SP+ Ratings — Top 50 (${year} Season)\n\n${lines.join('\n')}\n`;
-};
-
-export const fetchSrsRatingsText = async (): Promise<string> => {
-  const year = String(currentSeason());
-  const ratings = (await cfbdGet('/ratings/srs', { year })) as R[];
-  const lines = ratings
-    .sort((a, b) => (b.rating as number) - (a.rating as number))
-    .slice(0, 50)
-    .map(
-      (r) =>
-        `${r.team} (${r.conference}) — SRS: ${(r.rating as number).toFixed(2)}` +
-        `, Ranking: ${r.ranking ?? 'N/A'}`
-    );
-  return `Simple Rating System (SRS) — Top 50 (${year} Season)\n\n${lines.join('\n')}\n`;
-};
-
 export const fetchTalentText = async (): Promise<string> => {
   const year = String(currentSeason());
   const talent = (await cfbdGet('/talent', { year })) as R[];
@@ -155,52 +103,15 @@ export const fetchRecruitingText = async (): Promise<string> => {
   return `Team Recruiting Rankings — Top 50 (${year} Class)\n\n${lines.join('\n')}\n`;
 };
 
-export const fetchRecordsText = async (): Promise<string> => {
-  const year = String(currentSeason());
-  const records = (await cfbdGet('/records', { year })) as R[];
-  const lines = records
-    .sort((a, b) => {
-      const aTotal = a.total as R;
-      const bTotal = b.total as R;
-      return (
-        (bTotal.wins as number) - (aTotal.wins as number) ||
-        (aTotal.losses as number) - (bTotal.losses as number)
-      );
-    })
-    .map((r) => {
-      const total = r.total as R;
-      const conf = r.conferenceGames as R;
-      return (
-        `${r.team} (${r.conference}) — ${total.wins}-${total.losses}` +
-        (conf ? ` (Conf: ${conf.wins}-${conf.losses})` : '')
-      );
-    });
-  return `Team Records (${year} Season)\n\n${lines.join('\n')}\n`;
-};
-
-export type StaticSource =
-  | 'venues'
-  | 'conferences'
-  | 'teams'
-  | 'coaches'
-  | 'rankings'
-  | 'sp-ratings'
-  | 'srs-ratings'
-  | 'talent'
-  | 'recruiting'
-  | 'records';
+export type StaticSource = 'venues' | 'conferences' | 'teams' | 'coaches' | 'talent' | 'recruiting';
 
 export const SOURCE_CONFIG: Record<StaticSource, { sourceFile: string; label: string }> = {
   venues: { sourceFile: 'venues.txt', label: 'Venues' },
   conferences: { sourceFile: 'conferences.txt', label: 'Conferences' },
   teams: { sourceFile: 'teams.txt', label: 'Teams' },
   coaches: { sourceFile: 'coaches.txt', label: 'Coaches' },
-  rankings: { sourceFile: 'rankings.txt', label: 'Rankings' },
-  'sp-ratings': { sourceFile: 'sp-ratings.txt', label: 'SP+ Ratings' },
-  'srs-ratings': { sourceFile: 'srs-ratings.txt', label: 'SRS Ratings' },
   talent: { sourceFile: 'talent.txt', label: 'Talent Composite' },
   recruiting: { sourceFile: 'recruiting.txt', label: 'Recruiting Rankings' },
-  records: { sourceFile: 'records.txt', label: 'Team Records' },
 };
 
 const FETCHERS: Record<StaticSource, () => Promise<string>> = {
@@ -208,12 +119,8 @@ const FETCHERS: Record<StaticSource, () => Promise<string>> = {
   conferences: fetchConferencesText,
   teams: fetchTeamsText,
   coaches: fetchCoachesText,
-  rankings: fetchRankingsText,
-  'sp-ratings': fetchSpRatingsText,
-  'srs-ratings': fetchSrsRatingsText,
   talent: fetchTalentText,
   recruiting: fetchRecruitingText,
-  records: fetchRecordsText,
 };
 
 export const fetchSourceText = (source: StaticSource): Promise<string> => FETCHERS[source]();
