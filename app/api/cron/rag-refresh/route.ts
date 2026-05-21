@@ -12,7 +12,18 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
-const SOURCES: StaticSource[] = ['venues', 'conferences', 'teams', 'coaches'];
+const SOURCES: StaticSource[] = [
+  'venues',
+  'conferences',
+  'teams',
+  'coaches',
+  'rankings',
+  'sp-ratings',
+  'srs-ratings',
+  'talent',
+  'recruiting',
+  'records',
+];
 
 const hashText = (text: string) => createHash('sha256').update(text).digest('hex');
 
