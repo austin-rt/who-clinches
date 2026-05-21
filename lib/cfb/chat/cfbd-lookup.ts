@@ -1,4 +1,4 @@
-import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
+import { getActiveApiKey, getCalendarFromCfbd } from '@/lib/cfb/cfbd-rest-client';
 import { fetch as redisFetch, persistRedisKey, redis } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
 import { BLOCKED_PATHS } from './cfbd-api-catalog';
@@ -15,11 +15,15 @@ const MAX_RESPONSE_CHARS = 8000;
 const MAX_ARRAY_ITEMS = 50;
 const CACHE_PREFIX = 'cfbd:chat';
 
-const isHistorical = (params: Record<string, string>): boolean => {
+const isHistorical = async (params: Record<string, string>): Promise<boolean> => {
   const year = params.year || params.season;
   if (!year) return false;
   const requested = parseInt(year, 10);
-  return !isNaN(requested) && requested < new Date().getFullYear();
+  if (isNaN(requested)) return false;
+  const calendar = await getCalendarFromCfbd(requested);
+  if (calendar.length === 0) return requested < new Date().getFullYear();
+  const seasonEnd = new Date(calendar[calendar.length - 1].endDate).getTime();
+  return Date.now() > seasonEnd;
 };
 
 const truncateResponse = (data: unknown): string => {
@@ -68,7 +72,7 @@ export const executeCfbdLookup = async (
     .slice(0, 12);
   const cacheKey = `${CACHE_PREFIX}:${path.slice(1).replace(/\//g, ':')}:${paramHash}`;
 
-  const historical = isHistorical(params);
+  const historical = await isHistorical(params);
 
   const fetchFromCfbd = async () => {
     const response = await fetch(url.toString(), {
