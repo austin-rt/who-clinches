@@ -1,7 +1,5 @@
 export const BLOCKED_PATHS = new Set(['/info']);
 
-export const NEVER_CACHE_PATHS = new Set(['/scoreboard', '/live/plays', '/lines']);
-
 export const CFBD_API_CATALOG = `CFBD API — you may call ANY GET endpoint via cfbd_lookup.
 Full docs: https://apinext.collegefootballdata.com/swagger/v1/swagger.json
 
