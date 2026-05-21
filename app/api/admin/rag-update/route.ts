@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createHash } from 'crypto';
 import { isAdminAllowed } from '@/lib/admin/is-admin-allowed';
 import { db } from '@/lib/db/client';
+import { redis } from '@/lib/redis';
 import { chunkDocument, type FileConfig } from '@/lib/rag/chunker';
 import { embedSmallBatch } from '@/lib/rag/embedding';
 import { fetchSourceText, SOURCE_CONFIG, type StaticSource } from '@/lib/cfb/cfbd-static-fetcher';
@@ -9,11 +11,22 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
+const HASH_PREFIX = 'rag:hash';
 const VALID_SOURCES = Object.keys(SOURCE_CONFIG) as StaticSource[];
 
-const updateSource = async (source: StaticSource) => {
+const updateSource = async (source: StaticSource, force = false) => {
   const { sourceFile } = SOURCE_CONFIG[source];
   const text = await fetchSourceText(source);
+
+  const newHash = createHash('sha256').update(text).digest('hex');
+  const hashKey = `${HASH_PREFIX}:${source}`;
+
+  if (!force && redis) {
+    const storedHash = await redis.get<string>(hashKey);
+    if (storedHash === newHash) {
+      return { source, chunks: 0, skipped: true };
+    }
+  }
 
   const config: FileConfig = {
     path: sourceFile,
@@ -52,7 +65,9 @@ const updateSource = async (source: StaticSource) => {
     }
   });
 
-  return { source, chunks: chunks.length, batchId };
+  if (redis) await redis.set(hashKey, newHash);
+
+  return { source, chunks: chunks.length, skipped: false };
 };
 
 export const GET = async () => {
@@ -94,8 +109,10 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
+  const force = body.force === true;
+
   try {
-    const result = await updateSource(source as StaticSource);
+    const result = await updateSource(source as StaticSource, force);
     return NextResponse.json({ ok: true, ...result });
   } catch (err) {
     return NextResponse.json({ error: (err as Error).message }, { status: 500 });
