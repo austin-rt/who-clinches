@@ -1,7 +1,7 @@
 import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
 import { fetch as redisFetch, persistRedisKey, redis } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
-import { ALLOWED_PATHS, NEVER_CACHE_PATHS } from './cfbd-api-catalog';
+import { BLOCKED_PATHS, NEVER_CACHE_PATHS } from './cfbd-api-catalog';
 import { createHash } from 'crypto';
 
 const USAGE_KEY = 'cfbd:ai-usage';
@@ -51,8 +51,8 @@ export const executeCfbdLookup = async (
 ): Promise<string> => {
   const path = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
 
-  if (!ALLOWED_PATHS.has(path)) {
-    return `Unknown endpoint "${path}". Use one of the endpoints from your API reference.`;
+  if (BLOCKED_PATHS.has(path)) {
+    return `Endpoint "${path}" is not available.`;
   }
 
   const url = new URL(`${CFBD_BASE_URL}${path}`);
