@@ -1,0 +1,553 @@
+FBS Teams (2026)
+
+Boston College (BC) — ACC
+  Mascot: Eagles | Location: Chestnut Hill, MA
+  Venue: Alumni Stadium (Chestnut Hill, MA) (44,500)
+
+California (CAL) — ACC
+  Mascot: Golden Bears | Location: Berkeley, CA
+  Venue: California Memorial Stadium (62,467)
+
+Clemson (CLEM) — ACC
+  Mascot: Tigers | Location: Clemson, SC
+  Venue: Memorial Stadium (Clemson, SC) (81,500)
+
+Duke (DUKE) — ACC
+  Mascot: Blue Devils | Location: Durham, NC
+  Venue: Wallace Wade Stadium (40,004)
+
+Florida State (FSU) — ACC
+  Mascot: Seminoles | Location: Tallahassee, FL
+  Venue: Doak Campbell Stadium (67,277)
+
+Georgia Tech (GT) — ACC
+  Mascot: Yellow Jackets | Location: Atlanta, GA
+  Venue: Bobby Dodd Stadium (55,000)
+
+Louisville (LOU) — ACC
+  Mascot: Cardinals | Location: Louisville, KY
+  Venue: L&N Federal Credit Union Stadium (60,000)
+
+Miami (MIA) — ACC
+  Mascot: Hurricanes | Location: Miami Gardens, FL
+  Venue: Hard Rock Stadium (64,767)
+
+NC State (NCSU) — ACC
+  Mascot: Wolfpack | Location: Raleigh, NC
+  Venue: Carter-Finley Stadium (58,000)
+
+North Carolina (UNC) — ACC
+  Mascot: Tar Heels | Location: Chapel Hill, NC
+  Venue: Kenan Stadium (50,500)
+
+Pittsburgh (PITT) — ACC
+  Mascot: Panthers | Location: Pittsburgh, PA
+  Venue: Acrisure Stadium (68,400)
+
+SMU (SMU) — ACC
+  Mascot: Mustangs | Location: University Park, TX
+  Venue: Gerald J. Ford Stadium (32,000)
+
+Stanford (STAN) — ACC
+  Mascot: Cardinal | Location: Stanford, CA
+  Venue: Stanford Stadium (50,424)
+
+Syracuse (SYR) — ACC
+  Mascot: Orange | Location: Syracuse, NY
+  Venue: JMA Wireless Dome (49,057)
+
+Virginia (UVA) — ACC
+  Mascot: Cavaliers | Location: Charlottesville, VA
+  Venue: Scott Stadium (61,500)
+
+Virginia Tech (VT) — ACC
+  Mascot: Hokies | Location: Blacksburg, VA
+  Venue: Lane Stadium (65,632)
+
+Wake Forest (WAKE) — ACC
+  Mascot: Demon Deacons | Location: Winston-Salem, NC
+  Venue: Allegacy Federal Credit Union Stadium (31,500)
+
+Army (ARMY) — American Athletic
+  Mascot: Black Knights | Location: West Point, NY
+  Venue: Michie Stadium (38,000)
+
+Charlotte (CLT) — American Athletic
+  Mascot: 49ers | Location: Charlotte, NC
+  Venue: Jerry Richardson Stadium (15,300)
+
+East Carolina (ECU) — American Athletic
+  Mascot: Pirates | Location: Greenville, NC
+  Venue: Dowdy-Ficklen Stadium (50,000)
+
+Florida Atlantic (FAU) — American Athletic
+  Mascot: Owls | Location: Boca Raton, FL
+  Venue: FAU Stadium (29,419)
+
+Memphis (MEM) — American Athletic
+  Mascot: Tigers | Location: Memphis, TN
+  Venue: Simmons Bank Liberty Stadium (58,325)
+
+Navy (NAVY) — American Athletic
+  Mascot: Midshipmen | Location: Annapolis, MD
+  Venue: Navy-Marine Corps Memorial Stadium (34,000)
+
+North Texas (UNT) — American Athletic
+  Mascot: Mean Green | Location: Denton, TX
+  Venue: DATCU Stadium (30,850)
+
+Rice (RICE) — American Athletic
+  Mascot: Owls | Location: Houston, TX
+  Venue: Rice Stadium (47,000)
+
+South Florida (USF) — American Athletic
+  Mascot: Bulls | Location: Tampa, FL
+  Venue: Raymond James Stadium (65,828)
+
+Temple (TEM) — American Athletic
+  Mascot: Owls | Location: Philadelphia, PA
+  Venue: Lincoln Financial Field (69,879)
+
+Tulane (TULN) — American Athletic
+  Mascot: Green Wave | Location: New Orleans, LA
+  Venue: Yulman Stadium (30,000)
+
+Tulsa (TLSA) — American Athletic
+  Mascot: Golden Hurricane | Location: Tulsa, OK
+  Venue: Chapman Stadium (30,000)
+
+UAB (UAB) — American Athletic
+  Mascot: Blazers | Location: Birmingham, AL
+  Venue: Protective Stadium
+
+UTSA (UTSA) — American Athletic
+  Mascot: Roadrunners | Location: San Antonio, TX
+  Venue: Alamodome (36,582)
+
+Arizona (ARIZ) — Big 12
+  Mascot: Wildcats | Location: Tucson, AZ
+  Venue: Arizona Stadium (50,782)
+
+Arizona State (ASU) — Big 12
+  Mascot: Sun Devils | Location: Tempe, AZ
+  Venue: Mountain America Stadium (65,870)
+
+Baylor (BAY) — Big 12
+  Mascot: Bears | Location: Waco, TX
+  Venue: McLane Stadium (45,140)
+
+BYU (BYU) — Big 12
+  Mascot: Cougars | Location: Provo, UT
+  Venue: LaVell Edwards Stadium (63,470)
+
+Cincinnati (CIN) — Big 12
+  Mascot: Bearcats | Location: Cincinnati, OH
+  Venue: Nippert Stadium (40,000)
+
+Colorado (COLO) — Big 12
+  Mascot: Buffaloes | Location: Boulder, CO
+  Venue: Folsom Field (50,183)
+
+Houston (HOU) — Big 12
+  Mascot: Cougars | Location: Houston, TX
+  Venue: TDECU Stadium (40,000)
+
+Iowa State (ISU) — Big 12
+  Mascot: Cyclones | Location: Ames, IA
+  Venue: Jack Trice Stadium (61,500)
+
+Kansas (KU) — Big 12
+  Mascot: Jayhawks | Location: Lawrence, KS
+  Venue: Memorial Stadium (47,000)
+
+Kansas State (KSU) — Big 12
+  Mascot: Wildcats | Location: Manhattan, KS
+  Venue: Bill Snyder Family Stadium (50,000)
+
+Oklahoma State (OKST) — Big 12
+  Mascot: Cowboys | Location: Stillwater, OK
+  Venue: Boone Pickens Stadium (55,509)
+
+TCU (TCU) — Big 12
+  Mascot: Horned Frogs | Location: Fort Worth, TX
+  Venue: Amon G. Carter Stadium (46,000)
+
+Texas Tech (TTU) — Big 12
+  Mascot: Red Raiders | Location: Lubbock, TX
+  Venue: Jones AT&T Stadium (60,454)
+
+UCF (UCF) — Big 12
+  Mascot: Knights | Location: Orlando, FL
+  Venue: FBC Mortgage Stadium (44,206)
+
+Utah (UTAH) — Big 12
+  Mascot: Utes | Location: Salt Lake City, UT
+  Venue: Rice-Eccles Stadium (51,444)
+
+West Virginia (WVU) — Big 12
+  Mascot: Mountaineers | Location: Morgantown, WV
+  Venue: Milan Puskar Stadium (60,000)
+
+Illinois (ILL) — Big Ten
+  Mascot: Fighting Illini | Location: Champaign, IL
+  Venue: Memorial Stadium (Champaign, IL) (60,670)
+
+Indiana (IU) — Big Ten
+  Mascot: Hoosiers | Location: Bloomington, IN
+  Venue: Memorial Stadium (Bloomington, IN) (52,656)
+
+Iowa (IOWA) — Big Ten
+  Mascot: Hawkeyes | Location: Iowa City, IA
+  Venue: Kinnick Stadium (69,250)
+
+Maryland (MD) — Big Ten
+  Mascot: Terrapins | Location: College Park, MD
+  Venue: SECU Stadium (51,802)
+
+Michigan (MICH) — Big Ten
+  Mascot: Wolverines | Location: Ann Arbor, MI
+  Venue: Michigan Stadium (107,601)
+
+Michigan State (MSU) — Big Ten
+  Mascot: Spartans | Location: East Lansing, MI
+  Venue: Spartan Stadium (75,005)
+
+Minnesota (MINN) — Big Ten
+  Mascot: Golden Gophers | Location: Minneapolis, MN
+  Venue: Huntington Bank Stadium (50,850)
+
+Nebraska (NEB) — Big Ten
+  Mascot: Cornhuskers | Location: Lincoln, NE
+  Venue: Memorial Stadium (Lincoln, NE) (85,458)
+
+Northwestern (NU) — Big Ten
+  Mascot: Wildcats | Location: Evanston, IL
+  Venue: Lanny and Sharon Martin Stadium
+
+Ohio State (OSU) — Big Ten
+  Mascot: Buckeyes | Location: Columbus, OH
+  Venue: Ohio Stadium (102,780)
+
+Oregon (ORE) — Big Ten
+  Mascot: Ducks | Location: Eugene, OR
+  Venue: Autzen Stadium (54,000)
+
+Penn State (PSU) — Big Ten
+  Mascot: Nittany Lions | Location: University Park, PA
+  Venue: Beaver Stadium (106,572)
+
+Purdue (PUR) — Big Ten
+  Mascot: Boilermakers | Location: West Lafayette, IN
+  Venue: Ross-Ade Stadium (57,282)
+
+Rutgers (RUTG) — Big Ten
+  Mascot: Scarlet Knights | Location: Piscataway, NJ
+  Venue: SHI Stadium (52,454)
+
+UCLA (UCLA) — Big Ten
+  Mascot: Bruins | Location: Pasadena, CA
+  Venue: Rose Bowl (88,565)
+
+USC (USC) — Big Ten
+  Mascot: Trojans | Location: Los Angeles, CA
+  Venue: Los Angeles Memorial Coliseum (77,500)
+
+Washington (WASH) — Big Ten
+  Mascot: Huskies | Location: Seattle, WA
+  Venue: Husky Stadium (70,138)
+
+Wisconsin (WIS) — Big Ten
+  Mascot: Badgers | Location: Madison, WI
+  Venue: Camp Randall Stadium (80,321)
+
+Delaware (DEL) — Conference USA
+  Mascot: Blue Hens | Location: Newark, DE
+  Venue: Delaware Stadium (22,000)
+
+Florida International (FIU) — Conference USA
+  Mascot: Panthers | Location: Miami, FL
+  Venue: Pitbull Stadium
+
+Jacksonville State (JXST) — Conference USA
+  Mascot: Gamecocks | Location: Jacksonville, AL
+  Venue: AmFirst Stadium (24,000)
+
+Kennesaw State (KENN) — Conference USA
+  Mascot: Owls | Location: Kennesaw, GA
+  Venue: Fifth Third Stadium (8,318)
+
+Liberty (LIB) — Conference USA
+  Mascot: Flames | Location: Lynchburg, VA
+  Venue: Williams Stadium (VA) (25,000)
+
+Middle Tennessee (MTSU) — Conference USA
+  Mascot: Blue Raiders | Location: Murfreesboro, TN
+  Venue: Johnny "Red" Floyd Stadium (30,788)
+
+Missouri State (MOST) — Conference USA
+  Mascot: Bears | Location: Springfield, MO
+  Venue: Plaster Sports Complex (17,337)
+
+New Mexico State (NMSU) — Conference USA
+  Mascot: Aggies | Location: Las Cruces, NM
+  Venue: Aggie Memorial Stadium (28,853)
+
+Sam Houston (SHSU) — Conference USA
+  Mascot: Bearkats | Location: Huntsville, TX
+  Venue: Elliott T. Bowers Stadium (14,000)
+
+Western Kentucky (WKU) — Conference USA
+  Mascot: Hilltoppers | Location: Bowling Green, KY
+  Venue: Houchens Industries-L.T. Smith Stadium (22,113)
+
+Notre Dame (ND) — FBS Independents
+  Mascot: Fighting Irish | Location: Notre Dame, IN
+  Venue: Notre Dame Stadium (80,795)
+
+UConn (CONN) — FBS Independents
+  Mascot: Huskies | Location: East Hartford, CT
+  Venue: Pratt & Whitney Stadium (40,000)
+
+Akron (AKR) — Mid-American
+  Mascot: Zips | Location: Akron, OH
+  Venue: InfoCision Stadium (30,000)
+
+Ball State (BALL) — Mid-American
+  Mascot: Cardinals | Location: Muncie, IN
+  Venue: Scheumann Stadium (22,500)
+
+Bowling Green (BGSU) — Mid-American
+  Mascot: Falcons | Location: Bowling Green, OH
+  Venue: Doyt L. Perry Stadium (24,000)
+
+Buffalo (BUF) — Mid-American
+  Mascot: Bulls | Location: Amherst, NY
+  Venue: UB Stadium (30,270)
+
+Central Michigan (CMU) — Mid-American
+  Mascot: Chippewas | Location: Mount Pleasant, MI
+  Venue: Kelly/Shorts Stadium (30,255)
+
+Eastern Michigan (EMU) — Mid-American
+  Mascot: Eagles | Location: Ypsilanti, MI
+  Venue: Rynearson Stadium (30,200)
+
+Kent State (KENT) — Mid-American
+  Mascot: Golden Flashes | Location: Kent, OH
+  Venue: Dix Stadium (25,319)
+
+Massachusetts (MASS) — Mid-American
+  Mascot: Minutemen | Location: Hadley, MA
+  Venue: Warren McGuirk Alumni Stadium (17,000)
+
+Miami (OH) (M-OH) — Mid-American
+  Mascot: RedHawks | Location: Oxford, OH
+  Venue: Yager Stadium (24,286)
+
+Ohio (OHIO) — Mid-American
+  Mascot: Bobcats | Location: Athens, OH
+  Venue: Peden Stadium (24,000)
+
+Sacramento State (SAC) — Mid-American
+  Mascot: Hornets | Location: Sacramento, CA
+  Venue: Hornet Stadium (21,195)
+
+Toledo (TOL) — Mid-American
+  Mascot: Rockets | Location: Toledo, OH
+  Venue: Glass Bowl (26,038)
+
+Western Michigan (WMU) — Mid-American
+  Mascot: Broncos | Location: Kalamazoo, MI
+  Venue: Waldo Stadium (30,200)
+
+Air Force (AF) — Mountain West
+  Mascot: Falcons | Location: Colorado Springs, CO
+  Venue: Falcon Stadium (46,692)
+
+Hawai'i (HAW) — Mountain West
+  Mascot: Rainbow Warriors | Location: Honolulu, HI
+  Venue: Clarence T.C. Ching Athletics Complex (9,000)
+
+Nevada (NEV) — Mountain West
+  Mascot: Wolf Pack | Location: Reno, NV
+  Venue: Mackay Stadium (27,000)
+
+New Mexico (UNM) — Mountain West
+  Mascot: Lobos | Location: Albuquerque, NM
+  Venue: University Stadium (NM) (39,224)
+
+North Dakota State (NDSU) — Mountain West
+  Mascot: Bison | Location: Fargo, ND
+  Venue: Fargodome (18,700)
+
+Northern Illinois (NIU) — Mountain West
+  Mascot: Huskies | Location: DeKalb, IL
+  Venue: Huskie Stadium (23,595)
+
+San José State (SJSU) — Mountain West
+  Mascot: Spartans | Location: San Jose, CA
+  Venue: CEFCU Stadium (30,456)
+
+UNLV (UNLV) — Mountain West
+  Mascot: Rebels | Location: Las Vegas, NV
+  Venue: Allegiant Stadium (65,000)
+
+UTEP (UTEP) — Mountain West
+  Mascot: Miners | Location: El Paso, TX
+  Venue: Sun Bowl (51,500)
+
+Wyoming (WYO) — Mountain West
+  Mascot: Cowboys | Location: Laramie, WY
+  Venue: War Memorial Stadium (29,181)
+
+Boise State (BOIS) — Pac-12
+  Mascot: Broncos | Location: Boise, ID
+  Venue: Albertsons Stadium (36,387)
+
+Colorado State (CSU) — Pac-12
+  Mascot: Rams | Location: Fort Collins, CO
+  Venue: Canvas Stadium (36,500)
+
+Fresno State (FRES) — Pac-12
+  Mascot: Bulldogs | Location: Fresno, CA
+  Venue: Valley Children's Stadium (41,031)
+
+Oregon State (ORST) — Pac-12
+  Mascot: Beavers | Location: Corvallis, OR
+  Venue: Reser Stadium (43,363)
+
+San Diego State (SDSU) — Pac-12
+  Mascot: Aztecs | Location: San Diego, CA
+  Venue: Snapdragon Stadium (35,000)
+
+Texas State (TXST) — Pac-12
+  Mascot: Bobcats | Location: San Marcos, TX
+  Venue: Bobcat Stadium (TX) (30,000)
+
+Utah State (USU) — Pac-12
+  Mascot: Aggies | Location: Logan, UT
+  Venue: Maverik Stadium (25,513)
+
+Washington State (WSU) — Pac-12
+  Mascot: Cougars | Location: Pullman, WA
+  Venue: Gesa Field (32,952)
+
+Alabama (ALA) — SEC
+  Mascot: Crimson Tide | Location: Tuscaloosa, AL
+  Venue: Bryant-Denny Stadium (101,821)
+
+Arkansas (ARK) — SEC
+  Mascot: Razorbacks | Location: Fayetteville, AR
+  Venue: Razorback Stadium (80,000)
+
+Auburn (AUB) — SEC
+  Mascot: Tigers | Location: Auburn, AL
+  Venue: Jordan-Hare Stadium (87,451)
+
+Florida (FLA) — SEC
+  Mascot: Gators | Location: Gainesville, FL
+  Venue: Ben Hill Griffin Stadium (88,548)
+
+Georgia (UGA) — SEC
+  Mascot: Bulldogs | Location: Athens, GA
+  Venue: Sanford Stadium (92,746)
+
+Kentucky (UK) — SEC
+  Mascot: Wildcats | Location: Lexington, KY
+  Venue: Kroger Field (61,000)
+
+LSU (LSU) — SEC
+  Mascot: Tigers | Location: Baton Rouge, LA
+  Venue: Tiger Stadium (LA) (102,321)
+
+Mississippi State (MSST) — SEC
+  Mascot: Bulldogs | Location: Starkville, MS
+  Venue: Davis Wade Stadium (61,337)
+
+Missouri (MIZ) — SEC
+  Mascot: Tigers | Location: Columbia, MO
+  Venue: Memorial Stadium (71,168)
+
+Oklahoma (OU) — SEC
+  Mascot: Sooners | Location: Norman, OK
+  Venue: Memorial Stadium (Norman, OK) (86,112)
+
+Ole Miss (MISS) — SEC
+  Mascot: Rebels | Location: Oxford, MS
+  Venue: Vaught-Hemingway Stadium (64,038)
+
+South Carolina (SC) — SEC
+  Mascot: Gamecocks | Location: Columbia, SC
+  Venue: Williams-Brice Stadium (80,250)
+
+Tennessee (TENN) — SEC
+  Mascot: Volunteers | Location: Knoxville, TN
+  Venue: Neyland Stadium (102,455)
+
+Texas (TEX) — SEC
+  Mascot: Longhorns | Location: Austin, TX
+  Venue: DKR-Texas Memorial Stadium (100,119)
+
+Texas A&M (TA&M) — SEC
+  Mascot: Aggies | Location: College Station, TX
+  Venue: Kyle Field (102,733)
+
+Vanderbilt (VAN) — SEC
+  Mascot: Commodores | Location: Nashville, TN
+  Venue: FirstBank Stadium (40,351)
+
+App State (APP) — Sun Belt
+  Mascot: Mountaineers | Location: Boone, NC
+  Venue: Kidd Brewer Stadium (30,000)
+
+Arkansas State (ARST) — Sun Belt
+  Mascot: Red Wolves | Location: Jonesboro, AR
+  Venue: Centennial Bank Stadium (30,382)
+
+Coastal Carolina (CCU) — Sun Belt
+  Mascot: Chanticleers | Location: Conway, SC
+  Venue: Brooks Stadium (SC) (21,000)
+
+Georgia Southern (GASO) — Sun Belt
+  Mascot: Eagles | Location: Statesboro, GA
+  Venue: Allen E. Paulson Stadium (25,000)
+
+Georgia State (GAST) — Sun Belt
+  Mascot: Panthers | Location: Atlanta, GA
+  Venue: Center Parc Stadium (25,000)
+
+James Madison (JMU) — Sun Belt
+  Mascot: Dukes | Location: Harrisonburg, VA
+  Venue: Bridgeforth Stadium (24,877)
+
+Louisiana (UL) — Sun Belt
+  Mascot: Ragin' Cajuns | Location: Lafayette, LA
+  Venue: Cajun Field (41,426)
+
+Louisiana Tech (LT) — Sun Belt
+  Mascot: Bulldogs | Location: Ruston, LA
+  Venue: Joe Aillet Stadium (28,019)
+
+Marshall (MRSH) — Sun Belt
+  Mascot: Thundering Herd | Location: Huntington, WV
+  Venue: Joan C. Edwards Stadium (38,016)
+
+Old Dominion (ODU) — Sun Belt
+  Mascot: Monarchs | Location: Norfolk, VA
+  Venue: S.B. Ballard Stadium (20,118)
+
+South Alabama (USA) — Sun Belt
+  Mascot: Jaguars | Location: Mobile, AL
+  Venue: Hancock Whitney Stadium (25,450)
+
+Southern Miss (USM) — Sun Belt
+  Mascot: Golden Eagles | Location: Hattiesburg, MS
+  Venue: M. M. Roberts Stadium (36,000)
+
+Troy (TROY) — Sun Belt
+  Mascot: Trojans | Location: Troy, AL
+  Venue: Veterans Memorial Stadium (AL) (30,000)
+
+UL Monroe (ULM) — Sun Belt
+  Mascot: Warhawks | Location: Monroe, LA
+  Venue: Malone Stadium (27,617)

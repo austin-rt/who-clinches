@@ -416,6 +416,10 @@ export const FILE_CONFIGS: FileConfig[] = [
     strategy: 'single',
     baseDir: 'docs/guides',
   },
+  { path: 'venues.txt', conference: 'ALL', strategy: 'single', baseDir: 'docs/cfbd-static' },
+  { path: 'conferences.txt', conference: 'ALL', strategy: 'single', baseDir: 'docs/cfbd-static' },
+  { path: 'teams.txt', conference: 'ALL', strategy: 'single', baseDir: 'docs/cfbd-static' },
+  { path: 'coaches.txt', conference: 'ALL', strategy: 'single', baseDir: 'docs/cfbd-static' },
   {
     path: '2020-sp-plus.txt',
     conference: 'ALL',

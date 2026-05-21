@@ -1,0 +1,108 @@
+College Football Conferences
+
+Carolinas (null) — Classification: ii
+Ivy (null) — Classification: fcs
+Mid-American (MAC) — Classification: fbs
+Mountain West (MWC) — Classification: fbs
+Pac-12 (PAC) — Classification: fbs
+SEC (SEC) — Classification: fbs
+Pac-10 (Pac-10) — Classification: fbs
+AWC (null) — Classification: fcs
+Big Sky (null) — Classification: fcs
+Big South (null) — Classification: fcs
+CAA (null) — Classification: fcs
+MEAC (null) — Classification: fcs
+MVFC (null) — Classification: fcs
+NEC (null) — Classification: fcs
+OVC (null) — Classification: fcs
+Patriot (null) — Classification: fcs
+Pioneer (null) — Classification: fcs
+American Rivers (null) — Classification: iii
+American Southwest (null) — Classification: iii
+CCIW (null) — Classification: iii
+Centennial (null) — Classification: iii
+Commonwealth Coast (null) — Classification: iii
+ECFC (null) — Classification: iii
+Empire 8 (null) — Classification: iii
+Heartland (null) — Classification: iii
+Big 8 (Big 8) — Classification: fbs
+Pac-8 (Pac-8) — Classification: fbs
+Missouri Valley (MVIAA) — Classification: fbs
+Pacific (PCC) — Classification: fbs
+Big 6 (Big 6) — Classification: fbs
+Mountain State (MSAC) — Classification: fbs
+Big 7 (Big 7) — Classification: fbs
+Independent DIII (null) — Classification: iii
+Liberty League (null) — Classification: iii
+MSCAC (null) — Classification: iii
+Michigan (null) — Classification: iii
+Mid Atlantic (null) — Classification: iii
+Midwest (null) — Classification: iii
+Minnesota (null) — Classification: iii
+NACC (null) — Classification: iii
+NESCAC (null) — Classification: iii
+NEWMAC (null) — Classification: iii
+New Jersey (null) — Classification: iii
+North Coast (null) — Classification: iii
+Northwest (null) — Classification: iii
+Ohio (null) — Classification: iii
+Old Dominion (null) — Classification: iii
+Presidents' (null) — Classification: iii
+So. Cal. (null) — Classification: iii
+Southern Athletic (null) — Classification: iii
+USA South (null) — Classification: iii
+Upper Midwest (null) — Classification: iii
+Wisconsin (null) — Classification: iii
+CIAA (null) — Classification: ii
+GLIAC (null) — Classification: ii
+Great American (null) — Classification: ii
+Great Lakes (null) — Classification: ii
+Great Midwest Athletic (null) — Classification: ii
+Great Northwest (null) — Classification: ii
+Gulf South (null) — Classification: ii
+Independent DII (null) — Classification: ii
+Lone Star (null) — Classification: ii
+Mid America (null) — Classification: ii
+Mountain East (null) — Classification: ii
+Northeast 10 (null) — Classification: ii
+Northern Sun (null) — Classification: ii
+Pennsylvania State Athletic (null) — Classification: ii
+Rocky Mountain (null) — Classification: ii
+SIAC (null) — Classification: ii
+South Atlantic (null) — Classification: ii
+AAWU (AAWU) — Classification: fbs
+PCAA (PCAA) — Classification: fbs
+SWAC (SWAC) — Classification: fbs
+Western (Western) — Classification: fbs
+Atlantic Sun (ASUN) — Classification: fcs
+FCS Independents (INDAA) — Classification: fcs
+Southern Collegiate Athletic (SCAC) — Classification: iii
+University (UNI) — Classification: iii
+Great West (GWEST) — Classification: fcs
+Metro Atlantic Athletic (MAAC) — Classification: fcs
+Atlantic 10 (ATL10) — Classification: fcs
+Big South-OVC (null) — Classification: fcs
+UAC (null) — Classification: fcs
+Landmark Conference (null) — Classification: iii
+SWAC (null) — Classification: fcs
+Southern (null) — Classification: fcs
+Southland (null) — Classification: fcs
+Rocky Mountain (RMC) — Classification: fbs
+Southwest (SWC) — Classification: fbs
+Southern (Southern) — Classification: fbs
+Missouri Valley (MVC) — Classification: fbs
+Border (BIAA) — Classification: fbs
+ACC (ACC) — Classification: fbs
+Big 12 (B12) — Classification: fbs
+Skyline (Skyline) — Classification: fbs
+Big Ten (B1G) — Classification: fbs
+Conference USA (CUSA) — Classification: fbs
+FBS Independents (Ind) — Classification: fbs
+Sun Belt (SBC) — Classification: fbs
+American Athletic (AAC) — Classification: fbs
+Ivy (Ivy) — Classification: fbs
+Western Athletic (WAC) — Classification: fbs
+Southland (Southland) — Classification: fbs
+Big West (BW) — Classification: fbs
+Western Athletic (WAC) — Classification: fcs
+Big East (BE) — Classification: fbs

@@ -1,0 +1,856 @@
+College Football Venues (FBS stadiums with 10,000+ capacity)
+
+Bristol Motor Speedway (Bristol, TN) — Capacity: 162,000, Grass, Outdoor
+  Teams: N/A
+
+Michigan Stadium (Ann Arbor, MI) — Capacity: 107,601, Turf, Outdoor
+  Teams: N/A
+
+Beaver Stadium (University Park, PA) — Capacity: 106,572, Grass, Outdoor
+  Teams: N/A
+
+Ohio Stadium (Columbus, OH) — Capacity: 102,780, Turf, Outdoor
+  Teams: N/A
+
+Kyle Field (College Station, TX) — Capacity: 102,733, Grass, Outdoor
+  Teams: N/A
+
+Neyland Stadium (Knoxville, TN) — Capacity: 102,455, Grass, Outdoor
+  Teams: N/A
+
+Tiger Stadium (LA) (Baton Rouge, LA) — Capacity: 102,321, Grass, Outdoor
+  Teams: N/A
+
+Bryant-Denny Stadium (Tuscaloosa, AL) — Capacity: 101,821, Grass, Outdoor
+  Teams: N/A
+
+DKR-Texas Memorial Stadium (Austin, TX) — Capacity: 100,119, Turf, Outdoor
+  Teams: N/A
+
+AT&T Stadium (Arlington, TX) — Capacity: 100,000, Turf, Dome
+  Teams: N/A
+
+Sanford Stadium (Athens, GA) — Capacity: 92,746, Grass, Outdoor
+  Teams: N/A
+
+Cotton Bowl (Dallas, TX) — Capacity: 92,100, Turf, Outdoor
+  Teams: N/A
+
+Rose Bowl (Pasadena, CA) — Capacity: 88,565, Grass, Outdoor
+  Teams: N/A
+
+Ben Hill Griffin Stadium (Gainesville, FL) — Capacity: 88,548, Grass, Outdoor
+  Teams: N/A
+
+Jordan-Hare Stadium (Auburn, AL) — Capacity: 87,451, Grass, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Norman, OK) (Norman, OK) — Capacity: 86,112, Grass, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Lincoln, NE) (Lincoln, NE) — Capacity: 85,458, Turf, Outdoor
+  Teams: N/A
+
+ANZ Stadium (Sydney, ) — Capacity: 83,500, Grass, Outdoor
+  Teams: N/A
+
+MetLife Stadium (East Rutherford, NJ) — Capacity: 82,500, Turf, Outdoor
+  Teams: N/A
+
+Croke Park Stadium (Dublin, ) — Capacity: 82,300, Turf, Outdoor
+  Teams: N/A
+
+Northwest Stadium (Landover, MD) — Capacity: 82,000, Grass, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Clemson, SC) (Clemson, SC) — Capacity: 81,500, Grass, Outdoor
+  Teams: N/A
+
+Notre Dame Stadium (Notre Dame, IN) — Capacity: 80,795, Turf, Outdoor
+  Teams: N/A
+
+Lambeau Field (Greenbay, WI) — Capacity: 80,735, Grass, Outdoor
+  Teams: N/A
+
+Camp Randall Stadium (Madison, WI) — Capacity: 80,321, Turf, Outdoor
+  Teams: N/A
+
+Williams-Brice Stadium (Columbia, SC) — Capacity: 80,250, Grass, Outdoor
+  Teams: N/A
+
+Razorback Stadium (Fayetteville, AR) — Capacity: 80,000, Turf, Outdoor
+  Teams: N/A
+
+Los Angeles Memorial Coliseum (Los Angeles, CA) — Capacity: 77,500, Grass, Outdoor
+  Teams: N/A
+
+GEHA Field at Arrowhead Stadium (Kansas City, MO) — Capacity: 76,416, Grass, Outdoor
+  Teams: N/A
+
+Sports Authority Field at Mile High (Denver, CO) — Capacity: 76,125, Grass, Outdoor
+  Teams: N/A
+
+Spartan Stadium (East Lansing, MI) — Capacity: 75,005, Grass, Outdoor
+  Teams: N/A
+
+Mercedes-Benz Stadium (Atlanta, GA) — Capacity: 75,000, Turf, Dome
+  Teams: N/A
+
+Georgia Dome (Atlanta, GA) — Capacity: 74,228, Turf, Outdoor
+  Teams: N/A
+
+Bank of America Stadium (Charlotte, NC) — Capacity: 73,778, Grass, Outdoor
+  Teams: N/A
+
+Caesars Superdome (New Orleans, LA) — Capacity: 73,000, Turf, Dome
+  Teams: N/A
+
+Legion Field (Birmingham, AL) — Capacity: 72,000, Turf, Outdoor
+  Teams: N/A
+
+NRG Stadium (Houston, TX) — Capacity: 71,995, Grass, Dome
+  Teams: N/A
+
+SoFi Stadium (Inglewood, CA) — Capacity: 71,500, Turf, Dome
+  Teams: N/A
+
+Memorial Stadium (Columbia, MO) — Capacity: 71,168, Turf, Outdoor
+  Teams: N/A
+
+M&T Bank Stadium (Baltimore, MD) — Capacity: 71,008, Turf, Outdoor
+  Teams: N/A
+
+Qualcomm Stadium (San Diego, CA) — Capacity: 70,561, Turf, Outdoor
+  Teams: N/A
+
+Husky Stadium (Seattle, WA) — Capacity: 70,138, Turf, Outdoor
+  Teams: N/A
+
+Lincoln Financial Field (Philadelphia, PA) — Capacity: 69,879, Turf, Outdoor
+  Teams: N/A
+
+Kinnick Stadium (Iowa City, IA) — Capacity: 69,250, Turf, Outdoor
+  Teams: N/A
+
+Nissan Stadium (Nashville, TN) — Capacity: 69,143, Turf, Outdoor
+  Teams: N/A
+
+Lumen Field (Seattle, WA) — Capacity: 69,000, Turf, Outdoor
+  Teams: N/A
+
+Gillette Stadium (Foxborough, MA) — Capacity: 68,756, Turf, Outdoor
+  Teams: N/A
+
+Levi's Stadium (Santa Clara, CA) — Capacity: 68,500, Turf, Outdoor
+  Teams: N/A
+
+Acrisure Stadium (Pittsburgh, PA) — Capacity: 68,400, Grass, Outdoor
+  Teams: N/A
+
+EverBank Stadium (Jacksonville, FL) — Capacity: 67,858, Grass, Outdoor
+  Teams: N/A
+
+Doak Campbell Stadium (Tallahassee, FL) — Capacity: 67,277, Grass, Outdoor
+  Teams: N/A
+
+Paul Brown Stadium (Cincinnati, OH) — Capacity: 66,515, Turf, Outdoor
+  Teams: N/A
+
+U.S. Bank Stadium (Minneapolis, MN) — Capacity: 66,468, Turf, Dome
+  Teams: N/A
+
+The Dome at America's Center (Saint Louis, MO) — Capacity: 66,000, Turf, Dome
+  Teams: N/A
+
+Mountain America Stadium (Tempe, AZ) — Capacity: 65,870, Grass, Outdoor
+  Teams: N/A
+
+Raymond James Stadium (Tampa, FL) — Capacity: 65,828, Grass, Outdoor
+  Teams: N/A
+
+Lane Stadium (Blacksburg, VA) — Capacity: 65,632, Grass, Outdoor
+  Teams: N/A
+
+Camping World Stadium (Orlando, FL) — Capacity: 65,000, Turf, Outdoor
+  Teams: N/A
+
+State Farm Stadium (Glendale, AZ) — Capacity: 65,000, Grass, Dome
+  Teams: N/A
+
+Allegiant Stadium (Las Vegas, NV) — Capacity: 65,000, Turf, Dome
+  Teams: N/A
+
+Hard Rock Stadium (Miami Gardens, FL) — Capacity: 64,767, Turf, Outdoor
+  Teams: N/A
+
+Ford Field (Detroit, MI) — Capacity: 64,500, Turf, Dome
+  Teams: N/A
+
+Vaught-Hemingway Stadium (Oxford, MS) — Capacity: 64,038, Grass, Outdoor
+  Teams: N/A
+
+LaVell Edwards Stadium (Provo, UT) — Capacity: 63,470, Grass, Outdoor
+  Teams: N/A
+
+Lucas Oil Stadium (Indianapolis, IN) — Capacity: 63,000, Turf, Dome
+  Teams: N/A
+
+California Memorial Stadium (Berkeley, CA) — Capacity: 62,467, Turf, Outdoor
+  Teams: N/A
+
+Soldier Field (Chicago, IL) — Capacity: 61,500, Grass, Outdoor
+  Teams: N/A
+
+Jack Trice Stadium (Ames, IA) — Capacity: 61,500, Grass, Outdoor
+  Teams: N/A
+
+Scott Stadium (Charlottesville, VA) — Capacity: 61,500, Grass, Outdoor
+  Teams: N/A
+
+Yale Bowl (New Haven, CT) — Capacity: 61,446, Turf, Outdoor
+  Teams: N/A
+
+Davis Wade Stadium (Starkville, MS) — Capacity: 61,337, Grass, Outdoor
+  Teams: N/A
+
+Kroger Field (Lexington, KY) — Capacity: 61,000, Turf, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Champaign, IL) (Champaign, IL) — Capacity: 60,670, Turf, Outdoor
+  Teams: N/A
+
+Jones AT&T Stadium (Lubbock, TX) — Capacity: 60,454, Turf, Outdoor
+  Teams: N/A
+
+Milan Puskar Stadium (Morgantown, WV) — Capacity: 60,000, Turf, Outdoor
+  Teams: N/A
+
+L&N Federal Credit Union Stadium (Louisville, KY) — Capacity: 60,000, Turf, Outdoor
+  Teams: N/A
+
+Simmons Bank Liberty Stadium (Memphis, TN) — Capacity: 58,325, Turf, Outdoor
+  Teams: N/A
+
+Carter-Finley Stadium (Raleigh, NC) — Capacity: 58,000, Grass, Outdoor
+  Teams: N/A
+
+Ross-Ade Stadium (West Lafayette, IN) — Capacity: 57,282, Grass, Outdoor
+  Teams: N/A
+
+Boone Pickens Stadium (Stillwater, OK) — Capacity: 55,509, Turf, Outdoor
+  Teams: N/A
+
+Bobby Dodd Stadium (Atlanta, GA) — Capacity: 55,000, Turf, Outdoor
+  Teams: N/A
+
+Yankee Stadium (New York, NY) — Capacity: 54,251, Turf, Outdoor
+  Teams: N/A
+
+War Memorial Stadium (AR) (Little Rock, AR) — Capacity: 54,120, Turf, Outdoor
+  Teams: N/A
+
+Autzen Stadium (Eugene, OR) — Capacity: 54,000, Turf, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Bloomington, IN) (Bloomington, IN) — Capacity: 52,656, Turf, Outdoor
+  Teams: N/A
+
+Franklin Field (Philadelphia, PA) — Capacity: 52,593, Turf, Outdoor
+  Teams: N/A
+
+High Point Solutions Stadium (Piscataway, NJ) — Capacity: 52,454, Turf, Outdoor
+  Teams: N/A
+
+SHI Stadium (Piscataway, NJ) — Capacity: 52,454, Turf, Outdoor
+  Teams: N/A
+
+Independence Stadium (Shreveport, FL) — Capacity: 52,000, Turf, Outdoor
+  Teams: N/A
+
+SECU Stadium (College Park, MD) — Capacity: 51,802, Turf, Outdoor
+  Teams: N/A
+
+Aviva Stadium (Dublin, ) — Capacity: 51,700, Grass, Outdoor
+  Teams: N/A
+
+Sun Bowl (El Paso, TX) — Capacity: 51,500, Turf, Outdoor
+  Teams: N/A
+
+Rice-Eccles Stadium (Salt Lake City, UT) — Capacity: 51,444, Turf, Outdoor
+  Teams: N/A
+
+Huntington Bank Stadium (Minneapolis, MN) — Capacity: 50,850, Turf, Outdoor
+  Teams: N/A
+
+Arizona Stadium (Tucson, AZ) — Capacity: 50,782, Turf, Outdoor
+  Teams: N/A
+
+Kenan Stadium (Chapel Hill, NC) — Capacity: 50,500, Turf, Outdoor
+  Teams: N/A
+
+Stanford Stadium (Stanford, CA) — Capacity: 50,424, Grass, Outdoor
+  Teams: N/A
+
+Folsom Field (Boulder, CO) — Capacity: 50,183, Grass, Outdoor
+  Teams: N/A
+
+Aloha Stadium (Honolulu, HI) — Capacity: 50,000, Turf, Outdoor
+  Teams: N/A
+
+Floyd Casey Stadium (Waco, TX) — Capacity: 50,000, Turf, Outdoor
+  Teams: N/A
+
+Dowdy-Ficklen Stadium (Greenville, NC) — Capacity: 50,000, Grass, Outdoor
+  Teams: N/A
+
+Bill Snyder Family Stadium (Manhattan, KS) — Capacity: 50,000, Turf, Outdoor
+  Teams: N/A
+
+JMA Wireless Dome (Syracuse, NY) — Capacity: 49,057, Turf, Dome
+  Teams: N/A
+
+Dignity Health Sports Park (Carson, CA) — Capacity: 48,114, Grass, Outdoor
+  Teams: N/A
+
+Ryan Field (Evanston, IL) — Capacity: 47,130, Grass, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Lawrence, KS) — Capacity: 47,000, Turf, Outdoor
+  Teams: N/A
+
+Rice Stadium (Houston, TX) — Capacity: 47,000, Turf, Outdoor
+  Teams: N/A
+
+Falcon Stadium (Colorado Springs, CO) — Capacity: 46,692, Turf, Outdoor
+  Teams: N/A
+
+Amon G. Carter Stadium (Fort Worth, TX) — Capacity: 46,000, Grass, Outdoor
+  Teams: N/A
+
+RFK Stadium (Washington, DC) — Capacity: 45,596, Grass, Outdoor
+  Teams: N/A
+
+Allianz Stadium (Sydney, NSW) — Capacity: 45,500, Grass, Outdoor
+  Teams: N/A
+
+McLane Stadium (Waco, TX) — Capacity: 45,140, Turf, Outdoor
+  Teams: N/A
+
+Alumni Stadium (Chestnut Hill, MA) (Chestnut Hill, MA) — Capacity: 44,500, Turf, Outdoor
+  Teams: N/A
+
+Mississippi Veterans Memorial Stadium (Jackson, MS) — Capacity: 44,215, Grass, Outdoor
+  Teams: N/A
+
+FBC Mortgage Stadium (Orlando, FL) — Capacity: 44,206, Grass, Outdoor
+  Teams: N/A
+
+Reser Stadium (Corvallis, OR) — Capacity: 43,363, Turf, Outdoor
+  Teams: N/A
+
+Cajun Field (Lafayette, LA) — Capacity: 41,426, Turf, Outdoor
+  Teams: N/A
+
+SunTrust Park (Atlanta, GA) — Capacity: 41,084, Grass, Outdoor
+  Teams: N/A
+
+Valley Children's Stadium (Fresno, CA) — Capacity: 41,031, Turf, Outdoor
+  Teams: N/A
+
+Guaranteed Rate Field (Chicago, IL) — Capacity: 40,615, Grass, Outdoor
+  Teams: N/A
+
+FirstBank Stadium (Nashville, TN) — Capacity: 40,351, Turf, Outdoor
+  Teams: N/A
+
+Wallace Wade Stadium (Durham, NC) — Capacity: 40,004, Grass, Outdoor
+  Teams: N/A
+
+Globe Life Field (Arlington, TX) — Capacity: 40,000, Turf, Outdoor
+  Teams: N/A
+
+Nippert Stadium (Cincinnati, OH) — Capacity: 40,000, Turf, Outdoor
+  Teams: N/A
+
+TDECU Stadium (Houston, TX) — Capacity: 40,000, Turf, Outdoor
+  Teams: N/A
+
+Pratt & Whitney Stadium (East Hartford, CT) — Capacity: 40,000, Grass, Outdoor
+  Teams: N/A
+
+University Stadium (NM) (Albuquerque, NM) — Capacity: 39,224, Turf, Outdoor
+  Teams: N/A
+
+Fenway Park (Boston, MA) — Capacity: 38,073, Grass, Outdoor
+  Teams: N/A
+
+Joan C. Edwards Stadium (Huntington, WV) — Capacity: 38,016, Turf, Outdoor
+  Teams: N/A
+
+Michie Stadium (West Point, NY) — Capacity: 38,000, Turf, Outdoor
+  Teams: N/A
+
+Sam Boyd Stadium (Whitney, NV) — Capacity: 36,800, Turf, Outdoor
+  Teams: N/A
+
+Alamodome (San Antonio, TX) — Capacity: 36,582, Turf, Dome
+  Teams: N/A
+
+Canvas Stadium (Fort Collins, CO) — Capacity: 36,500, Turf, Outdoor
+  Teams: N/A
+
+Albertsons Stadium (Boise, ID) — Capacity: 36,387, Turf, Outdoor
+  Teams: N/A
+
+M. M. Roberts Stadium (Hattiesburg, MS) — Capacity: 36,000, Turf, Outdoor
+  Teams: N/A
+
+Ryan Field (Evanston, IL) — Capacity: 35,000, Turf, Outdoor
+  Teams: N/A
+
+Snapdragon Stadium (San Diego, CA) — Capacity: 35,000, Grass, Outdoor
+  Teams: N/A
+
+Sonny Lubick Field at Hughes Stadium (Fort Collins, CO) — Capacity: 34,400, Turf, Outdoor
+  Teams: N/A
+
+Marlins Park (Miami, FL) — Capacity: 34,000, Grass, Outdoor
+  Teams: N/A
+
+Navy-Marine Corps Memorial Stadium (Annapolis, MD) — Capacity: 34,000, Turf, Outdoor
+  Teams: N/A
+
+Ladd Peebles Stadium (Mobile, AL) — Capacity: 33,471, Turf, Outdoor
+  Teams: N/A
+
+Gesa Field (Pullman, WA) — Capacity: 32,952, Turf, Outdoor
+  Teams: N/A
+
+Robertson Stadium (Houston, TX) — Capacity: 32,000, Turf, Outdoor
+  Teams: N/A
+
+Gerald J. Ford Stadium (University Park, TX) — Capacity: 32,000, Turf, Outdoor
+  Teams: N/A
+
+Allegacy Federal Credit Union Stadium (Winston-Salem, NC) — Capacity: 31,500, Turf, Outdoor
+  Teams: N/A
+
+Tropicana Field (Saint Petersburg, FL) — Capacity: 31,042, Turf, Outdoor
+  Teams: N/A
+
+DATCU Stadium (Denton, TX) — Capacity: 30,850, Turf, Outdoor
+  Teams: N/A
+
+Johnny "Red" Floyd Stadium (Murfreesboro, TN) — Capacity: 30,788, Turf, Outdoor
+  Teams: N/A
+
+CEFCU Stadium (San Jose, CA) — Capacity: 30,456, Turf, Outdoor
+  Teams: N/A
+
+Centennial Bank Stadium (Jonesboro, AR) — Capacity: 30,382, Turf, Outdoor
+  Teams: N/A
+
+Harvard Stadium (Boston, MA) — Capacity: 30,323, Turf, Outdoor
+  Teams: N/A
+
+UB Stadium (Amherst, NY) — Capacity: 30,270, Turf, Outdoor
+  Teams: N/A
+
+Kelly/Shorts Stadium (Mount Pleasant, MI) — Capacity: 30,255, Turf, Outdoor
+  Teams: N/A
+
+Rynearson Stadium (Ypsilanti, MI) — Capacity: 30,200, Turf, Outdoor
+  Teams: N/A
+
+Waldo Stadium (Kalamazoo, MI) — Capacity: 30,200, Turf, Outdoor
+  Teams: N/A
+
+William Dick"" Price Stadium"" (Norfolk, VA) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+InfoCision Stadium (Akron, OH) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+Kidd Brewer Stadium (Boone, NC) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+Yulman Stadium (New Orleans, LA) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+Chapman Stadium (Tulsa, OK) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+Veterans Memorial Stadium (AL) (Troy, AL) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+Bobcat Stadium (TX) (San Marcos, TX) — Capacity: 30,000, Turf, Outdoor
+  Teams: N/A
+
+FAU Stadium (Boca Raton, FL) — Capacity: 29,419, Turf, Outdoor
+  Teams: N/A
+
+War Memorial Stadium (Laramie, WY) — Capacity: 29,181, Turf, Outdoor
+  Teams: N/A
+
+Aggie Memorial Stadium (Las Cruces, NM) — Capacity: 28,853, Turf, Outdoor
+  Teams: N/A
+
+Ace W. Mumford Stadium (Baton Rouge, LA) — Capacity: 28,500, Turf, Outdoor
+  Teams: N/A
+
+Joe Aillet Stadium (Ruston, LA) — Capacity: 28,019, Turf, Outdoor
+  Teams: N/A
+
+Princeton University Stadium (Princeton, NJ) — Capacity: 27,800, Turf, Outdoor
+  Teams: N/A
+
+Malone Stadium (Monroe, LA) — Capacity: 27,617, Turf, Outdoor
+  Teams: N/A
+
+StubHub Center (Carson, CA) — Capacity: 27,000, Turf, Outdoor
+  Teams: N/A
+
+Mackay Stadium (Reno, NV) — Capacity: 27,000, Turf, Outdoor
+  Teams: N/A
+
+Hornet Stadium (Montgomery, AL) — Capacity: 26,500, Turf, Outdoor
+  Teams: N/A
+
+Glass Bowl (Toledo, OH) — Capacity: 26,038, Turf, Outdoor
+  Teams: N/A
+
+Maverik Stadium (Logan, UT) — Capacity: 25,513, Turf, Outdoor
+  Teams: N/A
+
+Bragg Memorial Stadium (Tallahassee, FL) — Capacity: 25,500, Turf, Outdoor
+  Teams: N/A
+
+Hancock Whitney Stadium (Mobile, AL) — Capacity: 25,450, Turf, Outdoor
+  Teams: N/A
+
+Dix Stadium (Kent, OH) — Capacity: 25,319, Turf, Outdoor
+  Teams: N/A
+
+Washington-Grizzly Stadium (Missoula, MT) — Capacity: 25,217, Turf, Outdoor
+  Teams: N/A
+
+Cramton Bowl (Montgomery, AL) — Capacity: 25,000, Turf, Outdoor
+  Teams: N/A
+
+Allen E. Paulson Stadium (Statesboro, GA) — Capacity: 25,000, Turf, Outdoor
+  Teams: N/A
+
+Williams Stadium (VA) (Lynchburg, VA) — Capacity: 25,000, Turf, Outdoor
+  Teams: N/A
+
+Center Parc Stadium (Atlanta, GA) — Capacity: 25,000, Turf, Outdoor
+  Teams: N/A
+
+Bridgeforth Stadium (Harrisonburg, VA) — Capacity: 24,877, Turf, Outdoor
+  Teams: N/A
+
+Yager Stadium (Oxford, OH) — Capacity: 24,286, Turf, Outdoor
+  Teams: N/A
+
+AmFirst Stadium (Jacksonville, AL) — Capacity: 24,000, Turf, Outdoor
+  Teams: N/A
+
+Doyt L. Perry Stadium (Bowling Green, OH) — Capacity: 24,000, Turf, Outdoor
+  Teams: N/A
+
+Peden Stadium (Athens, OH) — Capacity: 24,000, Turf, Outdoor
+  Teams: N/A
+
+Huskie Stadium (DeKalb, IL) — Capacity: 23,595, Turf, Outdoor
+  Teams: N/A
+
+Fitton Field (Worcester, MA) — Capacity: 23,500, Grass, Outdoor
+  Teams: N/A
+
+Tom Benson Hall of Fame Stadium (Canton, OH) — Capacity: 23,000, Turf, Outdoor
+  Teams: N/A
+
+Jack Spinks Stadium (Lorman, MS) — Capacity: 22,500, Turf, Outdoor
+  Teams: N/A
+
+Scheumann Stadium (Muncie, IN) — Capacity: 22,500, Turf, Outdoor
+  Teams: N/A
+
+Houchens Industries-L.T. Smith Stadium (Bowling Green, KY) — Capacity: 22,113, Turf, Outdoor
+  Teams: N/A
+
+BBVA Compass Stadium (Houston, TX) — Capacity: 22,000, Grass, Outdoor
+  Teams: N/A
+
+Delaware Stadium (Newark, DE) — Capacity: 22,000, Turf, Outdoor
+  Teams: N/A
+
+Oliver C. Dawson Stadium (Orangeburg, SC) — Capacity: 22,000, Turf, Outdoor
+  Teams: N/A
+
+Aggie Stadium (Greensboro, NC) — Capacity: 21,500, Grass, Outdoor
+  Teams: N/A
+
+Schoellkopf Field (Ithaca, NY) — Capacity: 21,500, Turf, Outdoor
+  Teams: N/A
+
+Hornet Stadium (Sacramento, CA) — Capacity: 21,195, Turf, Outdoor
+  Teams: N/A
+
+Louis Crews Stadium (Huntsville, AL) — Capacity: 21,000, Turf, Outdoor
+  Teams: N/A
+
+Brooks Stadium (SC) (Conway, SC) — Capacity: 21,000, Turf, Outdoor
+  Teams: N/A
+
+Finley Stadium (Chattanooga, TN) — Capacity: 20,668, Turf, Outdoor
+  Teams: N/A
+
+Stambaugh Stadium (Youngstown, OH) — Capacity: 20,630, Turf, Outdoor
+  Teams: N/A
+
+Toyota Stadium (Frisco, TX) — Capacity: 20,500, Grass, Outdoor
+  Teams: N/A
+
+S.B. Ballard Stadium (Norfolk, VA) — Capacity: 20,118, Turf, Outdoor
+  Teams: N/A
+
+FIU Stadium (Miami, FL) — Capacity: 20,000, Turf, Outdoor
+  Teams: N/A
+
+Audi Field (Washington, DC) — Capacity: 20,000, Turf, Outdoor
+  Teams: N/A
+
+Brown Stadium (Providence, RI) — Capacity: 20,000, Turf, Outdoor
+  Teams: N/A
+
+Roy Kidd Stadium (Richmond, KY) — Capacity: 20,000, Turf, Outdoor
+  Teams: N/A
+
+Eddie Robinson Stadium (Grambling, LA) — Capacity: 19,600, Turf, Outdoor
+  Teams: N/A
+
+Providence Park (Portland, OR) — Capacity: 19,566, Turf, Outdoor
+  Teams: N/A
+
+Dana J. Dykhouse Stadium (Brookings, SD) — Capacity: 19,340, Turf, Outdoor
+  Teams: N/A
+
+Fargodome (Fargo, ND) — Capacity: 18,700, Turf, Dome
+  Teams: N/A
+
+University of Charleston Stadium (Charleston, WV) — Capacity: 18,500, Turf, Outdoor
+  Teams: N/A
+
+Children's Mercy Park (Kansas City, KS) — Capacity: 18,467, Grass, Outdoor
+  Teams: N/A
+
+Ratliff Stadium (Odessa, TX) — Capacity: 17,931, Turf, Outdoor
+  Teams: N/A
+
+Cowboy Stadium (Lake Charles, LA) — Capacity: 17,610, Turf, Outdoor
+  Teams: N/A
+
+Stewart Stadium (Ogden, UT) — Capacity: 17,500, Turf, Outdoor
+  Teams: N/A
+
+Plaster Sports Complex (Springfield, MO) — Capacity: 17,337, Turf, Outdoor
+  Teams: N/A
+
+Bowman Gray Stadium (Winston-Salem, NC) — Capacity: 17,000, Grass, Outdoor
+  Teams: N/A
+
+Bobcat Stadium (Bozeman, MT) — Capacity: 17,000, Turf, Outdoor
+  Teams: N/A
+
+Lawrence A. Wien Stadium (Manhattan, NY) — Capacity: 17,000, Turf, Outdoor
+  Teams: N/A
+
+Warren McGuirk Alumni Stadium (Hadley, MA) — Capacity: 17,000, Turf, Outdoor
+  Teams: N/A
+
+Roy Stewart Stadium (Murray, KY) — Capacity: 16,800, Turf, Outdoor
+  Teams: N/A
+
+Coughlin-Alumni Stadium (Brookings, SD) — Capacity: 16,700, Turf, Outdoor
+  Teams: N/A
+
+Tucker Stadium (Cookeville, TN) — Capacity: 16,500, Turf, Outdoor
+  Teams: N/A
+
+Hanson Field (Macomb, IL) — Capacity: 16,368, Turf, Outdoor
+  Teams: N/A
+
+UNI-Dome (Cedar Falls, IA) — Capacity: 16,324, Turf, Dome
+  Teams: N/A
+
+Golden Lion Stadium (Pine Bluff, AR) — Capacity: 16,000, Turf, Outdoor
+  Teams: N/A
+
+Goodman Stadium (Bethlehem, PA) — Capacity: 16,000, Turf, Outdoor
+  Teams: N/A
+
+Kibbie Dome (Moscow, ID) — Capacity: 16,000, Turf, Dome
+  Teams: N/A
+
+Paladin Stadium (Greenville, SC) — Capacity: 16,000, Turf, Outdoor
+  Teams: N/A
+
+Provost Umphrey Stadium (Beaumont, TX) — Capacity: 16,000, Turf, Outdoor
+  Teams: N/A
+
+Harry Turpin Stadium (Natchitoches, LA) — Capacity: 15,971, Turf, Outdoor
+  Teams: N/A
+
+Jerry Richardson Stadium (Charlotte, NC) — Capacity: 15,300, Turf, Outdoor
+  Teams: N/A
+
+Shotwell Stadium (Abilene, TX) — Capacity: 15,075, Turf, Outdoor
+  Teams: N/A
+
+Thomas A. Robinson National Stadium (Nassau, ) — Capacity: 15,000, Grass, Outdoor
+  Teams: N/A
+
+Javelina Stadium (Kingsville, TX) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+Blackshear Stadium (Prairie View, TX) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+Hancock Stadium (Normal, IL) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+Panther Stadium (Prairie View, TX) — Capacity: 15,000, Grass, Outdoor
+  Teams: N/A
+
+Saluki Stadium (Carbondale, IL) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+A.J. Simeon Stadium (High Point, NC) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+Sirrine Stadium (Greenville, SC) — Capacity: 15,000, Turf, Outdoor
+  Teams: N/A
+
+Homer Bryce Stadium (Nacogdoches, TX) — Capacity: 14,575, Turf, Outdoor
+  Teams: N/A
+
+Drake Stadium (Des Moines, IA) — Capacity: 14,557, Turf, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Wichita Falls, TX) (Wichita Falls, TX) — Capacity: 14,500, Turf, Outdoor
+  Teams: N/A
+
+Braly Municipal Stadium (Florence, AL) — Capacity: 14,215, Turf, Outdoor
+  Teams: N/A
+
+Elliott T. Bowers Stadium (Huntsville, TX) — Capacity: 14,000, Turf, Outdoor
+  Teams: N/A
+
+Rhodes Stadium (Elon, NC) — Capacity: 14,000, Grass, Outdoor
+  Teams: N/A
+
+E. J. Whitmire Stadium (Cullowhee, NC) — Capacity: 13,742, Turf, Outdoor
+  Teams: N/A
+
+Perkins Stadium (Whitewater, WI) — Capacity: 13,500, Turf, Outdoor
+  Teams: N/A
+
+Fisher Field (Easton, PA) — Capacity: 13,132, Turf, Outdoor
+  Teams: N/A
+
+Christy Mathewson-Memorial Stadium (Lewisburg, PA) — Capacity: 13,100, Turf, Outdoor
+  Teams: N/A
+
+Gibbs Stadium (Spartanburg, SC) — Capacity: 13,000, Grass, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Terre Haute, IN) — Capacity: 12,764, Turf, Outdoor
+  Teams: N/A
+
+Villanova Stadium (Villanova, PA) — Capacity: 12,500, Turf, Outdoor
+  Teams: N/A
+
+Birkelbach Field (Georgetown, TX) — Capacity: 12,442, Turf, Outdoor
+  Teams: N/A
+
+Zable Stadium (Williamsburg, VA) — Capacity: 12,400, Turf, Outdoor
+  Teams: N/A
+
+Kenneth P. LaValle Stadium (Stony Brook, NY) — Capacity: 12,300, Turf, Outdoor
+  Teams: N/A
+
+Alerus Center (Grand Forks, ND) — Capacity: 12,283, Turf, Dome
+  Teams: N/A
+
+Memorial Stadium (Stephenville, TX) (Stephenville, TX) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Children's Health Stadium (Prosper, TX) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Buffalo Stadium (Canyon, TX) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+McKinney ISD Stadium (Mckinney, TX) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Armstrong Stadium (Hampton, VA) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Holt Arena (Pocatello, ID) — Capacity: 12,000, Turf, Dome
+  Teams: N/A
+
+Wildcat Stadium (TX) (Abilene, TX) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Audrey J. Walton Stadium at Vernon Kennedy Field (Warrensburg, MO) — Capacity: 12,000, Turf, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Commerce TX) (Commerce, TX) — Capacity: 11,582, Turf, Outdoor
+  Teams: N/A
+
+Johnson Hagood Stadium (Charleston, SC) — Capacity: 11,427, Grass, Outdoor
+  Teams: N/A
+
+Johnny Unitas Stadium (Towson, MD) — Capacity: 11,200, Turf, Outdoor
+  Teams: N/A
+
+Alex G. Spanos Stadium (San Luis Obispo, CA) — Capacity: 11,075, Grass, Outdoor
+  Teams: N/A
+
+Houck Stadium (Cape Girardeau, MO) — Capacity: 11,015, Turf, Outdoor
+  Teams: N/A
+
+Wildcat Stadium (Durham, NH) — Capacity: 11,015, Turf, Outdoor
+  Teams: N/A
+
+Memorial Field (Hanover, NH) — Capacity: 11,000, Turf, Outdoor
+  Teams: N/A
+
+Welcome Stadium (Dayton, OH) — Capacity: 11,000, Turf, Outdoor
+  Teams: N/A
+
+Aggie Stadium (Davis, CA) — Capacity: 10,743, Turf, Outdoor
+  Teams: N/A
+
+Manning Field at John L. Guidry Stadium (Thibodaux, LA) — Capacity: 10,500, Turf, Outdoor
+  Teams: N/A
+
+Greater Zion Stadium (Saint George, UT) — Capacity: 10,500, Turf, Outdoor
+  Teams: N/A
+
+Lubbers Stadium (Allendale, MI) — Capacity: 10,444, Turf, Outdoor
+  Teams: N/A
+
+Andy Kerr Stadium (Hamilton, NY) — Capacity: 10,221, Turf, Outdoor
+  Teams: N/A
+
+Five Star Stadium at the Moye Complex (Macon, GA) — Capacity: 10,200, Turf, Outdoor
+  Teams: N/A
+
+Governors Stadium (Clarksville, TN) — Capacity: 10,100, Turf, Outdoor
+  Teams: N/A
+
+Bazemore-Hyder Stadium (Valdosta, GA) — Capacity: 10,100, Turf, Outdoor
+  Teams: N/A
