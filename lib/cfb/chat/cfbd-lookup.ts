@@ -1,7 +1,7 @@
 import { getActiveApiKey, getCalendarFromCfbd } from '@/lib/cfb/cfbd-rest-client';
 import { fetch as redisFetch, persistRedisKey, redis } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
-import { BLOCKED_PATHS } from './cfbd-api-catalog';
+import { BLOCKED_PATHS, SKIP_CACHE_PATHS } from './cfbd-api-catalog';
 import { createHash } from 'crypto';
 
 const USAGE_KEY = 'cfbd:ai-usage';
@@ -94,11 +94,17 @@ export const executeCfbdLookup = async (
   };
 
   try {
-    const ttl = await getSeasonAwareTtl();
-    const data = await redisFetch<unknown>(cacheKey, fetchFromCfbd, ttl);
+    const skipCache = !historical && SKIP_CACHE_PATHS.has(path);
+    let data: unknown;
 
-    if (historical) {
-      await persistRedisKey(cacheKey);
+    if (skipCache) {
+      data = await fetchFromCfbd();
+    } else {
+      const ttl = await getSeasonAwareTtl();
+      data = await redisFetch<unknown>(cacheKey, fetchFromCfbd, ttl);
+      if (historical) {
+        await persistRedisKey(cacheKey);
+      }
     }
 
     trackUsage(path);

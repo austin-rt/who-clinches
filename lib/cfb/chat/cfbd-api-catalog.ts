@@ -1,5 +1,7 @@
 export const BLOCKED_PATHS = new Set(['/info']);
 
+export const SKIP_CACHE_PATHS = new Set(['/lines', '/live/plays', '/scoreboard']);
+
 export const CFBD_API_CATALOG = `CFBD API — you may call ANY GET endpoint via cfbd_lookup.
 Full docs: https://apinext.collegefootballdata.com/swagger/v1/swagger.json
 
@@ -49,4 +51,5 @@ Notes:
 - "conference" accepts: SEC, ACC, B1G, Big 12, Pac-12, AAC, CUSA, MAC, MWC, SBC, Ind.
 - Most endpoints default to the current season if year is omitted.
 - seasonType values: "regular", "postseason", "both".
+- Some endpoints need a gameId. Chain calls: first /games to find the game, then use its id for /game/box/advanced, /lines, /metrics/wp, etc.
 - Be judicious — only look up data not already in your context.`;

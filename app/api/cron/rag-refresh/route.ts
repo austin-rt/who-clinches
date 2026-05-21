@@ -16,7 +16,13 @@ const SOURCES: StaticSource[] = [
   'venues',
   'conferences',
   'teams',
+  'teams-fbs',
   'coaches',
+  'draft-picks',
+  'draft-positions',
+  'draft-teams',
+  'calendar',
+  'records',
   'talent',
   'recruiting',
 ];
