@@ -21,10 +21,6 @@ const SOURCES: StaticSource[] = [
   'draft-picks',
   'draft-positions',
   'draft-teams',
-  'calendar',
-  'records',
-  'talent',
-  'recruiting',
 ];
 
 const hashText = (text: string) => createHash('sha256').update(text).digest('hex');
