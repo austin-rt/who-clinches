@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-type Feature = 'simulator' | 'ai-chat' | 'rag' | 'share' | 'caching' | 'alerts';
+type Feature = 'simulator' | 'ai-chat' | 'rag' | 'share' | 'caching' | 'alerts' | 'donations';
 
 const FEATURES: { id: Feature; label: string }[] = [
   { id: 'simulator', label: 'Simulator' },
@@ -10,6 +10,7 @@ const FEATURES: { id: Feature; label: string }[] = [
   { id: 'rag', label: 'RAG' },
   { id: 'share', label: 'Share Links' },
   { id: 'caching', label: 'Caching' },
+  { id: 'donations', label: 'Donations' },
   { id: 'alerts', label: 'Alerts' },
 ];
 
@@ -58,8 +59,15 @@ const API_KEYS: {
   {
     name: 'Resend',
     url: 'https://resend.com/api-keys',
-    description: 'CFBD API key usage alert emails.',
-    features: ['alerts'],
+    description: 'Magic link emails for donor verification and CFBD API usage alerts.',
+    features: ['donations', 'alerts'],
+  },
+  {
+    name: 'BMC Webhook Secret',
+    url: 'https://www.buymeacoffee.com/',
+    description:
+      'HMAC verification for Buy Me a Coffee donation webhooks. Get this from your BMC developer settings.',
+    features: ['donations'],
   },
 ];
 
