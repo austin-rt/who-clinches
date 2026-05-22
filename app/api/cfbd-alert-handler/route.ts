@@ -12,6 +12,7 @@ export const POST = async (request: NextRequest) => {
     const { remainingCalls, patronLevel, threshold, message, timestamp } = data;
 
     await sendEmail({
+      from: 'api-alerts',
       subject: `[CFBD API] Low Remaining Calls: ${remainingCalls}`,
       html: notificationHtml('CFBD API Alert', [
         { label: 'Remaining Calls', value: String(remainingCalls) },

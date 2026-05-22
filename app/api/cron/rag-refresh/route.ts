@@ -109,6 +109,7 @@ export const GET = async (request: NextRequest) => {
 
   if (!allSkipped) {
     void sendEmail({
+      from: 'rag',
       subject: `[Cron] RAG refresh ${errors.length ? 'partial' : 'complete'}`,
       html: notificationHtml(
         `RAG Refresh ${errors.length ? '(Partial)' : 'Complete'}`,

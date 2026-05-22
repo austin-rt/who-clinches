@@ -32,6 +32,7 @@ export const POST = async (request: NextRequest) => {
 
     after(() =>
       sendEmail({
+        from: 'feedback',
         subject: `[Feedback] ${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 60)}`,
         html: notificationHtml(
           'New Feedback',

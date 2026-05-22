@@ -79,6 +79,7 @@ const handleMoneyIn = async (payload: Record<string, unknown>): Promise<Response
   }
 
   void sendEmail({
+    from: 'donations',
     subject: `[Donation] $${amount} from ${email} (${credits} credits)`,
     html: notificationHtml('New Donation', [
       { label: 'Email', value: email },
@@ -114,6 +115,7 @@ const handleRefund = async (payload: Record<string, unknown>): Promise<Response>
   await db.donation.delete({ where: { bmcId } });
 
   void sendEmail({
+    from: 'donations',
     subject: `[Refund] ${donation.credits} credits revoked (${donation.email})`,
     html: notificationHtml('Refund Processed', [
       { label: 'Email', value: donation.email },
