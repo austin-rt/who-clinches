@@ -22,13 +22,13 @@ const GameCard = ({ game }: GameCardProps) => {
           {game.state === 'in' && <LiveBadge />}
         </div>
 
-        <div className="flex items-center justify-evenly">
-          <div className="flex flex-col items-center gap-1">
+        <div className="flex items-center">
+          <div className="flex w-1/3 flex-col items-center gap-1">
             <Team team={game.away} />
             <TeamRankAbbrev team={game.away} />
           </div>
           <Score game={game} />
-          <div className="flex flex-col items-center gap-1">
+          <div className="flex w-1/3 flex-col items-center gap-1">
             <Team team={game.home} />
             <TeamRankAbbrev team={game.home} />
           </div>

@@ -92,18 +92,18 @@ const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
     <div className="flex flex-col gap-2 rounded-lg border border-black/5 p-3 dark:border-white/10">
       <Link
         href={`/nfl/${conf.toLowerCase()}`}
-        className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+        className="group flex flex-col items-center gap-1.5 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
       >
         <Image
           src={`https://a.espncdn.com/i/teamlogos/nfl/500/${conf.toLowerCase()}.png`}
           alt={conf}
-          width={28}
-          height={28}
-          className="h-7 w-7 object-contain"
+          width={48}
+          height={48}
+          className="h-12 w-12 object-contain"
           unoptimized
         />
         <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
-          {conf} — All Teams
+          {conf}
         </span>
       </Link>
       {NFL_DIVISION_ORDER.map((divName) => (
@@ -220,18 +220,18 @@ const Home = () => {
               <div className="flex flex-col gap-3 px-5 pb-5">
                 <Link
                   href="/nfl"
-                  className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+                  className="group flex flex-col items-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-4 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
                 >
                   <Image
                     src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png"
                     alt="NFL"
-                    width={28}
-                    height={28}
-                    className="h-7 w-7 object-contain"
+                    width={72}
+                    height={72}
+                    className="h-[72px] w-[72px] object-contain"
                     unoptimized
                   />
                   <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
-                    Full League — All 32 Teams
+                    Full League
                   </span>
                 </Link>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

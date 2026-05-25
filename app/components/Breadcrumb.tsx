@@ -10,10 +10,13 @@ interface BreadcrumbSegment {
 
 const buildSegments = (pathname: string): BreadcrumbSegment[] => {
   const parts = pathname.split('/').filter(Boolean);
-  return parts.map((part, i) => ({
-    label: part.toUpperCase(),
-    href: '/' + parts.slice(0, i + 1).join('/'),
-  }));
+  return [
+    { label: 'HOME', href: '/' },
+    ...parts.map((part, i) => ({
+      label: part.toUpperCase(),
+      href: '/' + parts.slice(0, i + 1).join('/'),
+    })),
+  ];
 };
 
 const Breadcrumb = () => {
