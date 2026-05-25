@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db/client';
 import { verifyMagicLink, claimPendingDonations } from '@/lib/chat/magic-link';
 import { getOrCreateChatIdentity, buildCookieHeader } from '@/lib/chat/identity';
+import { buildAdminCookieHeader } from '@/lib/admin/chat-admin';
 
 export const GET = async (request: NextRequest) => {
   const token = request.nextUrl.searchParams.get('token');
@@ -41,6 +42,11 @@ export const GET = async (request: NextRequest) => {
   const response = NextResponse.redirect(redirectUrl);
   if (setCookie || existingByEmail) {
     response.headers.append('Set-Cookie', buildCookieHeader(chatUser.anonymousId));
+  }
+
+  const adminEmail = process.env.RESEND_ADMIN_EMAIL ?? 'whoclinches@austinrt.com';
+  if (email.toLowerCase() === adminEmail.toLowerCase()) {
+    response.headers.append('Set-Cookie', buildAdminCookieHeader());
   }
 
   return response;
