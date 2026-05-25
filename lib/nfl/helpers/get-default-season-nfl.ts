@@ -1,6 +1,6 @@
 export const getDefaultNflSeason = (): number => {
-  const envYear = process.env.NFL_FIXTURE_YEAR;
-  if (envYear) return Number(envYear);
+  const fixtureYear = process.env.FIXTURE_YEAR;
+  if (fixtureYear) return Number(fixtureYear);
 
   const now = new Date();
   const month = now.getMonth() + 1;

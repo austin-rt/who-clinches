@@ -8,7 +8,7 @@ const SITE_API = 'https://site.api.espn.com/apis/site/v2/sports/football/nfl';
 const CORE_API = 'https://sports.core.api.espn.com/v2/sports/football/leagues/nfl';
 
 const FIRST_SEASON = 2002;
-const LAST_SEASON = 2024;
+const LAST_SEASON = 2025;
 
 const DELAY_MS = 300;
 
@@ -210,6 +210,10 @@ const EXPECTED_SEEDINGS: Record<number, { afc: string[]; nfc: string[] }> = {
   2024: {
     afc: ['KC', 'BUF', 'BAL', 'HOU', 'LAC', 'PIT', 'DEN'],
     nfc: ['DET', 'PHI', 'TB', 'LAR', 'MIN', 'WSH', 'GB'],
+  },
+  2025: {
+    afc: ['DEN', 'NE', 'JAX', 'PIT', 'HOU', 'BUF', 'LAC'],
+    nfc: ['SEA', 'CHI', 'PHI', 'CAR', 'LAR', 'SF', 'GB'],
   },
 };
 
