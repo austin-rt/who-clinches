@@ -1,38 +1,50 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { SPORT_METADATA, getConferenceMetadata, type SportSlug } from '@/lib/constants';
 
-const STATIC_LABELS: Record<string, string> = {
-  contribute: 'Contribute',
-  results: 'Results',
-  admin: 'Admin',
-};
+interface BreadcrumbSegment {
+  label: string;
+  href: string;
+}
 
-const buildSegmentLabels = (pathname: string): string[] => {
-  const segments = pathname.split('/').filter(Boolean);
-  if (segments.length === 0) return [];
-
-  return segments.map((segment) => {
-    const sportMeta = SPORT_METADATA[segment as SportSlug];
-    if (sportMeta) return sportMeta.name;
-    if (STATIC_LABELS[segment]) return STATIC_LABELS[segment];
-    const confMeta = getConferenceMetadata(segment);
-    if (confMeta) return confMeta.name;
-    return segment.charAt(0).toUpperCase() + segment.slice(1);
-  });
+const buildSegments = (pathname: string): BreadcrumbSegment[] => {
+  const parts = pathname.split('/').filter(Boolean);
+  return parts.map((part, i) => ({
+    label: part.toUpperCase(),
+    href: '/' + parts.slice(0, i + 1).join('/'),
+  }));
 };
 
 const Breadcrumb = () => {
   const pathname = usePathname();
-  const labels = buildSegmentLabels(pathname);
+  const segments = buildSegments(pathname);
 
-  if (labels.length === 0) return null;
+  if (segments.length === 0) return null;
 
   return (
     <div className="border-b border-stroke-alt bg-base-100">
       <div className="container mx-auto px-4 py-2">
-        <p className="text-sm text-base-content">{labels.join(' • ')}</p>
+        <nav className="flex items-center gap-1.5 text-sm">
+          {segments.map((seg, i) => {
+            const isLast = i === segments.length - 1;
+            return (
+              <span key={seg.href} className="flex items-center gap-1.5">
+                {i > 0 && <span className="text-base-content/30">•</span>}
+                {isLast ? (
+                  <span className="font-medium text-base-content">{seg.label}</span>
+                ) : (
+                  <Link
+                    href={seg.href}
+                    className="text-base-content/60 transition-colors hover:text-base-content hover:underline"
+                  >
+                    {seg.label}
+                  </Link>
+                )}
+              </span>
+            );
+          })}
+        </nav>
       </div>
     </div>
   );
