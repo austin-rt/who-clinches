@@ -13,6 +13,7 @@ import {
   resolveTeamConference,
   resolveConferenceFromMessage,
 } from '@/lib/cfb/chat/context-assembly';
+import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
 import { resolveOverrides } from '@/lib/cfb/chat/resolve-overrides';
 import { runConferenceSimulation } from '@/lib/cfb/runConferenceSimulation';
 import { executeCfbdLookup } from '@/lib/cfb/chat/cfbd-lookup';
@@ -110,7 +111,8 @@ const buildUnifiedSystemPrompt = (season: number, userLocation: string): string 
     `Use espn_nfl_lookup for NFL data (scores, schedules, stats, rosters). ` +
     `Use cfbd_lookup for CFB data (ratings, records, lines, rosters, stats). ` +
     `Never say "I don't have that data" — look it up.\n\n` +
-    `The context data below is provided by the app — the user did not supply it. Use it for accurate answers.\n\n` +
+    `If context data is included in the user's message, it was injected by the app (the user cannot see it). Use it for accurate answers. ` +
+    `If no context is present, use your tools to look up whatever you need.\n\n` +
     `Tone:\n` +
     `- Like a quick-witted friend who knows their stuff — natural, fun, direct, with dry humor.\n` +
     `- Be quippy. Deadpan observations, playful jabs at traditions, rivalries — all fair game.\n` +
@@ -365,7 +367,7 @@ export const POST = async (request: NextRequest) => {
     }
 
     const confMeta = conf ? CFB_CONFERENCE_METADATA[conf] : null;
-    const season = clientSeason ?? new Date().getFullYear();
+    const season = clientSeason ?? (await getDefaultSeasonFromCfbd());
 
     const contextParts: string[] = [];
     let confData: Awaited<ReturnType<typeof loadConferenceData>> | null = null;
@@ -460,7 +462,7 @@ export const POST = async (request: NextRequest) => {
       })),
       {
         role: 'user',
-        content: `[Context]\n${contextBlock}\n\n[Question]\n${message}`,
+        content: contextBlock ? `[Context]\n${contextBlock}\n\n[Question]\n${message}` : message,
       },
     ];
 
