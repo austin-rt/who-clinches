@@ -6,7 +6,6 @@ import { useAppSelector } from '../store/hooks';
 import { FaXTwitter, FaThreads } from 'react-icons/fa6';
 import { IoSendOutline, IoCopyOutline, IoCheckmarkOutline, IoOpenOutline } from 'react-icons/io5';
 import IconButton from './IconButton';
-import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import type { SimulateResponse } from '../store/api';
 import type { GameLean } from '@/lib/types';
@@ -26,9 +25,9 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
   const [copied, setCopied] = useState(false);
   const fetchedHashRef = useRef<string | null>(null);
 
-  const isValid = isValidSport(sportParam) && isValidConference(confParam);
-  const sport = isValid ? (sportParam as SportSlug) : null;
-  const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
+  const sport = isValidSport(sportParam) ? (sportParam as SportSlug) : null;
+  const isValid = sport !== null && isValidConference(confParam, sport);
+  const conf = isValid ? confParam : null;
 
   useEffect(() => {
     if (!simulateResponse || !sport || !conf || !season) return;

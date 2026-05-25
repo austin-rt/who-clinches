@@ -339,10 +339,34 @@ export const getWildCardCount = (season: number): number => (season >= 2020 ? 3 
 
 export const getPlayoffSize = (season: number): number => (season >= 2020 ? 7 : 6);
 
-export const NFL = {
+export const NFL_CONFERENCE_SLUGS = {
+  afc: 'AFC',
+  nfc: 'NFC',
+} as const;
+
+export type NflConferenceSlug = keyof typeof NFL_CONFERENCE_SLUGS;
+
+export const NFL_DIVISION_SLUGS: Record<string, NflDivisionId> = {
+  'afc-east': 'AFC East',
+  'afc-north': 'AFC North',
+  'afc-south': 'AFC South',
+  'afc-west': 'AFC West',
+  'nfc-east': 'NFC East',
+  'nfc-north': 'NFC North',
+  'nfc-south': 'NFC South',
+  'nfc-west': 'NFC West',
+};
+
+export const NFL_TEAM_SLUGS: Record<string, string> = Object.fromEntries(
+  NFL_TEAMS.map((t) => [t.abbrev.toLowerCase(), t.espnId])
+);
+
+export const NFL_SPORT = {
   name: 'NFL',
   slug: 'nfl' as const,
   conferences: NFL_CONFERENCES,
+  conferencesBySlug: NFL_CONFERENCE_SLUGS,
   divisions: NFL_DIVISIONS,
+  divisionsBySlug: NFL_DIVISION_SLUGS,
   teams: NFL_TEAMS,
 } as const;

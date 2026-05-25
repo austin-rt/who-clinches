@@ -8,7 +8,7 @@ import {
   CFB_AVAILABLE_CONFERENCES,
   type CFBConferenceAbbreviation,
 } from '@/lib/cfb/constants';
-import { SPORT_METADATA, isValidConference } from '@/lib/constants';
+import { SPORT_METADATA } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
 
@@ -28,8 +28,9 @@ const Navigation = ({ isNonProd }: { isNonProd: boolean }) => {
   );
 
   useEffect(() => {
-    if (currentConf && isValidConference(currentConf)) {
-      const theme = CFB_CONFERENCE_METADATA[currentConf]?.theme || 'sec';
+    if (currentConf && currentConf in CFB_CONFERENCE_METADATA) {
+      const theme =
+        CFB_CONFERENCE_METADATA[currentConf as CFBConferenceAbbreviation]?.theme || 'sec';
       setTheme(theme);
     }
   }, [currentConf, setTheme]);
@@ -50,8 +51,8 @@ const Navigation = ({ isNonProd }: { isNonProd: boolean }) => {
           isNonProd ? 'text-white hover:bg-white/20' : 'text-base-content'
         )}
       >
-        {currentConf && isValidConference(currentConf)
-          ? CFB_CONFERENCE_METADATA[currentConf].name
+        {currentConf && currentConf in CFB_CONFERENCE_METADATA
+          ? CFB_CONFERENCE_METADATA[currentConf as CFBConferenceAbbreviation].name
           : SPORT_METADATA.cfb.name}
       </label>
       <ul className="dropdown-content menu z-[1] w-52 rounded-lg border-2 border-stroke bg-base-100 p-2 shadow-lg">

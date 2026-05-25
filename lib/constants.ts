@@ -4,6 +4,7 @@ import {
   type CFBConferenceMetadata,
   type CFBConferenceAbbreviation,
 } from '@/lib/cfb/constants';
+import { NFL_SPORT, type NflConferenceSlug } from '@/lib/nfl/constants';
 
 export const JSON_SERVER_URL = 'http://localhost:3001';
 
@@ -27,6 +28,7 @@ export const CFBD_SEASON_TYPE: Record<Uppercase<CfbdSeasonType>, CfbdSeasonType>
 
 export const SPORT_METADATA = {
   cfb: CFB_SPORT,
+  nfl: NFL_SPORT,
 } as const;
 
 export type SportSlug = keyof typeof SPORT_METADATA;
@@ -43,6 +45,11 @@ export const getConferenceMetadata = (conf: string): CFBConferenceMetadata | nul
     : null;
 };
 
-export const isValidConference = (conf: string): conf is CFBConferenceAbbreviation => {
-  return conf in CFB_SPORT.conferences;
+export const isValidConference = (
+  conf: string,
+  sport?: SportSlug
+): conf is CFBConferenceAbbreviation | NflConferenceSlug => {
+  if (sport === 'nfl') return conf in NFL_SPORT.conferencesBySlug;
+  if (sport === 'cfb') return conf in CFB_SPORT.conferences;
+  return conf in CFB_SPORT.conferences || conf in NFL_SPORT.conferencesBySlug;
 };

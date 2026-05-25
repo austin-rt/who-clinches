@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { nanoid } from 'nanoid';
 import { db } from '@/lib/db/client';
 import type { Prisma } from '@prisma/client';
-import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { hashPayload } from '@/lib/api/payload-hash';
 
@@ -30,12 +29,13 @@ export const POST = async (
     if (!isValidSport(sportParam)) {
       return NextResponse.json({ error: `Unsupported sport: ${sportParam}` }, { status: 400 });
     }
-    if (!isValidConference(confParam)) {
+    const sport = sportParam as SportSlug;
+
+    if (!isValidConference(confParam, sport)) {
       return NextResponse.json({ error: `Unsupported conference: ${confParam}` }, { status: 400 });
     }
 
-    const sport = sportParam as SportSlug;
-    const conf = confParam as CFBConferenceAbbreviation;
+    const conf = confParam;
 
     const bodyHash = hashPayload(sport, conf, { season, overrides });
 

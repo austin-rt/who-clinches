@@ -26,7 +26,7 @@ const ratelimit = new Ratelimit({
   prefix: 'ratelimit',
 });
 
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   const vercelEnv = process.env.VERCEL_ENV;
@@ -105,5 +105,5 @@ export const middleware = async (request: NextRequest) => {
 };
 
 export const config = {
-  matcher: ['/api/:path*', '/admin/:path*', '/:sport/:conf'],
+  matcher: ['/api/:path*', '/admin/:path*', '/:sport/:path*'],
 };
