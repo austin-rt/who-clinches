@@ -228,10 +228,12 @@ const NflDivStandings = ({
   );
 };
 
-const PageHeader = ({ scope }: { scope: FilterScope }) => {
+const PageHeader = ({ scope, season }: { scope: FilterScope; season: number | null }) => {
+  const year = season ?? '';
+
   if (scope.level === 'team') {
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col items-center gap-4">
         <Image
           src={nflTeamLogo(scope.team.abbrev)}
           alt={scope.team.displayName}
@@ -239,45 +241,65 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
           height={64}
           className="h-16 w-16 object-contain"
         />
-        <div>
-          <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
+        <div className="flex w-full flex-col gap-2 text-center">
+          <h1
+            data-testid="nfl-heading"
+            className="text-2xl font-bold text-base-content transition-colors"
+          >
             {scope.team.displayName}
           </h1>
-          <p className="text-base-content/50 text-sm">{scope.team.divisionId}</p>
+          <p className="text-base-content/70 text-sm">
+            {scope.team.divisionId} &middot; {year} Playoff Simulator
+          </p>
         </div>
       </div>
     );
   }
   if (scope.level === 'division') {
     return (
-      <div>
-        <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
-          {scope.divisionId}
-        </h1>
-        <p className="text-base-content/50 text-sm">
-          {getTeamsInDivision(scope.divisionId).length} teams
-        </p>
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex w-full flex-col gap-2 text-center">
+          <h1
+            data-testid="nfl-heading"
+            className="text-2xl font-bold text-base-content transition-colors"
+          >
+            {scope.divisionId}
+          </h1>
+          <p className="text-base-content/70 text-sm">
+            {getTeamsInDivision(scope.divisionId).length} teams &middot; {year} Playoff Simulator
+          </p>
+        </div>
       </div>
     );
   }
   if (scope.level === 'conference') {
     return (
-      <div>
-        <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
-          {scope.conference}
-        </h1>
-        <p className="text-base-content/50 text-sm">
-          {getTeamsInConference(scope.conference).length} teams &middot; Playoff Simulator
-        </p>
+      <div className="flex flex-col items-center gap-4">
+        <div className="flex w-full flex-col gap-2 text-center">
+          <h1
+            data-testid="nfl-heading"
+            className="text-2xl font-bold text-base-content transition-colors"
+          >
+            {scope.conference}
+          </h1>
+          <p className="text-base-content/70 text-sm">
+            {getTeamsInConference(scope.conference).length} teams &middot; {year} Playoff Simulator
+          </p>
+        </div>
       </div>
     );
   }
   return (
-    <div>
-      <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
-        NFL
-      </h1>
-      <p className="text-base-content/50 text-sm">32 teams &middot; Playoff Simulator</p>
+    <div className="flex flex-col items-center gap-4">
+      <div className="flex w-full flex-col gap-2 text-center">
+        <h1
+          data-testid="nfl-heading"
+          className="text-2xl font-bold text-base-content transition-colors"
+        >
+          NFL
+        </h1>
+        <p className="text-base-content/70 text-sm">{year} Playoff Simulator &middot; 32 teams</p>
+      </div>
     </div>
   );
 };
@@ -694,7 +716,7 @@ const NflPage = () => {
   const params = useParams();
   const filter = params.filter as string[] | undefined;
   const scope = parseFilter(filter);
-  const { games, isLoading, isError } = useNflGames();
+  const { games, season, isLoading, isError } = useNflGames();
   const { result: simResult, isLoading: simLoading, simulate, reset: resetSim } = useNflSimulate();
   const [nflResult, setNflResult] = useState<NflSimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
@@ -760,7 +782,7 @@ const NflPage = () => {
   return (
     <>
       <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
-        <PageHeader scope={scope} />
+        <PageHeader scope={scope} season={season} />
         <ChatSearchBar
           onOpen={() => {
             setForceNewChat(true);
