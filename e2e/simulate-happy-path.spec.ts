@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('simulate SEC standings and verify results render', async ({ page }) => {
-  await page.goto('/cfb/sec', { waitUntil: 'networkidle' });
+  await page.goto('/cfb/sec', { waitUntil: 'load' });
 
   await expect(page.getByTestId('conference-heading')).toBeVisible();
   await expect(page.getByTestId('standings-title')).toContainText('Current Standings');

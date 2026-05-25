@@ -7,7 +7,7 @@ test('share URL renders saved simulation results', async ({ page }) => {
     if (res.status() >= 400) errors.push(`HTTP ${res.status()} ${res.url()}`);
   });
 
-  await page.goto('/cfb/sec', { waitUntil: 'networkidle' });
+  await page.goto('/cfb/sec', { waitUntil: 'load' });
   await expect(page.getByTestId('conference-heading')).toBeVisible();
 
   const simulateBtn = page.getByTestId('simulate-button');

@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('home page loads and navigates to conference page', async ({ page }) => {
-  await page.goto('/', { waitUntil: 'networkidle' });
+  await page.goto('/', { waitUntil: 'load' });
 
   await expect(page.getByTestId('home-heading')).toBeVisible();
   await expect(page.getByTestId('conference-grid')).toBeVisible();

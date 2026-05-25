@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('chat drawer opens, sends message, streams response, and closes', async ({ page }) => {
-  await page.goto('/cfb/sec', { waitUntil: 'networkidle' });
+  await page.goto('/cfb/sec', { waitUntil: 'load' });
 
   const drawer = page.getByRole('dialog', { name: 'Chat' });
   await expect(drawer).not.toBeVisible();

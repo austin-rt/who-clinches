@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test('reset clears simulation results and picks', async ({ page }) => {
-  await page.goto('/cfb/sec', { waitUntil: 'networkidle' });
+  await page.goto('/cfb/sec', { waitUntil: 'load' });
 
   const simulateBtn = page.getByTestId('simulate-button');
   await simulateBtn.scrollIntoViewIfNeeded();
