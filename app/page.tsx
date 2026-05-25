@@ -59,42 +59,40 @@ const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
           {conf} — All Teams
         </span>
       </Link>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {divisions.map((divId) => {
-          const divName = divId.replace(`${conf} `, '');
-          const teams = getTeamsInDivision(divId);
-          return (
-            <div key={divId} className="flex flex-col gap-1.5">
-              <Link
-                href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
-                className="text-base-content/50 text-center text-[11px] font-bold uppercase tracking-wide hover:text-base-content"
-              >
-                {divName}
-              </Link>
-              <div className="flex flex-col gap-1.5">
-                {teams.map((t) => (
-                  <Link
-                    key={t.espnId}
-                    href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
-                    className="group flex flex-col items-center gap-1 rounded-lg border border-black/5 bg-gradient-to-b from-white to-black/[0.02] p-2 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
-                  >
-                    <Image
-                      src={nflTeamLogo(t.abbrev)}
-                      alt={t.displayName}
-                      width={32}
-                      height={32}
-                      className="h-8 w-8 object-contain"
-                    />
-                    <span className="text-base-content/70 text-[10px] font-medium group-hover:text-base-content">
-                      {t.abbrev}
-                    </span>
-                  </Link>
-                ))}
-              </div>
+      {divisions.map((divId) => {
+        const divName = divId.replace(`${conf} `, '');
+        const teams = getTeamsInDivision(divId);
+        return (
+          <div key={divId} className="flex flex-col gap-1.5">
+            <Link
+              href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
+              className="text-base-content/50 px-1 text-[11px] font-bold uppercase tracking-wide hover:text-base-content"
+            >
+              {divName}
+            </Link>
+            <div className="grid grid-cols-4 gap-1.5">
+              {teams.map((t) => (
+                <Link
+                  key={t.espnId}
+                  href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
+                  className="group flex flex-col items-center gap-1 rounded-lg border border-black/5 bg-gradient-to-b from-white to-black/[0.02] p-2 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+                >
+                  <Image
+                    src={nflTeamLogo(t.abbrev)}
+                    alt={t.displayName}
+                    width={32}
+                    height={32}
+                    className="h-8 w-8 object-contain"
+                  />
+                  <span className="text-base-content/70 text-[10px] font-medium group-hover:text-base-content">
+                    {t.abbrev}
+                  </span>
+                </Link>
+              ))}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
