@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export const GET = async (request: NextRequest) => {
   try {
     const seasonParam = request.nextUrl.searchParams.get('season');
-    const season = seasonParam ? parseInt(seasonParam, 10) : await getDefaultNflSeason();
+    const season = seasonParam ? parseInt(seasonParam, 10) : getDefaultNflSeason();
 
     if (isNaN(season) || season < 2002 || season > 2099) {
       return NextResponse.json({ error: 'Invalid season' }, { status: 400 });

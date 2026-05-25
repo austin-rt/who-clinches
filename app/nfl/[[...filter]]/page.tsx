@@ -25,6 +25,7 @@ import { organizeGames } from '@/lib/utils/organizeGames';
 import { useUIState } from '@/app/store/useUI';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks, type GamePick } from '@/app/store/gamePicksSlice';
+import { setStandingsOpen } from '@/app/store/uiSlice';
 import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
 import CompactGameButton from '@/app/components/CompactGameButton';
 import CompactWeekGrid from '@/app/components/CompactWeekGrid';
@@ -747,15 +748,20 @@ const NflPage = () => {
   const { completedWeeks, remainingWeeks } = organizeGames(filteredGames);
 
   const handleSimulate = async () => {
+    if (!season) return;
+
     const overrides: Record<string, { homeScore: number; awayScore: number }> = {};
     Object.entries(gamePicks).forEach(([gameId, pick]) => {
       const gp = pick as GamePick;
       overrides[gameId] = { homeScore: gp.homeScore, awayScore: gp.awayScore };
     });
-    const result = await simulate(games, season ?? 2024, overrides);
+    const result = await simulate(games, season, overrides);
     if (result) {
       setNflResult(result);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      dispatch(setStandingsOpen(true));
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 100);
     }
   };
 
@@ -782,7 +788,7 @@ const NflPage = () => {
 
   return (
     <>
-      <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
+      <div className="container mx-auto flex min-h-full flex-col gap-8 px-4 py-8">
         <PageHeader scope={scope} />
         <ChatSearchBar
           onOpen={() => {
@@ -842,7 +848,7 @@ const NflPage = () => {
             size="md"
             color="primary"
             onClick={handleSimulate}
-            disabled={games.length === 0}
+            disabled={season === null || games.length === 0}
             loading={simLoading}
             className="w-1/2 text-xs sm:w-fit"
           >

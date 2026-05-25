@@ -1,8 +1,6 @@
-import { getFixtureYear } from '@/lib/cfb/helpers/fixture-year';
-
-export const getDefaultNflSeason = async (): Promise<number> => {
-  const fixtureYear = await getFixtureYear();
-  if (fixtureYear !== null) return fixtureYear;
+export const getDefaultNflSeason = (): number => {
+  const envYear = process.env.NFL_FIXTURE_YEAR;
+  if (envYear) return Number(envYear);
 
   const now = new Date();
   const month = now.getMonth() + 1;

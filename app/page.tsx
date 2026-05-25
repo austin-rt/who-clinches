@@ -15,7 +15,6 @@ import {
 } from '@/lib/cfb/constants';
 import {
   NFL_CONFERENCES,
-  NFL_DIVISIONS,
   getTeamsInDivision,
   type NflConference,
   type NflDivisionId,
@@ -37,64 +36,65 @@ const CFB_CONFERENCE_LOGOS: Record<string, string> = {
 const nflTeamLogo = (abbrev: string) =>
   `https://a.espncdn.com/i/teamlogos/nfl/500/${abbrev.toLowerCase()}.png`;
 
+const NFL_DIVISION_ORDER = ['North', 'South', 'East', 'West'] as const;
+
 const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
-  const [open, setOpen] = useState(true);
-  const divisions = NFL_DIVISIONS.filter((d) => d.startsWith(conf)) as NflDivisionId[];
+  const divisions = NFL_DIVISION_ORDER.map((d) => `${conf} ${d}` as NflDivisionId);
 
   return (
-    <div className="rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] dark:border-white/10 dark:from-white/20 dark:to-white/15">
-      <button
-        type="button"
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between px-4 py-3 text-left"
+    <div className="flex flex-col gap-3">
+      <Link
+        href={`/nfl/${conf.toLowerCase()}`}
+        className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
       >
-        <Link
-          href={`/nfl/${conf.toLowerCase()}`}
-          onClick={(e) => e.stopPropagation()}
-          className="text-base-content/90 text-base font-semibold hover:text-base-content"
-        >
-          {conf}
-        </Link>
-        <HiChevronDown
-          className={`text-base-content/40 h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+        <Image
+          src={`https://a.espncdn.com/i/teamlogos/nfl/500/${conf.toLowerCase()}.png`}
+          alt={conf}
+          width={28}
+          height={28}
+          className="h-7 w-7 object-contain"
+          unoptimized
         />
-      </button>
-      {open && (
-        <div className="grid grid-cols-2 gap-3 px-4 pb-4 sm:grid-cols-4">
-          {divisions.map((divId) => {
-            const divName = divId.replace(`${conf} `, '');
-            const teams = getTeamsInDivision(divId);
-            return (
-              <div key={divId} className="flex flex-col gap-2">
-                <Link
-                  href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
-                  className="text-base-content/50 text-xs font-semibold uppercase tracking-wide hover:text-base-content"
-                >
-                  {divName}
-                </Link>
-                <div className="flex flex-col gap-1">
-                  {teams.map((t) => (
-                    <Link
-                      key={t.espnId}
-                      href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
-                      className="hover:bg-base-content/5 flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors"
-                    >
-                      <Image
-                        src={nflTeamLogo(t.abbrev)}
-                        alt={t.displayName}
-                        width={24}
-                        height={24}
-                        className="h-6 w-6 object-contain"
-                      />
-                      <span className="text-base-content/70 text-xs font-medium">{t.abbrev}</span>
-                    </Link>
-                  ))}
-                </div>
+        <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
+          {conf} — All Teams
+        </span>
+      </Link>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {divisions.map((divId) => {
+          const divName = divId.replace(`${conf} `, '');
+          const teams = getTeamsInDivision(divId);
+          return (
+            <div key={divId} className="flex flex-col gap-1.5">
+              <Link
+                href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
+                className="text-base-content/50 text-center text-[11px] font-bold uppercase tracking-wide hover:text-base-content"
+              >
+                {divName}
+              </Link>
+              <div className="flex flex-col gap-1.5">
+                {teams.map((t) => (
+                  <Link
+                    key={t.espnId}
+                    href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
+                    className="group flex flex-col items-center gap-1 rounded-lg border border-black/5 bg-gradient-to-b from-white to-black/[0.02] p-2 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+                  >
+                    <Image
+                      src={nflTeamLogo(t.abbrev)}
+                      alt={t.displayName}
+                      width={32}
+                      height={32}
+                      className="h-8 w-8 object-contain"
+                    />
+                    <span className="text-base-content/70 text-[10px] font-medium group-hover:text-base-content">
+                      {t.abbrev}
+                    </span>
+                  </Link>
+                ))}
               </div>
-            );
-          })}
-        </div>
-      )}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -154,9 +154,19 @@ const Home = () => {
               <div className="flex flex-col gap-3 px-5 pb-5">
                 <Link
                   href="/nfl"
-                  className="text-base-content/80 flex items-center justify-center rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 text-sm font-semibold transition-all hover:from-black/[0.02] hover:to-black/[0.05] hover:text-base-content dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+                  className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
                 >
-                  Full League — All 32 Teams
+                  <Image
+                    src="https://a.espncdn.com/i/teamlogos/nfl/500/nfl.png"
+                    alt="NFL"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 object-contain"
+                    unoptimized
+                  />
+                  <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
+                    Full League — All 32 Teams
+                  </span>
                 </Link>
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {NFL_CONFERENCES.map((conf) => (
