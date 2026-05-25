@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { IoChatbubblesOutline } from 'react-icons/io5';
+import ChatDrawer from '@/app/components/Chat/ChatDrawer';
+import ChatSearchBar from '@/app/components/Chat/ChatSearchBar';
 import {
   NFL_CONFERENCES,
   NFL_DIVISIONS,
@@ -685,6 +688,13 @@ const NflPage = () => {
   const { games, isLoading, isError } = useNflGames();
   const { result: simResult, isLoading: simLoading, simulate, reset: resetSim } = useNflSimulate();
   const [nflResult, setNflResult] = useState<NflSimulateResponse | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
+  const [initialMessage, setInitialMessage] = useState<string | null>(null);
+  const [forceNewChat, setForceNewChat] = useState(false);
+  const persistedSessions = useAppSelector((s) => s.chat.sessions);
+  const chatHistory = useAppSelector((s) => s.chat.history ?? []);
+  const hasConversation =
+    persistedSessions.some((s) => s.messages.length > 0) || chatHistory.length > 0;
   const dispatch = useAppDispatch();
   const { view, setTheme } = useUIState();
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
@@ -739,63 +749,100 @@ const NflPage = () => {
   const displayResult = nflResult || simResult;
 
   return (
-    <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
-      <PageHeader scope={scope} />
-      <FilterNav scope={scope} />
-
-      {displayResult && (
-        <div data-testid="nfl-bracket">
-          <NflBracket result={displayResult} scope={scope} />
-        </div>
-      )}
-      {displayResult && (
-        <div data-testid="nfl-standings">
-          <NflDivStandings result={displayResult} scope={scope} />
-        </div>
-      )}
-
-      <div className="flex items-center justify-between gap-4 empty:hidden">
-        <ViewModeButton />
-        {completedWeeks.length > 0 && <HideCompletedButton />}
-        <ResetButton
-          games={filteredGames}
-          hasSimulationResults={!!displayResult}
-          onReset={handleReset}
-          className="ml-auto w-fit"
+    <>
+      <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
+        <PageHeader scope={scope} />
+        <ChatSearchBar
+          onOpen={() => {
+            setForceNewChat(true);
+            setChatOpen(true);
+          }}
+          onSubmit={(msg) => {
+            setForceNewChat(true);
+            setInitialMessage(msg);
+            setChatOpen(true);
+          }}
         />
+        <FilterNav scope={scope} />
+
+        {displayResult && (
+          <div data-testid="nfl-bracket">
+            <NflBracket result={displayResult} scope={scope} />
+          </div>
+        )}
+        {displayResult && (
+          <div data-testid="nfl-standings">
+            <NflDivStandings result={displayResult} scope={scope} />
+          </div>
+        )}
+
+        <div className="flex items-center justify-between gap-4 empty:hidden">
+          <ViewModeButton />
+          {completedWeeks.length > 0 && <HideCompletedButton />}
+          <ResetButton
+            games={filteredGames}
+            hasSimulationResults={!!displayResult}
+            onReset={handleReset}
+            className="ml-auto w-fit"
+          />
+        </div>
+
+        <GameContent
+          isLoading={isLoading}
+          isError={isError}
+          isTeam={scope.level === 'team'}
+          view={view}
+          games={filteredGames}
+          completedWeeks={completedWeeks}
+          remainingWeeks={remainingWeeks}
+          onReset={handleReset}
+        />
+
+        <div className="flex w-full flex-row justify-center gap-4 sm:w-auto sm:justify-between">
+          <ResetButton
+            games={filteredGames}
+            hasSimulationResults={!!displayResult}
+            onReset={handleReset}
+            className="w-1/2 sm:w-fit"
+          />
+          <Button
+            data-testid="simulate-button"
+            size="md"
+            color="primary"
+            onClick={handleSimulate}
+            disabled={games.length === 0}
+            loading={simLoading}
+            className="w-1/2 text-xs sm:w-fit"
+          >
+            {getSimulateLabel(scope)}
+          </Button>
+        </div>
       </div>
 
-      <GameContent
-        isLoading={isLoading}
-        isError={isError}
-        isTeam={scope.level === 'team'}
-        view={view}
-        games={filteredGames}
-        completedWeeks={completedWeeks}
-        remainingWeeks={remainingWeeks}
-        onReset={handleReset}
-      />
-
-      <div className="flex w-full flex-row justify-center gap-4 sm:w-auto sm:justify-between">
-        <ResetButton
-          games={filteredGames}
-          hasSimulationResults={!!displayResult}
-          onReset={handleReset}
-          className="w-1/2 sm:w-fit"
-        />
-        <Button
-          data-testid="simulate-button"
-          size="md"
-          color="primary"
-          onClick={handleSimulate}
-          disabled={games.length === 0}
-          loading={simLoading}
-          className="w-1/2 text-xs sm:w-fit"
+      {hasConversation && !chatOpen && (
+        <button
+          onClick={() => setChatOpen(true)}
+          className="chat-tab fixed right-0 top-1/2 z-30 flex -translate-y-1/2 flex-col items-center justify-center rounded-l-xl px-2.5 py-10 shadow-lg transition-opacity hover:opacity-90"
+          aria-label="Reopen chat"
         >
-          {getSimulateLabel(scope)}
-        </Button>
-      </div>
-    </div>
+          <IoChatbubblesOutline className="h-4 w-4" />
+        </button>
+      )}
+
+      <ChatDrawer
+        open={chatOpen}
+        onClose={() => {
+          setChatOpen(false);
+          setInitialMessage(null);
+          setForceNewChat(false);
+        }}
+        conferenceHint="NFL"
+        initialMessage={initialMessage}
+        onInitialMessageSent={() => setInitialMessage(null)}
+        onMessageSent={() => {}}
+        forceNewChat={forceNewChat}
+      />
+    </>
   );
 };
 

@@ -13,8 +13,6 @@ import {
   removeFromHistory,
   pruneExpiredSessions,
 } from '@/app/store/chatSlice';
-import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
-
 interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
@@ -35,7 +33,7 @@ const MAX_SESSIONS = 5;
 interface ChatDrawerProps {
   open: boolean;
   onClose: () => void;
-  conferenceHint?: CFBConferenceAbbreviation;
+  conferenceHint?: string;
   teamId?: string;
   initialMessage?: string | null;
   onInitialMessageSent?: () => void;
