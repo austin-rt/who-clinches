@@ -60,8 +60,22 @@ temp-*
 .playwright-mcp-config.json
 .playwright-mcp
 
-# ESPN NFL fixtures (178MB+, regenerable via scripts/capture-espn-nfl-fixtures.ts)
-__fixtures__/espn/
+# ESPN NFL historical fixtures (regenerable via scripts/capture-espn-nfl-fixtures.ts)
+# Current season (2025) is tracked; historical seasons are local-only
+__fixtures__/espn/nfl/scoreboard/200*/
+__fixtures__/espn/nfl/scoreboard/201*/
+__fixtures__/espn/nfl/scoreboard/2020/
+__fixtures__/espn/nfl/scoreboard/2021/
+__fixtures__/espn/nfl/scoreboard/2022/
+__fixtures__/espn/nfl/scoreboard/2023/
+__fixtures__/espn/nfl/scoreboard/2024/
+__fixtures__/espn/nfl/team-statistics/200*/
+__fixtures__/espn/nfl/team-statistics/201*/
+__fixtures__/espn/nfl/team-statistics/2020/
+__fixtures__/espn/nfl/team-statistics/2021/
+__fixtures__/espn/nfl/team-statistics/2022/
+__fixtures__/espn/nfl/team-statistics/2023/
+__fixtures__/espn/nfl/team-statistics/2024/
 
 # agent handoff scratch (local only; tracked paths remain in history)
 docs/handoffs/*

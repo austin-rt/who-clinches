@@ -38,11 +38,58 @@ const nflTeamLogo = (abbrev: string) =>
 
 const NFL_DIVISION_ORDER = ['North', 'South', 'East', 'West'] as const;
 
-const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
-  const divisions = NFL_DIVISION_ORDER.map((d) => `${conf} ${d}` as NflDivisionId);
+const NflDivisionRow = ({ conf, divName }: { conf: NflConference; divName: string }) => {
+  const [open, setOpen] = useState(true);
+  const divId = `${conf} ${divName}` as NflDivisionId;
+  const teams = getTeamsInDivision(divId);
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="rounded-lg border border-black/5 dark:border-white/10">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-3 py-2"
+      >
+        <Link
+          href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
+          onClick={(e) => e.stopPropagation()}
+          className="text-base-content/70 text-xs font-bold uppercase tracking-wide hover:text-base-content"
+        >
+          {divName}
+        </Link>
+        <HiChevronDown
+          className={`text-base-content/40 h-4 w-4 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && (
+        <div className="grid grid-cols-4 gap-1.5 px-3 pb-3">
+          {teams.map((t) => (
+            <Link
+              key={t.espnId}
+              href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
+              className="group flex flex-col items-center gap-1 rounded-lg border border-black/5 bg-gradient-to-b from-white to-black/[0.02] p-2 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+            >
+              <Image
+                src={nflTeamLogo(t.abbrev)}
+                alt={t.displayName}
+                width={32}
+                height={32}
+                className="h-8 w-8 object-contain"
+              />
+              <span className="text-base-content/70 text-[10px] font-medium group-hover:text-base-content">
+                {t.abbrev}
+              </span>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
+  return (
+    <div className="flex flex-col gap-2">
       <Link
         href={`/nfl/${conf.toLowerCase()}`}
         className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
@@ -59,40 +106,9 @@ const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
           {conf} — All Teams
         </span>
       </Link>
-      {divisions.map((divId) => {
-        const divName = divId.replace(`${conf} `, '');
-        const teams = getTeamsInDivision(divId);
-        return (
-          <div key={divId} className="flex flex-col gap-1.5">
-            <Link
-              href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}`}
-              className="text-base-content/50 px-1 text-[11px] font-bold uppercase tracking-wide hover:text-base-content"
-            >
-              {divName}
-            </Link>
-            <div className="grid grid-cols-4 gap-1.5">
-              {teams.map((t) => (
-                <Link
-                  key={t.espnId}
-                  href={`/nfl/${conf.toLowerCase()}/${divName.toLowerCase()}/${t.abbrev.toLowerCase()}`}
-                  className="group flex flex-col items-center gap-1 rounded-lg border border-black/5 bg-gradient-to-b from-white to-black/[0.02] p-2 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
-                >
-                  <Image
-                    src={nflTeamLogo(t.abbrev)}
-                    alt={t.displayName}
-                    width={32}
-                    height={32}
-                    className="h-8 w-8 object-contain"
-                  />
-                  <span className="text-base-content/70 text-[10px] font-medium group-hover:text-base-content">
-                    {t.abbrev}
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        );
-      })}
+      {NFL_DIVISION_ORDER.map((divName) => (
+        <NflDivisionRow key={divName} conf={conf} divName={divName} />
+      ))}
     </div>
   );
 };
