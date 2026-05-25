@@ -737,7 +737,7 @@ const NflPage = () => {
 
       <div className="flex items-center justify-between gap-4 empty:hidden">
         <ViewModeButton />
-        {filteredGames.some((g) => g.completed) && <HideCompletedButton />}
+        {completedWeeks.length > 0 && <HideCompletedButton />}
         <ResetButton
           games={filteredGames}
           hasSimulationResults={!!displayResult}
