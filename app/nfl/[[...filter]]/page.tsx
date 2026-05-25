@@ -270,89 +270,116 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
   );
 };
 
+const FilterChip = ({ label, href }: { label: string; href: string }) => (
+  <Link
+    href={href}
+    className="bg-primary/10 border-primary/20 flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold text-primary transition-colors"
+  >
+    {label}
+    <span className="text-primary/60 text-[10px]">✕</span>
+  </Link>
+);
+
+const FilterOption = ({ href, children }: { href: string; children: React.ReactNode }) => (
+  <Link
+    href={href}
+    className="text-base-content/60 hover:bg-base-content/5 flex items-center gap-1.5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-medium transition-colors hover:text-base-content dark:border-white/10"
+  >
+    {children}
+  </Link>
+);
+
 const FilterNav = ({ scope }: { scope: FilterScope }) => {
+  const activeFilters: { label: string; removeHref: string }[] = [];
+  let subFilters: React.ReactNode = null;
+
+  if (scope.level === 'conference' || scope.level === 'division' || scope.level === 'team') {
+    activeFilters.push({ label: scope.conference, removeHref: '/nfl' });
+  }
+  if (scope.level === 'division' || scope.level === 'team') {
+    activeFilters.push({
+      label: scope.divisionId.replace(`${scope.conference} `, ''),
+      removeHref: `/nfl/${scope.conference.toLowerCase()}`,
+    });
+  }
+  if (scope.level === 'team') {
+    activeFilters.push({
+      label: scope.team.displayName,
+      removeHref: `/nfl/${scope.conference.toLowerCase()}/${scope.division}`,
+    });
+  }
+
   if (scope.level === 'league') {
-    return (
-      <div className="flex flex-wrap gap-2">
+    subFilters = (
+      <>
         {NFL_CONFERENCES.map((conf) => (
-          <Link
-            key={conf}
-            href={`/nfl/${conf.toLowerCase()}`}
-            className="text-base-content/70 hover:bg-base-content/5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-semibold transition-colors hover:text-base-content dark:border-white/10"
-          >
+          <FilterOption key={conf} href={`/nfl/${conf.toLowerCase()}`}>
             {conf}
-          </Link>
+          </FilterOption>
         ))}
         {NFL_DIVISIONS.map((divId) => {
           const [conf, div] = divId.split(' ');
           return (
-            <Link
-              key={divId}
-              href={`/nfl/${conf.toLowerCase()}/${div.toLowerCase()}`}
-              className="text-base-content/50 hover:bg-base-content/5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-medium transition-colors hover:text-base-content dark:border-white/10"
-            >
+            <FilterOption key={divId} href={`/nfl/${conf.toLowerCase()}/${div.toLowerCase()}`}>
               {divId}
-            </Link>
+            </FilterOption>
           );
         })}
-      </div>
+      </>
     );
-  }
-  if (scope.level === 'conference') {
+  } else if (scope.level === 'conference') {
     const divisions = NFL_DIVISIONS.filter((d) => d.startsWith(scope.conference));
-    return (
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href="/nfl"
-          className="text-base-content/50 hover:bg-base-content/5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-medium transition-colors hover:text-base-content dark:border-white/10"
+    subFilters = divisions.map((divId) => {
+      const divName = divId.replace(`${scope.conference} `, '');
+      return (
+        <FilterOption
+          key={divId}
+          href={`/nfl/${scope.conference.toLowerCase()}/${divName.toLowerCase()}`}
         >
-          All Teams
-        </Link>
-        {divisions.map((divId) => {
-          const divName = divId.replace(`${scope.conference} `, '');
-          return (
-            <Link
-              key={divId}
-              href={`/nfl/${scope.conference.toLowerCase()}/${divName.toLowerCase()}`}
-              className="text-base-content/70 hover:bg-base-content/5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-semibold transition-colors hover:text-base-content dark:border-white/10"
-            >
-              {divId}
-            </Link>
-          );
-        })}
-      </div>
-    );
-  }
-  if (scope.level === 'division') {
+          {divId}
+        </FilterOption>
+      );
+    });
+  } else if (scope.level === 'division') {
     const teams = getTeamsInDivision(scope.divisionId);
-    return (
-      <div className="flex flex-wrap gap-2">
-        <Link
-          href={`/nfl/${scope.conference.toLowerCase()}`}
-          className="text-base-content/50 hover:bg-base-content/5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-medium transition-colors hover:text-base-content dark:border-white/10"
-        >
-          {scope.conference}
-        </Link>
-        {teams.map((t) => (
-          <Link
-            key={t.espnId}
-            href={`/nfl/${scope.conference.toLowerCase()}/${scope.division}/${t.abbrev.toLowerCase()}`}
-            className="text-base-content/60 hover:bg-base-content/5 flex items-center gap-1.5 rounded-lg border border-black/5 px-3 py-1.5 text-xs font-medium transition-colors hover:text-base-content dark:border-white/10"
-          >
-            <Image
-              src={nflTeamLogo(t.abbrev)}
-              alt={t.abbrev}
-              width={16}
-              height={16}
-              className="h-4 w-4 object-contain"
-            />
-            {t.abbrev}
-          </Link>
-        ))}
-      </div>
-    );
+    subFilters = teams.map((t) => (
+      <FilterOption
+        key={t.espnId}
+        href={`/nfl/${scope.conference.toLowerCase()}/${scope.division}/${t.abbrev.toLowerCase()}`}
+      >
+        <Image
+          src={nflTeamLogo(t.abbrev)}
+          alt={t.abbrev}
+          width={16}
+          height={16}
+          className="h-4 w-4 object-contain"
+        />
+        {t.abbrev}
+      </FilterOption>
+    ));
   }
-  return null;
+
+  return (
+    <div className="flex flex-col gap-3">
+      {activeFilters.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-base-content/40 text-xs font-medium uppercase tracking-wide">
+            Filters:
+          </span>
+          {activeFilters.map((f) => (
+            <FilterChip key={f.label} label={f.label} href={f.removeHref} />
+          ))}
+          <Link
+            href="/nfl"
+            className="text-base-content/40 hover:text-base-content/70 ml-1 text-xs transition-colors"
+          >
+            Clear all
+          </Link>
+        </div>
+      )}
+      {subFilters && <div className="flex flex-wrap gap-2">{subFilters}</div>}
+    </div>
+  );
 };
 
 interface GameContentProps {
@@ -427,6 +454,12 @@ const GameContent = ({
       <RemainingWeeks weeks={remainingWeeks} onReset={onReset} />
     </div>
   );
+};
+
+const getSimulateLabel = (scope: FilterScope): string => {
+  if (scope.level === 'team' || scope.level === 'division') return 'Simulate Division';
+  if (scope.level === 'conference') return `Simulate ${scope.conference}`;
+  return 'Simulate Season';
 };
 
 const NflPage = () => {
@@ -532,7 +565,7 @@ const NflPage = () => {
           loading={simLoading}
           className="w-1/2 text-xs sm:w-fit"
         >
-          Calculate Standings
+          {getSimulateLabel(scope)}
         </Button>
       </div>
     </div>

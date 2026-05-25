@@ -96,7 +96,7 @@ const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProp
       loading={isLoading}
       className="w-1/2 text-xs sm:w-fit"
     >
-      Calculate Standings
+      Simulate {conf.toUpperCase()}
     </Button>
   );
 };
