@@ -26,7 +26,7 @@ const ratelimit = new Ratelimit({
   prefix: 'ratelimit',
 });
 
-export const proxy = async (request: NextRequest) => {
+export const middleware = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   const vercelEnv = process.env.VERCEL_ENV;
