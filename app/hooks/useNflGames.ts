@@ -1,11 +1,12 @@
 import { useState, useReducer, useEffect, useCallback } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import { setSeason } from '@/app/store/appSlice';
 import type { GameLean, TeamMetadata } from '@/app/store/api';
 import type { NflSimulateResponse } from '@/lib/nfl/types';
 
 interface NflGamesState {
   games: GameLean[];
   teams: TeamMetadata[];
-  season: number | null;
   isLoading: boolean;
   isError: boolean;
 }
@@ -23,7 +24,6 @@ const gamesReducer = (state: NflGamesState, action: GamesAction): NflGamesState 
       return {
         games: action.games,
         teams: action.teams,
-        season: action.season,
         isLoading: false,
         isError: false,
       };
@@ -37,11 +37,13 @@ interface NflSimulateState {
   isLoading: boolean;
 }
 
-export const useNflGames = (season: number = 2024) => {
+export const useNflGames = () => {
+  const appDispatch = useAppDispatch();
+  const season = useAppSelector((state) => state.app.season);
+
   const [state, dispatch] = useReducer(gamesReducer, {
     games: [],
     teams: [],
-    season: null,
     isLoading: true,
     isError: false,
   });
@@ -50,18 +52,20 @@ export const useNflGames = (season: number = 2024) => {
     let cancelled = false;
     dispatch({ type: 'fetch' });
 
-    fetch(`/api/games/nfl?season=${season}`)
+    fetch('/api/games/nfl')
       .then((res) => {
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res.json();
       })
       .then((data) => {
         if (!cancelled) {
+          const resolvedSeason = data.season as number;
+          appDispatch(setSeason(resolvedSeason));
           dispatch({
             type: 'success',
             games: data.events ?? [],
             teams: data.teams ?? [],
-            season: data.season ?? season,
+            season: resolvedSeason,
           });
         }
       })
@@ -72,9 +76,9 @@ export const useNflGames = (season: number = 2024) => {
     return () => {
       cancelled = true;
     };
-  }, [season]);
+  }, [appDispatch]);
 
-  return state;
+  return { ...state, season };
 };
 
 export const useNflSimulate = () => {

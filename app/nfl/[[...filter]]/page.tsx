@@ -228,8 +228,8 @@ const NflDivStandings = ({
   );
 };
 
-const PageHeader = ({ scope, season }: { scope: FilterScope; season: number | null }) => {
-  const year = season ?? '';
+const PageHeader = ({ scope }: { scope: FilterScope }) => {
+  const year = useAppSelector((state) => state.app.season) ?? '';
 
   if (scope.level === 'team') {
     return (
@@ -716,7 +716,8 @@ const NflPage = () => {
   const params = useParams();
   const filter = params.filter as string[] | undefined;
   const scope = parseFilter(filter);
-  const { games, season, isLoading, isError } = useNflGames();
+  const { games, isLoading, isError } = useNflGames();
+  const season = useAppSelector((state) => state.app.season);
   const { result: simResult, isLoading: simLoading, simulate, reset: resetSim } = useNflSimulate();
   const [nflResult, setNflResult] = useState<NflSimulateResponse | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
@@ -751,7 +752,7 @@ const NflPage = () => {
       const gp = pick as GamePick;
       overrides[gameId] = { homeScore: gp.homeScore, awayScore: gp.awayScore };
     });
-    const result = await simulate(games, 2024, overrides);
+    const result = await simulate(games, season ?? 2024, overrides);
     if (result) {
       setNflResult(result);
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -782,7 +783,7 @@ const NflPage = () => {
   return (
     <>
       <div className="container mx-auto flex flex-col gap-6 px-4 py-8">
-        <PageHeader scope={scope} season={season} />
+        <PageHeader scope={scope} />
         <ChatSearchBar
           onOpen={() => {
             setForceNewChat(true);

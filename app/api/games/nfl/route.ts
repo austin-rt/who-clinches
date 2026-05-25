@@ -1,16 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAllSeasonGames, getTeams } from '@/lib/nfl/espn-cached';
 import { reshapeEspnGames, reshapeEspnTeams } from '@/lib/nfl/reshape-espn';
+import { getDefaultNflSeason } from '@/lib/nfl/helpers/get-default-season-nfl';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const CURRENT_SEASON = 2024;
-
 export const GET = async (request: NextRequest) => {
   try {
     const seasonParam = request.nextUrl.searchParams.get('season');
-    const season = seasonParam ? parseInt(seasonParam, 10) : CURRENT_SEASON;
+    const season = seasonParam ? parseInt(seasonParam, 10) : await getDefaultNflSeason();
 
     if (isNaN(season) || season < 2002 || season > 2099) {
       return NextResponse.json({ error: 'Invalid season' }, { status: 400 });
