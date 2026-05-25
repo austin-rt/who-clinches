@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -437,8 +437,17 @@ const NflPage = () => {
   const { result: simResult, isLoading: simLoading, simulate } = useNflSimulate();
   const [nflResult, setNflResult] = useState<NflSimulateResponse | null>(null);
   const dispatch = useAppDispatch();
-  const { view } = useUIState();
+  const { view, setTheme } = useUIState();
   const gamePicks = useAppSelector((state) => state.gamePicks.picks);
+
+  useEffect(() => {
+    if (!scope) return;
+    if (scope.level === 'team') {
+      setTheme(`nfl-${scope.team.abbrev.toLowerCase()}`);
+    } else {
+      setTheme('nfl');
+    }
+  }, [scope, setTheme]);
 
   const filteredGames = useMemo(() => (scope ? filterGames(games, scope) : []), [games, scope]);
 

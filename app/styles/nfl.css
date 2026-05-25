@@ -1,0 +1,1517 @@
+[data-theme='nfl'] {
+  --color-primary: #013369;
+  --color-primary-content: #01336933;
+  --color-secondary: #d50a0a;
+  --color-secondary-content: #d50a0a33;
+  --color-accent: #cccccc;
+  --color-accent-content: #cccccc33;
+  --p: 212 98% 21%;
+  --pc: 0 0% 100%;
+  --s: 0 91% 44%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 80%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl'][data-mode='light'],
+[data-theme='nfl']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #4d7ec0;
+  --color-primary-content: #4d7ec033;
+  --color-secondary: #f04a4a;
+  --color-secondary-content: #f04a4a33;
+  --color-accent: #a6a6a6;
+  --color-accent-content: #a6a6a633;
+  --p: 212 48% 53%;
+  --pc: 0 0% 100%;
+  --s: 0 85% 62%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-ari'] {
+  --color-primary: #a40227;
+  --color-primary-content: #a4022733;
+  --color-secondary: #ffffff;
+  --color-secondary-content: #ffffff33;
+  --color-accent: #cccccc;
+  --color-accent-content: #cccccc33;
+  --p: 346 98% 32%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 100%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 80%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-ari'][data-mode='light'],
+[data-theme='nfl-ari']:not([data-mode='dark']) {
+  --color-base-100: #faf3f5;
+  --color-base-200: #f4e6ea;
+  --color-base-300: #ebd6dc;
+  --color-base-400: #e0c4cc;
+  --color-base-content: #100406;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-ari'][data-mode='dark'] {
+  --color-base-100: #100306;
+  --color-base-200: #1c080e;
+  --color-base-300: #2b0f18;
+  --color-base-400: #3a1622;
+  --color-base-content: #faf3f5;
+  --color-primary: #e04d6e;
+  --color-primary-content: #e04d6e33;
+  --color-secondary: #cccccc;
+  --color-secondary-content: #cccccc33;
+  --color-accent: #a6a6a6;
+  --color-accent-content: #a6a6a633;
+  --p: 346 72% 59%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 80%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-atl'] {
+  --color-primary: #a71930;
+  --color-primary-content: #a7193033;
+  --color-secondary: #000000;
+  --color-secondary-content: #00000033;
+  --color-accent: #000000;
+  --color-accent-content: #00000033;
+  --p: 349 75% 38%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 0%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 0%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-atl'][data-mode='light'],
+[data-theme='nfl-atl']:not([data-mode='dark']) {
+  --color-base-100: #faf3f4;
+  --color-base-200: #f4e6e9;
+  --color-base-300: #ebd6db;
+  --color-base-400: #e0c4cb;
+  --color-base-content: #100406;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-atl'][data-mode='dark'] {
+  --color-base-100: #100306;
+  --color-base-200: #1c080d;
+  --color-base-300: #2b0f17;
+  --color-base-400: #3a1621;
+  --color-base-content: #faf3f4;
+  --color-primary: #df5c72;
+  --color-primary-content: #df5c7233;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #333333;
+  --color-accent-content: #33333333;
+  --p: 349 68% 62%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 20%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-bal'] {
+  --color-primary: #29126f;
+  --color-primary-content: #29126f33;
+  --color-secondary: #000000;
+  --color-secondary-content: #00000033;
+  --color-accent: #000000;
+  --color-accent-content: #00000033;
+  --p: 261 72% 25%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 0%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 0%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-bal'][data-mode='light'],
+[data-theme='nfl-bal']:not([data-mode='dark']) {
+  --color-base-100: #f5f3fa;
+  --color-base-200: #eae6f4;
+  --color-base-300: #ddd6eb;
+  --color-base-400: #cec4e0;
+  --color-base-content: #070410;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-bal'][data-mode='dark'] {
+  --color-base-100: #070310;
+  --color-base-200: #0e081c;
+  --color-base-300: #180f2b;
+  --color-base-400: #22163a;
+  --color-base-content: #f5f3fa;
+  --color-primary: #7b5cc0;
+  --color-primary-content: #7b5cc033;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #333333;
+  --color-accent-content: #33333333;
+  --p: 261 46% 55%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 20%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-buf'] {
+  --color-primary: #00338d;
+  --color-primary-content: #00338d33;
+  --color-secondary: #d50a0a;
+  --color-secondary-content: #d50a0a33;
+  --color-accent: #d50a0a;
+  --color-accent-content: #d50a0a33;
+  --p: 218 100% 28%;
+  --pc: 0 0% 100%;
+  --s: 0 91% 44%;
+  --sc: 0 0% 100%;
+  --a: 0 91% 44%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-buf'][data-mode='light'],
+[data-theme='nfl-buf']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fb;
+  --color-base-200: #e6eaf5;
+  --color-base-300: #d6dcec;
+  --color-base-400: #c4cce1;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-buf'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fb;
+  --color-primary: #4d80d4;
+  --color-primary-content: #4d80d433;
+  --color-secondary: #f04a4a;
+  --color-secondary-content: #f04a4a33;
+  --color-accent: #f04a4a;
+  --color-accent-content: #f04a4a33;
+  --p: 218 62% 57%;
+  --pc: 0 0% 100%;
+  --s: 0 85% 62%;
+  --sc: 0 0% 10%;
+  --a: 0 85% 62%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-car'] {
+  --color-primary: #0085ca;
+  --color-primary-content: #0085ca33;
+  --color-secondary: #000000;
+  --color-secondary-content: #00000033;
+  --color-accent: #000000;
+  --color-accent-content: #00000033;
+  --p: 199 100% 40%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 0%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 0%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-car'][data-mode='light'],
+[data-theme='nfl-car']:not([data-mode='dark']) {
+  --color-base-100: #f3f8fb;
+  --color-base-200: #e6f0f5;
+  --color-base-300: #d6e5ec;
+  --color-base-400: #c4d8e1;
+  --color-base-content: #040910;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-car'][data-mode='dark'] {
+  --color-base-100: #030910;
+  --color-base-200: #08131c;
+  --color-base-300: #0f1f2b;
+  --color-base-400: #162b3a;
+  --color-base-content: #f3f8fb;
+  --color-primary: #33b3f0;
+  --color-primary-content: #33b3f033;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #333333;
+  --color-accent-content: #33333333;
+  --p: 199 86% 57%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 20%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-chi'] {
+  --color-primary: #0b1c3a;
+  --color-primary-content: #0b1c3a33;
+  --color-secondary: #e64100;
+  --color-secondary-content: #e6410033;
+  --color-accent: #e64100;
+  --color-accent-content: #e6410033;
+  --p: 218 70% 14%;
+  --pc: 0 0% 100%;
+  --s: 17 100% 45%;
+  --sc: 0 0% 100%;
+  --a: 17 100% 45%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-chi'][data-mode='light'],
+[data-theme='nfl-chi']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-chi'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #4d6894;
+  --color-primary-content: #4d689433;
+  --color-secondary: #ff7a33;
+  --color-secondary-content: #ff7a3333;
+  --color-accent: #ff7a33;
+  --color-accent-content: #ff7a3333;
+  --p: 218 32% 44%;
+  --pc: 0 0% 100%;
+  --s: 17 100% 60%;
+  --sc: 0 0% 10%;
+  --a: 17 100% 60%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-cin'] {
+  --color-primary: #fb4f14;
+  --color-primary-content: #fb4f1433;
+  --color-secondary: #000000;
+  --color-secondary-content: #00000033;
+  --color-accent: #000000;
+  --color-accent-content: #00000033;
+  --p: 16 97% 53%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 0%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 0%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-cin'][data-mode='light'],
+[data-theme='nfl-cin']:not([data-mode='dark']) {
+  --color-base-100: #fbf5f3;
+  --color-base-200: #f5eae6;
+  --color-base-300: #ecdcd6;
+  --color-base-400: #e1ccc4;
+  --color-base-content: #100704;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-cin'][data-mode='dark'] {
+  --color-base-100: #100603;
+  --color-base-200: #1c0e08;
+  --color-base-300: #2b180f;
+  --color-base-400: #3a2216;
+  --color-base-content: #fbf5f3;
+  --color-primary: #fd9573;
+  --color-primary-content: #fd957333;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #333333;
+  --color-accent-content: #33333333;
+  --p: 16 97% 72%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 20%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-cle'] {
+  --color-primary: #472a08;
+  --color-primary-content: #472a0833;
+  --color-secondary: #ff3c00;
+  --color-secondary-content: #ff3c0033;
+  --color-accent: #ff3c00;
+  --color-accent-content: #ff3c0033;
+  --p: 31 79% 16%;
+  --pc: 0 0% 100%;
+  --s: 14 100% 50%;
+  --sc: 0 0% 100%;
+  --a: 14 100% 50%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-cle'][data-mode='light'],
+[data-theme='nfl-cle']:not([data-mode='dark']) {
+  --color-base-100: #f8f6f3;
+  --color-base-200: #f0ece6;
+  --color-base-300: #e5dfd6;
+  --color-base-400: #d9d0c4;
+  --color-base-content: #0c0a04;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-cle'][data-mode='dark'] {
+  --color-base-100: #0c0903;
+  --color-base-200: #151208;
+  --color-base-300: #211d0f;
+  --color-base-400: #2e2816;
+  --color-base-content: #f8f6f3;
+  --color-primary: #8e6c3e;
+  --color-primary-content: #8e6c3e33;
+  --color-secondary: #ff7a4d;
+  --color-secondary-content: #ff7a4d33;
+  --color-accent: #ff7a4d;
+  --color-accent-content: #ff7a4d33;
+  --p: 31 44% 40%;
+  --pc: 0 0% 100%;
+  --s: 14 100% 65%;
+  --sc: 0 0% 10%;
+  --a: 14 100% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-dal'] {
+  --color-primary: #002a5c;
+  --color-primary-content: #002a5c33;
+  --color-secondary: #b0b7bc;
+  --color-secondary-content: #b0b7bc33;
+  --color-accent: #b0b7bc;
+  --color-accent-content: #b0b7bc33;
+  --p: 213 100% 18%;
+  --pc: 0 0% 100%;
+  --s: 205 9% 71%;
+  --sc: 0 0% 10%;
+  --a: 205 9% 71%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-dal'][data-mode='light'],
+[data-theme='nfl-dal']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-dal'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #3374b3;
+  --color-primary-content: #3374b333;
+  --color-secondary: #8a9196;
+  --color-secondary-content: #8a919633;
+  --color-accent: #8a9196;
+  --color-accent-content: #8a919633;
+  --p: 213 55% 45%;
+  --pc: 0 0% 100%;
+  --s: 205 7% 56%;
+  --sc: 0 0% 10%;
+  --a: 205 7% 56%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-den'] {
+  --color-primary: #0a2343;
+  --color-primary-content: #0a234333;
+  --color-secondary: #fc4c02;
+  --color-secondary-content: #fc4c0233;
+  --color-accent: #fc4c02;
+  --color-accent-content: #fc4c0233;
+  --p: 216 74% 15%;
+  --pc: 0 0% 100%;
+  --s: 18 99% 49%;
+  --sc: 0 0% 100%;
+  --a: 18 99% 49%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-den'][data-mode='light'],
+[data-theme='nfl-den']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-den'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #4a6d96;
+  --color-primary-content: #4a6d9633;
+  --color-secondary: #fd8b4d;
+  --color-secondary-content: #fd8b4d33;
+  --color-accent: #fd8b4d;
+  --color-accent-content: #fd8b4d33;
+  --p: 216 36% 44%;
+  --pc: 0 0% 100%;
+  --s: 18 98% 65%;
+  --sc: 0 0% 10%;
+  --a: 18 98% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-det'] {
+  --color-primary: #0076b6;
+  --color-primary-content: #0076b633;
+  --color-secondary: #bbbbbb;
+  --color-secondary-content: #bbbbbb33;
+  --color-accent: #bbbbbb;
+  --color-accent-content: #bbbbbb33;
+  --p: 201 100% 36%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 73%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 73%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-det'][data-mode='light'],
+[data-theme='nfl-det']:not([data-mode='dark']) {
+  --color-base-100: #f3f7fb;
+  --color-base-200: #e6eef5;
+  --color-base-300: #d6e3ec;
+  --color-base-400: #c4d6e1;
+  --color-base-content: #040910;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-det'][data-mode='dark'] {
+  --color-base-100: #030910;
+  --color-base-200: #08121c;
+  --color-base-300: #0f1e2b;
+  --color-base-400: #162a3a;
+  --color-base-content: #f3f7fb;
+  --color-primary: #33a6e6;
+  --color-primary-content: #33a6e633;
+  --color-secondary: #959595;
+  --color-secondary-content: #95959533;
+  --color-accent: #959595;
+  --color-accent-content: #95959533;
+  --p: 201 76% 55%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 58%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 58%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-gb'] {
+  --color-primary: #204e32;
+  --color-primary-content: #204e3233;
+  --color-secondary: #ffb612;
+  --color-secondary-content: #ffb61233;
+  --color-accent: #ffb612;
+  --color-accent-content: #ffb61233;
+  --p: 143 42% 22%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 54%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 54%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-gb'][data-mode='light'],
+[data-theme='nfl-gb']:not([data-mode='dark']) {
+  --color-base-100: #f3f8f5;
+  --color-base-200: #e6f0ea;
+  --color-base-300: #d6e5dc;
+  --color-base-400: #c4d9cc;
+  --color-base-content: #040c07;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-gb'][data-mode='dark'] {
+  --color-base-100: #030c06;
+  --color-base-200: #08150e;
+  --color-base-300: #0f2118;
+  --color-base-400: #162e22;
+  --color-base-content: #f3f8f5;
+  --color-primary: #5a9872;
+  --color-primary-content: #5a987233;
+  --color-secondary: #cc9200;
+  --color-secondary-content: #cc920033;
+  --color-accent: #cc9200;
+  --color-accent-content: #cc920033;
+  --p: 143 27% 47%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-hou'] {
+  --color-primary: #00143f;
+  --color-primary-content: #00143f33;
+  --color-secondary: #c41230;
+  --color-secondary-content: #c4123033;
+  --color-accent: #c41230;
+  --color-accent-content: #c4123033;
+  --p: 220 100% 12%;
+  --pc: 0 0% 100%;
+  --s: 351 83% 42%;
+  --sc: 0 0% 100%;
+  --a: 351 83% 42%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-hou'][data-mode='light'],
+[data-theme='nfl-hou']:not([data-mode='dark']) {
+  --color-base-100: #f3f4fa;
+  --color-base-200: #e6e8f4;
+  --color-base-300: #d6daeb;
+  --color-base-400: #c4cae0;
+  --color-base-content: #040510;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-hou'][data-mode='dark'] {
+  --color-base-100: #030510;
+  --color-base-200: #080b1c;
+  --color-base-300: #0f132b;
+  --color-base-400: #161c3a;
+  --color-base-content: #f3f4fa;
+  --color-primary: #335e96;
+  --color-primary-content: #335e9633;
+  --color-secondary: #f05068;
+  --color-secondary-content: #f0506833;
+  --color-accent: #f05068;
+  --color-accent-content: #f0506833;
+  --p: 220 50% 39%;
+  --pc: 0 0% 100%;
+  --s: 351 83% 63%;
+  --sc: 0 0% 10%;
+  --a: 351 83% 63%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-ind'] {
+  --color-primary: #003b75;
+  --color-primary-content: #003b7533;
+  --color-secondary: #ffffff;
+  --color-secondary-content: #ffffff33;
+  --color-accent: #cccccc;
+  --color-accent-content: #cccccc33;
+  --p: 210 100% 23%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 100%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 80%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-ind'][data-mode='light'],
+[data-theme='nfl-ind']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fb;
+  --color-base-200: #e6eaf5;
+  --color-base-300: #d6dcec;
+  --color-base-400: #c4cce1;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-ind'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fb;
+  --color-primary: #4d87c4;
+  --color-primary-content: #4d87c433;
+  --color-secondary: #cccccc;
+  --color-secondary-content: #cccccc33;
+  --color-accent: #a6a6a6;
+  --color-accent-content: #a6a6a633;
+  --p: 210 52% 54%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 80%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-jax'] {
+  --color-primary: #007487;
+  --color-primary-content: #00748733;
+  --color-secondary: #d7a22a;
+  --color-secondary-content: #d7a22a33;
+  --color-accent: #d7a22a;
+  --color-accent-content: #d7a22a33;
+  --p: 188 100% 26%;
+  --pc: 0 0% 100%;
+  --s: 41 70% 50%;
+  --sc: 0 0% 10%;
+  --a: 41 70% 50%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-jax'][data-mode='light'],
+[data-theme='nfl-jax']:not([data-mode='dark']) {
+  --color-base-100: #f3f8f9;
+  --color-base-200: #e6f0f2;
+  --color-base-300: #d6e5e8;
+  --color-base-400: #c4d8dc;
+  --color-base-content: #040a0b;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-jax'][data-mode='dark'] {
+  --color-base-100: #030a0b;
+  --color-base-200: #081418;
+  --color-base-300: #0f2027;
+  --color-base-400: #162d36;
+  --color-base-content: #f3f8f9;
+  --color-primary: #33b4cc;
+  --color-primary-content: #33b4cc33;
+  --color-secondary: #c08e1e;
+  --color-secondary-content: #c08e1e33;
+  --color-accent: #c08e1e;
+  --color-accent-content: #c08e1e33;
+  --p: 188 64% 50%;
+  --pc: 0 0% 10%;
+  --s: 41 73% 44%;
+  --sc: 0 0% 10%;
+  --a: 41 73% 44%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-kc'] {
+  --color-primary: #e31837;
+  --color-primary-content: #e3183733;
+  --color-secondary: #ffb612;
+  --color-secondary-content: #ffb61233;
+  --color-accent: #ffb612;
+  --color-accent-content: #ffb61233;
+  --p: 351 83% 49%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 54%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 54%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-kc'][data-mode='light'],
+[data-theme='nfl-kc']:not([data-mode='dark']) {
+  --color-base-100: #faf3f4;
+  --color-base-200: #f4e6e8;
+  --color-base-300: #ebd6da;
+  --color-base-400: #e0c4ca;
+  --color-base-content: #100405;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-kc'][data-mode='dark'] {
+  --color-base-100: #100305;
+  --color-base-200: #1c080c;
+  --color-base-300: #2b0f15;
+  --color-base-400: #3a161f;
+  --color-base-content: #faf3f4;
+  --color-primary: #ee6578;
+  --color-primary-content: #ee657833;
+  --color-secondary: #cc9200;
+  --color-secondary-content: #cc920033;
+  --color-accent: #cc9200;
+  --color-accent-content: #cc920033;
+  --p: 351 79% 67%;
+  --pc: 0 0% 10%;
+  --s: 42 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-lv'] {
+  --color-primary: #000000;
+  --color-primary-content: #00000033;
+  --color-secondary: #a5acaf;
+  --color-secondary-content: #a5acaf33;
+  --color-accent: #a5acaf;
+  --color-accent-content: #a5acaf33;
+  --p: 0 0% 0%;
+  --pc: 0 0% 100%;
+  --s: 198 4% 67%;
+  --sc: 0 0% 10%;
+  --a: 198 4% 67%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-lv'][data-mode='light'],
+[data-theme='nfl-lv']:not([data-mode='dark']) {
+  --color-base-100: #f7f8f8;
+  --color-base-200: #eef0f0;
+  --color-base-300: #e3e5e6;
+  --color-base-400: #d6d9da;
+  --color-base-content: #0a0b0b;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-lv'][data-mode='dark'] {
+  --color-base-100: #080909;
+  --color-base-200: #111213;
+  --color-base-300: #1c1e1e;
+  --color-base-400: #282a2b;
+  --color-base-content: #f7f8f8;
+  --color-primary: #d0d5d7;
+  --color-primary-content: #d0d5d733;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #d0d5d7;
+  --color-accent-content: #d0d5d733;
+  --p: 198 6% 83%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 198 6% 83%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-lac'] {
+  --color-primary: #0080c6;
+  --color-primary-content: #0080c633;
+  --color-secondary: #ffc20e;
+  --color-secondary-content: #ffc20e33;
+  --color-accent: #ffc20e;
+  --color-accent-content: #ffc20e33;
+  --p: 202 100% 39%;
+  --pc: 0 0% 100%;
+  --s: 45 99% 53%;
+  --sc: 0 0% 10%;
+  --a: 45 99% 53%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-lac'][data-mode='light'],
+[data-theme='nfl-lac']:not([data-mode='dark']) {
+  --color-base-100: #f3f8fb;
+  --color-base-200: #e6f0f5;
+  --color-base-300: #d6e5ec;
+  --color-base-400: #c4d8e1;
+  --color-base-content: #040910;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-lac'][data-mode='dark'] {
+  --color-base-100: #030910;
+  --color-base-200: #08131c;
+  --color-base-300: #0f1f2b;
+  --color-base-400: #162b3a;
+  --color-base-content: #f3f8fb;
+  --color-primary: #33b0f0;
+  --color-primary-content: #33b0f033;
+  --color-secondary: #cc9b00;
+  --color-secondary-content: #cc9b0033;
+  --color-accent: #cc9b00;
+  --color-accent-content: #cc9b0033;
+  --p: 202 86% 57%;
+  --pc: 0 0% 10%;
+  --s: 45 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 45 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-lar'] {
+  --color-primary: #003594;
+  --color-primary-content: #00359433;
+  --color-secondary: #ffd100;
+  --color-secondary-content: #ffd10033;
+  --color-accent: #ffd100;
+  --color-accent-content: #ffd10033;
+  --p: 218 100% 29%;
+  --pc: 0 0% 100%;
+  --s: 49 100% 50%;
+  --sc: 0 0% 10%;
+  --a: 49 100% 50%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-lar'][data-mode='light'],
+[data-theme='nfl-lar']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fb;
+  --color-base-200: #e6eaf5;
+  --color-base-300: #d6dcec;
+  --color-base-400: #c4cce1;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-lar'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fb;
+  --color-primary: #4d82d8;
+  --color-primary-content: #4d82d833;
+  --color-secondary: #cca800;
+  --color-secondary-content: #cca80033;
+  --color-accent: #cca800;
+  --color-accent-content: #cca80033;
+  --p: 218 65% 57%;
+  --pc: 0 0% 100%;
+  --s: 49 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 49 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-mia'] {
+  --color-primary: #008e97;
+  --color-primary-content: #008e9733;
+  --color-secondary: #fc4c02;
+  --color-secondary-content: #fc4c0233;
+  --color-accent: #fc4c02;
+  --color-accent-content: #fc4c0233;
+  --p: 184 100% 30%;
+  --pc: 0 0% 100%;
+  --s: 18 99% 49%;
+  --sc: 0 0% 100%;
+  --a: 18 99% 49%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-mia'][data-mode='light'],
+[data-theme='nfl-mia']:not([data-mode='dark']) {
+  --color-base-100: #f3f8f9;
+  --color-base-200: #e6f0f1;
+  --color-base-300: #d6e5e7;
+  --color-base-400: #c4d8db;
+  --color-base-content: #040a0b;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-mia'][data-mode='dark'] {
+  --color-base-100: #030a0b;
+  --color-base-200: #081418;
+  --color-base-300: #0f2026;
+  --color-base-400: #162d35;
+  --color-base-content: #f3f8f9;
+  --color-primary: #33c8d3;
+  --color-primary-content: #33c8d333;
+  --color-secondary: #fd8b4d;
+  --color-secondary-content: #fd8b4d33;
+  --color-accent: #fd8b4d;
+  --color-accent-content: #fd8b4d33;
+  --p: 184 68% 51%;
+  --pc: 0 0% 10%;
+  --s: 18 98% 65%;
+  --sc: 0 0% 10%;
+  --a: 18 98% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-min'] {
+  --color-primary: #4f2683;
+  --color-primary-content: #4f268333;
+  --color-secondary: #ffc62f;
+  --color-secondary-content: #ffc62f33;
+  --color-accent: #ffc62f;
+  --color-accent-content: #ffc62f33;
+  --p: 271 54% 33%;
+  --pc: 0 0% 100%;
+  --s: 44 100% 59%;
+  --sc: 0 0% 10%;
+  --a: 44 100% 59%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-min'][data-mode='light'],
+[data-theme='nfl-min']:not([data-mode='dark']) {
+  --color-base-100: #f6f3fa;
+  --color-base-200: #ece6f4;
+  --color-base-300: #dfd6eb;
+  --color-base-400: #d0c4e0;
+  --color-base-content: #080410;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-min'][data-mode='dark'] {
+  --color-base-100: #080310;
+  --color-base-200: #10081c;
+  --color-base-300: #1a0f2b;
+  --color-base-400: #24163a;
+  --color-base-content: #f6f3fa;
+  --color-primary: #9468c4;
+  --color-primary-content: #9468c433;
+  --color-secondary: #cc9e00;
+  --color-secondary-content: #cc9e0033;
+  --color-accent: #cc9e00;
+  --color-accent-content: #cc9e0033;
+  --p: 271 44% 59%;
+  --pc: 0 0% 100%;
+  --s: 44 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 44 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-ne'] {
+  --color-primary: #002a5c;
+  --color-primary-content: #002a5c33;
+  --color-secondary: #c60c30;
+  --color-secondary-content: #c60c3033;
+  --color-accent: #c60c30;
+  --color-accent-content: #c60c3033;
+  --p: 213 100% 18%;
+  --pc: 0 0% 100%;
+  --s: 350 88% 41%;
+  --sc: 0 0% 100%;
+  --a: 350 88% 41%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-ne'][data-mode='light'],
+[data-theme='nfl-ne']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-ne'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #3374b3;
+  --color-primary-content: #3374b333;
+  --color-secondary: #f04d6a;
+  --color-secondary-content: #f04d6a33;
+  --color-accent: #f04d6a;
+  --color-accent-content: #f04d6a33;
+  --p: 213 55% 45%;
+  --pc: 0 0% 100%;
+  --s: 350 85% 62%;
+  --sc: 0 0% 10%;
+  --a: 350 85% 62%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-no'] {
+  --color-primary: #000000;
+  --color-primary-content: #00000033;
+  --color-secondary: #d3bc8d;
+  --color-secondary-content: #d3bc8d33;
+  --color-accent: #d3bc8d;
+  --color-accent-content: #d3bc8d33;
+  --p: 0 0% 0%;
+  --pc: 0 0% 100%;
+  --s: 38 45% 69%;
+  --sc: 0 0% 10%;
+  --a: 38 45% 69%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-no'][data-mode='light'],
+[data-theme='nfl-no']:not([data-mode='dark']) {
+  --color-base-100: #f9f7f4;
+  --color-base-200: #f2eee7;
+  --color-base-300: #e8e3d8;
+  --color-base-400: #ddd5c8;
+  --color-base-content: #0e0c08;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-no'][data-mode='dark'] {
+  --color-base-100: #0e0c08;
+  --color-base-200: #181510;
+  --color-base-300: #25211a;
+  --color-base-400: #332e24;
+  --color-base-content: #f9f7f4;
+  --color-primary: #e6d9b8;
+  --color-primary-content: #e6d9b833;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #e6d9b8;
+  --color-accent-content: #e6d9b833;
+  --p: 38 55% 81%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 38 55% 81%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-nyg'] {
+  --color-primary: #003c7f;
+  --color-primary-content: #003c7f33;
+  --color-secondary: #c9243f;
+  --color-secondary-content: #c9243f33;
+  --color-accent: #c9243f;
+  --color-accent-content: #c9243f33;
+  --p: 211 100% 25%;
+  --pc: 0 0% 100%;
+  --s: 350 70% 47%;
+  --sc: 0 0% 100%;
+  --a: 350 70% 47%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-nyg'][data-mode='light'],
+[data-theme='nfl-nyg']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fb;
+  --color-base-200: #e6eaf5;
+  --color-base-300: #d6dcec;
+  --color-base-400: #c4cce1;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-nyg'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fb;
+  --color-primary: #4d88c8;
+  --color-primary-content: #4d88c833;
+  --color-secondary: #e0627a;
+  --color-secondary-content: #e0627a33;
+  --color-accent: #e0627a;
+  --color-accent-content: #e0627a33;
+  --p: 211 53% 54%;
+  --pc: 0 0% 100%;
+  --s: 350 68% 63%;
+  --sc: 0 0% 10%;
+  --a: 350 68% 63%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-nyj'] {
+  --color-primary: #115740;
+  --color-primary-content: #11574033;
+  --color-secondary: #ffffff;
+  --color-secondary-content: #ffffff33;
+  --color-accent: #cccccc;
+  --color-accent-content: #cccccc33;
+  --p: 157 69% 21%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 100%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 80%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-nyj'][data-mode='light'],
+[data-theme='nfl-nyj']:not([data-mode='dark']) {
+  --color-base-100: #f3f8f6;
+  --color-base-200: #e6f0eb;
+  --color-base-300: #d6e5de;
+  --color-base-400: #c4d9cf;
+  --color-base-content: #040c09;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-nyj'][data-mode='dark'] {
+  --color-base-100: #030c08;
+  --color-base-200: #081511;
+  --color-base-300: #0f211c;
+  --color-base-400: #162e27;
+  --color-base-content: #f3f8f6;
+  --color-primary: #4a9b7e;
+  --color-primary-content: #4a9b7e33;
+  --color-secondary: #cccccc;
+  --color-secondary-content: #cccccc33;
+  --color-accent: #a6a6a6;
+  --color-accent-content: #a6a6a633;
+  --p: 157 37% 45%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 80%;
+  --sc: 0 0% 10%;
+  --a: 0 0% 65%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-phi'] {
+  --color-primary: #06424d;
+  --color-primary-content: #06424d33;
+  --color-secondary: #000000;
+  --color-secondary-content: #00000033;
+  --color-accent: #000000;
+  --color-accent-content: #00000033;
+  --p: 189 82% 16%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 0%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 0%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-phi'][data-mode='light'],
+[data-theme='nfl-phi']:not([data-mode='dark']) {
+  --color-base-100: #f3f8f9;
+  --color-base-200: #e6f0f2;
+  --color-base-300: #d6e5e8;
+  --color-base-400: #c4d8dc;
+  --color-base-content: #040a0b;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-phi'][data-mode='dark'] {
+  --color-base-100: #030a0b;
+  --color-base-200: #081418;
+  --color-base-300: #0f2027;
+  --color-base-400: #162d36;
+  --color-base-content: #f3f8f9;
+  --color-primary: #3e8c9e;
+  --color-primary-content: #3e8c9e33;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #333333;
+  --color-accent-content: #33333333;
+  --p: 189 44% 43%;
+  --pc: 0 0% 100%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 0 0% 20%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-pit'] {
+  --color-primary: #000000;
+  --color-primary-content: #00000033;
+  --color-secondary: #ffb612;
+  --color-secondary-content: #ffb61233;
+  --color-accent: #ffb612;
+  --color-accent-content: #ffb61233;
+  --p: 0 0% 0%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 54%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 54%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-pit'][data-mode='light'],
+[data-theme='nfl-pit']:not([data-mode='dark']) {
+  --color-base-100: #fdfaf3;
+  --color-base-200: #faf4e6;
+  --color-base-300: #f5ebd6;
+  --color-base-400: #efe0c4;
+  --color-base-content: #140f04;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-pit'][data-mode='dark'] {
+  --color-base-100: #140f03;
+  --color-base-200: #1f1908;
+  --color-base-300: #2e260f;
+  --color-base-400: #3d3316;
+  --color-base-content: #fdfaf3;
+  --color-primary: #ffe080;
+  --color-primary-content: #ffe08033;
+  --color-secondary: #333333;
+  --color-secondary-content: #33333333;
+  --color-accent: #ffe080;
+  --color-accent-content: #ffe08033;
+  --p: 42 100% 75%;
+  --pc: 0 0% 10%;
+  --s: 0 0% 20%;
+  --sc: 0 0% 100%;
+  --a: 42 100% 75%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-sf'] {
+  --color-primary: #aa0000;
+  --color-primary-content: #aa000033;
+  --color-secondary: #b3995d;
+  --color-secondary-content: #b3995d33;
+  --color-accent: #b3995d;
+  --color-accent-content: #b3995d33;
+  --p: 0 100% 33%;
+  --pc: 0 0% 100%;
+  --s: 40 34% 53%;
+  --sc: 0 0% 10%;
+  --a: 40 34% 53%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-sf'][data-mode='light'],
+[data-theme='nfl-sf']:not([data-mode='dark']) {
+  --color-base-100: #faf3f3;
+  --color-base-200: #f4e6e6;
+  --color-base-300: #ebd6d6;
+  --color-base-400: #e0c4c4;
+  --color-base-content: #100404;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-sf'][data-mode='dark'] {
+  --color-base-100: #100303;
+  --color-base-200: #1c0808;
+  --color-base-300: #2b0f0f;
+  --color-base-400: #3a1616;
+  --color-base-content: #faf3f3;
+  --color-primary: #e04d4d;
+  --color-primary-content: #e04d4d33;
+  --color-secondary: #8e7640;
+  --color-secondary-content: #8e764033;
+  --color-accent: #8e7640;
+  --color-accent-content: #8e764033;
+  --p: 0 70% 59%;
+  --pc: 0 0% 10%;
+  --s: 40 39% 40%;
+  --sc: 0 0% 100%;
+  --a: 40 39% 40%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-sea'] {
+  --color-primary: #002a5c;
+  --color-primary-content: #002a5c33;
+  --color-secondary: #69be28;
+  --color-secondary-content: #69be2833;
+  --color-accent: #69be28;
+  --color-accent-content: #69be2833;
+  --p: 213 100% 18%;
+  --pc: 0 0% 100%;
+  --s: 96 66% 45%;
+  --sc: 0 0% 10%;
+  --a: 96 66% 45%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-sea'][data-mode='light'],
+[data-theme='nfl-sea']:not([data-mode='dark']) {
+  --color-base-100: #f3f5fa;
+  --color-base-200: #e6eaf4;
+  --color-base-300: #d6dceb;
+  --color-base-400: #c4cce0;
+  --color-base-content: #040610;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-sea'][data-mode='dark'] {
+  --color-base-100: #030610;
+  --color-base-200: #080d1c;
+  --color-base-300: #0f162b;
+  --color-base-400: #161f3a;
+  --color-base-content: #f3f5fa;
+  --color-primary: #3374b3;
+  --color-primary-content: #3374b333;
+  --color-secondary: #4d991d;
+  --color-secondary-content: #4d991d33;
+  --color-accent: #4d991d;
+  --color-accent-content: #4d991d33;
+  --p: 213 55% 45%;
+  --pc: 0 0% 100%;
+  --s: 96 68% 36%;
+  --sc: 0 0% 100%;
+  --a: 96 68% 36%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-tb'] {
+  --color-primary: #bd1c36;
+  --color-primary-content: #bd1c3633;
+  --color-secondary: #3e3a35;
+  --color-secondary-content: #3e3a3533;
+  --color-accent: #3e3a35;
+  --color-accent-content: #3e3a3533;
+  --p: 350 75% 43%;
+  --pc: 0 0% 100%;
+  --s: 33 8% 23%;
+  --sc: 0 0% 100%;
+  --a: 33 8% 23%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-tb'][data-mode='light'],
+[data-theme='nfl-tb']:not([data-mode='dark']) {
+  --color-base-100: #faf3f4;
+  --color-base-200: #f4e6e9;
+  --color-base-300: #ebd6db;
+  --color-base-400: #e0c4cb;
+  --color-base-content: #100405;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-tb'][data-mode='dark'] {
+  --color-base-100: #100305;
+  --color-base-200: #1c080c;
+  --color-base-300: #2b0f15;
+  --color-base-400: #3a161f;
+  --color-base-content: #faf3f4;
+  --color-primary: #e0627a;
+  --color-primary-content: #e0627a33;
+  --color-secondary: #6e6860;
+  --color-secondary-content: #6e686033;
+  --color-accent: #6e6860;
+  --color-accent-content: #6e686033;
+  --p: 350 68% 63%;
+  --pc: 0 0% 10%;
+  --s: 33 8% 41%;
+  --sc: 0 0% 100%;
+  --a: 33 8% 41%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-ten'] {
+  --color-primary: #4495d2;
+  --color-primary-content: #4495d233;
+  --color-secondary: #001532;
+  --color-secondary-content: #00153233;
+  --color-accent: #001532;
+  --color-accent-content: #00153233;
+  --p: 207 59% 55%;
+  --pc: 0 0% 10%;
+  --s: 215 100% 10%;
+  --sc: 0 0% 100%;
+  --a: 215 100% 10%;
+  --ac: 0 0% 100%;
+}
+
+[data-theme='nfl-ten'][data-mode='light'],
+[data-theme='nfl-ten']:not([data-mode='dark']) {
+  --color-base-100: #f5f8fb;
+  --color-base-200: #eaf0f5;
+  --color-base-300: #dde5ec;
+  --color-base-400: #ced8e1;
+  --color-base-content: #060a10;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-ten'][data-mode='dark'] {
+  --color-base-100: #060910;
+  --color-base-200: #0d131c;
+  --color-base-300: #171f2b;
+  --color-base-400: #212c3a;
+  --color-base-content: #f5f8fb;
+  --color-primary: #8cc0e6;
+  --color-primary-content: #8cc0e633;
+  --color-secondary: #335e90;
+  --color-secondary-content: #335e9033;
+  --color-accent: #335e90;
+  --color-accent-content: #335e9033;
+  --p: 207 64% 73%;
+  --pc: 0 0% 10%;
+  --s: 215 50% 38%;
+  --sc: 0 0% 100%;
+  --a: 215 50% 38%;
+  --ac: 0 0% 100%;
+  --toggle-border-color: var(--color-accent);
+}
+
+[data-theme='nfl-wsh'] {
+  --color-primary: #5a1414;
+  --color-primary-content: #5a141433;
+  --color-secondary: #ffb612;
+  --color-secondary-content: #ffb61233;
+  --color-accent: #ffb612;
+  --color-accent-content: #ffb61233;
+  --p: 0 63% 22%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 54%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 54%;
+  --ac: 0 0% 10%;
+}
+
+[data-theme='nfl-wsh'][data-mode='light'],
+[data-theme='nfl-wsh']:not([data-mode='dark']) {
+  --color-base-100: #f8f4f4;
+  --color-base-200: #f0e8e8;
+  --color-base-300: #e5dbdb;
+  --color-base-400: #d9cccc;
+  --color-base-content: #0c0404;
+  --toggle-border-color: var(--color-primary);
+}
+
+[data-theme='nfl-wsh'][data-mode='dark'] {
+  --color-base-100: #0c0303;
+  --color-base-200: #150808;
+  --color-base-300: #210f0f;
+  --color-base-400: #2e1616;
+  --color-base-content: #f8f4f4;
+  --color-primary: #a45656;
+  --color-primary-content: #a4565633;
+  --color-secondary: #cc9200;
+  --color-secondary-content: #cc920033;
+  --color-accent: #cc9200;
+  --color-accent-content: #cc920033;
+  --p: 0 35% 49%;
+  --pc: 0 0% 100%;
+  --s: 42 100% 40%;
+  --sc: 0 0% 10%;
+  --a: 42 100% 40%;
+  --ac: 0 0% 10%;
+  --toggle-border-color: var(--color-accent);
+}

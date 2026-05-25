@@ -9,6 +9,7 @@
 @import './styles/mw.css';
 @import './styles/aac.css';
 @import './styles/sunbelt.css';
+@import './styles/nfl.css';
 
 @tailwind base;
 @tailwind components;
