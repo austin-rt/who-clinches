@@ -1,5 +1,4 @@
-import type { SeasonType } from 'cfbd';
-import type { GameTypeMap } from './types';
+import type { CfbdSeasonType, GameTypeMap } from './types';
 import {
   CFB_SPORT,
   type CFBConferenceMetadata,
@@ -17,7 +16,7 @@ export const GAME_TYPE: GameTypeMap = {
   spring_postseason: { name: 'Spring Postseason', abbreviation: 'spring_post' },
 } as const;
 
-export const CFBD_SEASON_TYPE: Record<Uppercase<SeasonType>, SeasonType> = {
+export const CFBD_SEASON_TYPE: Record<Uppercase<CfbdSeasonType>, CfbdSeasonType> = {
   REGULAR: 'regular',
   POSTSEASON: 'postseason',
   BOTH: 'both',

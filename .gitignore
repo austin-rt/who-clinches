@@ -60,6 +60,9 @@ temp-*
 .playwright-mcp-config.json
 .playwright-mcp
 
+# ESPN NFL fixtures (178MB+, regenerable via scripts/capture-espn-nfl-fixtures.ts)
+__fixtures__/espn/
+
 # agent handoff scratch (local only; tracked paths remain in history)
 docs/handoffs/*
 

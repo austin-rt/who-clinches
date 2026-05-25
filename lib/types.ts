@@ -1,6 +1,12 @@
-import type { SeasonType } from 'cfbd';
-
 export type GameState = 'pre' | 'in' | 'post';
+
+export type CfbdSeasonType =
+  | 'regular'
+  | 'postseason'
+  | 'both'
+  | 'allstar'
+  | 'spring_regular'
+  | 'spring_postseason';
 
 export interface GameTeam {
   teamId: string;
@@ -33,8 +39,7 @@ export interface GameType {
   abbreviation: string;
 }
 
-// Type for the GAME_TYPE constant mapping
-export type GameTypeMap = Record<SeasonType, GameType>;
+export type GameTypeMap = Record<CfbdSeasonType, GameType>;
 
 export interface PredictedScore {
   home: number;
@@ -102,7 +107,9 @@ export interface ReshapeResult<T> {
   teams: T[];
 }
 
-export interface GameLean {
+// --- Base types (sport-agnostic) ---
+
+export interface Game {
   _id: string;
   id: string;
   displayName: string;
@@ -124,7 +131,7 @@ export interface GameLean {
   notes?: string | null;
 }
 
-export interface TeamLean {
+export interface Team {
   _id: string;
   name: string;
   displayName: string;
@@ -137,6 +144,13 @@ export interface TeamLean {
   division?: string | null;
   record: TeamRecord;
   conferenceStanding: string;
+  mascot?: string | null;
+  alternateNames?: string[];
+}
+
+// --- CFB extensions ---
+
+export interface CfbTeam extends Team {
   nationalRank?: number | null;
   spPlusRating?: number | null;
   sor?: number | null;
@@ -154,7 +168,10 @@ export interface TeamLean {
       pointsPerOpportunity?: number;
     };
   };
-  mascot?: string | null;
-  alternateNames?: string[];
   turnoverMargin?: number | null;
 }
+
+// --- Backward-compatible aliases (use Game/Team/CfbTeam in new code) ---
+
+export type GameLean = Game;
+export type TeamLean = CfbTeam;
