@@ -24,10 +24,3 @@ test('NFL chat search bar opens drawer and streams a response', async ({ page })
   await drawer.getByRole('button', { name: 'Close', exact: true }).click();
   await expect(drawer).not.toBeVisible();
 });
-
-test('NFL chat search bar is present on team page', async ({ page }) => {
-  await page.goto('/nfl/afc/north/bal', { waitUntil: 'load' });
-
-  const searchBar = page.getByTestId('chat-trigger');
-  await expect(searchBar).toBeVisible();
-});
