@@ -89,7 +89,7 @@ const NflDivisionRow = ({ conf, divName }: { conf: NflConference; divName: strin
 
 const NflConferenceSection = ({ conf }: { conf: NflConference }) => {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 rounded-lg border border-black/5 p-3 dark:border-white/10">
       <Link
         href={`/nfl/${conf.toLowerCase()}`}
         className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
@@ -152,55 +152,12 @@ const Home = () => {
           <div className="rounded-xl border border-stroke bg-base-200 shadow-md">
             <button
               type="button"
-              onClick={() => setNflOpen(!nflOpen)}
-              className="flex w-full items-center justify-between px-5 py-4 text-left"
-            >
-              <div>
-                <span className="text-lg font-semibold text-base-content">NFL</span>
-                <p className="text-base-content/50 text-xs">Playoff simulator</p>
-              </div>
-              <HiChevronDown
-                className={`text-base-content/50 h-5 w-5 transition-transform ${nflOpen ? 'rotate-180' : ''}`}
-              />
-            </button>
-
-            {nflOpen && (
-              <div className="flex flex-col gap-3 px-5 pb-5">
-                <Link
-                  href="/nfl"
-                  className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
-                >
-                  <Image
-                    src="https://a.espncdn.com/i/teamlogos/nfl/500/nfl.png"
-                    alt="NFL"
-                    width={28}
-                    height={28}
-                    className="h-7 w-7 object-contain"
-                    unoptimized
-                  />
-                  <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
-                    Full League — All 32 Teams
-                  </span>
-                </Link>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {NFL_CONFERENCES.map((conf) => (
-                    <NflConferenceSection key={conf} conf={conf} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-xl border border-stroke bg-base-200 shadow-md">
-            <button
-              type="button"
               onClick={() => setCfbOpen(!cfbOpen)}
               className="flex w-full items-center justify-between px-5 py-4 text-left"
             >
-              <div>
-                <span className="text-lg font-semibold text-base-content">College Football</span>
-                <p className="text-base-content/50 text-xs">Tiebreaker simulator</p>
-              </div>
+              <span className="text-lg font-semibold text-base-content">
+                College Football Conference Championship Simulator
+              </span>
               <HiChevronDown
                 className={`text-base-content/50 h-5 w-5 transition-transform ${cfbOpen ? 'rotate-180' : ''}`}
               />
@@ -243,6 +200,45 @@ const Home = () => {
                     </Link>
                   );
                 })}
+              </div>
+            )}
+          </div>
+
+          <div className="rounded-xl border border-stroke bg-base-200 shadow-md">
+            <button
+              type="button"
+              onClick={() => setNflOpen(!nflOpen)}
+              className="flex w-full items-center justify-between px-5 py-4 text-left"
+            >
+              <span className="text-lg font-semibold text-base-content">NFL Playoff Simulator</span>
+              <HiChevronDown
+                className={`text-base-content/50 h-5 w-5 transition-transform ${nflOpen ? 'rotate-180' : ''}`}
+              />
+            </button>
+
+            {nflOpen && (
+              <div className="flex flex-col gap-3 px-5 pb-5">
+                <Link
+                  href="/nfl"
+                  className="group flex items-center justify-center gap-2 rounded-xl border border-black/5 bg-gradient-to-b from-white to-black/[0.02] px-4 py-3 transition-all hover:from-black/[0.02] hover:to-black/[0.05] dark:border-white/10 dark:from-white/20 dark:to-white/15 dark:hover:from-white/25 dark:hover:to-white/20"
+                >
+                  <Image
+                    src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png"
+                    alt="NFL"
+                    width={28}
+                    height={28}
+                    className="h-7 w-7 object-contain"
+                    unoptimized
+                  />
+                  <span className="text-base-content/80 text-sm font-semibold group-hover:text-base-content">
+                    Full League — All 32 Teams
+                  </span>
+                </Link>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {NFL_CONFERENCES.map((conf) => (
+                    <NflConferenceSection key={conf} conf={conf} />
+                  ))}
+                </div>
               </div>
             )}
           </div>
