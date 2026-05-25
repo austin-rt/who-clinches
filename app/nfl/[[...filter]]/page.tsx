@@ -290,10 +290,18 @@ type FilterSuggestion = {
   logo?: string;
 };
 
+const nflConfLogo = (conf: string) =>
+  `https://a.espncdn.com/i/teamlogos/nfl/500/${conf.toLowerCase()}.png`;
+
 const buildSuggestions = (): FilterSuggestion[] => {
   const suggestions: FilterSuggestion[] = [];
   for (const conf of NFL_CONFERENCES) {
-    suggestions.push({ label: conf, category: 'Conference', href: `/nfl/${conf.toLowerCase()}` });
+    suggestions.push({
+      label: conf,
+      category: 'Conference',
+      href: `/nfl/${conf.toLowerCase()}`,
+      logo: nflConfLogo(conf),
+    });
   }
   for (const divId of NFL_DIVISIONS) {
     const [conf, div] = divId.split(' ');
@@ -302,6 +310,7 @@ const buildSuggestions = (): FilterSuggestion[] => {
       secondaryLabel: conf,
       category: 'Division',
       href: `/nfl/${conf.toLowerCase()}/${div.toLowerCase()}`,
+      logo: nflConfLogo(conf),
     });
   }
   for (const team of NFL_TEAMS) {
