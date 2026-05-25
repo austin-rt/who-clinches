@@ -1,0 +1,72 @@
+NFL Tiebreaker Procedures
+
+The following procedures will be used to break standings ties for postseason playoffs and to determine regular-season schedules.
+
+NOTE: Tie-breaking procedures do not apply to the seeding of division winners. The first tiebreaker within a division is always head-to-head. Ties are broken by strength of schedule. If teams are still tied, the original seeding within a division upon application of the division tiebreaker remains the same. Playoff-Loss tiebreaker used only in different situations.
+
+DIVISION TIEBREAKER (applied within each of the eight divisions to determine division winner and rank all four teams)
+
+If two or more clubs in the same division finish the regular season with identical records, the following steps will be taken until a champion is determined:
+
+1. Head-to-head (best won-lost-tied percentage in games between the clubs).
+2. Best won-lost-tied percentage in games played within the division.
+3. Best won-lost-tied percentage in common games.
+4. Best won-lost-tied percentage in games played within the conference.
+5. Strength of victory (combined record of all teams beaten).
+6. Strength of schedule (combined record of all opponents).
+7. Best combined ranking among conference teams in points scored and points allowed.
+8. Best combined ranking among all teams in points scored and points allowed.
+9. Best net points in common games.
+10. Best net points in all games.
+11. Best net touchdowns in all games.
+12. Coin toss (or random draw, if applicable).
+
+WILD CARD TIEBREAKER (applied to select three wild card teams per conference from non-division-winners, and to seed division winners against each other)
+
+Prerequisite: Apply division tiebreaker first to rank all teams within each division. Division rankings are cached and reused for all subsequent wild card applications. Original seeding within a division remains the same.
+
+Wild card pool: All 12 non-division-winners per conference compete for 3 wild card spots.
+
+If it is necessary to break ties among two or more teams, either for wild card or division winner seeding:
+
+1. Apply division tiebreaker to eliminate all but the highest-ranked club in each division prior to other wild card tiebreakers. The original seeding within a division upon application of the division tiebreaker remains the same for all subsequent applications of the procedure that are applicable to those teams.
+2. Head-to-head sweep. If the tied teams have all played each other, the team that beat all others (or lost to all others) is ranked accordingly. This differs from division H2H which uses best win percentage. If no team has swept, this step is inconclusive.
+3. Best won-lost-tied percentage in games played within the conference.
+4. Best won-lost-tied percentage in common games (minimum of four common opponents required; if fewer than four, skip this step). This differs from division common games which has no minimum.
+5. Strength of victory.
+6. Strength of schedule.
+7. Best combined ranking among conference teams in points scored and points allowed.
+8. Best combined ranking among all teams in points scored and points allowed.
+9. Best net points in conference games.
+10. Best net points in all games.
+11. Best net touchdowns in all games.
+12. Coin toss.
+
+MULTI-TEAM RESTART RULE
+
+When three or more teams are tied, apply each step in order. If one team is eliminated at any step, restart the entire procedure from step 1 with the remaining teams. If the remaining group drops to two teams, continue with the same tiebreaker procedure (same steps apply to both two-team and three-or-more-team groups).
+
+PLAYOFF SEEDING
+
+Seeds 1-4: Division winners, ordered by record, broken by wild card tiebreaker procedure.
+Seeds 5-7: Wild card teams, ordered by record, broken by wild card tiebreaker procedure.
+Seed 1 receives a first-round bye.
+
+For seasons 2002-2019 (12-team format): 4 division winners + 2 wild cards per conference. Seeds 1-2 receive first-round byes.
+For seasons 2020-present (14-team format): 4 division winners + 3 wild cards per conference. Only seed 1 receives a first-round bye.
+
+NFL TIES
+
+NFL regular season games can end in ties after overtime. All record calculations use the formula: Win Percentage = (Wins + 0.5 * Ties) / (Wins + Losses + Ties). Tied games count as half a win and half a loss in all standings and tiebreaker calculations.
+
+COMBINED RANKING (Steps 7-8)
+
+For each team, compute two values: rank by points scored and rank by points allowed within the relevant group (conference for step 7, all 32 teams for step 8). Sum the two ranks; lowest sum wins. Ties in points scored or points allowed share the same rank.
+
+STRENGTH OF VICTORY vs STRENGTH OF SCHEDULE
+
+Strength of Victory (SOV): The combined won-lost-tied percentage of all teams defeated by the club during the regular season. Only teams that were actually beaten contribute; ties do not count for SOV.
+
+Strength of Schedule (SOS): The combined won-lost-tied percentage of all opponents faced during the regular season, regardless of outcome.
+
+Both SOV and SOS are computed from all 272 regular season games (the complete game set).

@@ -8,6 +8,11 @@
     { "path": "/api/cron/rag-refresh?source=coaches", "schedule": "0 8 1 * *" },
     { "path": "/api/cron/rag-refresh?source=draft-picks", "schedule": "0 9 1 * *" },
     { "path": "/api/cron/rag-refresh?source=draft-positions", "schedule": "0 10 1 * *" },
-    { "path": "/api/cron/rag-refresh?source=draft-teams", "schedule": "0 11 1 * *" }
+    { "path": "/api/cron/rag-refresh?source=draft-teams", "schedule": "0 11 1 * *" },
+    { "path": "/api/cron/nfl-rag-refresh?source=nfl-teams", "schedule": "0 12 1 * *" },
+    { "path": "/api/cron/nfl-rag-refresh?source=nfl-divisions", "schedule": "0 13 1 * *" },
+    { "path": "/api/cron/nfl-rag-refresh?source=nfl-venues", "schedule": "0 14 1 * *" },
+    { "path": "/api/cron/nfl-rag-refresh?source=nfl-conferences", "schedule": "0 15 1 * *" },
+    { "path": "/api/cron/nfl-rag-refresh?source=nfl-schedule-structure", "schedule": "0 16 1 * *" }
   ]
 }

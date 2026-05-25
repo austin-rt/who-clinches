@@ -396,6 +396,7 @@ const CONF_DISPLAY_NAMES: Record<string, string> = {
   CUSA: 'Conference USA',
   MWC: 'Mountain West',
   SBC: 'Sun Belt',
+  NFL: 'NFL',
   ALL: 'Cross-Conference',
 };
 
@@ -539,6 +540,41 @@ export const FILE_CONFIGS: FileConfig[] = [
     conference: 'ALL',
     strategy: 'single',
     baseDir: 'docs/historical-stats',
+  },
+  {
+    path: 'nfl-tiebreaker-rules-cleaned.txt',
+    conference: 'NFL',
+    strategy: 'generic-headers',
+  },
+  {
+    path: 'nfl-teams.txt',
+    conference: 'NFL',
+    strategy: 'single',
+    baseDir: 'docs/nfl-static',
+  },
+  {
+    path: 'nfl-divisions.txt',
+    conference: 'NFL',
+    strategy: 'single',
+    baseDir: 'docs/nfl-static',
+  },
+  {
+    path: 'nfl-venues.txt',
+    conference: 'NFL',
+    strategy: 'single',
+    baseDir: 'docs/nfl-static',
+  },
+  {
+    path: 'nfl-conferences.txt',
+    conference: 'NFL',
+    strategy: 'single',
+    baseDir: 'docs/nfl-static',
+  },
+  {
+    path: 'nfl-schedule-structure.txt',
+    conference: 'NFL',
+    strategy: 'single',
+    baseDir: 'docs/nfl-static',
   },
 ];
 
