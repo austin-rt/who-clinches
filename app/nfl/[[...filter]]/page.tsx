@@ -237,7 +237,9 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
           className="h-16 w-16 object-contain"
         />
         <div>
-          <h1 className="text-2xl font-bold text-base-content">{scope.team.displayName}</h1>
+          <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
+            {scope.team.displayName}
+          </h1>
           <p className="text-base-content/50 text-sm">{scope.team.divisionId}</p>
         </div>
       </div>
@@ -246,7 +248,9 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
   if (scope.level === 'division') {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-base-content">{scope.divisionId}</h1>
+        <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
+          {scope.divisionId}
+        </h1>
         <p className="text-base-content/50 text-sm">
           {getTeamsInDivision(scope.divisionId).length} teams
         </p>
@@ -256,7 +260,9 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
   if (scope.level === 'conference') {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-base-content">{scope.conference}</h1>
+        <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
+          {scope.conference}
+        </h1>
         <p className="text-base-content/50 text-sm">
           {getTeamsInConference(scope.conference).length} teams &middot; Playoff Simulator
         </p>
@@ -265,7 +271,9 @@ const PageHeader = ({ scope }: { scope: FilterScope }) => {
   }
   return (
     <div>
-      <h1 className="text-2xl font-bold text-base-content">NFL</h1>
+      <h1 data-testid="nfl-heading" className="text-2xl font-bold text-base-content">
+        NFL
+      </h1>
       <p className="text-base-content/50 text-sm">32 teams &middot; Playoff Simulator</p>
     </div>
   );
@@ -433,7 +441,7 @@ const FilterNav = ({ scope }: { scope: FilterScope }) => {
   const placeholder = getPlaceholder(scope);
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative" ref={containerRef} data-testid="nfl-filter-nav">
       <div
         className={`flex min-h-[44px] flex-wrap items-center gap-1.5 rounded-xl border bg-base-100 px-3 py-2 transition-all ${
           open
@@ -675,7 +683,7 @@ const NflPage = () => {
   const filter = params.filter as string[] | undefined;
   const scope = parseFilter(filter);
   const { games, isLoading, isError } = useNflGames();
-  const { result: simResult, isLoading: simLoading, simulate } = useNflSimulate();
+  const { result: simResult, isLoading: simLoading, simulate, reset: resetSim } = useNflSimulate();
   const [nflResult, setNflResult] = useState<NflSimulateResponse | null>(null);
   const dispatch = useAppDispatch();
   const { view, setTheme } = useUIState();
@@ -711,13 +719,16 @@ const NflPage = () => {
 
   const handleReset = () => {
     setNflResult(null);
+    resetSim();
     dispatch(clearAllPicks());
   };
 
   if (!scope) {
     return (
       <div className="container mx-auto flex min-h-[60vh] flex-col items-center justify-center gap-4 px-4">
-        <h1 className="text-2xl font-bold text-base-content">Page Not Found</h1>
+        <h1 data-testid="nfl-error-heading" className="text-2xl font-bold text-base-content">
+          Page Not Found
+        </h1>
         <Link href="/nfl" className="text-sm font-medium text-primary hover:underline">
           Back to NFL
         </Link>
@@ -732,8 +743,16 @@ const NflPage = () => {
       <PageHeader scope={scope} />
       <FilterNav scope={scope} />
 
-      {displayResult && <NflBracket result={displayResult} scope={scope} />}
-      {displayResult && <NflDivStandings result={displayResult} scope={scope} />}
+      {displayResult && (
+        <div data-testid="nfl-bracket">
+          <NflBracket result={displayResult} scope={scope} />
+        </div>
+      )}
+      {displayResult && (
+        <div data-testid="nfl-standings">
+          <NflDivStandings result={displayResult} scope={scope} />
+        </div>
+      )}
 
       <div className="flex items-center justify-between gap-4 empty:hidden">
         <ViewModeButton />

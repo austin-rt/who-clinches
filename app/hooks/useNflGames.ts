@@ -108,5 +108,9 @@ export const useNflSimulate = () => {
     []
   );
 
-  return { ...state, simulate };
+  const reset = useCallback(() => {
+    setState({ result: null, isLoading: false });
+  }, []);
+
+  return { ...state, simulate, reset };
 };

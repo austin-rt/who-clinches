@@ -46,8 +46,7 @@ export const getScoreboard = async (
   week: number
 ): Promise<EspnScoreboardGenerated> => {
   if (isFixtureDataSource()) {
-    const fixtureYear = process.env.FIXTURE_YEAR ?? String(season);
-    return readFixture<EspnScoreboardGenerated>(`scoreboard/${fixtureYear}/week-${week}.json`);
+    return readFixture<EspnScoreboardGenerated>(`scoreboard/${season}/week-${week}.json`);
   }
 
   try {
@@ -96,10 +95,7 @@ export const getTeamStatistics = async (
   teamId: string
 ): Promise<EspnTeamStatisticsGenerated> => {
   if (isFixtureDataSource()) {
-    const fixtureYear = process.env.FIXTURE_YEAR ?? String(season);
-    return readFixture<EspnTeamStatisticsGenerated>(
-      `team-statistics/${fixtureYear}/${teamId}.json`
-    );
+    return readFixture<EspnTeamStatisticsGenerated>(`team-statistics/${season}/${teamId}.json`);
   }
 
   try {
