@@ -78,6 +78,13 @@ const GameResultsContent = ({
               const normalized = isNormalized(homeScore, awayScore);
               const homeWon = homeScore > awayScore;
               const winnerColor = homeWon ? game.home.color : game.away.color;
+              const getScoreLabel = (isHome: boolean) => {
+                if (!normalized) return String(isHome ? homeScore : awayScore);
+                const won = isHome ? homeWon : !homeWon;
+                return won ? 'W' : 'L';
+              };
+              const awayLabel = getScoreLabel(false);
+              const homeLabel = getScoreLabel(true);
 
               return (
                 <div
@@ -96,7 +103,7 @@ const GameResultsContent = ({
                     <span
                       className={`font-mono text-xxs ${!homeWon ? 'font-black' : 'text-base-content/70'}`}
                     >
-                      {normalized ? (homeWon ? 'L' : 'W') : awayScore}
+                      {awayLabel}
                     </span>
                   </div>
                   <span className="text-base-content/40 text-xxs">-</span>
@@ -107,7 +114,7 @@ const GameResultsContent = ({
                     <span
                       className={`font-mono text-xxs ${homeWon ? 'font-black' : 'text-base-content/70'}`}
                     >
-                      {normalized ? (homeWon ? 'W' : 'L') : homeScore}
+                      {homeLabel}
                     </span>
                   </div>
                 </div>

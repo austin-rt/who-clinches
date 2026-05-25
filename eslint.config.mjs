@@ -29,6 +29,7 @@ const eslintConfig = defineConfig([
       'no-unreachable': 'error',
       'require-await': 'error',
       'react/no-unescaped-entities': 'off',
+      'no-nested-ternary': 'error',
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
     },
   },

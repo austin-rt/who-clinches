@@ -597,7 +597,12 @@ const ChatDrawer = ({
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
-      setCountdown(h > 0 ? `${h}h ${m}m ${s}s` : m > 0 ? `${m}m ${s}s` : `${s}s`);
+      const formatCountdown = () => {
+        if (h > 0) return `${h}h ${m}m ${s}s`;
+        if (m > 0) return `${m}m ${s}s`;
+        return `${s}s`;
+      };
+      setCountdown(formatCountdown());
     };
     tick();
     const id = setInterval(tick, 1000);

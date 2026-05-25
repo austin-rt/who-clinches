@@ -13,12 +13,12 @@ export const calculateTurnoverMarginFromStats = (
     }
 
     const teamStatMap = statsByTeam.get(stat.team)!;
-    const statValue =
-      typeof stat.statValue === 'number'
-        ? stat.statValue
-        : typeof stat.statValue === 'string'
-          ? parseFloat(stat.statValue)
-          : null;
+    const parseStatValue = (val: unknown): number | null => {
+      if (typeof val === 'number') return val;
+      if (typeof val === 'string') return parseFloat(val);
+      return null;
+    };
+    const statValue = parseStatValue(stat.statValue);
 
     if (statValue !== null && !isNaN(statValue)) {
       teamStatMap.set(stat.statName, statValue);
@@ -39,6 +39,3 @@ export const calculateTurnoverMarginFromStats = (
 
   return result;
 };
-
-
-

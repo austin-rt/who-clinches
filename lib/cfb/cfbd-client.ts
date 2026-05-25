@@ -125,14 +125,12 @@ export class CFBDClient {
             ...game,
             spread: spread ?? undefined,
             overUnder: line.overUnder ?? undefined,
-            favoriteId:
-              spread !== null && spread !== undefined
-                ? spread < 0
-                  ? game.homeId
-                  : spread > 0
-                    ? game.awayId
-                    : undefined
-                : undefined,
+            favoriteId: (() => {
+              if (spread === null || spread === undefined) return undefined;
+              if (spread < 0) return game.homeId;
+              if (spread > 0) return game.awayId;
+              return undefined;
+            })(),
           };
         }
         return game;

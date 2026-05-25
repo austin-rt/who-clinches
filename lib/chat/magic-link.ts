@@ -31,12 +31,12 @@ export const verifyMagicLink = async (token: string): Promise<string | null> => 
 };
 
 export const sendMagicLinkEmail = async (email: string, token: string): Promise<void> => {
-  const baseUrl =
-    process.env.VERCEL_ENV === 'production'
-      ? 'https://whoclinches.com'
-      : process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}`
-        : 'http://localhost:3000';
+  const getBaseUrl = () => {
+    if (process.env.VERCEL_ENV === 'production') return 'https://whoclinches.com';
+    if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+    return 'http://localhost:3000';
+  };
+  const baseUrl = getBaseUrl();
 
   const verifyUrl = `${baseUrl}/auth/verify?token=${token}`;
 
