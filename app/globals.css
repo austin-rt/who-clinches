@@ -65,7 +65,27 @@ html[data-mode='dark'] {
 @layer components {
   /* Override DaisyUI's .btn class - must come after @tailwind components */
   .btn {
-    @apply flex items-center justify-center gap-2 rounded-lg p-4 font-semibold uppercase transition-all;
+    @apply flex items-center justify-center gap-2 rounded-lg font-semibold uppercase transition-all;
+  }
+
+  .btn:where(:not(.btn-xs, .btn-sm, .btn-lg, .btn-xl)) {
+    @apply p-4;
+  }
+
+  .btn-xs {
+    @apply px-2 py-1 text-xs normal-case;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-sm normal-case;
+  }
+
+  .btn-lg {
+    @apply px-6 py-4 text-lg;
+  }
+
+  .btn-xl {
+    @apply px-8 py-5 text-xl;
   }
 
   .btn > span {

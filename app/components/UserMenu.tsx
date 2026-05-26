@@ -116,7 +116,7 @@ const UserMenu = ({ isNonProd }: { isNonProd: boolean }) => {
               <button
                 type="submit"
                 disabled={authSending || !authEmail}
-                className="whitespace-nowrap rounded-r-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-content disabled:opacity-50"
+                className="btn btn-primary btn-sm whitespace-nowrap rounded-l-none rounded-r-md"
               >
                 {authSending ? '...' : 'Sign in'}
               </button>
