@@ -31,6 +31,7 @@ const eslintConfig = defineConfig([
       'react/no-unescaped-entities': 'off',
       'no-nested-ternary': 'error',
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
+      'react-hooks/incompatible-library': 'off',
     },
   },
   {

@@ -4,7 +4,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { configureStore } from '@reduxjs/toolkit';
 import { Provider } from 'react-redux';
-import Score from '@/app/components/Score';
+import Score from '@/app/components/Game/Score';
 import gamePicksReducer from '@/app/store/gamePicksSlice';
 import uiReducer from '@/app/store/uiSlice';
 import { GameLean } from '@/lib/types';

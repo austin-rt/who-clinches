@@ -29,7 +29,9 @@ const resolveFixturePath = (
   const year = query.year ? String(query.year) : undefined;
   const week = query.week ? String(query.week) : undefined;
   const conference = query.conference ? getConfSlug(String(query.conference)) : undefined;
-  const filename = week && year ? `${year}-week${week}.json` : year ? `${year}.json` : undefined;
+  let filename: string | undefined;
+  if (week && year) filename = `${year}-week${week}.json`;
+  else if (year) filename = `${year}.json`;
 
   const segments: string[] = [FIXTURES_ROOT, dir];
 

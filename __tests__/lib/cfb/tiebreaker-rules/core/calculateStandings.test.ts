@@ -55,7 +55,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
+      createTeamLean({ teamId: id, abbrev: { A: 'ALA', B: 'UA', C: 'LSU' }[id] ?? id })
     );
     const config = makeH2HConfig();
 
@@ -136,7 +136,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
+      createTeamLean({ teamId: id, abbrev: { A: 'ALA', B: 'UA', C: 'LSU' }[id] ?? id })
     );
 
     const { standings } = await calculateStandings(games, ['A', 'B', 'C'], makeH2HConfig(), teams);
@@ -208,7 +208,7 @@ describe('calculateStandings', () => {
       }),
     ];
     const teams = ['A', 'B', 'C'].map((id) =>
-      createTeamLean({ teamId: id, abbrev: id === 'A' ? 'ALA' : id === 'B' ? 'UA' : 'LSU' })
+      createTeamLean({ teamId: id, abbrev: { A: 'ALA', B: 'UA', C: 'LSU' }[id] ?? id })
     );
 
     const { standings } = await calculateStandings(games, ['A', 'B', 'C'], config, teams);
