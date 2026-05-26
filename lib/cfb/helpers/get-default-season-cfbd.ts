@@ -3,8 +3,10 @@ import { logError } from '../../errorLogger';
 import { getFixtureYear } from './fixture-year';
 
 export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
-  const fixtureYear = await getFixtureYear();
-  if (fixtureYear !== null && process.env.NODE_ENV === 'development') return fixtureYear;
+  if (process.env.FIXTURE_YEAR) {
+    const fixtureYear = await getFixtureYear();
+    if (fixtureYear !== null) return fixtureYear;
+  }
 
   try {
     const now = new Date();

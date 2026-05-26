@@ -83,23 +83,18 @@ describe('getDefaultSeasonFromCfbd', () => {
   });
 
   describe('fixture year branch', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
     const mockGetFixtureYear = jest.mocked(
       jest.requireMock<typeof import('@/lib/cfb/helpers/fixture-year')>(
         '@/lib/cfb/helpers/fixture-year'
       ).getFixtureYear
     );
 
-    const setNodeEnv = (value: string) => {
-      Object.defineProperty(process.env, 'NODE_ENV', { value, writable: true, configurable: true });
-    };
-
     afterEach(() => {
-      setNodeEnv(originalNodeEnv!);
+      delete process.env.FIXTURE_YEAR;
     });
 
-    it('returns fixture year when set in development', async () => {
-      setNodeEnv('development');
+    it('returns fixture year when FIXTURE_YEAR env var is set', async () => {
+      process.env.FIXTURE_YEAR = '2024';
       mockGetFixtureYear.mockResolvedValue(2024);
 
       const result = await getDefaultSeasonFromCfbd();
@@ -108,8 +103,7 @@ describe('getDefaultSeasonFromCfbd', () => {
       expect(mockGetCalendar).not.toHaveBeenCalled();
     });
 
-    it('ignores fixture year in non-development environments', async () => {
-      setNodeEnv('production');
+    it('ignores fixture year when FIXTURE_YEAR env var is not set', async () => {
       mockGetFixtureYear.mockResolvedValue(2024);
 
       jest.useFakeTimers();
