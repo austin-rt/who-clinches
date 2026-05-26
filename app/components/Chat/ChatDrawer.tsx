@@ -895,6 +895,33 @@ const ChatDrawer = ({
           </div>
         )}
 
+        {!email && !windowResetsAt && !providerLimit && (
+          <div className="border-t border-base-300 px-4 py-2">
+            {!authSent ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  placeholder="Sign in with email"
+                  className="flex-1 rounded-md border border-base-300 bg-base-100 px-3 py-1.5 text-xs"
+                />
+                <button
+                  onClick={handleSendMagicLink}
+                  disabled={authSending || !authEmail}
+                  className="whitespace-nowrap rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-content disabled:opacity-50"
+                >
+                  {authSending ? '...' : 'Sign in'}
+                </button>
+              </div>
+            ) : (
+              <p className="text-center text-xs text-success">
+                Check your email for a sign-in link.
+              </p>
+            )}
+          </div>
+        )}
+
         <form
           onSubmit={handleSubmit}
           className={`flex items-stretch border-t border-base-300 px-4 py-3${inputDisabled ? 'pointer-events-none opacity-50' : ''}`}
