@@ -1,3 +1,5 @@
+'use client';
+
 import { useParams } from 'next/navigation';
 import { getConferenceMetadata } from '@/lib/constants';
 
