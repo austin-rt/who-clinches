@@ -1,5 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createMagicLink, sendMagicLinkEmail } from '@/lib/chat/magic-link';
+import { buildAdminClearCookieHeader } from '@/lib/admin/chat-admin';
 import { redis } from '@/lib/redis';
 
 const RATE_LIMIT_WINDOW_S = 120;
@@ -11,6 +12,15 @@ const checkEmailRateLimit = async (email: string): Promise<boolean> => {
   if (exists) return false;
   await redis.set(key, '1', { ex: RATE_LIMIT_WINDOW_S });
   return true;
+};
+
+export const DELETE = () => {
+  const secure = process.env.VERCEL_ENV ? '; Secure' : '';
+  const clearIdentity = `cid=; HttpOnly; SameSite=Lax; Path=/api/chat; Max-Age=0${secure}`;
+  const response = NextResponse.json({ signedOut: true });
+  response.headers.append('Set-Cookie', clearIdentity);
+  response.headers.append('Set-Cookie', buildAdminClearCookieHeader());
+  return response;
 };
 
 export const POST = async (request: NextRequest) => {

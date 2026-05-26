@@ -558,6 +558,14 @@ const ChatDrawer = ({
     }
   };
 
+  const handleSignOut = async () => {
+    await fetch('/api/chat/auth', { method: 'DELETE' });
+    dispatch(setReduxEmail(null));
+    setIsMaintainer(false);
+    setAuthSent(false);
+    setAuthEmail('');
+  };
+
   const inputDisabled = !!windowResetsAt || providerLimit;
 
   const [countdown, setCountdown] = useState('');
@@ -885,9 +893,20 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {!email && !windowResetsAt && !providerLimit && !isMaintainer && (
+        {!windowResetsAt && !providerLimit && !isMaintainer && (
           <div className="border-t border-base-300 px-4 py-2">
-            {!authSent ? (
+            {email && (
+              <div className="flex items-center justify-between">
+                <span className="text-base-content/40 truncate text-[10px]">{email}</span>
+                <button
+                  onClick={() => void handleSignOut()}
+                  className="text-base-content/40 hover:text-base-content/60 text-[10px] underline"
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
+            {!email && !authSent && (
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -911,7 +930,8 @@ const ChatDrawer = ({
                   {authSending ? '...' : 'Sign in'}
                 </button>
               </form>
-            ) : (
+            )}
+            {!email && authSent && (
               <p className="text-center text-xs text-success">
                 Check your email for a sign-in link.
               </p>
