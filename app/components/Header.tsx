@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import DarkModeToggle from './DarkModeToggle';
 import Navigation from './Navigation';
+import UserMenu from './UserMenu';
 
 const Header = ({ env }: { env: 'local' | 'preview' | 'production' }) => {
   const envLabel = env === 'production' ? '' : env;
@@ -20,6 +21,7 @@ const Header = ({ env }: { env: 'local' | 'preview' | 'production' }) => {
         <div className="flex items-center gap-4">
           <Navigation isNonProd={isNonProd} />
           <DarkModeToggle isNonProd={isNonProd} />
+          <UserMenu isNonProd={isNonProd} />
         </div>
       </div>
     </div>
