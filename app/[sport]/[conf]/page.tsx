@@ -2,15 +2,16 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import GamesList from '@/app/components/GamesList';
-import ViewModeButton from '@/app/components/ViewModeButton';
-import HideCompletedButton from '@/app/components/HideCompletedButton';
-import ResetButton from '@/app/components/ResetButton';
-import SimulateButton from '@/app/components/SimulateButton';
-import Standings from '@/app/components/Standings';
-import ChampionshipMatchup from '@/app/components/ChampionshipMatchup';
-import ShareButton from '@/app/components/ShareButton';
-import SimulationDisclaimer from '@/app/components/SimulationDisclaimer';
+import { GamesList } from '@/app/components/Game';
+import { ViewModeButton, HideCompletedButton } from '@/app/components/Week';
+import {
+  ResetButton,
+  SimulateButton,
+  ChampionshipMatchup,
+  ShareButton,
+  SimulationDisclaimer,
+} from '@/app/components/Simulation';
+import { Standings } from '@/app/components/Standings';
 import ChatDrawer from '@/app/components/Chat/ChatDrawer';
 import ChatSearchBar from '@/app/components/Chat/ChatSearchBar';
 import { IoChatbubblesOutline } from 'react-icons/io5';

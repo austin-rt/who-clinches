@@ -1,4 +1,4 @@
 {
-  "afc": ["NE", "KC", "IND", "TEN", "BAL", "DEN"],
-  "nfc": ["PHI", "STL", "GB", "CAR", "DAL", "SEA"]
+  "afc": ["NE", "KC", "IND", "BAL", "TEN", "DEN"],
+  "nfc": ["PHI", "STL", "CAR", "GB", "SEA", "DAL"]
 }

@@ -52,6 +52,12 @@ const eslintConfig = defineConfig([
       'no-console': 'off', // Allow console in test files and scripts
     },
   },
+  {
+    files: ['app/admin/components/RedisKeysTable.tsx'],
+    rules: {
+      'react-hooks/incompatible-library': 'off',
+    },
+  },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**', 'lib/consoleLogger.ts', 'lib/errorLogger.ts']),
 ]);
 

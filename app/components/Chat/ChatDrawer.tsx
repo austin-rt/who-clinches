@@ -1,26 +1,24 @@
 'use client';
 
-import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
-import { HiXMark, HiPlus, HiClock } from 'react-icons/hi2';
-import { IoSendOutline, IoStopOutline } from 'react-icons/io5';
-import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
-import {
-  setSessions as setReduxSessions,
-  setActiveSessionIndex as setReduxActiveIndex,
-  setEmail as setReduxEmail,
-  setUsage as setReduxUsage,
-  addToHistory,
-  removeFromHistory,
-  pruneExpiredSessions,
-} from '@/app/store/chatSlice';
-interface ChatMessage {
+import { useRef, useEffect, useCallback } from 'react';
+import ChatHeader from './ChatHeader';
+import ChatMessageList from './ChatMessageList';
+import ChatFooter from './ChatFooter';
+import ChatInput from './ChatInput';
+import { useChatSessions } from './hooks/useChatSessions';
+import { useChatStream } from './hooks/useChatStream';
+import { useChatAuth } from './hooks/useChatAuth';
+import { useDrawerBehavior } from './hooks/useDrawerBehavior';
+import { useCountdown } from './hooks/useCountdown';
+
+export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   pending?: boolean;
 }
 
-interface ChatSession {
+export interface ChatSession {
   id: string;
   messages: ChatMessage[];
   conf?: string;
@@ -28,7 +26,7 @@ interface ChatSession {
   lastActiveAt?: number;
 }
 
-const MAX_SESSIONS = 5;
+export const MAX_SESSIONS = 5;
 
 interface ChatDrawerProps {
   open: boolean;
@@ -41,31 +39,6 @@ interface ChatDrawerProps {
   forceNewChat?: boolean;
 }
 
-const TypingIndicator = () => (
-  <div className="chat chat-start">
-    <div className="chat-bubble-received flex items-center justify-center gap-1.5 py-3">
-      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite] rounded-full bg-base-content" />
-      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite_0.2s] rounded-full bg-base-content" />
-      <span className="block h-2 w-2 shrink-0 animate-[typing-pulse_1.4s_ease-in-out_infinite_0.4s] rounded-full bg-base-content" />
-    </div>
-  </div>
-);
-
-const makeSession = (label: string, conf?: string): ChatSession => ({
-  id: crypto.randomUUID(),
-  messages: [],
-  label,
-  conf,
-  lastActiveAt: Date.now(),
-});
-
-const deriveLabel = (messages: ChatMessage[]): string => {
-  const first = messages.find((m) => m.role === 'user');
-  if (!first) return 'New chat';
-  const text = first.content.trim();
-  return text.length > 24 ? text.slice(0, 24) + '...' : text;
-};
-
 const ChatDrawer = ({
   open,
   onClose,
@@ -76,366 +49,75 @@ const ChatDrawer = ({
   onMessageSent,
   forceNewChat,
 }: ChatDrawerProps) => {
-  const dispatch = useAppDispatch();
-  const persistedSessions = useAppSelector((s) => s.chat.sessions);
-  const persistedActiveIndex = useAppSelector((s) => s.chat.activeSessionIndex);
-  const email = useAppSelector((s) => s.chat.email);
-  const usage = useAppSelector((s) => s.chat.usage);
-  const history = useAppSelector((s) => s.chat.history ?? []);
-  const appSeason = useAppSelector((s) => s.app.season);
-
-  const [visible, setVisible] = useState(false);
-  const [sessions, setSessions] = useState<ChatSession[]>(() =>
-    persistedSessions.length > 0 ? persistedSessions : [makeSession('New chat', conferenceHint)]
-  );
-  const [activeIndex, setActiveIndex] = useState(() => {
-    if (conferenceHint) {
-      const confIdx = (persistedSessions.length > 0 ? persistedSessions : []).findIndex(
-        (s) => s.conf === conferenceHint
-      );
-      if (confIdx !== -1) return confIdx;
-    }
-    return persistedActiveIndex;
-  });
-  const [input, setInput] = useState('');
-  const [isStreaming, setIsStreaming] = useState(false);
-  const [showTyping, setShowTyping] = useState(false);
-  const [retryAfter, setRetryAfter] = useState<number | null>(null);
-  const [windowResetsAt, setWindowResetsAt] = useState<number | null>(null);
-  const [providerLimit, setProviderLimit] = useState(false);
-  const [authEmail, setAuthEmail] = useState('');
-  const [authSending, setAuthSending] = useState(false);
-  const [authSent, setAuthSent] = useState(false);
-  const [devVerifyUrl, setDevVerifyUrl] = useState<string | null>(null);
-  const [authToast, setAuthToast] = useState<string | null>(null);
-  const [isMaintainer, setIsMaintainer] = useState(false);
-  const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const abortRef = useRef<AbortController | null>(null);
-  const drawerRef = useRef<HTMLDivElement>(null);
-  const pendingRef = useRef<string[]>([]);
-
-  const activeSession = sessions[activeIndex];
-  const messages = useMemo(() => activeSession?.messages ?? [], [activeSession]);
-  const sessionId = activeSession?.id ?? '';
-
-  const setMessages = useCallback(
-    (updater: ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[])) => {
-      setSessions((prev) =>
-        prev.map((s) => {
-          if (s.id !== sessionId) return s;
-          const newMessages = typeof updater === 'function' ? updater(s.messages) : updater;
-          return {
-            ...s,
-            messages: newMessages,
-            label: deriveLabel(newMessages) || s.label,
-            conf: s.conf || conferenceHint,
-            lastActiveAt: Date.now(),
-          };
-        })
-      );
-    },
-    [sessionId, conferenceHint]
-  );
-
-  useEffect(() => {
-    dispatch(pruneExpiredSessions());
-  }, [dispatch]);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const auth = params.get('auth');
-    if (auth === 'success') {
-      const credited = params.get('credited');
-      setAuthToast(credited ? `Verified! ${credited} credits added.` : 'Email verified!');
-      setTimeout(() => setAuthToast(null), 5000);
-      params.delete('auth');
-      params.delete('credited');
-      const clean = params.toString();
-      window.history.replaceState({}, '', `${window.location.pathname}${clean ? `?${clean}` : ''}`);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!conferenceHint) return;
-    setSessions((prev) => {
-      const currentIdx = prev.findIndex((s) => s.conf === conferenceHint);
-      if (currentIdx !== -1) {
-        setActiveIndex(currentIdx);
-        return prev;
-      }
-      const newSession = makeSession('New chat', conferenceHint);
-      setActiveIndex(prev.length);
-      return [...prev, newSession];
-    });
-  }, [conferenceHint]);
-
-  useEffect(() => {
-    const nonEmpty = sessions.filter((s) => s.messages.length > 0);
-    if (nonEmpty.length > 0) {
-      dispatch(setReduxSessions(nonEmpty));
-      dispatch(setReduxActiveIndex(activeIndex));
-    } else {
-      dispatch(setReduxSessions([]));
-      dispatch(setReduxActiveIndex(0));
-    }
-  }, [sessions, activeIndex, dispatch]);
-
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, showTyping, scrollToBottom]);
-
   const initialMessageSentRef = useRef(false);
-  const [newChatReady, setNewChatReady] = useState(false);
+
+  const {
+    sessions,
+    activeIndex,
+    messages,
+    sessionId,
+    input,
+    setInput,
+    setMessages,
+    history,
+    historyOpen,
+    setHistoryOpen,
+    newChatReady,
+    handleNewChat,
+    handleSwitchSession,
+    handleCloseSession,
+    handleRestoreFromHistory,
+    prepareForceNewChat,
+  } = useChatSessions(conferenceHint);
+
+  const {
+    isStreaming,
+    showTyping,
+    retryAfter,
+    windowResetsAt,
+    providerLimit,
+    isMaintainer,
+    abortRef,
+    pendingRef,
+    sendMessage,
+    clearWindowReset,
+  } = useChatStream({
+    messages,
+    setMessages,
+    conferenceHint,
+    teamId,
+    sessionId,
+    onMessageSent,
+  });
+
+  const {
+    email,
+    usage,
+    authEmail,
+    setAuthEmail,
+    authSending,
+    authSent,
+    devVerifyUrl,
+    authToast,
+    handleSendMagicLink,
+  } = useChatAuth();
+
+  const { visible, drawerRef } = useDrawerBehavior(open, onClose, inputRef, abortRef);
+
+  const resetsAt = windowResetsAt ?? usage?.windowResetsAt ?? null;
+  const countdown = useCountdown(resetsAt, clearWindowReset);
 
   useEffect(() => {
-    if (open && forceNewChat && !newChatReady) {
-      setSessions((prev) => {
-        if (prev.length >= MAX_SESSIONS) {
-          const updated = [...prev.slice(1), makeSession('New chat', conferenceHint)];
-          setActiveIndex(updated.length - 1);
-          return updated;
-        }
-        setActiveIndex(prev.length);
-        return [...prev, makeSession('New chat', conferenceHint)];
-      });
-      setInput('');
-      setNewChatReady(true);
-    }
-    if (!open) {
-      setNewChatReady(false);
-      initialMessageSentRef.current = false;
-    }
-  }, [open, forceNewChat, conferenceHint, newChatReady]);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, showTyping]);
 
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden';
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          setVisible(true);
-          setTimeout(() => inputRef.current?.focus(), 100);
-        });
-      });
-    } else {
-      document.body.style.overflow = '';
-      setVisible(false);
-      if (abortRef.current) abortRef.current.abort();
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [open]);
-
-  useEffect(() => {
-    if (!open) return;
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', handleEsc);
-    return () => document.removeEventListener('keydown', handleEsc);
-  }, [open, onClose]);
-
-  useEffect(() => {
-    if (!visible) return;
-    const drawer = drawerRef.current;
-    if (!drawer) return;
-    const focusable = drawer.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
-    if (focusable.length === 0) return;
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    const trap = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return;
-      if (e.shiftKey) {
-        if (document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        }
-      } else {
-        if (document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    drawer.addEventListener('keydown', trap);
-    return () => drawer.removeEventListener('keydown', trap);
-  }, [visible]);
-
-  const sendMessage = useCallback(
-    async (text: string, opts?: { skipBubble?: boolean }) => {
-      if (!opts?.skipBubble) {
-        setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: text }]);
-      }
-      setInput('');
-      if (inputRef.current) inputRef.current.style.height = 'auto';
-      setIsStreaming(true);
-      onMessageSent?.();
-
-      setShowTyping(true);
-
-      let assistantId = `assistant-${Date.now()}`;
-
-      const doFetch = async (): Promise<void> => {
-        const controller = new AbortController();
-        abortRef.current = controller;
-
-        const history = messages.map((m) => ({ role: m.role, content: m.content }));
-
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: text,
-            history,
-            conferenceHint,
-            teamId,
-            sessionId,
-            season: appSeason ?? undefined,
-          }),
-          signal: controller.signal,
-        });
-
-        if (res.status === 503) {
-          const body = await res.json().catch(() => ({}));
-          if (body.error === 'provider_limit') {
-            setProviderLimit(true);
-
-            setShowTyping(false);
-            throw new Error('__provider_limit__');
-          }
-        }
-
-        if (res.status === 429) {
-          const body = await res.json().catch(() => ({}));
-          if (body.error === 'window_limit') {
-            setWindowResetsAt(Date.now() + (body.windowResetsIn ?? 0));
-            dispatch(
-              setReduxUsage({
-                freeRemaining: body.freeRemaining ?? 0,
-                creditsRemaining: body.creditsRemaining ?? 0,
-                source: null,
-              })
-            );
-
-            setShowTyping(false);
-            throw new Error('__window_limit__');
-          }
-          const retrySeconds = parseInt(res.headers.get('Retry-After') ?? '60', 10);
-          setRetryAfter(retrySeconds);
-          await new Promise((r) => setTimeout(r, retrySeconds * 1000));
-          setRetryAfter(null);
-          return doFetch();
-        }
-
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({ error: 'Something went wrong' }));
-          throw new Error(body.error ?? 'Something went wrong');
-        }
-
-        setShowTyping(false);
-
-        setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
-
-        const reader = res.body?.getReader();
-        if (!reader) throw new Error('No response stream');
-
-        const decoder = new TextDecoder();
-        let buffer = '';
-        let needsNewBubble = false;
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n\n');
-          buffer = lines.pop() ?? '';
-
-          for (const line of lines) {
-            if (!line.startsWith('data: ')) continue;
-            const data = JSON.parse(line.slice(6));
-
-            if (data.type === 'delta') {
-              if (needsNewBubble) {
-                needsNewBubble = false;
-                setShowTyping(false);
-                assistantId = `assistant-${Date.now()}`;
-                setMessages((prev) => [
-                  ...prev,
-                  { id: assistantId, role: 'assistant', content: data.text },
-                ]);
-              } else {
-                setMessages((prev) =>
-                  prev.map((m) =>
-                    m.id === assistantId ? { ...m, content: m.content + data.text } : m
-                  )
-                );
-              }
-            } else if (data.type === 'break') {
-              needsNewBubble = true;
-              setShowTyping(true);
-            } else if (data.type === 'done') {
-              if (data.maintainer) {
-                setIsMaintainer(true);
-              }
-              if (data.usage) {
-                const { windowResetsIn, ...rest } = data.usage;
-                dispatch(
-                  setReduxUsage({
-                    ...rest,
-                    windowResetsAt: windowResetsIn ? Date.now() + windowResetsIn : undefined,
-                  })
-                );
-              }
-            } else if (data.type === 'error') {
-              throw new Error(data.error);
-            }
-          }
-        }
-      };
-
-      try {
-        await doFetch();
-      } catch (err) {
-        setShowTyping(false);
-        const errMsg = (err as Error).message;
-        if (
-          (err as Error).name !== 'AbortError' &&
-          errMsg !== '__window_limit__' &&
-          errMsg !== '__provider_limit__'
-        ) {
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: `error-${Date.now()}`,
-              role: 'assistant',
-              content: 'Sorry, something went wrong. Try again.',
-            },
-          ]);
-        }
-      } finally {
-        setIsStreaming(false);
-        abortRef.current = null;
-        const queued = pendingRef.current;
-        if (queued.length > 0) {
-          pendingRef.current = [];
-          const combined = queued.join('\n');
-          setMessages((prev) => prev.map((m) => (m.pending ? { ...m, pending: false } : m)));
-          void sendMessage(combined, { skipBubble: true });
-        }
-      }
-    },
-    [messages, conferenceHint, teamId, sessionId, appSeason, onMessageSent, setMessages, dispatch]
-  );
+    prepareForceNewChat(open, !!forceNewChat);
+    if (!open) initialMessageSentRef.current = false;
+  }, [open, forceNewChat, prepareForceNewChat]);
 
   useEffect(() => {
     if (!open || !initialMessage || initialMessageSentRef.current || isStreaming) return;
@@ -455,150 +137,28 @@ const ChatDrawer = ({
     sendMessage,
   ]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text) return;
-    if (isStreaming) {
-      pendingRef.current.push(text);
-      setMessages((prev) => [
-        ...prev,
-        { id: `pending-${Date.now()}`, role: 'user', content: text, pending: true },
-      ]);
-      setInput('');
-      return;
-    }
-    void sendMessage(text);
-  };
-
-  const handleNewChat = () => {
-    if (isStreaming) return;
-    if (sessions.length >= MAX_SESSIONS) {
-      setSessions((prev) => {
-        const updated = [...prev.slice(1), makeSession('New chat', conferenceHint)];
-        return updated;
-      });
-      setActiveIndex(sessions.length - 1);
-    } else {
-      setSessions((prev) => [...prev, makeSession('New chat', conferenceHint)]);
-      setActiveIndex(sessions.length);
-    }
-    setInput('');
-  };
-
-  const handleSwitchSession = (index: number) => {
-    if (isStreaming || index === activeIndex) return;
-    setActiveIndex(index);
-    setInput('');
-  };
-
-  const handleCloseSession = (index: number) => {
-    if (isStreaming) return;
-    const session = sessions[index];
-    if (session && session.messages.length > 0) {
-      dispatch(addToHistory(session));
-    }
-    if (sessions.length === 1) {
-      setSessions([makeSession('New chat', conferenceHint)]);
-      setActiveIndex(0);
-      setInput('');
-      return;
-    }
-    setSessions((prev) => prev.filter((_, i) => i !== index));
-    if (index < activeIndex) {
-      setActiveIndex(activeIndex - 1);
-    } else if (index === activeIndex) {
-      setActiveIndex(Math.min(index, sessions.length - 2));
-    }
-    setInput('');
-  };
-
-  const handleRestoreFromHistory = (id: string) => {
-    if (isStreaming) return;
-    const restored = history.find((s) => s.id === id);
-    if (!restored) return;
-    dispatch(removeFromHistory(id));
-    setSessions((prev) => {
-      const withTimestamp = { ...restored, lastActiveAt: Date.now() };
-      if (prev.length >= MAX_SESSIONS) {
-        const evicted = prev[0];
-        if (evicted.messages.length > 0) dispatch(addToHistory(evicted));
-        const updated = [...prev.slice(1), withTimestamp];
-        setActiveIndex(updated.length - 1);
-        return updated;
-      }
-      setActiveIndex(prev.length);
-      return [...prev, withTimestamp];
-    });
-    setHistoryOpen(false);
-    setInput('');
-  };
-
-  const handleSendMagicLink = async () => {
-    if (!authEmail || authSending) return;
-    setAuthSending(true);
-    try {
-      const res = await fetch('/api/chat/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: authEmail }),
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setAuthSent(true);
-        dispatch(setReduxEmail(authEmail.toLowerCase().trim()));
-        if (data.verifyUrl) {
-          setDevVerifyUrl(data.verifyUrl);
-        }
-      }
-    } catch {
-      // ignore
-    } finally {
-      setAuthSending(false);
-    }
-  };
-
-  const inputDisabled = !!windowResetsAt || providerLimit;
-
-  const [countdown, setCountdown] = useState('');
-
-  const resetsAt = windowResetsAt ?? usage?.windowResetsAt ?? null;
-
-  useEffect(() => {
-    if (!resetsAt) {
-      setCountdown('');
-      return;
-    }
-    const tick = () => {
-      const diff = resetsAt - Date.now();
-      if (diff <= 0) {
-        setWindowResetsAt(null);
-        setCountdown('');
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      const text = input.trim();
+      if (!text) return;
+      if (isStreaming) {
+        pendingRef.current.push(text);
+        setMessages((prev) => [
+          ...prev,
+          { id: `pending-${Date.now()}`, role: 'user', content: text, pending: true },
+        ]);
+        setInput('');
         return;
       }
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      const formatCountdown = () => {
-        if (h > 0) return `${h}h ${m}m ${s}s`;
-        if (m > 0) return `${m}m ${s}s`;
-        return `${s}s`;
-      };
-      setCountdown(formatCountdown());
-    };
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [resetsAt]);
+      setInput('');
+      if (inputRef.current) inputRef.current.style.height = 'auto';
+      void sendMessage(text);
+    },
+    [input, isStreaming, pendingRef, setMessages, setInput, sendMessage]
+  );
 
-  const hasHistory = history.length > 0;
-
-  useEffect(() => {
-    if (!historyOpen) return;
-    const close = () => setHistoryOpen(false);
-    document.addEventListener('click', close);
-    return () => document.removeEventListener('click', close);
-  }, [historyOpen]);
+  const inputDisabled = !!windowResetsAt || providerLimit;
 
   return (
     <>
@@ -615,6 +175,7 @@ const ChatDrawer = ({
         role="button"
         tabIndex={-1}
         aria-label="Close chat"
+        data-testid="chat-backdrop"
       />
 
       <div
@@ -634,295 +195,56 @@ const ChatDrawer = ({
         aria-label="Chat"
         aria-hidden={!visible}
         inert={!visible ? true : undefined}
+        data-testid="chat-drawer"
       >
-        <div className="sticky top-0 z-10 border-b border-base-300 bg-base-100">
-          <div className="flex items-center px-4 pb-1 pt-3">
-            <div className="flex-1" />
-            <p className="text-base-content/50 text-[10px]">
-              Experimental — results may be inaccurate.{' '}
-              <a
-                href={`/feedback?session=${sessionId}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-base-content/70 underline"
-              >
-                Report an issue
-              </a>
-            </p>
-            <div className="flex flex-1 justify-end">
-              <button
-                onClick={onClose}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-base-content transition-colors hover:bg-base-300"
-                aria-label="Close"
-              >
-                <HiXMark className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-          <div className="flex items-center gap-1 px-4 pb-2">
-            <div
-              ref={tabsRef}
-              className="scrollbar-none flex min-w-0 flex-1 items-center gap-1 overflow-x-auto"
-            >
-              {sessions.map((session, i) => (
-                <div
-                  key={session.id}
-                  className={`group flex max-w-[8rem] shrink-0 items-center rounded-md text-xs transition-colors ${
-                    i === activeIndex
-                      ? 'bg-base-300 font-medium text-base-content'
-                      : 'text-base-content/50 hover:text-base-content'
-                  }`}
-                >
-                  <button
-                    onClick={() => handleSwitchSession(i)}
-                    className="min-w-0 truncate py-1 pl-2 pr-1"
-                  >
-                    {session.label}
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleCloseSession(i);
-                    }}
-                    className="hover:bg-base-content/10 flex h-4 w-4 shrink-0 items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100"
-                    aria-label={`Close ${session.label}`}
-                  >
-                    <HiXMark className="h-3 w-3" />
-                  </button>
-                </div>
-              ))}
-            </div>
-            <button
-              onClick={handleNewChat}
-              disabled={sessions.length >= MAX_SESSIONS}
-              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors ${
-                sessions.length < MAX_SESSIONS
-                  ? 'text-base-content/50 hover:bg-base-300 hover:text-base-content'
-                  : 'text-base-content/20 cursor-default'
-              }`}
-              aria-label="New chat"
-            >
-              <HiPlus className="h-3.5 w-3.5" />
-            </button>
-            {hasHistory && (
-              <div className="relative">
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setHistoryOpen((p) => !p);
-                  }}
-                  className="text-base-content/50 flex h-6 w-6 shrink-0 items-center justify-center rounded-md transition-colors hover:bg-base-300 hover:text-base-content"
-                  aria-label="Chat history"
-                >
-                  <HiClock className="h-3.5 w-3.5" />
-                </button>
-                {historyOpen && (
-                  <div className="absolute right-0 top-full z-20 mt-1 max-h-48 w-56 overflow-y-auto rounded-lg border border-base-300 bg-base-100 py-1 shadow-lg">
-                    {history.map((s) => (
-                      <button
-                        key={s.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleRestoreFromHistory(s.id);
-                        }}
-                        className="text-base-content/70 hover:bg-base-content/10 flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs transition-colors"
-                      >
-                        <span className="min-w-0 truncate">{s.label}</span>
-                        {s.conf && (
-                          <span className="text-base-content/40 shrink-0 text-[10px] uppercase">
-                            {s.conf}
-                          </span>
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+        <ChatHeader
+          sessionId={sessionId}
+          sessions={sessions}
+          activeIndex={activeIndex}
+          isStreaming={isStreaming}
+          history={history}
+          historyOpen={historyOpen}
+          tabsRef={tabsRef}
+          onClose={onClose}
+          onSwitchSession={(i) => handleSwitchSession(i, isStreaming)}
+          onCloseSession={(i) => handleCloseSession(i, isStreaming)}
+          onNewChat={() => handleNewChat(isStreaming)}
+          onRestoreFromHistory={(id) => handleRestoreFromHistory(id, isStreaming)}
+          onToggleHistory={setHistoryOpen}
+        />
 
-        <div className="flex-1 overflow-y-auto px-4 py-4">
-          {messages.length === 0 && !showTyping && (
-            <div className="flex h-full items-center justify-center">
-              <p className="text-base-content/50 text-center text-sm">
-                Ask about any team&apos;s path to the conference championship
-              </p>
-            </div>
-          )}
+        <ChatMessageList
+          messages={messages}
+          showTyping={showTyping}
+          retryAfter={retryAfter}
+          messagesEndRef={messagesEndRef}
+        />
 
-          {messages.map((msg) => (
-            <div key={msg.id} className={`chat ${msg.role === 'user' ? 'chat-end' : 'chat-start'}`}>
-              <div
-                className={`${msg.role === 'user' ? 'chat-bubble-sent' : 'chat-bubble-received'}${msg.pending ? 'opacity-50' : ''}`}
-              >
-                {msg.content}
-              </div>
-            </div>
-          ))}
+        <ChatFooter
+          authToast={authToast}
+          providerLimit={providerLimit}
+          windowResetsAt={windowResetsAt}
+          countdown={countdown}
+          email={email}
+          authEmail={authEmail}
+          authSending={authSending}
+          authSent={authSent}
+          devVerifyUrl={devVerifyUrl}
+          isMaintainer={isMaintainer}
+          usage={usage}
+          onAuthEmailChange={setAuthEmail}
+          onSendMagicLink={handleSendMagicLink}
+        />
 
-          {showTyping && <TypingIndicator />}
-
-          {retryAfter !== null && (
-            <div className="text-base-content/50 py-2 text-center text-xs">
-              Waiting {retryAfter}s before retrying...
-            </div>
-          )}
-
-          <div ref={messagesEndRef} />
-        </div>
-
-        {authToast && (
-          <div className="border-t border-base-300 px-4 py-2 text-center text-xs text-success">
-            {authToast}
-          </div>
-        )}
-
-        {providerLimit && (
-          <div className="border-t border-base-300 px-4 py-3 text-center text-xs text-warning">
-            The AI is temporarily unavailable — a service-wide limit, not yours. Your credits are
-            safe. Try again in a few minutes.
-          </div>
-        )}
-
-        {windowResetsAt && !providerLimit && (
-          <div className="space-y-3 border-t border-base-300 px-4 py-3">
-            <p className="text-base-content/60 text-center text-xs">
-              Free messages reset in {countdown}.
-            </p>
-            {!email ? (
-              <div className="space-y-2">
-                {!authSent ? (
-                  <>
-                    <p className="text-base-content/50 text-center text-xs">
-                      Want more? Sign in to link donations.
-                    </p>
-                    <div className="flex gap-2">
-                      <input
-                        type="email"
-                        value={authEmail}
-                        onChange={(e) => setAuthEmail(e.target.value)}
-                        placeholder="Email"
-                        className="flex-1 rounded-md border border-base-300 bg-base-100 px-3 py-1.5 text-sm"
-                      />
-                      <button
-                        onClick={handleSendMagicLink}
-                        disabled={authSending || !authEmail}
-                        className="whitespace-nowrap rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-content disabled:opacity-50"
-                      >
-                        {authSending ? '...' : 'Send link'}
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="space-y-1 text-center">
-                    <p className="text-xs text-success">Check your email for a sign-in link.</p>
-                    {devVerifyUrl && (
-                      <a href={devVerifyUrl} className="text-xs text-primary underline">
-                        Dev: click to verify
-                      </a>
-                    )}
-                  </div>
-                )}
-                <a
-                  href="https://buymeacoffee.com/whoclinches"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-content/50 block text-center text-xs underline"
-                >
-                  Support on Buy Me a Coffee
-                </a>
-              </div>
-            ) : (
-              <div className="text-center">
-                <a
-                  href="https://buymeacoffee.com/whoclinches"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-base-content/50 text-xs underline"
-                >
-                  Get more credits on Buy Me a Coffee
-                </a>
-              </div>
-            )}
-          </div>
-        )}
-
-        {isMaintainer && (
-          <div className="border-t border-base-300 px-4 py-1 text-center text-[10px] text-success">
-            Maintainer mode
-          </div>
-        )}
-
-        {usage && !windowResetsAt && !providerLimit && !isMaintainer && (
-          <div className="flex flex-col items-center border-t border-base-300 px-4 py-1">
-            <div className="text-base-content/40 flex items-center gap-1.5 text-[10px]">
-              <span>Remaining Messages:</span>
-              {usage.creditsRemaining > 0 ? (
-                <>
-                  <span>{usage.freeRemaining}/8 free</span>
-                  <span>{usage.creditsRemaining} donation</span>
-                </>
-              ) : (
-                <span>{usage.freeRemaining}/8</span>
-              )}
-              {countdown && <span>— resets in {countdown}</span>}
-            </div>
-            {usage.freeRemaining === 0 && usage.creditsRemaining === 0 && (
-              <p className="text-base-content/40 text-[10px]">
-                You&apos;ve run out of free messages. If you don&apos;t want to wait, you can{' '}
-                <a
-                  href="https://buymeacoffee.com/whoclinches"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline"
-                >
-                  donate to server costs here
-                </a>{' '}
-                and you&apos;ll regain immediate access.
-              </p>
-            )}
-          </div>
-        )}
-
-        <form
+        <ChatInput
+          input={input}
+          isStreaming={isStreaming}
+          disabled={inputDisabled}
+          inputRef={inputRef}
+          onInputChange={setInput}
           onSubmit={handleSubmit}
-          className={`flex items-stretch border-t border-base-300 px-4 py-3${inputDisabled ? 'pointer-events-none opacity-50' : ''}`}
-        >
-          <textarea
-            ref={inputRef}
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              e.target.style.height = 'auto';
-              e.target.style.height = `${e.target.scrollHeight}px`;
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            maxLength={500}
-            rows={1}
-            disabled={inputDisabled}
-            className="chat-input"
-          />
-          {isStreaming ? (
-            <button
-              type="button"
-              className="chat-send-btn"
-              aria-label="Stop"
-              onClick={() => abortRef.current?.abort()}
-            >
-              <IoStopOutline className="h-4 w-4" />
-            </button>
-          ) : (
-            <button type="submit" className="chat-send-btn" aria-label="Send">
-              <IoSendOutline className="h-4 w-4 -rotate-45" />
-            </button>
-          )}
-        </form>
+          onAbort={() => abortRef.current?.abort()}
+        />
       </div>
     </>
   );

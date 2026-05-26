@@ -1,6 +1,11 @@
+import { randomUUID } from 'node:crypto';
 import '@testing-library/jest-dom';
 import { config } from 'dotenv';
 import { resolve } from 'path';
+
+if (!globalThis.crypto?.randomUUID) {
+  globalThis.crypto = { ...globalThis.crypto, randomUUID };
+}
 
 config({ path: resolve(__dirname, '.env.local') });
 

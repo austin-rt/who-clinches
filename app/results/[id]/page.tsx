@@ -3,8 +3,7 @@ import { db } from '@/lib/db/client';
 import type { Metadata } from 'next';
 import type { SimulateResponse } from '@/app/store/api';
 import type { TeamLean, GameLean } from '@/lib/types';
-import ChampionshipMatchup from '@/app/components/ChampionshipMatchup';
-import SimulatedStandings from '@/app/components/SimulatedStandings';
+import { ChampionshipMatchup, SimulatedStandings } from '@/app/components/Simulation';
 import { LinkButton } from '@/app/components/LinkButton';
 
 interface SnapshotPayload {

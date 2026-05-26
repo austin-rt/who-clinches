@@ -3,7 +3,7 @@
 import { forwardRef, type ForwardRefExoticComponent } from 'react';
 import { cn } from '@/lib/utils';
 import { type BaseButtonProps } from '../BaseButtonProps';
-import LoadingSpinner from '../../LoadingSpinner';
+import LoadingSpinner from '../../Common/LoadingSpinner';
 
 interface FlatButtonProps extends BaseButtonProps {
   noPadding?: boolean;

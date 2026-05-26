@@ -33,31 +33,24 @@ const loadExpectedSeedings = async (season: number): Promise<{ afc: string[]; nf
   return JSON.parse(raw);
 };
 
-const SEASONS = Array.from({ length: 23 }, (_, i) => 2002 + i);
-
-const KNOWN_FAILURES = new Set([2002, 2003, 2005, 2008, 2014, 2016, 2019]);
+const SEASONS = Array.from({ length: 24 }, (_, i) => 2002 + i);
 
 describe('NFL Playoff Picture Integration', () => {
   for (const season of SEASONS) {
-    const testFn = KNOWN_FAILURES.has(season) ? it.skip : it;
-    testFn(
-      `produces correct playoff seedings for ${season}`,
-      async () => {
-        const games = await loadSeasonGames(season);
-        const expected = await loadExpectedSeedings(season);
+    it(`produces correct playoff seedings for ${season}`, async () => {
+      const games = await loadSeasonGames(season);
+      const expected = await loadExpectedSeedings(season);
 
-        const result = runNflSimulation(games, season);
+      const result = runNflSimulation(games, season);
 
-        const actualAfc = result.bracket.afc.map((e) => e.abbrev);
-        const actualNfc = result.bracket.nfc.map((e) => e.abbrev);
+      const actualAfc = result.bracket.afc.map((e) => e.abbrev);
+      const actualNfc = result.bracket.nfc.map((e) => e.abbrev);
 
-        const expectedAfc = expected.afc.map(resolveNflAbbrev);
-        const expectedNfc = expected.nfc.map(resolveNflAbbrev);
+      const expectedAfc = expected.afc.map(resolveNflAbbrev);
+      const expectedNfc = expected.nfc.map(resolveNflAbbrev);
 
-        expect(actualAfc).toEqual(expectedAfc);
-        expect(actualNfc).toEqual(expectedNfc);
-      },
-      30000
-    );
+      expect(actualAfc).toEqual(expectedAfc);
+      expect(actualNfc).toEqual(expectedNfc);
+    }, 30000);
   }
 });
