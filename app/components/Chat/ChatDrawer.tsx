@@ -955,7 +955,7 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {!windowResetsAt && !providerLimit && !isMaintainer && (
+        {email && !windowResetsAt && !providerLimit && !isMaintainer && (
           <div className="border-t border-base-300 px-4 py-2">
             <ChatAuthSection
               email={email}
