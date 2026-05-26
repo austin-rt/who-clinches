@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  outputFileTracingExcludes: {
+    '*': ['__fixtures__/**'],
+  },
   serverExternalPackages: ['voyageai'],
   images: {
     remotePatterns: [
