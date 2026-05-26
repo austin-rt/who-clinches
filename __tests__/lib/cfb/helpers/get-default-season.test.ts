@@ -22,81 +22,79 @@ describe('getDefaultSeasonFromCfbd', () => {
     jest.resetAllMocks();
   });
 
-  it('returns current season year when date is within season', async () => {
-    const currentYear = 2025;
-    const now = new Date(`${currentYear}-09-15T12:00:00Z`);
-
-    jest.useFakeTimers();
-    jest.setSystemTime(now);
-
-    mockGetCalendar.mockResolvedValue([
-      createMockCalendarWeek({
-        season: currentYear,
-        week: 1,
-        startDate: `${currentYear}-09-01T00:00:00Z`,
-        endDate: `${currentYear}-09-07T23:59:59Z`,
-      }),
-      createMockCalendarWeek({
-        season: currentYear,
-        week: 2,
-        startDate: `${currentYear}-09-08T00:00:00Z`,
-        endDate: `${currentYear}-09-14T23:59:59Z`,
-      }),
-      createMockCalendarWeek({
-        season: currentYear,
-        week: 3,
-        startDate: `${currentYear}-09-15T00:00:00Z`,
-        endDate: `${currentYear}-09-21T23:59:59Z`,
-      }),
-    ]);
-
-    const result = await getDefaultSeasonFromCfbd();
-
-    expect(result).toBe(currentYear);
-    expect(mockGetCalendar).toHaveBeenCalledWith(currentYear);
-
+  afterEach(() => {
     jest.useRealTimers();
   });
 
-  it('falls back to previous year when API throws error', async () => {
-    const previousYear = new Date().getFullYear() - 1;
-
-    mockGetCalendar.mockRejectedValue(new Error('API Error'));
+  it('returns current year from April onward without checking calendar', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-05-15T12:00:00Z'));
 
     const result = await getDefaultSeasonFromCfbd();
 
-    expect(result).toBe(previousYear);
+    expect(result).toBe(2026);
+    expect(mockGetCalendar).not.toHaveBeenCalled();
   });
 
-  it('returns previous year when calendar is empty', async () => {
-    const currentYear = new Date().getFullYear();
-    const previousYear = currentYear - 1;
+  it('returns current year in September without checking calendar', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2025-09-15T12:00:00Z'));
+
+    mockGetCalendar.mockResolvedValue([createMockCalendarWeek({ season: 2025, week: 1 })]);
+
+    const result = await getDefaultSeasonFromCfbd();
+
+    expect(result).toBe(2025);
+    expect(mockGetCalendar).not.toHaveBeenCalled();
+  });
+
+  it('checks calendar in January and returns current year when available', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-01-10T12:00:00Z'));
+
+    mockGetCalendar.mockResolvedValue([createMockCalendarWeek({ season: 2026, week: 1 })]);
+
+    const result = await getDefaultSeasonFromCfbd();
+
+    expect(result).toBe(2026);
+    expect(mockGetCalendar).toHaveBeenCalledWith(2026);
+  });
+
+  it('falls back to previous year in January when calendar is empty', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-02-15T12:00:00Z'));
 
     mockGetCalendar.mockResolvedValue([]);
 
     const result = await getDefaultSeasonFromCfbd();
 
-    expect(result).toBe(previousYear);
+    expect(result).toBe(2025);
+  });
+
+  it('falls back to previous year when API throws in early months', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-03-01T12:00:00Z'));
+
+    mockGetCalendar.mockRejectedValue(new Error('API Error'));
+
+    const result = await getDefaultSeasonFromCfbd();
+
+    expect(result).toBe(2025);
   });
 
   describe('fixture year branch', () => {
-    const originalNodeEnv = process.env.NODE_ENV;
     const mockGetFixtureYear = jest.mocked(
       jest.requireMock<typeof import('@/lib/cfb/helpers/fixture-year')>(
         '@/lib/cfb/helpers/fixture-year'
       ).getFixtureYear
     );
 
-    const setNodeEnv = (value: string) => {
-      Object.defineProperty(process.env, 'NODE_ENV', { value, writable: true, configurable: true });
-    };
-
     afterEach(() => {
-      setNodeEnv(originalNodeEnv!);
+      delete process.env.FIXTURE_YEAR;
     });
 
-    it('returns fixture year when set in development', async () => {
-      setNodeEnv('development');
+    it('returns fixture year when FIXTURE_YEAR env var is set', async () => {
+      process.env.FIXTURE_YEAR = '2024';
       mockGetFixtureYear.mockResolvedValue(2024);
 
       const result = await getDefaultSeasonFromCfbd();
@@ -105,10 +103,13 @@ describe('getDefaultSeasonFromCfbd', () => {
       expect(mockGetCalendar).not.toHaveBeenCalled();
     });
 
-    it('ignores fixture year in non-development environments', async () => {
-      setNodeEnv('production');
+    it('ignores fixture year when FIXTURE_YEAR env var is not set', async () => {
       mockGetFixtureYear.mockResolvedValue(2024);
-      mockGetCalendar.mockResolvedValue([createMockCalendarWeek({ season: 2025, week: 1 })]);
+
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-01-15T12:00:00Z'));
+
+      mockGetCalendar.mockResolvedValue([createMockCalendarWeek({ season: 2026, week: 1 })]);
 
       const result = await getDefaultSeasonFromCfbd();
 
