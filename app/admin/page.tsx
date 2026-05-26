@@ -1,17 +1,11 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/app/components/Button';
 import { Divider, LoadingSpinner } from '@/app/components/Common';
 import { HiCheck } from 'react-icons/hi2';
-import { timeAgo, ttlLeft } from '@/lib/format-time';
-import {
-  useReactTable,
-  getCoreRowModel,
-  createColumnHelper,
-  flexRender,
-} from '@tanstack/react-table';
+import RedisKeysTable, { type RedisKey } from './components/RedisKeysTable';
 import KnowledgeStatusPanel from './components/KnowledgeStatusPanel';
 import ChatCreditsPanel, { type CreditStats } from './components/ChatCreditsPanel';
 import RagSourcesPanel from './components/RagSourcesPanel';
@@ -56,39 +50,6 @@ interface CfbdStatus {
   poolSize: number;
   usage: Record<string, unknown>;
 }
-
-interface RedisKey {
-  key: string;
-  ttl: number;
-  cachedAt: number | null;
-}
-
-const friendlyName = (key: string): string => {
-  const parts = key.split(':');
-  if (parts[0] === 'ratelimit') return `Rate Limit (${parts[1]})`;
-  if (parts[0] !== 'cfbd') return key;
-  if (parts[1] === 'chat') {
-    const endpoint = parts.slice(2, -1).join('/');
-    return `Chat: /${endpoint}`;
-  }
-  const [, , type, ...rest] = parts;
-  switch (type) {
-    case 'games':
-      return `${rest[0]} Games (${rest[1]} ${rest[2]})`;
-    case 'teams':
-      return `Teams (${rest[0]})`;
-    case 'rankings':
-      return `Rankings (${rest[0]} ${rest[2]})`;
-    case 'sp':
-      return `SP+ Ratings (${rest[0]})`;
-    case 'fpi':
-      return `FPI Ratings (${rest[0]})`;
-    default:
-      return key;
-  }
-};
-
-const redisColumnHelper = createColumnHelper<RedisKey>();
 
 export default function AdminPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
@@ -172,53 +133,6 @@ export default function AdminPage() {
     },
     [showMessage, fetchRedisKeys]
   );
-
-  const redisColumns = useMemo(
-    () => [
-      redisColumnHelper.accessor('key', {
-        header: 'Key',
-        cell: (info) => <span className="font-mono text-xs">{info.getValue()}</span>,
-      }),
-      redisColumnHelper.display({
-        id: 'name',
-        header: 'Name',
-        cell: (info) => (
-          <span className="whitespace-nowrap">{friendlyName(info.row.original.key)}</span>
-        ),
-      }),
-      redisColumnHelper.accessor('cachedAt', {
-        header: 'Last Cached',
-        cell: (info) => {
-          const val = info.getValue();
-          return <span className="whitespace-nowrap">{val ? timeAgo(val) : '—'}</span>;
-        },
-      }),
-      redisColumnHelper.accessor('ttl', {
-        header: 'Expires In',
-        cell: (info) => <span className="whitespace-nowrap">{ttlLeft(info.getValue())}</span>,
-      }),
-      redisColumnHelper.display({
-        id: 'actions',
-        header: '',
-        cell: (info) => (
-          <Button
-            size="xs"
-            color="error"
-            onClick={() => void deleteRedisKeys([info.row.original.key])}
-          >
-            Delete
-          </Button>
-        ),
-      }),
-    ],
-    [deleteRedisKeys]
-  );
-
-  const redisTable = useReactTable({
-    data: redisKeys,
-    columns: redisColumns,
-    getCoreRowModel: getCoreRowModel(),
-  });
 
   useEffect(() => {
     const load = async () => {
@@ -494,36 +408,7 @@ export default function AdminPage() {
             Redis is disabled while fixtures are active — cache is empty.
           </p>
         )}
-        {redisKeys.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="table table-xs">
-              <thead>
-                {redisTable.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th key={header.id}>
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody>
-                {redisTable.getRowModel().rows.map((row) => (
-                  <tr key={row.id}>
-                    {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-sm text-base-content">No cached keys found</p>
-        )}
+        <RedisKeysTable data={redisKeys} onDelete={deleteRedisKeys} />
       </Card>
     </div>
   );

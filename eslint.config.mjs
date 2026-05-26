@@ -31,7 +31,6 @@ const eslintConfig = defineConfig([
       'react/no-unescaped-entities': 'off',
       'no-nested-ternary': 'error',
       'func-style': ['error', 'expression', { allowArrowFunctions: true }],
-      'react-hooks/incompatible-library': 'off',
     },
   },
   {
@@ -51,6 +50,12 @@ const eslintConfig = defineConfig([
     rules: {
       'func-style': 'off', // Allow function declarations in TypeScript scripts
       'no-console': 'off', // Allow console in test files and scripts
+    },
+  },
+  {
+    files: ['app/admin/components/RedisKeysTable.tsx'],
+    rules: {
+      'react-hooks/incompatible-library': 'off',
     },
   },
   globalIgnores(['.next/**', 'out/**', 'build/**', 'next-env.d.ts', 'temp/**', 'lib/consoleLogger.ts', 'lib/errorLogger.ts']),
