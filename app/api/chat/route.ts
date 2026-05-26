@@ -726,7 +726,7 @@ export const POST = async (request: NextRequest) => {
             ];
 
             await minDots;
-            await streamResponse(followupMsgs, true);
+            await streamResponse(followupMsgs);
           }
         };
 
