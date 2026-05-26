@@ -28,6 +28,7 @@ import { getOrCreateChatIdentity, buildCookieHeader } from '@/lib/chat/identity'
 import { checkAndDeductUsage, refundUsage, type UsageResult } from '@/lib/chat/usage';
 import { isProviderAvailable, markProviderCooldown } from '@/lib/chat/provider-status';
 import { isChatAdmin } from '@/lib/admin/chat-admin';
+import { logError } from '@/lib/errorLogger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -465,9 +466,8 @@ export const POST = async (request: NextRequest) => {
           },
         })
         .then(() => {})
-        .catch(async (err) => {
-          const { logError } = await import('@/lib/errorLogger');
-          await logError(err, { action: 'chat-log-message', sessionId, role });
+        .catch((err) => {
+          void logError(err, { action: 'chat-log-message', sessionId, role });
         });
       pendingWrites.push(write);
     };
@@ -485,9 +485,8 @@ export const POST = async (request: NextRequest) => {
             promptHash: logMeta.promptHash,
           },
         })
-        .catch(async (err) => {
-          const { logError } = await import('@/lib/errorLogger');
-          await logError(err, { action: 'chat-log-user-message', sessionId });
+        .catch((err) => {
+          void logError(err, { action: 'chat-log-user-message', sessionId });
         });
     }
 
@@ -800,7 +799,6 @@ export const POST = async (request: NextRequest) => {
 
     return new Response(readable, { headers: responseHeaders });
   } catch (error) {
-    const { logError } = await import('@/lib/errorLogger');
     await logError(error, { endpoint: '/api/chat', action: 'chat' });
     return Response.json(
       { error: error instanceof Error ? error.message : 'Internal server error' },
