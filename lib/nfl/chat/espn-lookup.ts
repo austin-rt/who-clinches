@@ -24,7 +24,50 @@ const isHistoricalSeason = (params: Record<string, string>): boolean => {
   return requested < new Date().getFullYear();
 };
 
-const truncateResponse = (data: unknown): string => {
+interface EspnRosterAthlete {
+  displayName?: string;
+  jersey?: string;
+  age?: number;
+  experience?: { years?: number };
+  position?: { abbreviation?: string };
+}
+
+interface EspnRosterGroup {
+  position?: string;
+  items?: EspnRosterAthlete[];
+}
+
+interface EspnRosterResponse {
+  athletes?: EspnRosterGroup[];
+  coach?: Array<{ firstName?: string; lastName?: string; experience?: number }>;
+  team?: { displayName?: string };
+}
+
+const slimRoster = (data: EspnRosterResponse): unknown => {
+  const players = (data.athletes ?? []).flatMap((group) =>
+    (group.items ?? []).map((p) => ({
+      name: p.displayName ?? '?',
+      pos: p.position?.abbreviation ?? '?',
+      jersey: p.jersey ?? '?',
+      age: p.age ?? null,
+      exp: p.experience?.years ?? 0,
+    }))
+  );
+  const coach = data.coach?.[0];
+  return {
+    team: data.team?.displayName ?? '?',
+    headCoach: coach ? `${coach.firstName} ${coach.lastName}` : null,
+    players,
+  };
+};
+
+const isRosterResponse = (data: unknown, path: string): data is EspnRosterResponse =>
+  path.includes('/roster') && typeof data === 'object' && data !== null && 'athletes' in data;
+
+const truncateResponse = (data: unknown, path = ''): string => {
+  if (isRosterResponse(data, path)) {
+    return JSON.stringify(slimRoster(data), null, 2);
+  }
   if (Array.isArray(data)) {
     if (data.length === 0) return '[]';
     const sliced = data.slice(0, MAX_ARRAY_ITEMS);
@@ -113,7 +156,7 @@ export const executeEspnNflLookup = async (
     }
 
     trackUsage(path);
-    return truncateResponse(data);
+    return truncateResponse(data, path);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     return message.startsWith('ESPN API error') ? message : `ESPN lookup failed: ${message}`;

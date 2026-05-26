@@ -31,7 +31,7 @@ Core API base: https://sports.core.api.espn.com/v2/sports/football/leagues/nfl
 
 Notes:
 - Team IDs: Use the /teams endpoint to look up ESPN IDs by abbreviation.
-- Common team IDs: KC=12, BUF=2, PHI=21, SF=25, DAL=6, DET=8, BAL=33, MIA=15, GB=9, NYJ=20
+- Team IDs: ARI=22, ATL=1, BAL=33, BUF=2, CAR=29, CHI=3, CIN=4, CLE=5, DAL=6, DEN=7, DET=8, GB=9, HOU=34, IND=11, JAX=30, KC=12, LV=13, LAC=24, LAR=14, MIA=15, MIN=16, NE=17, NO=18, NYG=19, NYJ=20, PHI=21, PIT=23, SF=25, SEA=26, TB=27, TEN=10, WSH=28
 - seasontype: 1=preseason, 2=regular season (default), 3=postseason
 - NFL regular season: 18 weeks (weeks 1-18), 17 games per team (1 bye)
 - Scores, odds (spread/over-under), and game status are all in /scoreboard responses
