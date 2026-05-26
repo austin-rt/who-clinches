@@ -624,6 +624,7 @@ export const POST = async (request: NextRequest) => {
 
           let toolUseBlock: { id: string; name: string; input: string } | null = null;
           let bufferedText = '';
+          const streamedChunks: string[] = [];
 
           for await (const event of stream) {
             if (event.type === 'message_start') {
@@ -647,12 +648,18 @@ export const POST = async (request: NextRequest) => {
             } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
               fullResponse += event.delta.text;
               if (streamImmediately) {
-                const chunk = `data: ${JSON.stringify({ type: 'delta', text: event.delta.text })}\n\n`;
-                controller.enqueue(encoder.encode(chunk));
+                streamedChunks.push(event.delta.text);
               } else {
                 bufferedText += event.delta.text;
               }
             }
+          }
+
+          if (streamImmediately && !toolUseBlock && streamedChunks.length > 0) {
+            const text = streamedChunks.join('');
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ type: 'delta', text })}\n\n`)
+            );
           }
 
           if (!streamImmediately && !toolUseBlock && bufferedText) {
