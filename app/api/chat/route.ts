@@ -728,6 +728,7 @@ export const POST = async (request: NextRequest) => {
           logMessage('assistant', fullResponse, { inputTokens, outputTokens });
           await Promise.allSettled(pendingWrites);
           const donePayload: Record<string, unknown> = { type: 'done' };
+          if (isMaintainer) donePayload.maintainer = true;
           if (usageResult) {
             donePayload.usage = {
               freeRemaining: usageResult.source === 'free' ? usageResult.freeRemaining : 0,

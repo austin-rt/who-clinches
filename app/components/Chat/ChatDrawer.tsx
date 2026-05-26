@@ -51,10 +51,6 @@ const TypingIndicator = () => (
   </div>
 );
 
-const TYPING_SHOW_DELAY_MIN = 300;
-const TYPING_SHOW_DELAY_MAX = 500;
-const TYPING_MIN_VISIBLE = 1500;
-
 const makeSession = (label: string, conf?: string): ChatSession => ({
   id: crypto.randomUUID(),
   messages: [],
@@ -112,6 +108,7 @@ const ChatDrawer = ({
   const [authSent, setAuthSent] = useState(false);
   const [devVerifyUrl, setDevVerifyUrl] = useState<string | null>(null);
   const [authToast, setAuthToast] = useState<string | null>(null);
+  const [isMaintainer, setIsMaintainer] = useState(false);
   const [historyOpen, setHistoryOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
@@ -127,8 +124,8 @@ const ChatDrawer = ({
   const setMessages = useCallback(
     (updater: ChatMessage[] | ((prev: ChatMessage[]) => ChatMessage[])) => {
       setSessions((prev) =>
-        prev.map((s, i) => {
-          if (i !== activeIndex) return s;
+        prev.map((s) => {
+          if (s.id !== sessionId) return s;
           const newMessages = typeof updater === 'function' ? updater(s.messages) : updater;
           return {
             ...s,
@@ -140,7 +137,7 @@ const ChatDrawer = ({
         })
       );
     },
-    [activeIndex, conferenceHint]
+    [sessionId, conferenceHint]
   );
 
   useEffect(() => {
@@ -283,10 +280,7 @@ const ChatDrawer = ({
       setIsStreaming(true);
       onMessageSent?.();
 
-      const typingDelay =
-        TYPING_SHOW_DELAY_MIN + Math.random() * (TYPING_SHOW_DELAY_MAX - TYPING_SHOW_DELAY_MIN);
-      const typingTimer = setTimeout(() => setShowTyping(true), typingDelay);
-      const typingShownAt = Date.now() + typingDelay;
+      setShowTyping(true);
 
       let assistantId = `assistant-${Date.now()}`;
 
@@ -314,7 +308,7 @@ const ChatDrawer = ({
           const body = await res.json().catch(() => ({}));
           if (body.error === 'provider_limit') {
             setProviderLimit(true);
-            clearTimeout(typingTimer);
+
             setShowTyping(false);
             throw new Error('__provider_limit__');
           }
@@ -331,7 +325,7 @@ const ChatDrawer = ({
                 source: null,
               })
             );
-            clearTimeout(typingTimer);
+
             setShowTyping(false);
             throw new Error('__window_limit__');
           }
@@ -347,12 +341,6 @@ const ChatDrawer = ({
           throw new Error(body.error ?? 'Something went wrong');
         }
 
-        const now = Date.now();
-        const elapsed = now - typingShownAt;
-        if (elapsed < TYPING_MIN_VISIBLE && elapsed > 0) {
-          await new Promise((r) => setTimeout(r, TYPING_MIN_VISIBLE - elapsed));
-        }
-        clearTimeout(typingTimer);
         setShowTyping(false);
 
         setMessages((prev) => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
@@ -363,7 +351,6 @@ const ChatDrawer = ({
         const decoder = new TextDecoder();
         let buffer = '';
         let needsNewBubble = false;
-        let breakShownAt = 0;
 
         while (true) {
           const { done, value } = await reader.read();
@@ -379,10 +366,6 @@ const ChatDrawer = ({
 
             if (data.type === 'delta') {
               if (needsNewBubble) {
-                const dotsElapsed = Date.now() - breakShownAt;
-                if (dotsElapsed < TYPING_MIN_VISIBLE) {
-                  await new Promise((r) => setTimeout(r, TYPING_MIN_VISIBLE - dotsElapsed));
-                }
                 needsNewBubble = false;
                 setShowTyping(false);
                 assistantId = `assistant-${Date.now()}`;
@@ -399,9 +382,11 @@ const ChatDrawer = ({
               }
             } else if (data.type === 'break') {
               needsNewBubble = true;
-              breakShownAt = Date.now();
               setShowTyping(true);
             } else if (data.type === 'done') {
+              if (data.maintainer) {
+                setIsMaintainer(true);
+              }
               if (data.usage) {
                 const { windowResetsIn, ...rest } = data.usage;
                 dispatch(
@@ -421,7 +406,6 @@ const ChatDrawer = ({
       try {
         await doFetch();
       } catch (err) {
-        clearTimeout(typingTimer);
         setShowTyping(false);
         const errMsg = (err as Error).message;
         if (
@@ -864,7 +848,13 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {usage && !windowResetsAt && !providerLimit && (
+        {isMaintainer && (
+          <div className="border-t border-base-300 px-4 py-1 text-center text-[10px] text-success">
+            Maintainer mode
+          </div>
+        )}
+
+        {usage && !windowResetsAt && !providerLimit && !isMaintainer && (
           <div className="flex flex-col items-center border-t border-base-300 px-4 py-1">
             <div className="text-base-content/40 flex items-center gap-1.5 text-[10px]">
               <span>Remaining Messages:</span>
@@ -895,25 +885,32 @@ const ChatDrawer = ({
           </div>
         )}
 
-        {!email && !windowResetsAt && !providerLimit && (
+        {!email && !windowResetsAt && !providerLimit && !isMaintainer && (
           <div className="border-t border-base-300 px-4 py-2">
             {!authSent ? (
-              <div className="flex items-center gap-2">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  void handleSendMagicLink();
+                }}
+                className="flex items-stretch"
+              >
                 <input
                   type="email"
                   value={authEmail}
                   onChange={(e) => setAuthEmail(e.target.value)}
                   placeholder="Sign in with email"
-                  className="flex-1 rounded-md border border-base-300 bg-base-100 px-3 py-1.5 text-xs"
+                  className="chat-input"
+                  style={{ borderRight: 'none' }}
                 />
                 <button
-                  onClick={handleSendMagicLink}
+                  type="submit"
                   disabled={authSending || !authEmail}
-                  className="whitespace-nowrap rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-content disabled:opacity-50"
+                  className="chat-send-btn disabled:opacity-50"
                 >
                   {authSending ? '...' : 'Sign in'}
                 </button>
-              </div>
+              </form>
             ) : (
               <p className="text-center text-xs text-success">
                 Check your email for a sign-in link.
