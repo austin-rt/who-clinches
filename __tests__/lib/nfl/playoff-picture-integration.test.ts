@@ -33,7 +33,7 @@ const loadExpectedSeedings = async (season: number): Promise<{ afc: string[]; nf
   return JSON.parse(raw);
 };
 
-const SEASONS = Array.from({ length: 23 }, (_, i) => 2002 + i);
+const SEASONS = Array.from({ length: 24 }, (_, i) => 2002 + i);
 
 describe('NFL Playoff Picture Integration', () => {
   for (const season of SEASONS) {
