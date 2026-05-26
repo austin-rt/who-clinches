@@ -485,7 +485,10 @@ export const POST = async (request: NextRequest) => {
             promptHash: logMeta.promptHash,
           },
         })
-        .catch(() => {});
+        .catch(async (err) => {
+          const { logError } = await import('@/lib/errorLogger');
+          await logError(err, { action: 'chat-log-user-message', sessionId });
+        });
     }
 
     const anthropicMessages: Anthropic.MessageParam[] = [
@@ -610,10 +613,7 @@ export const POST = async (request: NextRequest) => {
         let inputTokens = 0;
         let outputTokens = 0;
 
-        const streamResponse = async (
-          msgs: Anthropic.MessageParam[],
-          streamImmediately = false
-        ) => {
+        const streamResponse = async (msgs: Anthropic.MessageParam[], isFollowup = false) => {
           const stream = anthropic.messages.stream({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 8192,
@@ -624,6 +624,7 @@ export const POST = async (request: NextRequest) => {
 
           let toolUseBlock: { id: string; name: string; input: string } | null = null;
           let bufferedText = '';
+          let sentText = false;
 
           for await (const event of stream) {
             if (event.type === 'message_start') {
@@ -639,40 +640,46 @@ export const POST = async (request: NextRequest) => {
                 name: event.content_block.name,
                 input: '',
               };
+              bufferedText = '';
             } else if (
               event.type === 'content_block_delta' &&
               event.delta.type === 'input_json_delta'
             ) {
               if (toolUseBlock) toolUseBlock.input += event.delta.partial_json;
             } else if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+              if (toolUseBlock) continue;
               fullResponse += event.delta.text;
-              if (streamImmediately && !toolUseBlock) {
+              if (isFollowup) {
                 controller.enqueue(
                   encoder.encode(
                     `data: ${JSON.stringify({ type: 'delta', text: event.delta.text })}\n\n`
                   )
                 );
-              } else if (!streamImmediately) {
+                sentText = true;
+              } else {
                 bufferedText += event.delta.text;
               }
             }
           }
 
-          if (!streamImmediately && !toolUseBlock && bufferedText) {
+          if (!isFollowup && !toolUseBlock && bufferedText) {
             controller.enqueue(
               encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: bufferedText })}\n\n`)
             );
+            sentText = true;
           }
 
           if (toolUseBlock) {
-            const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
-            const picked = Math.floor(Math.random() * eligible.length);
-            lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
-            const quip = eligible[picked];
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
-            );
-            fullResponse = quip;
+            if (!sentText) {
+              const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
+              const picked = Math.floor(Math.random() * eligible.length);
+              lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
+              const quip = eligible[picked];
+              controller.enqueue(
+                encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
+              );
+              fullResponse = quip;
+            }
             controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'break' })}\n\n`));
             const minDots = new Promise((r) => setTimeout(r, 1500 + Math.random() * 1000));
             const toolInput = JSON.parse(toolUseBlock.input);
@@ -726,7 +733,7 @@ export const POST = async (request: NextRequest) => {
             ];
 
             await minDots;
-            await streamResponse(followupMsgs);
+            await streamResponse(followupMsgs, true);
           }
         };
 
