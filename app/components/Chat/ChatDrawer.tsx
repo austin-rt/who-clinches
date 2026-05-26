@@ -51,6 +51,68 @@ const TypingIndicator = () => (
   </div>
 );
 
+const ChatAuthSection = ({
+  email,
+  authSent,
+  authEmail,
+  authSending,
+  onEmailChange,
+  onSendLink,
+  onSignOut,
+}: {
+  email: string | null;
+  authSent: boolean;
+  authEmail: string;
+  authSending: boolean;
+  onEmailChange: (v: string) => void;
+  onSendLink: () => void;
+  onSignOut: () => void;
+}) => {
+  if (email) {
+    return (
+      <div className="flex items-center justify-between">
+        <span className="text-base-content/40 truncate text-[10px]">{email}</span>
+        <button
+          onClick={onSignOut}
+          className="text-base-content/40 hover:text-base-content/60 text-[10px] underline"
+        >
+          Sign out
+        </button>
+      </div>
+    );
+  }
+
+  if (authSent) {
+    return <p className="text-center text-xs text-success">Check your email for a sign-in link.</p>;
+  }
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSendLink();
+      }}
+      className="flex items-stretch"
+    >
+      <input
+        type="email"
+        value={authEmail}
+        onChange={(e) => onEmailChange(e.target.value)}
+        placeholder="Sign in with email"
+        className="chat-input"
+        style={{ borderRight: 'none' }}
+      />
+      <button
+        type="submit"
+        disabled={authSending || !authEmail}
+        className="chat-send-btn disabled:opacity-50"
+      >
+        {authSending ? '...' : 'Sign in'}
+      </button>
+    </form>
+  );
+};
+
 const makeSession = (label: string, conf?: string): ChatSession => ({
   id: crypto.randomUUID(),
   messages: [],
@@ -895,47 +957,15 @@ const ChatDrawer = ({
 
         {!windowResetsAt && !providerLimit && !isMaintainer && (
           <div className="border-t border-base-300 px-4 py-2">
-            {email && (
-              <div className="flex items-center justify-between">
-                <span className="text-base-content/40 truncate text-[10px]">{email}</span>
-                <button
-                  onClick={() => void handleSignOut()}
-                  className="text-base-content/40 hover:text-base-content/60 text-[10px] underline"
-                >
-                  Sign out
-                </button>
-              </div>
-            )}
-            {!email && !authSent && (
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void handleSendMagicLink();
-                }}
-                className="flex items-stretch"
-              >
-                <input
-                  type="email"
-                  value={authEmail}
-                  onChange={(e) => setAuthEmail(e.target.value)}
-                  placeholder="Sign in with email"
-                  className="chat-input"
-                  style={{ borderRight: 'none' }}
-                />
-                <button
-                  type="submit"
-                  disabled={authSending || !authEmail}
-                  className="chat-send-btn disabled:opacity-50"
-                >
-                  {authSending ? '...' : 'Sign in'}
-                </button>
-              </form>
-            )}
-            {!email && authSent && (
-              <p className="text-center text-xs text-success">
-                Check your email for a sign-in link.
-              </p>
-            )}
+            <ChatAuthSection
+              email={email}
+              authSent={authSent}
+              authEmail={authEmail}
+              authSending={authSending}
+              onEmailChange={setAuthEmail}
+              onSendLink={() => void handleSendMagicLink()}
+              onSignOut={() => void handleSignOut()}
+            />
           </div>
         )}
 
