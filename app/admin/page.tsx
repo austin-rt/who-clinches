@@ -215,7 +215,7 @@ export default function AdminPage() {
         <Card title={config.environment}>
           <Toggle
             label="Fixture Year"
-            description="Override season with fixture data"
+            description="Override season with fixture data (requires JSON server)"
             checked={config.fixtureYearOn}
             onChange={(v) => updateConfig({ fixtureYearOn: v })}
           />

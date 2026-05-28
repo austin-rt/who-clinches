@@ -6,6 +6,8 @@ import {
 } from '@/lib/cfb/constants';
 import { NFL_SPORT, type NflConferenceSlug } from '@/lib/nfl/constants';
 
+export const JSON_SERVER_URL = 'http://localhost:3001';
+
 export const GAME_TYPE: GameTypeMap = {
   regular: { name: 'Regular Season', abbreviation: 'reg' },
   postseason: { name: 'Postseason', abbreviation: 'post' },

@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
   outputFileTracingExcludes: {
-    '*': ['**/__fixtures__/**', '**/lib/msw/**'],
+    '*': ['__fixtures__/**'],
   },
   serverExternalPackages: ['voyageai'],
   images: {
