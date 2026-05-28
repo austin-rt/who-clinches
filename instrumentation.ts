@@ -2,7 +2,7 @@ export const register = async () => {
   if (process.env.NEXT_RUNTIME === 'nodejs' && process.env.FIXTURE_YEAR) {
     const { mswServer } = await import('@/lib/msw/server');
     mswServer.listen({
-      onUnhandledRequest(request) {
+      onUnhandledRequest(request: Request) {
         const url = request.url;
         if (url.includes('collegefootballdata.com') || url.includes('espn.com')) {
           throw new Error(
