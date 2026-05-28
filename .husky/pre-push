@@ -32,3 +32,12 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 printf "${GREEN}✓ E2E tests passed${NC}\n"
+
+printf "${YELLOW}Checking serverless function bundle sizes...${NC}\n"
+npx tsx scripts/check-bundle-size.ts
+if [ $? -ne 0 ]; then
+  printf "${RED}ERROR: Serverless function size exceeds 250 MB. Push blocked.${NC}\n"
+  printf "${YELLOW}Run 'npx tsx scripts/check-bundle-size.ts' locally to debug.${NC}\n"
+  exit 1
+fi
+printf "${GREEN}✓ Bundle sizes OK${NC}\n"
