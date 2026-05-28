@@ -11,7 +11,7 @@ export default defineConfig({
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
   webServer: {
-    command: 'next build && next start -p 3002',
+    command: 'next build && concurrently "npm run json-server" "next start -p 3002"',
     url: 'http://localhost:3002',
     reuseExistingServer: false,
     timeout: 120_000,
