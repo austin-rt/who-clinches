@@ -33,19 +33,35 @@ import { logError } from '@/lib/errorLogger';
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const TOOL_QUIPS = [
-  'Running the numbers...',
-  'One sec, simulating that.',
-  'Hold on, crunching the scenarios.',
-  'Give me a sec — running it through the engine.',
-  'Pulling up those stats now.',
-  'Checking the data...',
-  'One sec, looking that up.',
-  'Hold tight, researching that.',
-  'Digging into the numbers...',
-  'Grabbing that data real quick.',
-];
-let lastQuipIndex = -1;
+const buildToolQuip = (toolName: string, rawInput: string): string => {
+  try {
+    const input = JSON.parse(rawInput);
+    if (toolName === 'simulate_scenario') {
+      return 'Running that simulation...';
+    }
+    if (toolName === 'cfbd_lookup') {
+      const endpoint = input.endpoint ?? '';
+      const team = input.params?.team;
+      const conf = input.params?.conference;
+      const subject = team ?? conf ?? endpoint.replace(/^\//, '').replace(/\//g, ' ');
+      return `Looking up ${subject} data...`;
+    }
+    if (toolName === 'espn_nfl_lookup') {
+      const endpoint = input.endpoint ?? '';
+      const teamId = input.params?.teamId;
+      if (endpoint.includes('/roster') && teamId) return `Pulling up that roster...`;
+      if (endpoint.includes('/roster')) return 'Pulling up the roster...';
+      if (endpoint.includes('/schedule')) return `Checking the schedule...`;
+      if (endpoint.includes('/scoreboard')) return 'Pulling up the scores...';
+      if (endpoint.includes('/statistics')) return 'Looking up the stats...';
+      if (endpoint.includes('/teams')) return 'Checking the teams...';
+      return 'Looking that up...';
+    }
+  } catch {
+    // fall through
+  }
+  return 'Looking that up...';
+};
 
 const CHAT_RATE_LIMIT_MS = 8_000;
 const chatRateMap = new Map<string, number>();
@@ -672,10 +688,7 @@ export const POST = async (request: NextRequest) => {
 
           if (toolUseBlock) {
             if (!sentText) {
-              const eligible = TOOL_QUIPS.filter((_, i) => i !== lastQuipIndex);
-              const picked = Math.floor(Math.random() * eligible.length);
-              lastQuipIndex = TOOL_QUIPS.indexOf(eligible[picked]);
-              const quip = eligible[picked];
+              const quip = buildToolQuip(toolUseBlock.name, toolUseBlock.input);
               controller.enqueue(
                 encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: quip })}\n\n`)
               );
