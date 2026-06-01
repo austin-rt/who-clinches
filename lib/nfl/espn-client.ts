@@ -57,12 +57,11 @@ export const getSeasonScoreboard = async (season: number): Promise<EspnScoreboar
   }
 
   try {
-    const url = `${ESPN_BASE}/scoreboard?dates=${season}&seasontype=2&limit=1000`;
-    const response = await globalThis.fetch(url);
-    if (!response.ok) {
-      throw new Error(`ESPN season scoreboard API returned ${response.status}`);
-    }
-    return (await response.json()) as EspnScoreboardGenerated;
+    const maxWeeks = season >= 2021 ? 18 : 17;
+    const weekNumbers = Array.from({ length: maxWeeks }, (_, i) => i + 1);
+    const scoreboards = await Promise.all(weekNumbers.map((week) => getScoreboard(season, week)));
+    const allEvents = scoreboards.flatMap((sb) => sb.events);
+    return { ...scoreboards[0], events: allEvents };
   } catch (error) {
     await logError(error, { action: 'espn-nfl-get-season-scoreboard', season });
     throw error;
