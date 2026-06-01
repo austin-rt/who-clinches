@@ -4,74 +4,148 @@ import type { NflSimulateResponse, NflStandingEntry } from '@/lib/nfl/types';
 import type { FilterScope } from '../types';
 import { nflTeamLogo } from '../utils';
 
-const SeedBadge = ({ seed, isDivWinner }: { seed: number; isDivWinner: boolean }) => (
-  <span
-    className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${isDivWinner ? 'bg-primary/20 text-primary' : 'text-base-content/60 bg-base-300'}`}
-  >
-    {seed}
-  </span>
+const textColor = (hex: string): string => {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance > 0.5 ? '#000000' : '#ffffff';
+};
+
+const TeamRow = ({ entry, side }: { entry: NflStandingEntry; side: 'left' | 'right' }) => {
+  const bg = `#${entry.color}`;
+  const fg = textColor(entry.color);
+
+  return (
+    <div
+      className={`flex h-10 items-center gap-2 px-3 ${side === 'left' ? 'flex-row' : 'flex-row-reverse'}`}
+      style={{ backgroundColor: bg, color: fg }}
+    >
+      <span className="w-5 text-center text-xs font-bold opacity-70">{entry.seed}</span>
+      <Image
+        src={entry.logo || nflTeamLogo(entry.abbrev)}
+        alt={entry.displayName}
+        width={24}
+        height={24}
+        className="h-6 w-6 object-contain"
+        unoptimized
+      />
+      <span className={`flex-1 text-sm font-semibold ${side === 'right' ? 'text-right' : ''}`}>
+        {entry.abbrev}
+      </span>
+      <span className="text-xs opacity-80">
+        {entry.record.wins}-{entry.record.losses}
+        {entry.record.ties > 0 ? `-${entry.record.ties}` : ''}
+      </span>
+    </div>
+  );
+};
+
+const MatchupCard = ({
+  higher,
+  lower,
+  side,
+}: {
+  higher: NflStandingEntry;
+  lower: NflStandingEntry;
+  side: 'left' | 'right';
+}) => (
+  <div className="overflow-hidden rounded-lg border border-stroke shadow-sm">
+    <TeamRow entry={higher} side={side} />
+    <div className="border-t border-black/20" />
+    <TeamRow entry={lower} side={side} />
+  </div>
 );
 
-const StandingRow = ({ entry }: { entry: NflStandingEntry }) => (
-  <div className="flex items-center gap-3 rounded-lg px-3 py-2">
-    <SeedBadge seed={entry.seed} isDivWinner={entry.isDivisionWinner} />
-    <Image
-      src={entry.logo || nflTeamLogo(entry.abbrev)}
-      alt={entry.displayName}
-      width={28}
-      height={28}
-      className="h-7 w-7 object-contain"
-      unoptimized
-    />
-    <div className="flex flex-1 items-center justify-between">
-      <div>
-        <span className="text-sm font-semibold text-base-content">{entry.abbrev}</span>
-        {entry.isDivisionWinner && (
-          <span className="ml-1.5 text-[10px] font-medium uppercase text-primary">DIV</span>
-        )}
-      </div>
-      <div className="text-right">
-        <span className="text-base-content/70 text-xs">
+const ByeCard = ({ entry, side }: { entry: NflStandingEntry; side: 'left' | 'right' }) => {
+  const bg = `#${entry.color}`;
+  const fg = textColor(entry.color);
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-stroke shadow-sm">
+      <div
+        className={`flex h-10 items-center gap-2 px-3 ${side === 'left' ? 'flex-row' : 'flex-row-reverse'}`}
+        style={{ backgroundColor: bg, color: fg }}
+      >
+        <span className="w-5 text-center text-xs font-bold opacity-70">1</span>
+        <Image
+          src={entry.logo || nflTeamLogo(entry.abbrev)}
+          alt={entry.displayName}
+          width={24}
+          height={24}
+          className="h-6 w-6 object-contain"
+          unoptimized
+        />
+        <span className="flex-1 text-sm font-semibold">{entry.abbrev}</span>
+        <span className="text-xs opacity-80">
           {entry.record.wins}-{entry.record.losses}
           {entry.record.ties > 0 ? `-${entry.record.ties}` : ''}
         </span>
-        {entry.explainPosition && (
-          <p className="text-base-content/40 max-w-[200px] text-[10px] leading-tight">
-            {entry.explainPosition}
-          </p>
-        )}
+      </div>
+      <div
+        className="flex h-10 items-center justify-center border-t border-black/20 px-3 text-xs font-medium uppercase tracking-wide"
+        style={{ backgroundColor: `${bg}22`, color: fg, opacity: 0.7 }}
+      >
+        First-round bye
       </div>
     </div>
-  </div>
-);
+  );
+};
+
+const ConferenceBracket = ({
+  conf,
+  seeds,
+  side,
+}: {
+  conf: string;
+  seeds: NflStandingEntry[];
+  side: 'left' | 'right';
+}) => {
+  const seed1 = seeds.find((s) => s.seed === 1);
+  const matchups: [number, number][] = [
+    [2, 7],
+    [3, 6],
+    [4, 5],
+  ];
+
+  return (
+    <div className="flex flex-col gap-3">
+      <h3
+        className={`text-base-content/60 text-sm font-bold uppercase tracking-wide ${side === 'right' ? 'text-right' : ''}`}
+      >
+        {conf}
+      </h3>
+      {seed1 && <ByeCard entry={seed1} side={side} />}
+      {matchups.map(([hi, lo]) => {
+        const higher = seeds.find((s) => s.seed === hi);
+        const lower = seeds.find((s) => s.seed === lo);
+        if (!higher || !lower) return null;
+        return <MatchupCard key={`${hi}-${lo}`} higher={higher} lower={lower} side={side} />;
+      })}
+    </div>
+  );
+};
 
 const NflBracket = ({ result, scope }: { result: NflSimulateResponse; scope: FilterScope }) => {
   const conferences =
     scope.level === 'conference' ? [scope.conference] : (['AFC', 'NFC'] as NflConference[]);
 
+  const singleConf = conferences.length === 1;
+
   return (
-    <div className="flex flex-col gap-6">
-      <h2 className="text-center text-lg font-bold text-base-content">Playoff Picture</h2>
-      <div
-        className={`grid gap-4 ${conferences.length === 2 ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-1'}`}
-      >
+    <div className="flex flex-col gap-4">
+      <h2 className="text-center text-lg font-bold text-base-content">Wild Card Round</h2>
+      <div className={`grid gap-6 ${singleConf ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
         {conferences.map((conf) => {
           const seeds = result.bracket[conf.toLowerCase() as 'afc' | 'nfc'];
           if (!seeds || seeds.length === 0) return null;
           return (
-            <div key={conf} className="rounded-xl border border-stroke bg-base-200 p-4">
-              <h3 className="text-base-content/60 mb-3 text-sm font-bold uppercase tracking-wide">
-                {conf} Seeds
-              </h3>
-              <div className="divide-base-content/5 flex flex-col divide-y">
-                {seeds.map((entry) => (
-                  <StandingRow key={entry.teamId} entry={entry} />
-                ))}
-              </div>
-              <div className="border-base-content/10 text-base-content/40 mt-2 border-t border-dashed pt-2 text-center text-[10px]">
-                Seed 1 gets first-round bye
-              </div>
-            </div>
+            <ConferenceBracket
+              key={conf}
+              conf={conf}
+              seeds={seeds}
+              side={singleConf || conf === 'AFC' ? 'left' : 'right'}
+            />
           );
         })}
       </div>
