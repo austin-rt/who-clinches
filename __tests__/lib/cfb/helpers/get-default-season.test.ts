@@ -71,7 +71,7 @@ describe('getDefaultSeasonFromCfbd', () => {
     expect(result).toBe(2025);
   });
 
-  it('falls back to previous year when API throws in early months', async () => {
+  it('falls back to default season when API throws in early months', async () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date('2026-03-01T12:00:00Z'));
 
@@ -79,7 +79,7 @@ describe('getDefaultSeasonFromCfbd', () => {
 
     const result = await getDefaultSeasonFromCfbd();
 
-    expect(result).toBe(2025);
+    expect(result).toBe(2026);
   });
 
   describe('fixture year branch', () => {
