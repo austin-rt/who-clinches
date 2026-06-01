@@ -120,7 +120,7 @@ const GameContent = ({
   if (isTeam) {
     if (view === 'scores') {
       return (
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           {games.map((game) => (
             <GameCard key={game._id} game={game} />
           ))}
@@ -128,7 +128,7 @@ const GameContent = ({
       );
     }
     return (
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap justify-center gap-2">
         {games.map((game) => (
           <CompactGameButton key={game._id} game={game} />
         ))}
