@@ -8,21 +8,14 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
     if (fixtureYear !== null) return fixtureYear;
   }
 
+  const currentYear = new Date().getFullYear();
+
   try {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const month = now.getMonth();
-
-    if (month >= 3) return currentYear;
-
     const calendar = await getCalendarFromCfbd(currentYear);
     if (calendar && calendar.length > 0) return currentYear;
-
     return currentYear - 1;
   } catch (error) {
-    await logError(error, {
-      action: 'get-default-season',
-    });
-    return new Date().getFullYear() - 1;
+    await logError(error, { action: 'get-default-season' });
+    return currentYear - 1;
   }
 };
