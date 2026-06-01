@@ -1,4 +1,8 @@
+'use client';
+
+import { useState } from 'react';
 import Image from 'next/image';
+import { HiChevronDown } from 'react-icons/hi2';
 import type { NflConference } from '@/lib/nfl/constants';
 import type { NflSimulateResponse, NflStandingEntry } from '@/lib/nfl/types';
 import type { FilterScope } from '../types';
@@ -127,28 +131,42 @@ const ConferenceBracket = ({
 };
 
 const NflBracket = ({ result, scope }: { result: NflSimulateResponse; scope: FilterScope }) => {
+  const [open, setOpen] = useState(true);
   const conferences =
     scope.level === 'conference' ? [scope.conference] : (['AFC', 'NFC'] as NflConference[]);
 
   const singleConf = conferences.length === 1;
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2 className="text-center text-lg font-bold text-base-content">Wild Card Round</h2>
-      <div className={`grid gap-6 ${singleConf ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}>
-        {conferences.map((conf) => {
-          const seeds = result.bracket[conf.toLowerCase() as 'afc' | 'nfc'];
-          if (!seeds || seeds.length === 0) return null;
-          return (
-            <ConferenceBracket
-              key={conf}
-              conf={conf}
-              seeds={seeds}
-              side={singleConf || conf === 'AFC' ? 'left' : 'right'}
-            />
-          );
-        })}
-      </div>
+    <div className="rounded-xl border border-stroke bg-base-200 shadow-md">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between px-5 py-4 text-left"
+      >
+        <span className="text-lg font-semibold text-base-content">Wild Card Round</span>
+        <HiChevronDown
+          className={`text-base-content/50 h-5 w-5 transition-transform ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      {open && (
+        <div
+          className={`grid gap-6 px-5 pb-5 ${singleConf ? 'grid-cols-1' : 'grid-cols-1 sm:grid-cols-2'}`}
+        >
+          {conferences.map((conf) => {
+            const seeds = result.bracket[conf.toLowerCase() as 'afc' | 'nfc'];
+            if (!seeds || seeds.length === 0) return null;
+            return (
+              <ConferenceBracket
+                key={conf}
+                conf={conf}
+                seeds={seeds}
+                side={singleConf || conf === 'AFC' ? 'left' : 'right'}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
