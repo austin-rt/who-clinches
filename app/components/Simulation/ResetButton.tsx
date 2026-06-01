@@ -32,7 +32,7 @@ const ResetButton = ({ games, hasSimulationResults, onReset, className }: ResetB
   return (
     <Button.Stroked
       data-testid="reset-button"
-      size="md"
+      size="sm"
       color="primary"
       onClick={handleClick}
       className={cn('text-xs', className)}

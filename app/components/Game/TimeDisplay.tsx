@@ -3,32 +3,35 @@
 interface TimeDisplayProps {
   date: string;
   timezone: string;
+  completed?: boolean;
 }
 
-const TimeDisplay = ({ date, timezone }: TimeDisplayProps) => {
-  const formatDate = (dateString: string, venueTimezone: string) => {
-    const date = new Date(dateString);
-    const gameTimezone = venueTimezone || 'America/New_York';
+const TimeDisplay = ({ date, timezone, completed }: TimeDisplayProps) => {
+  const d = new Date(date);
+  const isMidnightUTC = d.getUTCHours() === 0 && d.getUTCMinutes() === 0;
 
-    const browserTime = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-    });
+  if (isMidnightUTC && !completed) return <div>TBD</div>;
 
-    const stadiumTimeOnly = date.toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      timeZone: gameTimezone,
-    });
+  const gameTimezone = timezone || 'America/New_York';
 
-    if (browserTime === stadiumTimeOnly) {
-      return browserTime;
-    }
+  const browserTime = d.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
 
-    return `${browserTime} (${stadiumTimeOnly} local)`;
-  };
+  const stadiumTime = d.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    timeZone: gameTimezone,
+  });
 
-  return <div>{formatDate(date, timezone)}</div>;
+  if (browserTime === stadiumTime) return <div>{browserTime}</div>;
+
+  return (
+    <div>
+      {browserTime} ({stadiumTime} local)
+    </div>
+  );
 };
 
 export default TimeDisplay;

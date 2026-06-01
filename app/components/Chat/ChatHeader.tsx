@@ -69,8 +69,8 @@ const ChatHeader = ({
               key={session.id}
               className={`group flex max-w-[8rem] shrink-0 items-center rounded-md text-xs transition-colors ${
                 i === activeIndex
-                  ? 'bg-base-300 font-medium text-base-content'
-                  : 'text-base-content/50 hover:text-base-content'
+                  ? 'ring-base-content/20 bg-base-300 font-medium text-base-content ring-1'
+                  : 'text-base-content/50 hover:bg-base-200 hover:text-base-content'
               }`}
             >
               <button
@@ -84,7 +84,7 @@ const ChatHeader = ({
                   e.stopPropagation();
                   onCloseSession(i);
                 }}
-                className="hover:bg-base-content/10 flex h-4 w-4 shrink-0 items-center justify-center rounded opacity-0 transition-opacity group-hover:opacity-100"
+                className="hover:bg-base-content/10 text-base-content/40 hover:text-base-content/70 flex h-4 w-4 shrink-0 items-center justify-center rounded transition-colors"
                 aria-label={`Close ${session.label}`}
               >
                 <HiXMark className="h-3 w-3" />
