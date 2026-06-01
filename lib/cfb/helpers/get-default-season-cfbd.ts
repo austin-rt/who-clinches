@@ -1,5 +1,6 @@
+import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { logError } from '../../errorLogger';
 import { getFixtureYear } from './fixture-year';
-import { getDefaultSeason } from '@/lib/helpers/get-default-season';
 
 export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
   if (process.env.FIXTURE_YEAR) {
@@ -7,5 +8,14 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
     if (fixtureYear !== null) return fixtureYear;
   }
 
-  return getDefaultSeason();
+  const currentYear = new Date().getFullYear();
+
+  try {
+    const calendar = await getCalendarFromCfbd(currentYear);
+    if (calendar && calendar.length > 0) return currentYear;
+    return currentYear - 1;
+  } catch (error) {
+    await logError(error, { action: 'get-default-season' });
+    return currentYear - 1;
+  }
 };
