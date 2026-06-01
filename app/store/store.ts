@@ -22,7 +22,7 @@ const appPersistConfig = {
 const chatPersistConfig = {
   key: 'chat',
   storage,
-  blacklist: ['drawerOpen'],
+  blacklist: ['drawerOpen', 'usage'],
 };
 
 const persistedUiReducer = persistReducer(uiPersistConfig, uiReducer);
