@@ -6,5 +6,5 @@ export const getDefaultNflSeason = (): number => {
   const month = now.getMonth() + 1;
   const year = now.getFullYear();
 
-  return month >= 9 ? year : year - 1;
+  return month >= 3 ? year : year - 1;
 };
