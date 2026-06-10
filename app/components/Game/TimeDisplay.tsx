@@ -3,33 +3,31 @@
 interface TimeDisplayProps {
   date: string;
   timezone: string;
-  completed?: boolean;
+  startTimeTBD?: boolean;
 }
 
-const TimeDisplay = ({ date, timezone, completed }: TimeDisplayProps) => {
+const TimeDisplay = ({ date, timezone, startTimeTBD }: TimeDisplayProps) => {
+  if (startTimeTBD) return <div>TBD</div>;
+
   const d = new Date(date);
-  const isMidnightUTC = d.getUTCHours() === 0 && d.getUTCMinutes() === 0;
-
-  if (isMidnightUTC && !completed) return <div>TBD</div>;
-
   const gameTimezone = timezone || 'America/New_York';
 
-  const browserTime = d.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-  });
-
-  const stadiumTime = d.toLocaleTimeString('en-US', {
+  const venueTime = d.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     timeZone: gameTimezone,
   });
 
-  if (browserTime === stadiumTime) return <div>{browserTime}</div>;
+  const localTime = d.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+
+  if (venueTime === localTime) return <div>{venueTime}</div>;
 
   return (
     <div>
-      {browserTime} ({stadiumTime} local)
+      {venueTime} ({localTime} local)
     </div>
   );
 };

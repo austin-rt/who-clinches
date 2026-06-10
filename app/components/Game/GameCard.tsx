@@ -18,7 +18,11 @@ const GameCard = ({ game }: GameCardProps) => {
     <div className="card card-sm relative min-w-[243px] border-2 border-stroke bg-base-200 shadow-md [container-type:inline-size] dark:bg-base-300">
       <div className="card-body flex flex-col gap-2 px-2">
         <div className="flex items-center justify-between">
-          <TimeDisplay date={game.date} timezone={game.venue.timezone} completed={game.completed} />
+          <TimeDisplay
+            date={game.date}
+            timezone={game.venue.timezone}
+            startTimeTBD={game.startTimeTBD}
+          />
           {game.state === 'in' && <LiveBadge />}
         </div>
 

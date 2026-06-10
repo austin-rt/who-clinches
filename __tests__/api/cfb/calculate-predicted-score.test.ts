@@ -35,6 +35,7 @@ const createReshapedGame = (
     timezone: 'America/New_York',
   },
   date: '2025-09-06T12:00Z',
+  startTimeTBD: false,
   home: {
     teamId: '25',
     abbrev: 'ALA',

@@ -81,6 +81,7 @@ export const reshapeCfbdGames = (
         id: String(game.id),
         displayName: `${game.awayTeam} @ ${game.homeTeam}`,
         date: game.startDate,
+        startTimeTBD: game.startTimeTBD ?? false,
         week: game.week ?? null,
         season: game.season,
         sport: 'football',

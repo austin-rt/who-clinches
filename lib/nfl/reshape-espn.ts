@@ -130,6 +130,7 @@ export const reshapeEspnGames = (events: Event[], season: number): NflGame[] =>
         id: event.id,
         displayName: event.name || `${awayComp.team.displayName} at ${homeComp.team.displayName}`,
         date: event.date,
+        startTimeTBD: false,
         week: event.week?.number ?? null,
         season,
         sport: 'nfl',
