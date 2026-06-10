@@ -150,7 +150,7 @@ export type GameLean = {
   id: string;
   displayName: string;
   date: string;
-  startTimeTBD: boolean;
+  startTimeTBD?: boolean;
   week: number | null;
   season: number;
   sport: string;

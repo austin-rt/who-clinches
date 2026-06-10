@@ -39,7 +39,6 @@ export const createNflGame = (overrides: {
     id,
     displayName: `${overrides.awayAbbrev} at ${overrides.homeAbbrev}`,
     date: '2024-09-08T13:00:00Z',
-    startTimeTBD: false,
     week: 1,
     season: 2024,
     sport: 'nfl',
