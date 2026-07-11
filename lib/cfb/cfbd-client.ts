@@ -46,7 +46,7 @@ export class CFBDClient {
           week: node.week,
           seasonType: node.seasonType as Game['seasonType'],
           startDate: node.startDate,
-          startTimeTBD: false,
+          startTimeTBD: node.startTimeTBD ?? false,
           completed: node.completed,
           neutralSite: node.neutralSite,
           conferenceGame: node.conferenceGame,

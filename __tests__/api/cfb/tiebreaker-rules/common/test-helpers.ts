@@ -70,6 +70,7 @@ export const createGameLean = (game: GameForTiebreaker): GameLean => ({
   _id: game.gameId,
   id: game.gameId,
   displayName: `${game.away.abbrev} @ ${game.home.abbrev}`,
+  startTimeTBD: false,
   season: 2025,
   week: 1,
   sport: 'football',

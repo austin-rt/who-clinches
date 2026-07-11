@@ -35,6 +35,7 @@ export interface GameAggregateResult {
       week: number;
       seasonType: string;
       startDate: string;
+      startTimeTBD: boolean;
       completed: boolean;
       neutralSite: boolean;
       conferenceGame: boolean;
@@ -200,6 +201,7 @@ export class CFBDGraphQLClient {
             week
             seasonType
             startDate
+            startTimeTBD
             completed
             neutralSite
             conferenceGame

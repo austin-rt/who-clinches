@@ -83,7 +83,7 @@ export const fetchCoachesText = async (): Promise<string> => {
       const season = seasons?.[0];
       if (!season) return null;
       const record = `${season.wins ?? 0}-${season.losses ?? 0}`;
-      return `${c.first_name} ${c.last_name} — ${season.school} (${record} in ${coachYear})`;
+      return `${c.firstName} ${c.lastName} — ${season.school} (${record} in ${coachYear})`;
     })
     .filter(Boolean)
     .sort() as string[];

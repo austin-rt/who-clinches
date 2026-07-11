@@ -31,6 +31,7 @@ const mockGame: GameLean = {
   neutralSite: false,
   venue: { fullName: 'Stadium', city: 'City', state: 'ST', timezone: 'America/New_York' },
   date: '2025-09-06T12:00Z',
+  startTimeTBD: false,
   home: {
     teamId: '1',
     abbrev: 'HME',

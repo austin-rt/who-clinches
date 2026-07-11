@@ -42,6 +42,7 @@ const makeGame = (
   id,
   displayName: `${home.abbrev} vs ${away.abbrev}`,
   date: '2025-11-01T00:00:00Z',
+  startTimeTBD: false,
   week: 10,
   season: 2025,
   sport: 'football',

@@ -67,6 +67,7 @@ export interface ReshapedGame {
   id: string;
   displayName: string;
   date: string;
+  startTimeTBD?: boolean;
   week: number | null;
   season: number;
   sport: string;
@@ -114,6 +115,7 @@ export interface Game {
   id: string;
   displayName: string;
   date: string;
+  startTimeTBD?: boolean;
   week: number | null;
   season: number;
   sport: string;
