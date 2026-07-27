@@ -70,24 +70,39 @@ export const fetchTeamsFbsText = async (): Promise<string> => {
   return `FBS Teams (${new Date().getFullYear()})\n\n${lines.join('\n\n')}\n`;
 };
 
+const fetchCoachesForYear = async (year: number): Promise<R[]> => {
+  const y = String(year);
+  return (await cfbdGet('/coaches', { year: y, minYear: y, maxYear: y })) as R[];
+};
+
 export const fetchCoachesText = async (): Promise<string> => {
-  const coachYear = String(new Date().getFullYear() - 1);
-  const coaches = (await cfbdGet('/coaches', {
-    year: coachYear,
-    minYear: coachYear,
-    maxYear: coachYear,
-  })) as R[];
+  const currentYear = new Date().getFullYear();
+
+  let coachYear = currentYear;
+  let coaches = await fetchCoachesForYear(coachYear);
+  if (coaches.length === 0) {
+    coachYear = currentYear - 1;
+    coaches = await fetchCoachesForYear(coachYear);
+  }
+
   const lines = coaches
     .map((c) => {
       const seasons = c.seasons as R[] | undefined;
       const season = seasons?.[0];
       if (!season) return null;
-      const record = `${season.wins ?? 0}-${season.losses ?? 0}`;
-      return `${c.firstName} ${c.lastName} — ${season.school} (${record} in ${coachYear})`;
+      const games = Number(season.games ?? 0);
+      const record = games > 0 ? ` (${season.wins ?? 0}-${season.losses ?? 0})` : '';
+      return `[${coachYear} season] ${c.firstName} ${c.lastName} — ${season.school}${record}`;
     })
     .filter(Boolean)
     .sort() as string[];
-  return `FBS Head Coaches (as of ${coachYear} season)\n\n${lines.join('\n')}\n`;
+
+  const header =
+    coachYear === currentYear
+      ? `FBS Head Coaches (${coachYear} season)`
+      : `FBS Head Coaches (${coachYear} season). CFBD has not published ${currentYear} coaching assignments yet, so this list reflects the ${coachYear} season only. Any coach hired, fired, or moved after the ${coachYear} season is NOT reflected here — do not state these as current ${currentYear} assignments.`;
+
+  return `${header}\n\n${lines.join('\n')}\n`;
 };
 
 export const fetchDraftPicksText = async (): Promise<string> => {

@@ -1,5 +1,6 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
+import { fetchCoachesText } from '../lib/cfb/cfbd-static-fetcher';
 
 const CFBD_BASE = 'https://apinext.collegefootballdata.com';
 const OUT_DIR = join(process.cwd(), 'docs', 'cfbd-static');
@@ -65,27 +66,9 @@ const run = async () => {
   writeFileSync(join(OUT_DIR, 'teams.txt'), `FBS Teams (${year})\n\n${teamLines.join('\n\n')}\n`);
   console.log(`teams: ${teamLines.length}`);
 
-  const coachYear = String(Number(year) - 1);
-  const coaches = await get('/coaches', {
-    year: coachYear,
-    minYear: coachYear,
-    maxYear: coachYear,
-  });
-  const coachLines = (coaches as Array<Record<string, unknown>>)
-    .map((c) => {
-      const seasons = c.seasons as Array<Record<string, unknown>> | undefined;
-      const season = seasons?.[0];
-      if (!season) return null;
-      const record = `${season.wins ?? 0}-${season.losses ?? 0}`;
-      return `${c.firstName} ${c.lastName} — ${season.school} (${record} in ${coachYear})`;
-    })
-    .filter(Boolean)
-    .sort();
-  writeFileSync(
-    join(OUT_DIR, 'coaches.txt'),
-    `FBS Head Coaches (as of ${coachYear} season)\n\n${(coachLines as string[]).join('\n')}\n`
-  );
-  console.log(`coaches: ${coachLines.length}`);
+  const coachesText = await fetchCoachesText();
+  writeFileSync(join(OUT_DIR, 'coaches.txt'), coachesText);
+  console.log(`coaches: ${coachesText.split('\n').filter((l) => l.startsWith('[')).length}`);
 
   console.log(`\nFiles written to ${OUT_DIR}`);
 };
