@@ -118,7 +118,7 @@ Tulsa (TLSA) — American Athletic
 
 UAB (UAB) — American Athletic
   Mascot: Blazers | Location: Birmingham, AL
-  Venue: Protective Stadium
+  Venue: Protective Stadium (45,000)
 
 UTSA (UTSA) — American Athletic
   Mascot: Roadrunners | Location: San Antonio, TX
@@ -222,7 +222,7 @@ Nebraska (NEB) — Big Ten
 
 Northwestern (NU) — Big Ten
   Mascot: Wildcats | Location: Evanston, IL
-  Venue: Lanny and Sharon Martin Stadium
+  Venue: Lanny and Sharon Martin Stadium (12,023)
 
 Ohio State (OSU) — Big Ten
   Mascot: Buckeyes | Location: Columbus, OH
@@ -266,7 +266,7 @@ Delaware (DEL) — Conference USA
 
 Florida International (FIU) — Conference USA
   Mascot: Panthers | Location: Miami, FL
-  Venue: Pitbull Stadium
+  Venue: Pitbull Stadium (20,000)
 
 Jacksonville State (JXST) — Conference USA
   Mascot: Gamecocks | Location: Jacksonville, AL
@@ -274,7 +274,7 @@ Jacksonville State (JXST) — Conference USA
 
 Kennesaw State (KENN) — Conference USA
   Mascot: Owls | Location: Kennesaw, GA
-  Venue: Fifth Third Stadium (8,318)
+  Venue: Fifth Third Stadium (11,040)
 
 Liberty (LIB) — Conference USA
   Mascot: Flames | Location: Lynchburg, VA
@@ -366,7 +366,7 @@ Air Force (AF) — Mountain West
 
 Hawai'i (HAW) — Mountain West
   Mascot: Rainbow Warriors | Location: Honolulu, HI
-  Venue: Clarence T.C. Ching Athletics Complex (9,000)
+  Venue: Clarence T.C. Ching Athletics Complex (15,194)
 
 Nevada (NEV) — Mountain West
   Mascot: Wolf Pack | Location: Reno, NV

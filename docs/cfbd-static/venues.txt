@@ -36,6 +36,9 @@ Sanford Stadium (Athens, GA) — Capacity: 92,746, Grass, Outdoor
 Cotton Bowl (Dallas, TX) — Capacity: 92,100, Turf, Outdoor
   Teams: N/A
 
+Wembley Stadium (London, ) — Capacity: 90,000, Grass, Outdoor
+  Teams: N/A
+
 Rose Bowl (Pasadena, CA) — Capacity: 88,565, Grass, Outdoor
   Teams: N/A
 
@@ -336,6 +339,9 @@ Allianz Stadium (Sydney, NSW) — Capacity: 45,500, Grass, Outdoor
 McLane Stadium (Waco, TX) — Capacity: 45,140, Turf, Outdoor
   Teams: N/A
 
+Protective Stadium (Birmingham, AL) — Capacity: 45,000, Turf, Outdoor
+  Teams: N/A
+
 Alumni Stadium (Chestnut Hill, MA) (Chestnut Hill, MA) — Capacity: 44,500, Turf, Outdoor
   Teams: N/A
 
@@ -519,6 +525,9 @@ Hornet Stadium (Montgomery, AL) — Capacity: 26,500, Turf, Outdoor
 Glass Bowl (Toledo, OH) — Capacity: 26,038, Turf, Outdoor
   Teams: N/A
 
+TQL Stadium (Cincinnati, OH) — Capacity: 26,000, Grass, Outdoor
+  Teams: N/A
+
 Maverik Stadium (Logan, UT) — Capacity: 25,513, Turf, Outdoor
   Teams: N/A
 
@@ -550,6 +559,9 @@ Bridgeforth Stadium (Harrisonburg, VA) — Capacity: 24,877, Turf, Outdoor
   Teams: N/A
 
 Yager Stadium (Oxford, OH) — Capacity: 24,286, Turf, Outdoor
+  Teams: N/A
+
+Memorial Stadium (Stephenville, TX) (Stephenville, TX) — Capacity: 24,000, Turf, Outdoor
   Teams: N/A
 
 AmFirst Stadium (Jacksonville, AL) — Capacity: 24,000, Turf, Outdoor
@@ -618,13 +630,19 @@ S.B. Ballard Stadium (Norfolk, VA) — Capacity: 20,118, Turf, Outdoor
 FIU Stadium (Miami, FL) — Capacity: 20,000, Turf, Outdoor
   Teams: N/A
 
-Audi Field (Washington, DC) — Capacity: 20,000, Turf, Outdoor
-  Teams: N/A
-
 Brown Stadium (Providence, RI) — Capacity: 20,000, Turf, Outdoor
   Teams: N/A
 
+SeatGeek Stadium (Bridgeview, IL) — Capacity: 20,000, Grass, Outdoor
+  Teams: N/A
+
+Audi Field (Washington, DC) — Capacity: 20,000, Grass, Outdoor
+  Teams: N/A
+
 Roy Kidd Stadium (Richmond, KY) — Capacity: 20,000, Turf, Outdoor
+  Teams: N/A
+
+Pitbull Stadium (Miami, FL) — Capacity: 20,000, Turf, Outdoor
   Teams: N/A
 
 Eddie Robinson Stadium (Grambling, LA) — Capacity: 19,600, Turf, Outdoor
@@ -705,6 +723,9 @@ Harry Turpin Stadium (Natchitoches, LA) — Capacity: 15,971, Turf, Outdoor
 Jerry Richardson Stadium (Charlotte, NC) — Capacity: 15,300, Turf, Outdoor
   Teams: N/A
 
+Clarence T.C. Ching Athletics Complex (Honolulu, HI) — Capacity: 15,194, Turf, Outdoor
+  Teams: N/A
+
 Shotwell Stadium (Abilene, TX) — Capacity: 15,075, Turf, Outdoor
   Teams: N/A
 
@@ -756,6 +777,9 @@ E. J. Whitmire Stadium (Cullowhee, NC) — Capacity: 13,742, Turf, Outdoor
 Perkins Stadium (Whitewater, WI) — Capacity: 13,500, Turf, Outdoor
   Teams: N/A
 
+Robert and Janet Vackar Stadium (Edinburg, TX) — Capacity: 13,498, Turf, Outdoor
+  Teams: N/A
+
 Fisher Field (Easton, PA) — Capacity: 13,132, Turf, Outdoor
   Teams: N/A
 
@@ -783,7 +807,7 @@ Kenneth P. LaValle Stadium (Stony Brook, NY) — Capacity: 12,300, Turf, Outdoor
 Alerus Center (Grand Forks, ND) — Capacity: 12,283, Turf, Dome
   Teams: N/A
 
-Memorial Stadium (Stephenville, TX) (Stephenville, TX) — Capacity: 12,000, Turf, Outdoor
+Lanny and Sharon Martin Stadium (Evanston, IL) — Capacity: 12,023, Turf, Outdoor
   Teams: N/A
 
 Children's Health Stadium (Prosper, TX) — Capacity: 12,000, Turf, Outdoor
@@ -819,6 +843,9 @@ Johnny Unitas Stadium (Towson, MD) — Capacity: 11,200, Turf, Outdoor
 Alex G. Spanos Stadium (San Luis Obispo, CA) — Capacity: 11,075, Grass, Outdoor
   Teams: N/A
 
+Fifth Third Stadium (Kennesaw, GA) — Capacity: 11,040, Grass, Outdoor
+  Teams: N/A
+
 Houck Stadium (Cape Girardeau, MO) — Capacity: 11,015, Turf, Outdoor
   Teams: N/A
 
@@ -834,10 +861,13 @@ Welcome Stadium (Dayton, OH) — Capacity: 11,000, Turf, Outdoor
 Aggie Stadium (Davis, CA) — Capacity: 10,743, Turf, Outdoor
   Teams: N/A
 
-Manning Field at John L. Guidry Stadium (Thibodaux, LA) — Capacity: 10,500, Turf, Outdoor
+Greater Zion Stadium (Saint George, UT) — Capacity: 10,500, Turf, Outdoor
   Teams: N/A
 
-Greater Zion Stadium (Saint George, UT) — Capacity: 10,500, Turf, Outdoor
+Centreville Bank Stadium (Pawtucket, RI) — Capacity: 10,500, Turf, Outdoor
+  Teams: N/A
+
+Manning Field at John L. Guidry Stadium (Thibodaux, LA) — Capacity: 10,500, Turf, Outdoor
   Teams: N/A
 
 Lubbers Stadium (Allendale, MI) — Capacity: 10,444, Turf, Outdoor
