@@ -4,6 +4,13 @@ on:
   pull_request:
     branches: [main]
 
+# gh pr close --comment needs pull-requests: write. Without this the job inherits
+# the repo default (contents/metadata/packages: read) and dies on
+# "Resource not accessible by integration (addComment)", so the guard fails loudly
+# instead of quietly closing the PR it exists to close.
+permissions:
+  pull-requests: write
+
 jobs:
   check-source:
     runs-on: ubuntu-latest
