@@ -1,3 +1,5 @@
+import { fetchEspnCoaches } from './espn-coaches';
+
 const CFBD_BASE = 'https://apinext.collegefootballdata.com';
 
 const getApiKey = (): string => {
@@ -71,23 +73,19 @@ export const fetchTeamsFbsText = async (): Promise<string> => {
 };
 
 export const fetchCoachesText = async (): Promise<string> => {
-  const coachYear = String(new Date().getFullYear() - 1);
-  const coaches = (await cfbdGet('/coaches', {
-    year: coachYear,
-    minYear: coachYear,
-    maxYear: coachYear,
-  })) as R[];
-  const lines = coaches
-    .map((c) => {
-      const seasons = c.seasons as R[] | undefined;
-      const season = seasons?.[0];
-      if (!season) return null;
-      const record = `${season.wins ?? 0}-${season.losses ?? 0}`;
-      return `${c.firstName} ${c.lastName} — ${season.school} (${record} in ${coachYear})`;
-    })
-    .filter(Boolean)
-    .sort() as string[];
-  return `FBS Head Coaches (as of ${coachYear} season)\n\n${lines.join('\n')}\n`;
+  const season = new Date().getFullYear();
+  const { assignments, unknown } = await fetchEspnCoaches(season);
+
+  if (assignments.length === 0) {
+    throw new Error(`ESPN returned no FBS head coaches for ${season}`);
+  }
+
+  const lines = assignments.map((c) => `[${season} season] ${c.school} — ${c.name}`);
+  const footer = unknown.length
+    ? `\nNo head coach is published for the ${season} season for: ${unknown.join(', ')}. Say the coach is unknown rather than guessing.\n`
+    : '';
+
+  return `FBS Head Coaches (${season} season)\n\n${lines.join('\n')}\n${footer}`;
 };
 
 export const fetchDraftPicksText = async (): Promise<string> => {

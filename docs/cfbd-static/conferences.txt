@@ -1,22 +1,22 @@
 College Football Conferences
 
 Carolinas (null) — Classification: ii
-Ivy (null) — Classification: fcs
+AWC (AWC) — Classification: fcs
+Big Sky (BSKY) — Classification: fcs
+Big South (BSOUTH) — Classification: fcs
+CAA (CAA) — Classification: fcs
+Ivy (IVY) — Classification: fcs
+MEAC (MEAC) — Classification: fcs
+MVFC (MVFC) — Classification: fcs
+NEC (NEC) — Classification: fcs
+OVC (OVC) — Classification: fcs
+Patriot (PAT) — Classification: fcs
+Pioneer (PFL) — Classification: fcs
 Mid-American (MAC) — Classification: fbs
 Mountain West (MWC) — Classification: fbs
 Pac-12 (PAC) — Classification: fbs
 SEC (SEC) — Classification: fbs
 Pac-10 (Pac-10) — Classification: fbs
-AWC (null) — Classification: fcs
-Big Sky (null) — Classification: fcs
-Big South (null) — Classification: fcs
-CAA (null) — Classification: fcs
-MEAC (null) — Classification: fcs
-MVFC (null) — Classification: fcs
-NEC (null) — Classification: fcs
-OVC (null) — Classification: fcs
-Patriot (null) — Classification: fcs
-Pioneer (null) — Classification: fcs
 American Rivers (null) — Classification: iii
 American Southwest (null) — Classification: iii
 CCIW (null) — Classification: iii
@@ -80,13 +80,7 @@ Southern Collegiate Athletic (SCAC) — Classification: iii
 University (UNI) — Classification: iii
 Great West (GWEST) — Classification: fcs
 Metro Atlantic Athletic (MAAC) — Classification: fcs
-Atlantic 10 (ATL10) — Classification: fcs
-Big South-OVC (null) — Classification: fcs
-UAC (null) — Classification: fcs
 Landmark Conference (null) — Classification: iii
-SWAC (null) — Classification: fcs
-Southern (null) — Classification: fcs
-Southland (null) — Classification: fcs
 Rocky Mountain (RMC) — Classification: fbs
 Southwest (SWC) — Classification: fbs
 Southern (Southern) — Classification: fbs
@@ -104,5 +98,11 @@ Ivy (Ivy) — Classification: fbs
 Western Athletic (WAC) — Classification: fbs
 Southland (Southland) — Classification: fbs
 Big West (BW) — Classification: fbs
-Western Athletic (WAC) — Classification: fcs
 Big East (BE) — Classification: fbs
+Big South-OVC (BSOVC) — Classification: fcs
+Southern (SOCON) — Classification: fcs
+Southland (SLC) — Classification: fcs
+SWAC (SWAC) — Classification: fcs
+UAC (UAC) — Classification: fcs
+Western Athletic (WAC) — Classification: fcs
+Atlantic 10 (A10) — Classification: fcs
