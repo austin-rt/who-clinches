@@ -2,6 +2,7 @@ import { NextRequest, after } from 'next/server';
 import { db } from '@/lib/db/client';
 import { sendEmail } from '@/lib/email';
 import { notificationHtml } from '@/lib/email-templates';
+import { createIssue } from '@/lib/github';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -44,6 +45,24 @@ export const POST = async (request: NextRequest) => {
           ],
           content
         ),
+      }).catch(() => {})
+    );
+
+    // Feedback carries no submitter email, so a public issue leaks nothing.
+    after(() =>
+      createIssue({
+        title: `${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 70)}${content.length > 70 ? '…' : ''}`,
+        labels: ['feedback'],
+        body: [
+          ...(conf ? [`**Conference:** ${conf.toUpperCase()}`] : []),
+          `**Session:** ${sessionId || 'none'}`,
+          `**Env:** ${vercelEnv ?? 'local'} / ${nodeEnv ?? '?'}`,
+          `**ID:** \`${feedback.id}\``,
+          '',
+          '---',
+          '',
+          content,
+        ].join('\n'),
       }).catch(() => {})
     );
 
