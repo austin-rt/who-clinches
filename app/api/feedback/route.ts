@@ -48,7 +48,6 @@ export const POST = async (request: NextRequest) => {
       }).catch(() => {})
     );
 
-    // Feedback carries no submitter email, so a public issue leaks nothing.
     after(() =>
       createIssue({
         title: `${conf ? conf.toUpperCase() + ' — ' : ''}${content.slice(0, 70)}${content.length > 70 ? '…' : ''}`,

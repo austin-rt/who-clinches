@@ -7,9 +7,6 @@ interface IssueParams {
   labels?: string[];
 }
 
-// Opens a GitHub issue so feedback lands somewhere trackable and GitHub's own
-// notifications do the emailing. No-ops without a token so local and preview
-// runs stay quiet.
 export const createIssue = async (params: IssueParams): Promise<void> => {
   const token = process.env.GITHUB_TOKEN;
   if (!token) return;
