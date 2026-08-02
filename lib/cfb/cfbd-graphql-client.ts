@@ -2,18 +2,22 @@ import { fetchWithTimeout } from '../fetch-with-timeout';
 import { createClient, Client } from 'graphql-ws';
 import { logError } from '../errorLogger';
 import { getActiveApiKey } from './cfbd-rest-client';
+import { CONFERENCE_GAMES, CONFERENCE_TEAMS, GAME_UPDATES } from './graphql/documents';
+import { buildGameWhere, buildTeamWhere, type GameFilter } from './graphql/where';
+import type { GqlGameNode, GqlTeamNode } from './graphql/map-to-cfbd';
 
-const REQUEST_TIMEOUT_MS = 60000;
-const GRAPHQL_ENDPOINT = 'https://graphqldocs.collegefootballdata.com/v1/graphql';
-const GRAPHQL_WS_ENDPOINT = 'wss://graphql.collegefootballdata.com/v1/graphql';
+const REQUEST_TIMEOUT_MS = 30000;
+export const GRAPHQL_ENDPOINT = 'https://graphql.collegefootballdata.com/v1/graphql';
+export const GRAPHQL_WS_ENDPOINT = 'wss://graphql.collegefootballdata.com/v1/graphql';
+
+export const MAX_GAMES = 2000;
+export const MAX_TEAMS = 500;
 
 const getAuthHeaders = () => {
   const apiKey = getActiveApiKey();
   if (!apiKey) {
     const error = new Error('No CFBD API key configured');
-    void logError(error, {
-      action: 'get-auth-headers',
-    });
+    void logError(error, { action: 'get-auth-headers' });
     throw error;
   }
   return {
@@ -27,69 +31,6 @@ export interface GraphQLResponse<T> {
   errors?: Array<{ message: string; path?: string[] }>;
 }
 
-export interface GameAggregateResult {
-  gameAggregate: {
-    nodes: Array<{
-      id: number;
-      season: number;
-      week: number;
-      seasonType: string;
-      startDate: string;
-      startTimeTBD: boolean;
-      completed: boolean;
-      neutralSite: boolean;
-      conferenceGame: boolean;
-      homeId: number;
-      homeTeam: string;
-      homePoints?: number;
-      awayId: number;
-      awayTeam: string;
-      awayPoints?: number;
-      venue?: string;
-      spread?: number;
-      overUnder?: number;
-      favoriteId?: number;
-    }>;
-  };
-}
-
-export interface CurrentTeamsResult {
-  currentTeams: {
-    nodes: Array<{
-      id: number;
-      school: string;
-      abbreviation: string;
-      conference?: string;
-      color?: string;
-      altColor?: string;
-      logos?: string[];
-    }>;
-  };
-}
-
-export interface GameSubscriptionResult {
-  game: Array<{
-    id: number;
-    year: number;
-    week: number;
-    seasonType: string;
-    startDate: string;
-    completed: boolean;
-    neutralSite: boolean;
-    conferenceGame: boolean;
-    homeId: number;
-    homeTeam: string;
-    homePoints?: number;
-    awayId: number;
-    awayTeam: string;
-    awayPoints?: number;
-    venue?: string;
-    spread?: number;
-    overUnder?: number;
-    favoriteId?: number;
-  }>;
-}
-
 export class CFBDGraphQLClient {
   private wsClient: Client | null = null;
 
@@ -98,55 +39,36 @@ export class CFBDGraphQLClient {
       const apiKey = getActiveApiKey();
       if (!apiKey) {
         const error = new Error('No CFBD API key configured');
-        void logError(error, {
-          action: 'get-ws-client',
-        });
+        void logError(error, { action: 'get-ws-client' });
         throw error;
       }
 
       this.wsClient = createClient({
         url: GRAPHQL_WS_ENDPOINT,
         connectionParams: {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-          },
+          headers: { Authorization: `Bearer ${apiKey}` },
         },
       });
     }
     return this.wsClient;
   }
 
-  private async query<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
+  private async query<T>(query: string, variables: Record<string, unknown>): Promise<T> {
     const response = await fetchWithTimeout(
       GRAPHQL_ENDPOINT,
       {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({
-          query,
-          variables,
-        }),
+        body: JSON.stringify({ query, variables }),
       },
       REQUEST_TIMEOUT_MS
     );
 
     if (!response.ok) {
-      if (response.status === 404) {
-        const error = new Error(
-          `CFBD GraphQL API not available (404). This may indicate you need to upgrade your API tier or the season has ended. Use REST API instead.`
-        );
-        await logError(error, {
-          action: 'graphql-query',
-          status: response.status,
-        });
-        throw error;
-      }
-      const error = new Error(`CFBD GraphQL API error: ${response.status} ${response.statusText}`);
-      await logError(error, {
-        action: 'graphql-query',
-        status: response.status,
-        statusText: response.statusText,
-      });
+      const error = new Error(
+        `CFBD GraphQL ${response.status} ${response.statusText} from ${GRAPHQL_ENDPOINT}`
+      );
+      await logError(error, { action: 'graphql-query', status: response.status });
       throw error;
     }
 
@@ -156,156 +78,51 @@ export class CFBDGraphQLClient {
       const error = new Error(
         `CFBD GraphQL errors: ${result.errors.map((e) => e.message).join(', ')}`
       );
-      await logError(error, {
-        action: 'graphql-query',
-        errors: result.errors,
-      });
+      await logError(error, { action: 'graphql-query', errors: result.errors });
       throw error;
     }
 
     if (!result.data) {
       const error = new Error('CFBD GraphQL response missing data');
-      await logError(error, {
-        action: 'graphql-query',
-      });
+      await logError(error, { action: 'graphql-query' });
       throw error;
     }
 
     return result.data;
   }
 
-  getGameAggregate(params: {
-    season?: number;
-    week?: number;
-    conference?: string;
-  }): Promise<GameAggregateResult> {
-    const whereClause: string[] = [];
-    if (params.season) {
-      whereClause.push(`year: {_eq: ${params.season}}`);
-    }
-    if (params.week !== undefined) {
-      whereClause.push(`week: {_eq: ${params.week}}`);
-    }
-    if (params.conference) {
-      whereClause.push(`conference: {_eq: "${params.conference}"}`);
-    }
-
-    const query = `
-      query GetGameAggregate {
-        gameAggregate(
-          where: {${whereClause.join(', ')}}
-        ) {
-          nodes {
-            id
-            season: year
-            week
-            seasonType
-            startDate
-            startTimeTBD
-            completed
-            neutralSite
-            conferenceGame
-            homeId
-            homeTeam
-            homePoints
-            awayId
-            awayTeam
-            awayPoints
-            venue
-            spread
-            overUnder
-            favoriteId
-          }
-        }
-      }
-    `;
-
-    return this.query<GameAggregateResult>(query);
+  async getConferenceGames(filter: GameFilter): Promise<GqlGameNode[]> {
+    const result = await this.query<{ game: GqlGameNode[] }>(CONFERENCE_GAMES, {
+      where: buildGameWhere(filter),
+      limit: MAX_GAMES,
+    });
+    return result.game;
   }
 
-  getCurrentTeams(params?: { conference?: string }): Promise<CurrentTeamsResult> {
-    const whereClause: string[] = [];
-    if (params?.conference) {
-      whereClause.push(`conference: {_eq: "${params.conference}"}`);
-    }
-
-    const query = `
-      query GetCurrentTeams {
-        currentTeams(
-          where: {${whereClause.length > 0 ? whereClause.join(', ') : ''}}
-        ) {
-          nodes {
-            id
-            school
-            abbreviation
-            conference
-            color
-            altColor
-            logos
-          }
-        }
-      }
-    `;
-
-    return this.query<CurrentTeamsResult>(query);
+  async getConferenceTeams(season: number, conference?: string): Promise<GqlTeamNode[]> {
+    const result = await this.query<{ historicalTeam: GqlTeamNode[] }>(CONFERENCE_TEAMS, {
+      where: buildTeamWhere(season, conference),
+      limit: MAX_TEAMS,
+    });
+    return result.historicalTeam;
   }
 
   subscribeToGames(params: {
-    season?: number;
-    week?: number;
-    conference?: string;
-    onUpdate: (data: GameSubscriptionResult) => void;
+    filter: GameFilter;
+    onUpdate: (games: GqlGameNode[]) => void;
     onError?: (error: Error) => void;
   }): () => void {
-    const whereClause: string[] = [];
-    if (params.season) {
-      whereClause.push(`year: {_eq: ${params.season}}`);
-    }
-    if (params.week !== undefined) {
-      whereClause.push(`week: {_eq: ${params.week}}`);
-    }
-    if (params.conference) {
-      whereClause.push(`conference: {_eq: "${params.conference}"}`);
-    }
-
-    const subscription = `
-      subscription GameSubscription {
-        game(
-          where: {${whereClause.length > 0 ? whereClause.join(', ') : ''}}
-        ) {
-          id
-          year
-          week
-          seasonType
-          startDate
-          completed
-          neutralSite
-          conferenceGame
-          homeId
-          homeTeam
-          homePoints
-          awayId
-          awayTeam
-          awayPoints
-          venue
-          spread
-          overUnder
-          favoriteId
-        }
-      }
-    `;
-
     const client = this.getWsClient();
-    let unsubscribe: (() => void) | null = null;
 
-    unsubscribe = client.subscribe<GameSubscriptionResult>(
+    const unsubscribe = client.subscribe<{ game: GqlGameNode[] }>(
       {
-        query: subscription,
+        query: GAME_UPDATES,
+        variables: { where: buildGameWhere(params.filter) },
       },
       {
-        next: (data: { data?: GameSubscriptionResult }) => {
-          if (data.data) {
-            params.onUpdate(data.data);
+        next: (data) => {
+          if (data.data?.game) {
+            params.onUpdate(data.data.game);
           }
         },
         error: (err: unknown) => {
@@ -319,9 +136,7 @@ export class CFBDGraphQLClient {
     );
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe();
     };
   }
 }
