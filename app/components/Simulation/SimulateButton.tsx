@@ -13,6 +13,7 @@ import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { GamePick } from '../../store/gamePicksSlice';
 import { Button } from '../Button';
+import { buildSimulationOverrides } from '@/lib/utils/buildSimulationOverrides';
 import { buildSimulateInputKey } from '@/lib/client/input-hash';
 
 interface SimulateButtonProps {
@@ -45,15 +46,10 @@ const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProp
       return;
     }
 
-    const overrides: SimulateRequestBody['overrides'] = {};
-
-    Object.entries(gamePicks).forEach(([gameId, pick]) => {
-      const gamePick = pick as GamePick;
-      overrides[gameId] = {
-        homeScore: gamePick.homeScore,
-        awayScore: gamePick.awayScore,
-      };
-    });
+    const overrides: SimulateRequestBody['overrides'] = buildSimulationOverrides(
+      games,
+      gamePicks as Record<string, GamePick>
+    );
 
     const inputKey = buildSimulateInputKey(games, overrides, season);
 

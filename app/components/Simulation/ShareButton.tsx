@@ -9,6 +9,8 @@ import { IconButton } from '../Common';
 import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import type { SimulateResponse } from '../../store/api';
 import type { GameLean } from '@/lib/types';
+import { buildSimulationOverrides } from '@/lib/utils/buildSimulationOverrides';
+import type { GamePick } from '@/app/store/gamePicksSlice';
 
 interface ShareButtonProps {
   simulateResponse: SimulateResponse | null;
@@ -32,13 +34,7 @@ const ShareButton = ({ simulateResponse, games }: ShareButtonProps) => {
   useEffect(() => {
     if (!simulateResponse || !sport || !conf || !season) return;
 
-    const overrides: Record<string, { homeScore: number; awayScore: number }> = {};
-    Object.entries(gamePicks).forEach(([gameId, pick]) => {
-      overrides[gameId] = {
-        homeScore: (pick as { homeScore: number; awayScore: number }).homeScore,
-        awayScore: (pick as { homeScore: number; awayScore: number }).awayScore,
-      };
-    });
+    const overrides = buildSimulationOverrides(games ?? [], gamePicks as Record<string, GamePick>);
 
     const hash = JSON.stringify({ season, overrides });
     if (fetchedHashRef.current === hash) return;
