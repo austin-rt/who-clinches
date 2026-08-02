@@ -8,7 +8,7 @@ import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getConferenceMetadata, isValidSport, isValidConference } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
 import { getFixtureYear } from '@/lib/cfb/helpers/fixture-year';
-import { getRuntimeConfig } from '@/lib/admin/runtime-config';
+import { graphqlSubscriptionsEnabled } from '@/lib/cfb/helpers/graphql-flags';
 import type { Game, Team } from 'cfbd';
 
 export const runtime = 'nodejs';
@@ -43,10 +43,7 @@ export const GET = async (
     : ((await getFixtureYear()) ?? new Date().getFullYear());
   const inSeason = await isInSeasonFromCfbd();
 
-  const isGraphQLEnabled =
-    process.env.VERCEL_ENV === 'production'
-      ? process.env.NODE_ENV === 'production'
-      : (await getRuntimeConfig()).graphqlOn;
+  const isGraphQLEnabled = await graphqlSubscriptionsEnabled();
 
   if (!inSeason || !isGraphQLEnabled) {
     return new Response('Subscriptions only available during season with GraphQL enabled', {
