@@ -1,9 +1,9 @@
 import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-cfbd';
-import { getCalendarFromCfbd } from '@/lib/cfb/cfbd-rest-client';
+import { getCalendar } from '@/lib/cfb/calendar-cached';
 import { createMockCalendarWeek } from '@/__tests__/mocks/cfbd-rest-client';
 
-jest.mock('@/lib/cfb/cfbd-rest-client', () => ({
-  getCalendarFromCfbd: jest.fn(),
+jest.mock('@/lib/cfb/calendar-cached', () => ({
+  getCalendar: jest.fn(),
 }));
 
 jest.mock('@/lib/cfb/helpers/fixture-year', () => ({
@@ -16,7 +16,7 @@ jest.mock('@/lib/errorLogger', () => ({
 }));
 
 describe('getDefaultSeasonFromCfbd', () => {
-  const mockGetCalendar = jest.mocked(getCalendarFromCfbd);
+  const mockGetCalendar = jest.mocked(getCalendar);
 
   beforeEach(() => {
     jest.resetAllMocks();
