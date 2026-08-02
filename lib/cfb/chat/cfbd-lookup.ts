@@ -1,4 +1,5 @@
-import { getActiveApiKey, getCalendarFromCfbd } from '@/lib/cfb/cfbd-rest-client';
+import { getActiveApiKey } from '@/lib/cfb/cfbd-rest-client';
+import { getCalendar } from '@/lib/cfb/calendar-cached';
 import { fetch as redisFetch, persistRedisKey, redis } from '@/lib/redis';
 import { getSeasonAwareTtl } from '@/lib/cfb/helpers/season-phase';
 import { BLOCKED_PATHS, SKIP_CACHE_PATHS } from './cfbd-api-catalog';
@@ -20,7 +21,7 @@ const isHistorical = async (params: Record<string, string>): Promise<boolean> =>
   if (!year) return false;
   const requested = parseInt(year, 10);
   if (isNaN(requested)) return false;
-  const calendar = await getCalendarFromCfbd(requested);
+  const calendar = await getCalendar(requested);
   if (calendar.length === 0) return requested < new Date().getFullYear();
   const seasonEnd = new Date(calendar[calendar.length - 1].endDate).getTime();
   return Date.now() > seasonEnd;

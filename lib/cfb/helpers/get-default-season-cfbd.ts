@@ -1,4 +1,4 @@
-import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { getCalendar } from '../calendar-cached';
 import { logError } from '../../errorLogger';
 import { getFixtureYear } from './fixture-year';
 
@@ -11,7 +11,7 @@ export const getDefaultSeasonFromCfbd = async (): Promise<number> => {
   const currentYear = new Date().getFullYear();
 
   try {
-    const calendar = await getCalendarFromCfbd(currentYear);
+    const calendar = await getCalendar(currentYear);
     if (calendar && calendar.length > 0) return currentYear;
     return currentYear - 1;
   } catch (error) {

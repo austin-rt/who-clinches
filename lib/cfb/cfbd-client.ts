@@ -10,16 +10,8 @@ import {
 import { cfbdGraphQLClient } from './cfbd-graphql-client';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
 import { logError } from '../errorLogger';
-import { getRuntimeConfig } from '@/lib/admin/runtime-config';
+import { graphqlQueriesEnabled } from './helpers/graphql-flags';
 import type { Game, BettingGame, Team, PollWeek, TeamSP, TeamFPI } from 'cfbd';
-
-const allowGraphQL = async (): Promise<boolean> => {
-  if (process.env.VERCEL_ENV === 'production') {
-    return process.env.NODE_ENV === 'production';
-  }
-  const config = await getRuntimeConfig();
-  return config.graphqlOn;
-};
 
 export class CFBDClient {
   async getGames(params: {
@@ -32,7 +24,7 @@ export class CFBDClient {
   }): Promise<Array<Game & { spread?: number; overUnder?: number; favoriteId?: number }>> {
     const inSeason = await isInSeasonFromCfbd();
 
-    if (inSeason && (await allowGraphQL())) {
+    if (inSeason && (await graphqlQueriesEnabled())) {
       try {
         const result = await cfbdGraphQLClient.getGameAggregate({
           season: params.year,
@@ -147,7 +139,7 @@ export class CFBDClient {
   async getTeams(params?: { conference?: string; classification?: string }): Promise<Team[]> {
     const inSeason = await isInSeasonFromCfbd();
 
-    if (inSeason && (await allowGraphQL())) {
+    if (inSeason && (await graphqlQueriesEnabled())) {
       try {
         const result = await cfbdGraphQLClient.getCurrentTeams({
           conference: params?.conference,

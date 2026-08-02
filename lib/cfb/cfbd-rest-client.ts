@@ -292,6 +292,7 @@ export const getRankingsFromCfbd = async (params: {
 };
 
 export const getSpFromCfbd = async (params: { year: number; team?: string }): Promise<TeamSP[]> => {
+  await ensureBaseUrl();
   try {
     const result = await getSp({
       query: {
@@ -358,6 +359,7 @@ export const getFpiFromCfbd = async (params: {
   year: number;
   team?: string;
 }): Promise<TeamFPI[]> => {
+  await ensureBaseUrl();
   try {
     const result = await getFpi({
       query: {

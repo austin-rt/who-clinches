@@ -14,9 +14,22 @@ Stage and commit unstaged work: `git status` / `git diff`, plan minimal commits,
 
 ## Grouping
 
-- Default: one file per commit unless splitting would break the build.
+The unit is the **smallest buildable change that could independently break**, not the
+smallest buildable change. Optimize for a clean revert: if two edits can only fail together,
+they belong in one commit; if either could fail on its own, split them.
+
+- A definition and its first use ship together — a new constant, type, or helper plus the
+  call site that introduces it is **one** commit, not two. Alone, the definition is dead code
+  and reverting it proves nothing.
+- A second, unrelated use of that same helper is a **separate** commit — it can break on its
+  own.
+- Splitting past the break boundary is as wrong as bundling past it. Do not manufacture
+  commits that cannot fail.
 - Order: commit dependencies before dependents; keep related edits together.
 - Never commit-only-imports, orphan formatting, or partial broken states alone.
+
+Ask per commit: _if this turns out to be wrong, is this exactly what I would revert?_ If the
+answer needs a qualifier, the boundary is wrong.
 
 ## Messages
 

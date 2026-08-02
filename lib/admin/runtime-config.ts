@@ -26,6 +26,7 @@ const DEFAULTS: RuntimeConfigData = {
 
 const PRODUCTION_CONFIG: RuntimeConfigData = {
   ...DEFAULTS,
+  graphqlOn: false,
   redisOn: true,
   rateLimitOn: true,
   aiChatOn: true,

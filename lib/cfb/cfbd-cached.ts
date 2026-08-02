@@ -5,8 +5,7 @@ import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/cfb/constants';
 import type { Team } from 'cfbd';
 const KEY_PREFIX = 'cfbd:cfb';
 
-export const getTeams = async (season: number): Promise<Record<string, Team[]>> => {
-  const ttl = await getSeasonAwareTtl(season);
+export const getTeams = (season: number): Promise<Record<string, Team[]>> => {
   return fetch<Record<string, Team[]>>(
     `${KEY_PREFIX}:teams:${season}`,
     async () => {
@@ -21,7 +20,7 @@ export const getTeams = async (season: number): Promise<Record<string, Team[]>> 
       }
       return grouped;
     },
-    ttl
+    () => getSeasonAwareTtl(season)
   );
 };
 
@@ -33,9 +32,12 @@ export const getGames = async (params: {
 }) => {
   const weekKey = params.week !== null && params.week !== undefined ? String(params.week) : 'all';
   const key = `${KEY_PREFIX}:games:${params.conference}:${params.year}:${params.seasonType}:${weekKey}`;
-  const ttl = await getSeasonAwareTtl(params.year);
 
-  const games = await fetch(key, () => cfbdClient.getGames(params), ttl);
+  const games = await fetch(
+    key,
+    () => cfbdClient.getGames(params),
+    () => getSeasonAwareTtl(params.year)
+  );
 
   if (games.length > 0 && games.every((g) => g.completed)) {
     await persistRedisKey(key);
@@ -44,26 +46,31 @@ export const getGames = async (params: {
   return games;
 };
 
-export const getRankings = async (params: { year: number; week?: number; seasonType?: string }) => {
+export const getRankings = (params: { year: number; week?: number; seasonType?: string }) => {
   const weekKey =
     params.week !== null && params.week !== undefined ? String(params.week) : 'latest';
   const seasonType = params.seasonType ?? 'regular';
-  const ttl = await getSeasonAwareTtl(params.year, 'sunday');
   return fetch(
     `${KEY_PREFIX}:rankings:${params.year}:${weekKey}:${seasonType}`,
     () => cfbdClient.getRankings(params),
-    ttl
+    () => getSeasonAwareTtl(params.year, 'sunday')
   );
 };
 
-export const getSp = async (params: { year: number; team?: string }) => {
+export const getSp = (params: { year: number; team?: string }) => {
   const teamKey = params.team ?? 'all';
-  const ttl = await getSeasonAwareTtl(params.year);
-  return fetch(`${KEY_PREFIX}:sp:${params.year}:${teamKey}`, () => cfbdClient.getSp(params), ttl);
+  return fetch(
+    `${KEY_PREFIX}:sp:${params.year}:${teamKey}`,
+    () => cfbdClient.getSp(params),
+    () => getSeasonAwareTtl(params.year)
+  );
 };
 
-export const getFpi = async (params: { year: number; team?: string }) => {
+export const getFpi = (params: { year: number; team?: string }) => {
   const teamKey = params.team ?? 'all';
-  const ttl = await getSeasonAwareTtl(params.year);
-  return fetch(`${KEY_PREFIX}:fpi:${params.year}:${teamKey}`, () => cfbdClient.getFpi(params), ttl);
+  return fetch(
+    `${KEY_PREFIX}:fpi:${params.year}:${teamKey}`,
+    () => cfbdClient.getFpi(params),
+    () => getSeasonAwareTtl(params.year)
+  );
 };
