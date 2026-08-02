@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getGames, getTeams, getRankings, getSp, getFpi } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
+import { getVenueMap } from '@/lib/cfb/venues-cached';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { GameLean, TeamLean } from '@/lib/types';
 import { GamesResponse, TeamMetadata, ApiErrorResponse } from '@/app/store/api';
@@ -139,7 +140,8 @@ const fetchGamesFromCfbd = async (
       ])
     );
 
-    const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
+    const venueMap = await getVenueMap();
+    const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap, venueMap);
     const allGames: GameLean[] = reshaped.games.map((game) => ({
       _id: game.id,
       ...game,

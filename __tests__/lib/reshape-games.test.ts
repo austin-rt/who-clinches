@@ -120,3 +120,49 @@ describe('reshapeCfbdGames', () => {
     expect(awayResult[0].odds.favoriteTeamId).toBe('200');
   });
 });
+
+describe('venue resolution', () => {
+  const venueGame = {
+    id: 1,
+    season: 2025,
+    week: 1,
+    seasonType: 'regular',
+    startDate: '2025-09-06T19:00:00',
+    completed: false,
+    neutralSite: false,
+    conferenceGame: true,
+    venueId: 3785,
+    venue: 'Jordan-Hare Stadium',
+    homeId: 2,
+    homeTeam: 'Auburn',
+    homePoints: null,
+    awayId: 61,
+    awayTeam: 'Georgia',
+    awayPoints: null,
+  } as unknown as Parameters<typeof reshapeCfbdGames>[0][number];
+
+  it('prefers a real venue record over parsing the venue string', () => {
+    const venueMap = new Map([
+      [
+        3785,
+        { name: 'Jordan-Hare Stadium', city: 'Auburn', state: 'AL', timezone: 'America/Chicago' },
+      ],
+    ]);
+
+    const { games } = reshapeCfbdGames([venueGame], undefined, venueMap);
+
+    expect(games[0].venue).toEqual({
+      fullName: 'Jordan-Hare Stadium',
+      city: 'Auburn',
+      state: 'AL',
+      timezone: 'America/Chicago',
+    });
+  });
+
+  it('falls back to eastern time when the venue is unknown', () => {
+    const { games } = reshapeCfbdGames([venueGame], undefined, new Map());
+
+    expect(games[0].venue.timezone).toBe('America/New_York');
+    expect(games[0].venue.fullName).toBe('Jordan-Hare Stadium');
+  });
+});

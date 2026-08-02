@@ -5,6 +5,7 @@ import {
   getLines,
   getCalendar,
   getUserInfo,
+  getVenues,
   getRankings,
   getSp,
   getFpi,
@@ -264,6 +265,20 @@ export const getLinesFromCfbd = async (params: {
 
   void getUserInfoFromCfbd();
   return result.data ?? [];
+};
+
+export interface CfbdVenue {
+  id: number;
+  name: string | null;
+  city: string | null;
+  state: string | null;
+  timezone: string | null;
+}
+
+export const getVenuesFromCfbd = async (): Promise<CfbdVenue[]> => {
+  await ensureBaseUrl();
+  const result = await getVenues();
+  return (result.data ?? []) as CfbdVenue[];
 };
 
 export const getCalendarFromCfbd = async (year: number): Promise<CalendarWeek[]> => {

@@ -4,6 +4,7 @@ import { mapGqlGameToCfbdGame } from '@/lib/cfb/graphql/map-to-cfbd';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { getTeams } from '@/lib/cfb/cfbd-cached';
+import { getVenueMap } from '@/lib/cfb/venues-cached';
 import { GamesResponse, TeamMetadata } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
@@ -60,6 +61,7 @@ export const GET = async (
 
       try {
         const teamsByConference = await getTeams(seasonYear);
+        const venueMap = await getVenueMap();
         const teams = extractTeamsFromCfbd(teamsByConference[conf] ?? [], conferenceMeta.cfbdId);
         const teamMap = new Map<string, TeamLean>(
           teams.map((team) => [team._id, { ...team, conferenceId: team.conference } as TeamLean])
@@ -87,7 +89,7 @@ export const GET = async (
           filter: { season: seasonYear, conference: conferenceMeta.cfbdId },
           onUpdate: (nodes) => {
             const cfbdGames = nodes.map(mapGqlGameToCfbdGame);
-            const { games } = reshapeCfbdGames(cfbdGames, teamMap);
+            const { games } = reshapeCfbdGames(cfbdGames, teamMap, venueMap);
 
             const response: GamesResponse = {
               events: games as GameLean[],

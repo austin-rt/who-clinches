@@ -26,9 +26,17 @@ const getGameType = (seasonType: Game['seasonType']): GameType | undefined => {
   return GAME_TYPE[seasonType];
 };
 
+export interface VenueRecord {
+  name: string | null;
+  city: string | null;
+  state: string | null;
+  timezone: string | null;
+}
+
 export const reshapeCfbdGames = (
   cfbdGames: Array<Game & { spread?: number; overUnder?: number; favoriteId?: number }>,
-  teamMap?: Map<string, TeamLean>
+  teamMap?: Map<string, TeamLean>,
+  venueMap?: Map<number, VenueRecord>
 ): ReshapeResult<ReshapedGame> => {
   if (!cfbdGames || cfbdGames.length === 0) {
     return { games: [], teams: [] };
@@ -42,11 +50,13 @@ export const reshapeCfbdGames = (
       const homeTeam = teamMap?.get(String(game.homeId));
       const awayTeam = teamMap?.get(String(game.awayId));
 
-      const venueCity = game.venue?.split(',')[0]?.trim() || '';
-      const venueState = game.venue?.split(',')[1]?.trim() || '';
-      let timezone = 'America/New_York';
+      const venueRecord = game.venueId ? venueMap?.get(game.venueId) : undefined;
+      const venueName = venueRecord?.name || game.venue || 'TBD';
+      const venueCity = venueRecord?.city || game.venue?.split(',')[0]?.trim() || '';
+      const venueState = venueRecord?.state || game.venue?.split(',')[1]?.trim() || '';
+      let timezone = venueRecord?.timezone || 'America/New_York';
 
-      if (venueCity && venueState) {
+      if (!venueRecord?.timezone && venueCity && venueState) {
         const cityStateQuery = `${venueCity} ${venueState}`;
         const matches = cityTimezones.findFromCityStateProvince(cityStateQuery);
         if (matches && matches.length > 0) {
@@ -91,7 +101,7 @@ export const reshapeCfbdGames = (
         conferenceGame: game.conferenceGame || false,
         neutralSite: game.neutralSite || false,
         venue: {
-          fullName: game.venue || 'TBD',
+          fullName: venueName,
           city: venueCity,
           state: venueState,
           timezone,
