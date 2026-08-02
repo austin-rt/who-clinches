@@ -13,7 +13,7 @@ College football tiebreaker simulation app. Read the code for implementation det
 ## Non-Obvious Behavior
 
 - **Score normalization**: Non-SEC overrides are normalized to 1-0 (W/L) before simulation and hashing. Only SEC Rule E uses exact scoring margin.
-- **CFBD API key rotation**: `CFBD_API_KEY` is comma-separated in preprod for key rotation. Production uses one key only.
+- **CFBD API key rotation**: `CFBD_API_KEY` is comma-separated for rotation **locally only**. Any Vercel deployment (preview and production) uses a single Tier 3 key and never rotates. Preview shares the production key because preview traffic is negligible and Tier 3 is required for GraphQL.
 - **Admin dashboard**: Returns 404 for `/admin*` in production. Dev/preview only.
 - **DaisyUI `.btn` override**: Default button colors are stripped — new button variants must have explicit color classes defined.
 - **Same-origin check**: POST endpoints protected in middleware, not route handlers. Webhook and cron routes are exempt.
@@ -42,23 +42,23 @@ Cookie/query-param approaches fail because Vercel redirects server-side before c
 
 ## Environment Variables
 
-| Variable                          | Required           | Description                                                               |
-| --------------------------------- | ------------------ | ------------------------------------------------------------------------- |
-| `CFBD_API_KEY`                    | Yes                | Comma-separated for preprod rotation. Production: single key              |
-| `ANTHROPIC_API_KEY`               | Yes                | Haiku 4.5 for AI chat                                                     |
-| `UPSTASH_REDIS_REST_URL`          | No                 | Always-on in production; toggleable via admin in dev/preview              |
-| `UPSTASH_REDIS_REST_TOKEN`        | No                 | Paired with above                                                         |
-| `DATABASE_URL`                    | Yes (prod/preview) | Neon pooled PostgreSQL URL for Prisma                                     |
-| `DIRECT_URL`                      | Yes (prod/preview) | Neon non-pooled URL for Prisma migrations                                 |
-| `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Preview auth bypass + rate limit bypass                                   |
-| `VOYAGE_API_KEY`                  | No                 | Voyage AI embeddings for RAG knowledge base                               |
-| `CHAT_IDENTITY_SECRET`            | Yes                | HMAC signing key for anonymous chat cookies                               |
-| `CRON_SECRET`                     | Yes (prod/preview) | Bearer token for Vercel cron job auth                                     |
-| `RESEND_API_KEY`                  | No                 | Email delivery for magic links and notifications                          |
-| `RESEND_ADMIN_EMAIL`              | No                 | Admin notification recipient (default: `whoclinches@austinrt.com`)        |
-| `BMC_WEBHOOK_SECRET`              | No                 | HMAC verification for Buy Me a Coffee webhooks                            |
-| `CFBD_GRAPHQL_QUERIES`            | No                 | Production only. `true` routes games/teams through GraphQL; unset = off   |
-| `CFBD_GRAPHQL_SUBSCRIPTIONS`      | No                 | Production only. `true` enables the live subscription stream; unset = off |
+| Variable                          | Required           | Description                                                                     |
+| --------------------------------- | ------------------ | ------------------------------------------------------------------------------- |
+| `CFBD_API_KEY`                    | Yes                | Comma-separated pool for local rotation. Preview and production: one Tier 3 key |
+| `ANTHROPIC_API_KEY`               | Yes                | Haiku 4.5 for AI chat                                                           |
+| `UPSTASH_REDIS_REST_URL`          | No                 | Always-on in production; toggleable via admin in dev/preview                    |
+| `UPSTASH_REDIS_REST_TOKEN`        | No                 | Paired with above                                                               |
+| `DATABASE_URL`                    | Yes (prod/preview) | Neon pooled PostgreSQL URL for Prisma                                           |
+| `DIRECT_URL`                      | Yes (prod/preview) | Neon non-pooled URL for Prisma migrations                                       |
+| `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Preview auth bypass + rate limit bypass                                         |
+| `VOYAGE_API_KEY`                  | No                 | Voyage AI embeddings for RAG knowledge base                                     |
+| `CHAT_IDENTITY_SECRET`            | Yes                | HMAC signing key for anonymous chat cookies                                     |
+| `CRON_SECRET`                     | Yes (prod/preview) | Bearer token for Vercel cron job auth                                           |
+| `RESEND_API_KEY`                  | No                 | Email delivery for magic links and notifications                                |
+| `RESEND_ADMIN_EMAIL`              | No                 | Admin notification recipient (default: `whoclinches@austinrt.com`)              |
+| `BMC_WEBHOOK_SECRET`              | No                 | HMAC verification for Buy Me a Coffee webhooks                                  |
+| `CFBD_GRAPHQL_QUERIES`            | No                 | Production only. `true` routes games/teams through GraphQL; unset = off         |
+| `CFBD_GRAPHQL_SUBSCRIPTIONS`      | No                 | Production only. `true` enables the live subscription stream; unset = off       |
 
 ## CI & Branch Protection
 

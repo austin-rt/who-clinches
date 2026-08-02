@@ -28,12 +28,14 @@ import {
   type PreprodKeyUsage,
 } from './helpers/cfbd-preprod-key-rotation';
 
+const isDeployedOnVercel = (): boolean => Boolean(process.env.VERCEL);
+
 const cfbdApiKeyPool = parseCfbdApiKeyPool(process.env.CFBD_API_KEY);
 let activePreprodKeyIndex = 0;
 const preprodKeyUsage = new Map<number, PreprodKeyUsage>();
 
 export const getActiveApiKey = (): string =>
-  selectActiveApiKey(cfbdApiKeyPool, process.env.VERCEL_ENV, activePreprodKeyIndex);
+  selectActiveApiKey(cfbdApiKeyPool, isDeployedOnVercel(), activePreprodKeyIndex);
 
 export const getCfbdApiStatus = () => ({
   activeKeyIndex: activePreprodKeyIndex,
@@ -44,7 +46,7 @@ export const getCfbdApiStatus = () => ({
 const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
   const prevIndex = activePreprodKeyIndex;
   const result = applyPreprodKeyRotationPolicy({
-    vercelEnv: process.env.VERCEL_ENV,
+    isDeployedOnVercel: isDeployedOnVercel(),
     poolLength: cfbdApiKeyPool.length,
     activeIndex: activePreprodKeyIndex,
     usageByIndex: preprodKeyUsage,
@@ -79,7 +81,7 @@ const rotatePreprodKeyIfNeeded = (remainingCalls: number): void => {
 };
 
 const getBaseUrl = (): string | undefined => {
-  if (process.env.VERCEL_ENV === 'production') return undefined;
+  if (isDeployedOnVercel()) return undefined;
   if (isFixtureDataSource()) {
     return JSON_SERVER_URL;
   }
@@ -98,7 +100,7 @@ let lastConfigCheck = 0;
 const CONFIG_CHECK_TTL_MS = 5000;
 
 const ensureBaseUrl = async () => {
-  if (process.env.VERCEL_ENV === 'production') return;
+  if (isDeployedOnVercel()) return;
   const now = Date.now();
   if (now - lastConfigCheck < CONFIG_CHECK_TTL_MS) return;
   lastConfigCheck = now;

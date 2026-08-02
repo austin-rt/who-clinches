@@ -50,13 +50,13 @@ Fill in your API keys:
 
 #### Required
 
-| Variable               | Service                                                   | Where to get it                                                                                                                                                                             |
-| ---------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `CFBD_API_KEY`         | [College Football Data](https://collegefootballdata.com/) | Create a free account, grab your key from your [account page](https://collegefootballdata.com/key). Free Patreon tier works for dev. Comma-separate multiple keys for rotation in non-prod. |
-| `DATABASE_URL`         | [Neon](https://neon.tech/)                                | Create a free Postgres project. Copy the **pooled** connection string and append `?sslmode=require&pgbouncer=true`.                                                                         |
-| `DIRECT_URL`           | [Neon](https://neon.tech/)                                | Same project — copy the **direct** (unpooled) connection string, append `?sslmode=require`. Used by Prisma for migrations.                                                                  |
-| `ANTHROPIC_API_KEY`    | [Anthropic](https://console.anthropic.com/)               | API key for Haiku 4.5 (AI chat feature).                                                                                                                                                    |
-| `CHAT_IDENTITY_SECRET` | —                                                         | Random 32-char string. HMAC signing key for anonymous chat cookies.                                                                                                                         |
+| Variable               | Service                                                   | Where to get it                                                                                                                                                                                      |
+| ---------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CFBD_API_KEY`         | [College Football Data](https://collegefootballdata.com/) | Create a free account, grab your key from your [account page](https://collegefootballdata.com/key). Free Patreon tier works for dev. Comma-separate multiple keys for rotation when running locally. |
+| `DATABASE_URL`         | [Neon](https://neon.tech/)                                | Create a free Postgres project. Copy the **pooled** connection string and append `?sslmode=require&pgbouncer=true`.                                                                                  |
+| `DIRECT_URL`           | [Neon](https://neon.tech/)                                | Same project — copy the **direct** (unpooled) connection string, append `?sslmode=require`. Used by Prisma for migrations.                                                                           |
+| `ANTHROPIC_API_KEY`    | [Anthropic](https://console.anthropic.com/)               | API key for Haiku 4.5 (AI chat feature).                                                                                                                                                             |
+| `CHAT_IDENTITY_SECRET` | —                                                         | Random 32-char string. HMAC signing key for anonymous chat cookies.                                                                                                                                  |
 
 #### Optional
 
