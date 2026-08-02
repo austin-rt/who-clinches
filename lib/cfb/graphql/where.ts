@@ -24,14 +24,20 @@ export const buildGameWhere = (filter: GameFilter): Record<string, unknown> => {
   return where;
 };
 
-export const buildTeamWhere = (season: number, conference?: string): Record<string, unknown> => {
+export const buildTeamWhere = (
+  season: number,
+  filter: { conference?: string; classification?: string } = {}
+): Record<string, unknown> => {
   const where: Record<string, unknown> = {
     active: { _eq: true },
     startYear: { _lte: season },
     _or: [{ endYear: { _isNull: true } }, { endYear: { _gte: season } }],
   };
-  if (conference) {
-    where.conference = { _eq: conference };
+  if (filter.conference) {
+    where.conference = { _eq: filter.conference };
+  }
+  if (filter.classification) {
+    where.classification = { _eq: filter.classification };
   }
   return where;
 };

@@ -99,9 +99,12 @@ export class CFBDGraphQLClient {
     return result.game;
   }
 
-  async getConferenceTeams(season: number, conference?: string): Promise<GqlTeamNode[]> {
+  async getConferenceTeams(
+    season: number,
+    filter: { conference?: string; classification?: string } = {}
+  ): Promise<GqlTeamNode[]> {
     const result = await this.query<{ historicalTeam: GqlTeamNode[] }>(CONFERENCE_TEAMS, {
-      where: buildTeamWhere(season, conference),
+      where: buildTeamWhere(season, filter),
       limit: MAX_TEAMS,
     });
     return result.historicalTeam;

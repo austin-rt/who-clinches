@@ -106,10 +106,10 @@ export class CFBDClient {
 
     if (inSeason && (await graphqlQueriesEnabled())) {
       try {
-        const nodes = await cfbdGraphQLClient.getConferenceTeams(
-          new Date().getFullYear(),
-          params?.conference
-        );
+        const nodes = await cfbdGraphQLClient.getConferenceTeams(new Date().getFullYear(), {
+          conference: params?.conference,
+          classification: params?.classification,
+        });
         void getUserInfoFromCfbd();
         return nodes.map(mapGqlTeamToCfbdTeam);
       } catch (error) {

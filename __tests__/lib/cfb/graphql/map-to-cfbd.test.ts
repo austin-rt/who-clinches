@@ -214,7 +214,7 @@ describe('buildGameWhere', () => {
 
 describe('buildTeamWhere', () => {
   it('bounds a conference stint to the requested season', () => {
-    const where = buildTeamWhere(2025, 'SEC');
+    const where = buildTeamWhere(2025, { conference: 'SEC' });
 
     expect(where.startYear).toEqual({ _lte: 2025 });
     expect(where._or).toEqual([{ endYear: { _isNull: true } }, { endYear: { _gte: 2025 } }]);
