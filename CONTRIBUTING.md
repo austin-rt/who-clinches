@@ -44,12 +44,14 @@ Copy `.env.example` to `.env.local` and fill in the values. Here's what each ser
 
 These aren't needed to run the app locally but enable additional features:
 
-| Variable                   | Service                                       | How to get it                                                                                                                                                                                 |
-| -------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `UPSTASH_REDIS_REST_URL`   | [Upstash](https://upstash.com/) (Redis)       | Create a free Redis database at [console.upstash.com](https://console.upstash.com/). Copy the REST URL from the database details page. Without this, the app skips caching and rate limiting. |
-| `UPSTASH_REDIS_REST_TOKEN` | [Upstash](https://upstash.com/) (Redis)       | Same Upstash database — copy the REST token.                                                                                                                                                  |
-| `RESEND_API_KEY`           | [Resend](https://resend.com/api-keys) (Email) | Only needed for CFBD API key usage alerts. Sign up at [resend.com](https://resend.com/) and create an [API key](https://resend.com/api-keys).                                                 |
-| `RESEND_FROM_EMAIL`        | [Resend](https://resend.com/) (Email)         | The verified sender email address from your Resend account.                                                                                                                                   |
+| Variable                     | Service                                       | How to get it                                                                                                                                                                                 |
+| ---------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `UPSTASH_REDIS_REST_URL`     | [Upstash](https://upstash.com/) (Redis)       | Create a free Redis database at [console.upstash.com](https://console.upstash.com/). Copy the REST URL from the database details page. Without this, the app skips caching and rate limiting. |
+| `UPSTASH_REDIS_REST_TOKEN`   | [Upstash](https://upstash.com/) (Redis)       | Same Upstash database — copy the REST token.                                                                                                                                                  |
+| `RESEND_API_KEY`             | [Resend](https://resend.com/api-keys) (Email) | Only needed for CFBD API key usage alerts. Sign up at [resend.com](https://resend.com/) and create an [API key](https://resend.com/api-keys).                                                 |
+| `RESEND_FROM_EMAIL`          | [Resend](https://resend.com/) (Email)         | The verified sender email address from your Resend account.                                                                                                                                   |
+| `CFBD_GRAPHQL_QUERIES`       | —                                             | Production only, and ignored elsewhere. In dev and preview, use the admin dashboard's `graphqlOn` toggle instead. Requires a CFBD Patreon Tier 3 key.                                         |
+| `CFBD_GRAPHQL_SUBSCRIPTIONS` | —                                             | Production only, and ignored elsewhere. Gates the live score subscription stream separately from queries.                                                                                     |
 
 > **Tip:** You only need `CFBD_API_KEY` and the two Neon database URLs to get the app running. Everything else is optional for local development.
 

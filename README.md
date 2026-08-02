@@ -70,6 +70,8 @@ Fill in your API keys:
 | `RESEND_ADMIN_EMAIL`              | —                                       | Admin notification recipient (default: `whoclinches@austinrt.com`).                         |
 | `BMC_WEBHOOK_SECRET`              | —                                       | HMAC verification for Buy Me a Coffee donation webhooks.                                    |
 | `VERCEL_AUTOMATION_BYPASS_SECRET` | —                                       | Preview auth bypass + rate limit bypass for Playwright tests.                               |
+| `CFBD_GRAPHQL_QUERIES`            | —                                       | Production only. `true` routes games/teams through CFBD GraphQL. Unset means off.           |
+| `CFBD_GRAPHQL_SUBSCRIPTIONS`      | —                                       | Production only. `true` enables the live score subscription stream. Unset means off.        |
 
 ### 3. Set up the database
 

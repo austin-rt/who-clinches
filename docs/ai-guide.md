@@ -42,21 +42,23 @@ Cookie/query-param approaches fail because Vercel redirects server-side before c
 
 ## Environment Variables
 
-| Variable                          | Required           | Description                                                        |
-| --------------------------------- | ------------------ | ------------------------------------------------------------------ |
-| `CFBD_API_KEY`                    | Yes                | Comma-separated for preprod rotation. Production: single key       |
-| `ANTHROPIC_API_KEY`               | Yes                | Haiku 4.5 for AI chat                                              |
-| `UPSTASH_REDIS_REST_URL`          | No                 | Always-on in production; toggleable via admin in dev/preview       |
-| `UPSTASH_REDIS_REST_TOKEN`        | No                 | Paired with above                                                  |
-| `DATABASE_URL`                    | Yes (prod/preview) | Neon pooled PostgreSQL URL for Prisma                              |
-| `DIRECT_URL`                      | Yes (prod/preview) | Neon non-pooled URL for Prisma migrations                          |
-| `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Preview auth bypass + rate limit bypass                            |
-| `VOYAGE_API_KEY`                  | No                 | Voyage AI embeddings for RAG knowledge base                        |
-| `CHAT_IDENTITY_SECRET`            | Yes                | HMAC signing key for anonymous chat cookies                        |
-| `CRON_SECRET`                     | Yes (prod/preview) | Bearer token for Vercel cron job auth                              |
-| `RESEND_API_KEY`                  | No                 | Email delivery for magic links and notifications                   |
-| `RESEND_ADMIN_EMAIL`              | No                 | Admin notification recipient (default: `whoclinches@austinrt.com`) |
-| `BMC_WEBHOOK_SECRET`              | No                 | HMAC verification for Buy Me a Coffee webhooks                     |
+| Variable                          | Required           | Description                                                               |
+| --------------------------------- | ------------------ | ------------------------------------------------------------------------- |
+| `CFBD_API_KEY`                    | Yes                | Comma-separated for preprod rotation. Production: single key              |
+| `ANTHROPIC_API_KEY`               | Yes                | Haiku 4.5 for AI chat                                                     |
+| `UPSTASH_REDIS_REST_URL`          | No                 | Always-on in production; toggleable via admin in dev/preview              |
+| `UPSTASH_REDIS_REST_TOKEN`        | No                 | Paired with above                                                         |
+| `DATABASE_URL`                    | Yes (prod/preview) | Neon pooled PostgreSQL URL for Prisma                                     |
+| `DIRECT_URL`                      | Yes (prod/preview) | Neon non-pooled URL for Prisma migrations                                 |
+| `VERCEL_AUTOMATION_BYPASS_SECRET` | No                 | Preview auth bypass + rate limit bypass                                   |
+| `VOYAGE_API_KEY`                  | No                 | Voyage AI embeddings for RAG knowledge base                               |
+| `CHAT_IDENTITY_SECRET`            | Yes                | HMAC signing key for anonymous chat cookies                               |
+| `CRON_SECRET`                     | Yes (prod/preview) | Bearer token for Vercel cron job auth                                     |
+| `RESEND_API_KEY`                  | No                 | Email delivery for magic links and notifications                          |
+| `RESEND_ADMIN_EMAIL`              | No                 | Admin notification recipient (default: `whoclinches@austinrt.com`)        |
+| `BMC_WEBHOOK_SECRET`              | No                 | HMAC verification for Buy Me a Coffee webhooks                            |
+| `CFBD_GRAPHQL_QUERIES`            | No                 | Production only. `true` routes games/teams through GraphQL; unset = off   |
+| `CFBD_GRAPHQL_SUBSCRIPTIONS`      | No                 | Production only. `true` enables the live subscription stream; unset = off |
 
 ## CI & Branch Protection
 
