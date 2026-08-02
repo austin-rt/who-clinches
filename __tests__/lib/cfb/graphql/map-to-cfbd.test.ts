@@ -212,11 +212,31 @@ describe('buildGameWhere', () => {
   });
 });
 
+describe('buildGameWhere optional clauses', () => {
+  it('includes seasonType only when supplied', () => {
+    expect(buildGameWhere({ season: 2025 }).seasonType).toBeUndefined();
+    expect(buildGameWhere({ season: 2025, seasonType: 'regular' }).seasonType).toEqual({
+      _eq: 'regular',
+    });
+  });
+});
+
 describe('buildTeamWhere', () => {
   it('bounds a conference stint to the requested season', () => {
     const where = buildTeamWhere(2025, { conference: 'SEC' });
 
     expect(where.startYear).toEqual({ _lte: 2025 });
     expect(where._or).toEqual([{ endYear: { _isNull: true } }, { endYear: { _gte: 2025 } }]);
+  });
+
+  it('omits conference and classification when neither is supplied', () => {
+    const where = buildTeamWhere(2025);
+
+    expect(where.conference).toBeUndefined();
+    expect(where.classification).toBeUndefined();
+  });
+
+  it('filters by classification so fbs grouping matches rest', () => {
+    expect(buildTeamWhere(2025, { classification: 'fbs' }).classification).toEqual({ _eq: 'fbs' });
   });
 });

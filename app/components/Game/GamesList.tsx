@@ -5,7 +5,6 @@ import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { isValidSport, isValidConference, type SportSlug } from '@/lib/constants';
 import { useUIState } from '@/app/store/useUI';
 import { useGamesData } from '@/app/hooks/useGamesData';
-import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
 import { organizeGames } from '@/lib/utils/organizeGames';
 import { CompletedWeeks, RemainingWeeks } from '../Week';
 import CompactWeekGrid from './CompactWeekGrid';
@@ -29,8 +28,6 @@ const GamesList = ({ onReset }: GamesListProps) => {
     sport: sport!,
     conf: conf!,
   });
-
-  useSyncGamePicksWithView({ games, view });
 
   if (!isValid || !sport || !conf) {
     return null;

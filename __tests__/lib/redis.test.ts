@@ -1,11 +1,12 @@
 const mockGet = jest.fn();
 const mockSet = jest.fn();
+const mockPersist = jest.fn();
 
 jest.mock('@upstash/redis', () => ({
   Redis: jest.fn().mockImplementation(() => ({
     get: mockGet,
     set: mockSet,
-    persist: jest.fn(),
+    persist: mockPersist,
   })),
 }));
 
@@ -34,6 +35,7 @@ describe('redis fetch ttl resolution', () => {
   beforeEach(() => {
     mockGet.mockReset();
     mockSet.mockReset();
+    mockPersist.mockReset();
   });
 
   afterAll(() => {
@@ -93,6 +95,13 @@ describe('redis fetch ttl resolution', () => {
     mockSet.mockRejectedValue(new Error('getaddrinfo ENOTFOUND redis.invalid'));
 
     await expect(fetch(CACHE_KEY, () => Promise.resolve(['fresh']))).resolves.toEqual(['fresh']);
+  });
+
+  it('swallows a persist failure so a dead cache cannot fail the request', async () => {
+    const { persistRedisKey } = await loadRedisModule();
+    mockPersist.mockRejectedValue(new Error('getaddrinfo ENOTFOUND redis.invalid'));
+
+    await expect(persistRedisKey(CACHE_KEY)).resolves.toBeUndefined();
   });
 
   it('sets no expiry when the ttl thunk resolves undefined', async () => {
