@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
         hostname: 'a.espncdn.com',
         pathname: '/i/teamlogos/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'cdn.collegefootballdata.com',
+        pathname: '/logos/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.collegefootballdata.com',
+        pathname: '/logos-dark/**',
+      },
     ],
   },
 };
