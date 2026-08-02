@@ -19,20 +19,20 @@ export const parseCfbdApiKeyPool = (cfbdApiKeyEnv: string | undefined): string[]
 
 export const selectActiveApiKey = (
   pool: readonly string[],
-  vercelEnv: string | undefined,
+  isDeployedOnVercel: boolean,
   activePreprodKeyIndex: number
 ): string => {
   if (pool.length === 0) {
     return '';
   }
-  if (vercelEnv === 'production') {
+  if (isDeployedOnVercel) {
     return pool[0];
   }
   return pool[activePreprodKeyIndex];
 };
 
 export const applyPreprodKeyRotationPolicy = (input: {
-  vercelEnv: string | undefined;
+  isDeployedOnVercel: boolean;
   poolLength: number;
   activeIndex: number;
   usageByIndex: ReadonlyMap<number, PreprodKeyUsage>;
@@ -41,7 +41,7 @@ export const applyPreprodKeyRotationPolicy = (input: {
   now: number;
 }): PreprodKeyRotationPolicyResult => {
   const {
-    vercelEnv,
+    isDeployedOnVercel,
     poolLength,
     activeIndex,
     usageByIndex,
@@ -50,7 +50,7 @@ export const applyPreprodKeyRotationPolicy = (input: {
     now,
   } = input;
 
-  if (vercelEnv === 'production' || poolLength <= 1) {
+  if (isDeployedOnVercel || poolLength <= 1) {
     return { kind: 'no_attempt' };
   }
 
