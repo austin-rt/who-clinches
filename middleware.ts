@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { logError } from '@/lib/errorLogger';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 import { checkSameOrigin } from '@/lib/api/same-origin-gate';
@@ -82,7 +83,15 @@ export const middleware = async (request: NextRequest) => {
 
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'anonymous';
 
-  const { success, limit, remaining, reset } = await ratelimit.limit(ip);
+  let result: Awaited<ReturnType<typeof ratelimit.limit>>;
+  try {
+    result = await ratelimit.limit(ip);
+  } catch (error) {
+    await logError(error, { action: 'ratelimit', ip });
+    return NextResponse.next();
+  }
+
+  const { success, limit, remaining, reset } = result;
 
   if (!success) {
     return NextResponse.json(
