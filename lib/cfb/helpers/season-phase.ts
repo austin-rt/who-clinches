@@ -1,4 +1,4 @@
-import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { getCalendar } from '../calendar-cached';
 import { getFixtureYear } from './fixture-year';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
 import {
@@ -51,7 +51,7 @@ export const getSeasonPhase = async (): Promise<PhaseResult> => {
   const currentYear = new Date().getFullYear();
 
   const resolve = async (year: number): Promise<PhaseResult | null> => {
-    const calendar = await getCalendarFromCfbd(year);
+    const calendar = await getCalendar(year);
     if (calendar.length === 0) return null;
     const seasonStartMs = new Date(calendar[0].startDate).getTime();
     const seasonEndMs = new Date(calendar[calendar.length - 1].endDate).getTime();
@@ -94,10 +94,10 @@ export const getSeasonAwareTtl = async (
 ): Promise<number | undefined> => {
   const now = Date.now();
   const year = season ?? new Date().getFullYear();
-  const calendar = await getCalendarFromCfbd(year);
+  const calendar = await getCalendar(year);
 
   if (calendar.length === 0) {
-    const prev = await getCalendarFromCfbd(year - 1);
+    const prev = await getCalendar(year - 1);
     if (prev.length > 0) {
       const prevEnd = new Date(prev[prev.length - 1].endDate).getTime();
       if (now > prevEnd) {
