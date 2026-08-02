@@ -1,5 +1,6 @@
 import { Redis } from '@upstash/redis';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
+import { logError } from '@/lib/errorLogger';
 
 const redisConfigured = Boolean(
   process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -21,7 +22,11 @@ const isRedisEnabled = async (): Promise<boolean> => {
 
 export const persistRedisKey = async (key: string): Promise<void> => {
   if (!(await isRedisEnabled())) return;
-  await redis.persist(key);
+  try {
+    await redis.persist(key);
+  } catch (error) {
+    await logError(error, { action: 'redis-persist', key });
+  }
 };
 
 interface CacheEnvelope<T> {
@@ -41,18 +46,30 @@ export const fetch = async <T>(
 ): Promise<T> => {
   if (!(await isRedisEnabled())) return fetcher();
 
-  const hit = await redis.get<CacheEnvelope<T>>(key);
+  let hit: CacheEnvelope<T> | null = null;
+  try {
+    hit = await redis.get<CacheEnvelope<T>>(key);
+  } catch (error) {
+    await logError(error, { action: 'redis-get', key });
+    return fetcher();
+  }
+
   if (hit?.data !== undefined && hit?.cachedAt) return hit.data;
   if (hit !== null && (hit as unknown as CacheEnvelope<T>)?.cachedAt === undefined) {
     return hit as unknown as T;
   }
+
   const fresh = await fetcher();
   const envelope: CacheEnvelope<T> = { data: fresh, cachedAt: Date.now() };
   const resolved = await resolveTtl(ttl);
-  if (resolved) {
-    await redis.set(key, envelope, { ex: resolved });
-  } else {
-    await redis.set(key, envelope);
+  try {
+    if (resolved) {
+      await redis.set(key, envelope, { ex: resolved });
+    } else {
+      await redis.set(key, envelope);
+    }
+  } catch (error) {
+    await logError(error, { action: 'redis-set', key });
   }
   return fresh;
 };

@@ -13,6 +13,10 @@ jest.mock('@/lib/admin/runtime-config', () => ({
   getRuntimeConfig: jest.fn().mockResolvedValue({ redisOn: true }),
 }));
 
+jest.mock('@/lib/errorLogger', () => ({
+  logError: jest.fn(),
+}));
+
 const CACHE_KEY = 'cfbd:cfb:test-key';
 
 const loadRedisModule = () => {
@@ -72,6 +76,23 @@ describe('redis fetch ttl resolution', () => {
     expect(mockSet).toHaveBeenCalledWith(CACHE_KEY, expect.objectContaining({ data: ['fresh'] }), {
       ex: 120,
     });
+  });
+
+  it('falls back to the fetcher when the cache read throws', async () => {
+    const { fetch } = await loadRedisModule();
+    mockGet.mockRejectedValue(new Error('getaddrinfo ENOTFOUND redis.invalid'));
+    const fetcher = jest.fn().mockResolvedValue(['fresh']);
+
+    await expect(fetch(CACHE_KEY, fetcher)).resolves.toEqual(['fresh']);
+    expect(fetcher).toHaveBeenCalledTimes(1);
+  });
+
+  it('still returns fresh data when the cache write throws', async () => {
+    const { fetch } = await loadRedisModule();
+    mockGet.mockResolvedValue(null);
+    mockSet.mockRejectedValue(new Error('getaddrinfo ENOTFOUND redis.invalid'));
+
+    await expect(fetch(CACHE_KEY, () => Promise.resolve(['fresh']))).resolves.toEqual(['fresh']);
   });
 
   it('sets no expiry when the ttl thunk resolves undefined', async () => {
