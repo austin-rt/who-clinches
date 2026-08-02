@@ -29,10 +29,15 @@ interface CacheEnvelope<T> {
   cachedAt: number;
 }
 
+export type TtlResolver = number | undefined | (() => Promise<number | undefined>);
+
+const resolveTtl = (ttl: TtlResolver): Promise<number | undefined> =>
+  typeof ttl === 'function' ? ttl() : Promise.resolve(ttl);
+
 export const fetch = async <T>(
   key: string,
   fetcher: () => Promise<T>,
-  ttl?: number
+  ttl?: TtlResolver
 ): Promise<T> => {
   if (!(await isRedisEnabled())) return fetcher();
 
@@ -43,8 +48,9 @@ export const fetch = async <T>(
   }
   const fresh = await fetcher();
   const envelope: CacheEnvelope<T> = { data: fresh, cachedAt: Date.now() };
-  if (ttl) {
-    await redis.set(key, envelope, { ex: ttl });
+  const resolved = await resolveTtl(ttl);
+  if (resolved) {
+    await redis.set(key, envelope, { ex: resolved });
   } else {
     await redis.set(key, envelope);
   }
