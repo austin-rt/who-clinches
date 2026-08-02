@@ -1,4 +1,4 @@
-import { getCalendarFromCfbd } from '../cfbd-rest-client';
+import { getCalendar } from '../calendar-cached';
 import { logError } from '../../errorLogger';
 import { getFixtureYear } from './fixture-year';
 import { getRuntimeConfig } from '@/lib/admin/runtime-config';
@@ -16,7 +16,7 @@ export const isInSeasonFromCfbd = async (): Promise<boolean> => {
     const currentYear = new Date().getFullYear();
 
     const checkYear = async (year: number): Promise<boolean> => {
-      const calendar = await getCalendarFromCfbd(year);
+      const calendar = await getCalendar(year);
       if (calendar.length === 0) return false;
 
       const seasonStart = new Date(calendar[0].startDate).getTime();
