@@ -16,6 +16,10 @@ jest.mock('@/lib/cfb/cfbd-cached', () => ({
   getFpi: (...args: unknown[]) => mockGetFpi(...args),
 }));
 
+jest.mock('@/lib/cfb/venues-cached', () => ({
+  getVenueMap: jest.fn().mockResolvedValue(new Map()),
+}));
+
 jest.mock('@/lib/cfb/helpers/attach-sp-plus', () => ({
   attachSpPlusToTeams: (teams: unknown[]) => mockAttachSpPlusToTeams(teams),
 }));

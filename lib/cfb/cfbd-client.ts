@@ -8,6 +8,7 @@ import {
   getUserInfoFromCfbd,
 } from './cfbd-rest-client';
 import { cfbdGraphQLClient } from './cfbd-graphql-client';
+import { mapGqlGameToCfbdGame, mapGqlTeamToCfbdTeam } from './graphql/map-to-cfbd';
 import { isInSeasonFromCfbd } from './helpers/season-check-cfbd';
 import { logError } from '../errorLogger';
 import { graphqlQueriesEnabled } from './helpers/graphql-flags';
@@ -26,50 +27,14 @@ export class CFBDClient {
 
     if (inSeason && (await graphqlQueriesEnabled())) {
       try {
-        const result = await cfbdGraphQLClient.getGameAggregate({
-          season: params.year,
-          week: params.week,
+        const nodes = await cfbdGraphQLClient.getConferenceGames({
+          season: params.year ?? new Date().getFullYear(),
           conference: params.conference,
+          week: params.week,
+          seasonType: params.seasonType,
         });
         void getUserInfoFromCfbd();
-        return result.gameAggregate.nodes.map((node) => ({
-          id: node.id,
-          season: node.season,
-          week: node.week,
-          seasonType: node.seasonType as Game['seasonType'],
-          startDate: node.startDate,
-          startTimeTBD: node.startTimeTBD ?? false,
-          completed: node.completed,
-          neutralSite: node.neutralSite,
-          conferenceGame: node.conferenceGame,
-          attendance: null,
-          venueId: null,
-          venue: node.venue ?? null,
-          homeId: node.homeId,
-          homeTeam: node.homeTeam,
-          homeConference: null,
-          homeClassification: null,
-          homePoints: node.homePoints ?? null,
-          homeLineScores: null,
-          homePostgameWinProbability: null,
-          homePregameElo: null,
-          homePostgameElo: null,
-          awayId: node.awayId,
-          awayTeam: node.awayTeam,
-          awayConference: null,
-          awayClassification: null,
-          awayPoints: node.awayPoints ?? null,
-          awayLineScores: null,
-          awayPostgameWinProbability: null,
-          awayPregameElo: null,
-          awayPostgameElo: null,
-          excitementIndex: null,
-          highlights: null,
-          notes: null,
-          spread: node.spread,
-          overUnder: node.overUnder,
-          favoriteId: node.favoriteId,
-        }));
+        return nodes.map(mapGqlGameToCfbdGame);
       } catch (error) {
         await logError(error, {
           action: 'get-games-graphql-fallback',
@@ -141,25 +106,12 @@ export class CFBDClient {
 
     if (inSeason && (await graphqlQueriesEnabled())) {
       try {
-        const result = await cfbdGraphQLClient.getCurrentTeams({
+        const nodes = await cfbdGraphQLClient.getConferenceTeams(new Date().getFullYear(), {
           conference: params?.conference,
+          classification: params?.classification,
         });
         void getUserInfoFromCfbd();
-        return result.currentTeams.nodes.map((node) => ({
-          id: node.id,
-          school: node.school,
-          mascot: null,
-          abbreviation: node.abbreviation ?? null,
-          alternateNames: null,
-          conference: node.conference ?? null,
-          division: null,
-          classification: null,
-          color: node.color ?? null,
-          alternateColor: node.altColor ?? null,
-          logos: node.logos ?? null,
-          twitter: null,
-          location: null,
-        }));
+        return nodes.map(mapGqlTeamToCfbdTeam);
       } catch (error) {
         await logError(error, {
           action: 'get-teams-graphql-fallback',

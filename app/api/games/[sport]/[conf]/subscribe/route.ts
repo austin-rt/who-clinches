@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server';
 import { cfbdGraphQLClient } from '@/lib/cfb/cfbd-graphql-client';
+import { mapGqlGameToCfbdGame } from '@/lib/cfb/graphql/map-to-cfbd';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
+import { getTeams } from '@/lib/cfb/cfbd-cached';
+import { getVenueMap } from '@/lib/cfb/venues-cached';
 import { GamesResponse, TeamMetadata } from '@/app/store/api';
 import { GameLean, TeamLean } from '@/lib/types';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
@@ -9,7 +12,7 @@ import { getConferenceMetadata, isValidSport, isValidConference } from '@/lib/co
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
 import { getFixtureYear } from '@/lib/cfb/helpers/fixture-year';
 import { graphqlSubscriptionsEnabled } from '@/lib/cfb/helpers/graphql-flags';
-import type { Game, Team } from 'cfbd';
+import { logError } from '@/lib/errorLogger';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,137 +60,58 @@ export const GET = async (
       let unsubscribe: (() => void) | null = null;
 
       try {
-        const teamsResult = await cfbdGraphQLClient.getCurrentTeams({
-          conference: conferenceMeta.cfbdId,
-        });
-
-        const cfbdTeams: Team[] = teamsResult.currentTeams.nodes.map(
-          (node): Team => ({
-            id: node.id,
-            school: node.school,
-            mascot: null,
-            abbreviation: node.abbreviation ?? null,
-            alternateNames: null,
-            conference: node.conference ?? null,
-            division: null,
-            classification: null,
-            color: node.color ?? null,
-            alternateColor: node.altColor ?? null,
-            logos: node.logos ?? null,
-            twitter: null,
-            location: null,
-          })
-        );
-
-        const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
+        const teamsByConference = await getTeams(seasonYear);
+        const venueMap = await getVenueMap();
+        const teams = extractTeamsFromCfbd(teamsByConference[conf] ?? [], conferenceMeta.cfbdId);
         const teamMap = new Map<string, TeamLean>(
-          teams.map((team) => [
-            team._id,
-            {
-              ...team,
-              conferenceId: team.conference,
-            } as TeamLean,
-          ])
+          teams.map((team) => [team._id, { ...team, conferenceId: team.conference } as TeamLean])
         );
+        const teamMetadata: TeamMetadata[] = teams.map((team) => ({
+          id: team._id,
+          abbrev: team.abbreviation,
+          name: team.name,
+          displayName: team.displayName,
+          shortDisplayName: team.shortDisplayName,
+          mascot: team.mascot,
+          alternateNames: team.alternateNames,
+          logo: team.logo,
+          color: team.color,
+          alternateColor: team.alternateColor,
+          conferenceId: team.conference,
+          conferenceStanding: team.conferenceStanding,
+          conferenceRecord: team.record.conference,
+          record: team.record,
+          rank: null,
+          division: team.division,
+        })) as unknown as TeamMetadata[];
 
         unsubscribe = cfbdGraphQLClient.subscribeToGames({
-          season: seasonYear,
-          conference: conferenceMeta.cfbdId,
-          onUpdate: (subscriptionData) => {
-            const cfbdGames: Array<
-              Game & { spread?: number; overUnder?: number; favoriteId?: number }
-            > = subscriptionData.game.map(
-              (game): Game & { spread?: number; overUnder?: number; favoriteId?: number } => ({
-                id: game.id,
-                season: game.year,
-                week: game.week,
-                seasonType: game.seasonType as Game['seasonType'],
-                startDate: game.startDate,
-                startTimeTBD: false,
-                completed: game.completed,
-                neutralSite: game.neutralSite,
-                conferenceGame: game.conferenceGame,
-                attendance: null,
-                venueId: null,
-                venue: game.venue ?? null,
-                homeId: game.homeId,
-                homeTeam: game.homeTeam,
-                homeConference: null,
-                homeClassification: null,
-                homePoints: game.homePoints ?? null,
-                homeLineScores: null,
-                homePostgameWinProbability: null,
-                homePregameElo: null,
-                homePostgameElo: null,
-                awayId: game.awayId,
-                awayTeam: game.awayTeam,
-                awayConference: null,
-                awayClassification: null,
-                awayPoints: game.awayPoints ?? null,
-                awayLineScores: null,
-                awayPostgameWinProbability: null,
-                awayPregameElo: null,
-                awayPostgameElo: null,
-                excitementIndex: null,
-                highlights: null,
-                notes: null,
-                spread: game.spread,
-                overUnder: game.overUnder,
-                favoriteId: game.favoriteId,
-              })
-            );
-
-            const conferenceGamesOnly = cfbdGames.filter((game) => game.conferenceGame);
-            const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap);
-            const games: GameLean[] = reshaped.games.map((game) => ({
-              _id: game.id,
-              ...game,
-            }));
-
-            const teamMetadata: TeamMetadata[] = teams.map((team) => ({
-              id: team._id,
-              abbrev: team.abbreviation,
-              name: team.name,
-              displayName: team.displayName,
-              shortDisplayName: team.shortDisplayName,
-              logo: team.logo,
-              color: team.color,
-              alternateColor: team.alternateColor,
-              conferenceId: team.conference,
-              conferenceStanding: team.conferenceStanding ?? 'Tied for 1st',
-              conferenceRecord: team.record?.conference ?? '0-0',
-              record: team.record,
-              rank: null,
-              nationalRank: null,
-              spPlusRating: null,
-              sor: null,
-              mascot: team.mascot ?? null,
-              alternateNames: team.alternateNames ?? [],
-            }));
+          filter: { season: seasonYear, conference: conferenceMeta.cfbdId },
+          onUpdate: (nodes) => {
+            const cfbdGames = nodes.map(mapGqlGameToCfbdGame);
+            const { games } = reshapeCfbdGames(cfbdGames, teamMap, venueMap);
 
             const response: GamesResponse = {
-              events: games,
+              events: games as GameLean[],
               teams: teamMetadata,
               season: seasonYear,
             };
 
-            const responseData = `data: ${JSON.stringify(response)}\n\n`;
-            controller.enqueue(encoder.encode(responseData));
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify(response)}\n\n`));
           },
           onError: (error) => {
-            const errorData = `data: ${JSON.stringify({ error: error.message })}\n\n`;
-            controller.enqueue(encoder.encode(errorData));
+            controller.enqueue(
+              encoder.encode(`data: ${JSON.stringify({ error: error.message })}\n\n`)
+            );
           },
         });
       } catch (error) {
-        const { logError } = await import('@/lib/errorLogger');
         await logError(error, {
           endpoint: '/api/games/[sport]/[conf]/subscribe',
           action: 'subscribe-to-games',
         });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        const errorData = `data: ${JSON.stringify({ error: errorMessage })}\n\n`;
-        controller.enqueue(encoder.encode(errorData));
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`));
         controller.close();
       }
 
