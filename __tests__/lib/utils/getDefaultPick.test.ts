@@ -1,6 +1,7 @@
 import {
   getDefaultSelectedTeam,
   calculateDefaultScores,
+  getDefaultPick,
   isPickAtDefault,
 } from '@/lib/utils/getDefaultPick';
 import { GameLean } from '@/lib/types';
@@ -177,5 +178,51 @@ describe('isPickAtDefault', () => {
       predictedScore: { home: 31, away: 17 },
     });
     expect(isPickAtDefault(game, { homeScore: 31, awayScore: 20 })).toBe(false);
+  });
+});
+
+describe('default picks always produce a winner', () => {
+  const base = {
+    id: 'g1',
+    completed: false,
+    state: 'pre',
+    home: { teamId: 'home', score: null },
+    away: { teamId: 'away', score: null },
+    predictedScore: null,
+    odds: { favoriteTeamId: null, spread: null, overUnder: null },
+  } as unknown as GameLean;
+
+  const cases: Array<[string, GameLean]> = [
+    ['no projection and no odds', base],
+    [
+      'a projection that is level',
+      { ...base, predictedScore: { home: 24, away: 24 } } as unknown as GameLean,
+    ],
+    [
+      'a live game still scoreless',
+      {
+        ...base,
+        state: 'in',
+        home: { teamId: 'home', score: 0 },
+        away: { teamId: 'away', score: 0 },
+        predictedScore: { home: 21, away: 21 },
+      } as unknown as GameLean,
+    ],
+    [
+      'a completed game recorded level',
+      {
+        ...base,
+        completed: true,
+        state: 'post',
+        home: { teamId: 'home', score: 17 },
+        away: { teamId: 'away', score: 17 },
+      } as unknown as GameLean,
+    ],
+  ];
+
+  it.each(cases)('never returns equal scores for %s', (_label, game) => {
+    const pick = getDefaultPick(game);
+
+    expect(pick.homeScore).not.toBe(pick.awayScore);
   });
 });

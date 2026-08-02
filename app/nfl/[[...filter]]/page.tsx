@@ -21,7 +21,6 @@ import { useUIState } from '@/app/store/useUI';
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import { clearAllPicks, type GamePick } from '@/app/store/gamePicksSlice';
 import { setStandingsOpen } from '@/app/store/uiSlice';
-import { useSyncGamePicksWithView } from '@/app/hooks/useSyncGamePicksWithView';
 import { CompactGameButton, CompactWeekGrid, GameCard } from '@/app/components/Game';
 import {
   CompletedWeeks,
@@ -189,8 +188,6 @@ const NflPage = () => {
   }, [scope, setTheme]);
 
   const filteredGames = useMemo(() => (scope ? filterGames(games, scope) : []), [games, scope]);
-
-  useSyncGamePicksWithView({ games: filteredGames, view });
 
   const { completedWeeks, remainingWeeks } = organizeGames(filteredGames);
 
