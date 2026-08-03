@@ -62,7 +62,10 @@ export const GET = async (
       try {
         const teamsByConference = await getTeams(seasonYear);
         const venueMap = await getVenueMap();
-        const teams = extractTeamsFromCfbd(teamsByConference[conf] ?? [], conferenceMeta.cfbdId);
+        const teams = extractTeamsFromCfbd(
+          teamsByConference[conferenceMeta.cfbdId] ?? [],
+          conferenceMeta.cfbdId
+        );
         const teamMap = new Map<string, TeamLean>(
           teams.map((team) => [team._id, { ...team, conferenceId: team.conference } as TeamLean])
         );
