@@ -17,6 +17,8 @@ import { getDefaultSeasonFromCfbd } from '@/lib/cfb/helpers/get-default-season-c
 import { resolveOverrides } from '@/lib/cfb/chat/resolve-overrides';
 import { runConferenceSimulation } from '@/lib/cfb/runConferenceSimulation';
 import { executeCfbdLookup } from '@/lib/cfb/chat/cfbd-lookup';
+import { executeCfbdGraphqlQuery, graphqlAiEnabled } from '@/lib/cfb/chat/cfbd-graphql-tool';
+import { CFBD_GRAPHQL_CATALOG } from '@/lib/cfb/chat/cfbd-graphql-catalog';
 import { CFBD_API_CATALOG } from '@/lib/cfb/chat/cfbd-api-catalog';
 import { executeEspnNflLookup } from '@/lib/nfl/chat/espn-lookup';
 import { ESPN_NFL_API_CATALOG } from '@/lib/nfl/chat/espn-api-catalog';
@@ -38,6 +40,9 @@ const buildToolQuip = (toolName: string, rawInput: string): string => {
     const input = JSON.parse(rawInput);
     if (toolName === 'simulate_scenario') {
       return 'Running that simulation...';
+    }
+    if (toolName === 'cfbd_graphql_query') {
+      return 'Pulling that up...';
     }
     if (toolName === 'cfbd_lookup') {
       const endpoint = input.endpoint ?? '';
@@ -616,11 +621,38 @@ export const POST = async (request: NextRequest) => {
       },
     };
 
+    const cfbdGraphqlTool: Anthropic.Tool = {
+      name: 'cfbd_graphql_query',
+      description:
+        'Query College Football Data via GraphQL. PREFER THIS over cfbd_lookup — it is faster, ' +
+        'returns only the fields you select, and does not consume the REST quota. ' +
+        'Read the GraphQL reference in your context for roots, fields and rules. ' +
+        'Rules: query operations only, no variables, every root field needs a literal limit.',
+      input_schema: {
+        type: 'object' as const,
+        properties: {
+          query: {
+            type: 'string',
+            description: 'A complete GraphQL query document with literal argument values.',
+          },
+        },
+        required: ['query'],
+      },
+    };
+
+    const graphqlToolEnabled = await graphqlAiEnabled();
+
     const tools: Anthropic.Tool[] = [cfbdLookupTool, espnNflLookupTool];
+    if (graphqlToolEnabled) tools.unshift(cfbdGraphqlTool);
     if (conf && confData) tools.unshift(simulateTool);
 
     const systemWithCatalog =
-      systemPrompt + '\n\n' + CFBD_API_CATALOG + '\n\n' + ESPN_NFL_API_CATALOG;
+      systemPrompt +
+      '\n\n' +
+      (graphqlToolEnabled ? CFBD_GRAPHQL_CATALOG + '\n\n' : '') +
+      CFBD_API_CATALOG +
+      '\n\n' +
+      ESPN_NFL_API_CATALOG;
     const anthropic = new Anthropic();
 
     const encoder = new TextEncoder();
@@ -630,7 +662,13 @@ export const POST = async (request: NextRequest) => {
         let inputTokens = 0;
         let outputTokens = 0;
 
-        const streamResponse = async (msgs: Anthropic.MessageParam[], isFollowup = false) => {
+        const MAX_TOOL_ROUNDS = 4;
+
+        const streamResponse = async (
+          msgs: Anthropic.MessageParam[],
+          isFollowup = false,
+          round = 0
+        ) => {
           const stream = anthropic.messages.stream({
             model: 'claude-haiku-4-5-20251001',
             max_tokens: 8192,
@@ -702,6 +740,8 @@ export const POST = async (request: NextRequest) => {
 
             if (toolUseBlock.name === 'simulate_scenario' && confData && conf) {
               toolResult = await executeSimulateTool(toolInput, confData, conf);
+            } else if (toolUseBlock.name === 'cfbd_graphql_query') {
+              toolResult = await executeCfbdGraphqlQuery(toolInput.query ?? '');
             } else if (toolUseBlock.name === 'cfbd_lookup') {
               toolResult = await executeCfbdLookup(
                 toolInput.endpoint ?? '',
@@ -747,7 +787,14 @@ export const POST = async (request: NextRequest) => {
             ];
 
             await minDots;
-            await streamResponse(followupMsgs, true);
+            if (round + 1 >= MAX_TOOL_ROUNDS) {
+              followupMsgs.push({
+                role: 'user',
+                content:
+                  'You have no tool calls remaining. Answer now using what you already have.',
+              });
+            }
+            await streamResponse(followupMsgs, true, round + 1);
           }
         };
 
