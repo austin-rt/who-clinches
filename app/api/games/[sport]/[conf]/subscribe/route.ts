@@ -88,7 +88,13 @@ export const GET = async (
         unsubscribe = cfbdGraphQLClient.subscribeToGames({
           filter: { season: seasonYear, conference: conferenceMeta.cfbdId },
           onUpdate: (nodes) => {
-            const cfbdGames = nodes.map(mapGqlGameToCfbdGame);
+            const cfbdGames = nodes
+              .map(mapGqlGameToCfbdGame)
+              .filter(
+                (game) =>
+                  game.conferenceGame === true &&
+                  !game.notes?.toLowerCase().includes('championship')
+              );
             const { games } = reshapeCfbdGames(cfbdGames, teamMap, venueMap);
 
             const response: GamesResponse = {
