@@ -29,6 +29,15 @@ export const persistRedisKey = async (key: string): Promise<void> => {
   }
 };
 
+export const expireRedisKey = async (key: string, ttlSeconds: number): Promise<void> => {
+  if (!(await isRedisEnabled())) return;
+  try {
+    await redis.expire(key, ttlSeconds);
+  } catch (error) {
+    await logError(error, { action: 'redis-expire', key });
+  }
+};
+
 interface CacheEnvelope<T> {
   data: T;
   cachedAt: number;

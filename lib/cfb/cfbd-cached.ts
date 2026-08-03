@@ -1,6 +1,7 @@
 import { cfbdClient } from './cfbd-client';
 import { getSeasonAwareTtl } from './helpers/season-phase';
-import { fetch, persistRedisKey } from '@/lib/redis';
+import { fetch, persistRedisKey, expireRedisKey } from '@/lib/redis';
+import { getGamesCacheVerdict } from './helpers/games-cache-ttl';
 import { CFBD_CONFERENCE_NAME_TO_ABBR } from '@/lib/cfb/constants';
 import type { Team } from 'cfbd';
 const KEY_PREFIX = 'cfbd:cfb';
@@ -39,8 +40,11 @@ export const getGames = async (params: {
     () => getSeasonAwareTtl(params.year)
   );
 
-  if (games.length > 0 && games.every((g) => g.completed)) {
+  const verdict = getGamesCacheVerdict(games);
+  if (verdict.kind === 'persist') {
     await persistRedisKey(key);
+  } else if (verdict.kind === 'expire') {
+    await expireRedisKey(key, verdict.ttlSeconds);
   }
 
   return games;
