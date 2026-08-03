@@ -252,11 +252,20 @@ export const calculateStandings = async (
   }
 
   const standings: StandingEntry[] = orderedTeams.map((teamId, index) => {
-    const record = teamRecords.find((r) => r.teamId === teamId)!;
-    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId)!;
-
-    const team = game.home.teamId === teamId ? game.home : game.away;
+    const record = teamRecords.find((r) => r.teamId === teamId) ?? { teamId, wins: 0, losses: 0 };
+    const game = games.find((g) => g.home.teamId === teamId || g.away.teamId === teamId);
     const teamLean = teams.find((t) => t._id === teamId);
+
+    const gameTeam = game && (game.home.teamId === teamId ? game.home : game.away);
+
+    const team = {
+      abbrev: gameTeam?.abbrev || teamLean?.abbreviation || teamId,
+      displayName: gameTeam?.displayName || teamLean?.displayName || '',
+      shortDisplayName: gameTeam?.shortDisplayName || teamLean?.shortDisplayName || '',
+      logo: gameTeam?.logo || teamLean?.logo || '',
+      color: gameTeam?.color || teamLean?.color || '',
+      division: gameTeam?.division ?? teamLean?.division ?? null,
+    };
 
     const recordKey = `${record.wins}-${record.losses}`;
     const teamsWithSameRecord = orderedTeams

@@ -233,3 +233,56 @@ describe('calculateStandings', () => {
     expect(tieFlowGraphs).toHaveLength(0);
   });
 });
+
+describe('teams with no games in the filtered set', () => {
+  const playedGame = () =>
+    createGameLean({
+      gameId: '1',
+      home: { teamId: 'A', score: 28, abbrev: 'ALA' },
+      away: { teamId: 'B', score: 14, abbrev: 'UA' },
+    });
+
+  const threeTeams = () => [
+    createTeamLean({ teamId: 'A', abbrev: 'ALA' }),
+    createTeamLean({ teamId: 'B', abbrev: 'UA' }),
+    createTeamLean({ teamId: 'C', abbrev: 'LSU' }),
+  ];
+
+  it('ranks a gameless team instead of throwing', async () => {
+    const { standings } = await calculateStandings(
+      [playedGame()],
+      ['A', 'B', 'C'],
+      makeH2HConfig(),
+      threeTeams()
+    );
+
+    expect(standings.map((s) => s.teamId).sort()).toEqual(['A', 'B', 'C']);
+  });
+
+  it('falls back to team metadata for a gameless team', async () => {
+    const { standings } = await calculateStandings(
+      [playedGame()],
+      ['A', 'B', 'C'],
+      makeH2HConfig(),
+      threeTeams()
+    );
+    const gameless = standings.find((entry) => entry.teamId === 'C');
+
+    expect(gameless?.abbrev).toBe('LSU');
+    expect(gameless?.displayName).toBe('LSU');
+  });
+
+  it('records a gameless team as winless rather than omitting it', async () => {
+    const { standings } = await calculateStandings(
+      [playedGame()],
+      ['A', 'B', 'C'],
+      makeH2HConfig(),
+      threeTeams()
+    );
+
+    expect(standings.find((entry) => entry.teamId === 'C')?.record).toEqual({
+      wins: 0,
+      losses: 0,
+    });
+  });
+});
