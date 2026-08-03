@@ -1,12 +1,9 @@
 import { NextRequest } from 'next/server';
 import { cfbdGraphQLClient } from '@/lib/cfb/cfbd-graphql-client';
-import { mapGqlGameToCfbdGame } from '@/lib/cfb/graphql/map-to-cfbd';
-import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { getTeams } from '@/lib/cfb/cfbd-cached';
 import { getVenueMap } from '@/lib/cfb/venues-cached';
-import { GamesResponse, TeamMetadata } from '@/app/store/api';
-import { GameLean, TeamLean } from '@/lib/types';
+import { buildSubscriptionPayload } from '@/lib/cfb/build-subscription-payload';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getConferenceMetadata, isValidSport, isValidConference } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
@@ -66,46 +63,11 @@ export const GET = async (
           teamsByConference[conferenceMeta.cfbdId] ?? [],
           conferenceMeta.cfbdId
         );
-        const teamMap = new Map<string, TeamLean>(
-          teams.map((team) => [team._id, { ...team, conferenceId: team.conference } as TeamLean])
-        );
-        const teamMetadata: TeamMetadata[] = teams.map((team) => ({
-          id: team._id,
-          abbrev: team.abbreviation,
-          name: team.name,
-          displayName: team.displayName,
-          shortDisplayName: team.shortDisplayName,
-          mascot: team.mascot,
-          alternateNames: team.alternateNames,
-          logo: team.logo,
-          color: team.color,
-          alternateColor: team.alternateColor,
-          conferenceId: team.conference,
-          conferenceStanding: team.conferenceStanding,
-          conferenceRecord: team.record.conference,
-          record: team.record,
-          rank: null,
-          division: team.division,
-        })) as unknown as TeamMetadata[];
 
         unsubscribe = cfbdGraphQLClient.subscribeToGames({
           filter: { season: seasonYear, conference: conferenceMeta.cfbdId },
           onUpdate: (nodes) => {
-            const cfbdGames = nodes
-              .map(mapGqlGameToCfbdGame)
-              .filter(
-                (game) =>
-                  game.conferenceGame === true &&
-                  !game.notes?.toLowerCase().includes('championship')
-              );
-            const { games } = reshapeCfbdGames(cfbdGames, teamMap, venueMap);
-
-            const response: GamesResponse = {
-              events: games as GameLean[],
-              teams: teamMetadata,
-              season: seasonYear,
-            };
-
+            const response = buildSubscriptionPayload(nodes, teams, venueMap, seasonYear);
             controller.enqueue(encoder.encode(`data: ${JSON.stringify(response)}\n\n`));
           },
           onError: (error) => {
