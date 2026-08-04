@@ -2,6 +2,7 @@ import {
   getGamesCacheVerdict,
   LIVE_GAMES_TTL_SECONDS,
   IMMINENT_GAMES_TTL_SECONDS,
+  PENDING_GAMES_TTL_SECONDS,
   LIVE_WINDOW_MS,
   IMMINENT_WINDOW_MS,
 } from '@/lib/cfb/helpers/games-cache-ttl';
@@ -43,13 +44,31 @@ describe('getGamesCacheVerdict', () => {
   it('does not treat a long-past unfinished game as live', () => {
     const games = [{ completed: false, startDate: at(-(LIVE_WINDOW_MS + 60 * 60 * 1000)) }];
 
-    expect(getGamesCacheVerdict(games, NOW)).toEqual({ kind: 'default' });
+    expect(getGamesCacheVerdict(games, NOW)).toEqual({
+      kind: 'expire',
+      ttlSeconds: PENDING_GAMES_TTL_SECONDS,
+    });
   });
 
   it('does not treat a distant kickoff as imminent', () => {
     const games = [{ completed: false, startDate: at(IMMINENT_WINDOW_MS + 60 * 60 * 1000) }];
 
-    expect(getGamesCacheVerdict(games, NOW)).toEqual({ kind: 'default' });
+    expect(getGamesCacheVerdict(games, NOW)).toEqual({
+      kind: 'expire',
+      ttlSeconds: PENDING_GAMES_TTL_SECONDS,
+    });
+  });
+
+  it('never leaves a pending slate on the week-long season ttl so preseason odds stay fresh', () => {
+    const games = [
+      { completed: true, startDate: at(-14 * 24 * 60 * 60 * 1000) },
+      { completed: false, startDate: at(20 * 24 * 60 * 60 * 1000) },
+    ];
+
+    expect(getGamesCacheVerdict(games, NOW)).toEqual({
+      kind: 'expire',
+      ttlSeconds: PENDING_GAMES_TTL_SECONDS,
+    });
   });
 
   it('prefers the live window over the imminent window', () => {
@@ -71,6 +90,9 @@ describe('getGamesCacheVerdict', () => {
   it('ignores an unparseable start date rather than treating it as live', () => {
     const games = [{ completed: false, startDate: 'not-a-date' }];
 
-    expect(getGamesCacheVerdict(games, NOW)).toEqual({ kind: 'default' });
+    expect(getGamesCacheVerdict(games, NOW)).toEqual({
+      kind: 'expire',
+      ttlSeconds: PENDING_GAMES_TTL_SECONDS,
+    });
   });
 });

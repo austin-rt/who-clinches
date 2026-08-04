@@ -2,6 +2,7 @@ import type { Game } from 'cfbd';
 
 export const LIVE_GAMES_TTL_SECONDS = 30;
 export const IMMINENT_GAMES_TTL_SECONDS = 300;
+export const PENDING_GAMES_TTL_SECONDS = 6 * 60 * 60;
 export const LIVE_WINDOW_MS = 6 * 60 * 60 * 1000;
 export const IMMINENT_WINDOW_MS = 3 * 60 * 60 * 1000;
 
@@ -34,5 +35,5 @@ export const getGamesCacheVerdict = (
   });
   if (hasImminent) return { kind: 'expire', ttlSeconds: IMMINENT_GAMES_TTL_SECONDS };
 
-  return { kind: 'default' };
+  return { kind: 'expire', ttlSeconds: PENDING_GAMES_TTL_SECONDS };
 };
