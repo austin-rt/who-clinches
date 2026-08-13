@@ -19,7 +19,7 @@ const Team = ({ team }: TeamProps) => {
           alt={team.abbrev}
           width={64}
           height={64}
-          className="pointer-events-none h-auto w-full max-w-16 object-contain"
+          className="pointer-events-none h-auto w-full max-w-[51px] object-contain sm:max-w-16"
           unoptimized
         />
       )}
