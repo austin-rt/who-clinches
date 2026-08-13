@@ -115,18 +115,34 @@ const fetchGamesFromCfbd = async (
   }
 
   try {
-    const cfbdGames = await getGames({
-      year: season,
-      conference: conferenceMeta.cfbdId,
-      seasonType: CFBD_SEASON_TYPE.REGULAR,
-      week,
-    });
+    const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
+    const ratingReqs = config ? describeRequiredCfbdRatingFeeds(config) : null;
+
+    const [
+      cfbdGames,
+      teamsByConference,
+      venueMap,
+      rankingsResponse,
+      spRatingsResponse,
+      fpiRatingsResponse,
+    ] = await Promise.all([
+      getGames({
+        year: season,
+        conference: conferenceMeta.cfbdId,
+        seasonType: CFBD_SEASON_TYPE.REGULAR,
+        week,
+      }),
+      getTeams(season),
+      getVenueMap(),
+      getRankings({ year: season }),
+      ratingReqs?.needsRatings ? getSp({ year: season }) : Promise.resolve(null),
+      ratingReqs?.needsRatings ? getFpi({ year: season }) : Promise.resolve(null),
+    ] as const);
 
     const conferenceGamesOnly = cfbdGames.filter(
       (game) => game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
     );
 
-    const teamsByConference = await getTeams(season);
     const cfbdTeams = teamsByConference[conferenceMeta.cfbdId] ?? [];
 
     const teams = extractTeamsFromCfbd(cfbdTeams, conferenceMeta.cfbdId);
@@ -140,7 +156,6 @@ const fetchGamesFromCfbd = async (
       ])
     );
 
-    const venueMap = await getVenueMap();
     const reshaped = reshapeCfbdGames(conferenceGamesOnly, teamMap, venueMap);
     const allGames: GameLean[] = reshaped.games.map((game) => ({
       _id: game.id,
@@ -166,15 +181,6 @@ const fetchGamesFromCfbd = async (
       record: team.record,
       conferenceStanding: team.conferenceStanding,
     }));
-
-    const config = CFB_CONFERENCE_CONFIGS[conferenceMeta.cfbdId];
-    const ratingReqs = config ? describeRequiredCfbdRatingFeeds(config) : null;
-
-    const [rankingsResponse, spRatingsResponse, fpiRatingsResponse] = await Promise.all([
-      getRankings({ year: season }),
-      ratingReqs?.needsRatings ? getSp({ year: season }) : Promise.resolve(null),
-      ratingReqs?.needsRatings ? getFpi({ year: season }) : Promise.resolve(null),
-    ] as const);
 
     let teamsEnriched = teamLeanArray;
 
