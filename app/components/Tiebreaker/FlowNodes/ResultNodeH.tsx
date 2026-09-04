@@ -15,7 +15,7 @@ const ResultNodeH = ({ data }: NodeProps) => {
 
   const singleTeam =
     teamIds.length === 1 ? (teams as Record<string, TieFlowTeamMeta>)[teamIds[0] as string] : null;
-  const borderColor = singleTeam ? `#${singleTeam.color}` : undefined;
+  const borderColor = singleTeam ? `#${singleTeam.color.replace(/^#/, '')}` : undefined;
 
   return (
     <div

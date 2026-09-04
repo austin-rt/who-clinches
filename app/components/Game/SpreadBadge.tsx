@@ -21,7 +21,7 @@ const SpreadBadge = ({ game }: SpreadBadgeProps) => {
     return null;
   };
   const favoredTeam = getFavoredTeam();
-  const favoredTeamColor = favoredTeam?.color;
+  const favoredTeamColor = favoredTeam?.color?.replace(/^#/, '');
 
   const style = useMemo(() => {
     if (!favoredTeamColor) return undefined;
