@@ -4,6 +4,7 @@ import cityTimezones from 'city-timezones';
 import { GAME_TYPE } from './constants';
 import {
   calculatePredictedScoreFromOdds,
+  calculatePredictedScoreFromSpread,
   getDefaultPredictedScore,
 } from './cfb/helpers/prefill-helpers';
 
@@ -150,7 +151,15 @@ export const reshapeCfbdGames = (
             favoriteTeamId,
             String(game.homeId)
           );
-          return oddsScore || getDefaultPredictedScore();
+          if (oddsScore) return oddsScore;
+          const spreadScore = calculatePredictedScoreFromSpread(
+            spread,
+            favoriteTeamId,
+            String(game.homeId),
+            homeTeam,
+            awayTeam
+          );
+          return spreadScore || getDefaultPredictedScore();
         })(),
         gameType,
         notes: game.notes || null,

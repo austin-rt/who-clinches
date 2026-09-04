@@ -5,6 +5,7 @@ import type { NflGame, NflTeam, GameOdds, PredictedScore, GameVenue } from './ty
 import { NFL_TEAM_BY_ESPN_ID } from './constants';
 import {
   calculatePredictedScoreFromOdds,
+  calculatePredictedScoreFromSpread,
   getDefaultPredictedScore,
 } from '@/lib/cfb/helpers/prefill-helpers';
 
@@ -91,7 +92,13 @@ const buildPredictedScore = (
     odds.favoriteTeamId,
     homeTeamId
   );
-  return fromOdds || getDefaultPredictedScore();
+  if (fromOdds) return fromOdds;
+  const fromSpread = calculatePredictedScoreFromSpread(
+    odds.spread,
+    odds.favoriteTeamId,
+    homeTeamId
+  );
+  return fromSpread || getDefaultPredictedScore();
 };
 
 export const reshapeEspnGames = (events: Event[], season: number): NflGame[] =>

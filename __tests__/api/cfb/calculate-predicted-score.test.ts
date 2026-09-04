@@ -1,4 +1,7 @@
-import { calculatePredictedScore } from '@/lib/cfb/helpers/prefill-helpers';
+import {
+  calculatePredictedScore,
+  calculatePredictedScoreFromSpread,
+} from '@/lib/cfb/helpers/prefill-helpers';
 import { GameState, ReshapedGame } from '@/lib/types';
 
 interface TeamForPrediction {
@@ -154,6 +157,35 @@ describe('calculatePredictedScore', () => {
 
       expect(result.home).toBe(28);
       expect(result.away).toBe(25);
+    });
+  });
+
+  describe('calculatePredictedScoreFromSpread', () => {
+    it('predicts the away favorite winning by at least the spread without an over/under', () => {
+      const result = calculatePredictedScoreFromSpread(10.5, '333', '96');
+
+      expect(result).toBeDefined();
+      expect(result!.away).toBeGreaterThan(result!.home);
+      expect(result!.away - result!.home).toBeGreaterThanOrEqual(10);
+    });
+
+    it('predicts the home favorite winning without an over/under', () => {
+      const result = calculatePredictedScoreFromSpread(-7, '96', '96');
+
+      expect(result).toBeDefined();
+      expect(result!.home).toBeGreaterThan(result!.away);
+    });
+
+    it('never predicts a tie for small spreads', () => {
+      const result = calculatePredictedScoreFromSpread(0.5, '96', '96');
+
+      expect(result).toBeDefined();
+      expect(result!.home).not.toBe(result!.away);
+    });
+
+    it('returns undefined without a spread or favorite', () => {
+      expect(calculatePredictedScoreFromSpread(null, '96', '96')).toBeUndefined();
+      expect(calculatePredictedScoreFromSpread(7, null, '96')).toBeUndefined();
     });
   });
 

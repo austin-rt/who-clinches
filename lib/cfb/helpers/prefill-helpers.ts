@@ -61,31 +61,47 @@ export const calculatePredictedScoreFromOdds = (
   }
 };
 
+export const calculatePredictedScoreFromSpread = (
+  spread: number | null,
+  favoriteTeamId: string | null,
+  homeTeamId: string,
+  homeTeam?: TeamForPrediction,
+  awayTeam?: TeamForPrediction
+): PredictedScore | undefined => {
+  if (spread === null || favoriteTeamId === null) {
+    return undefined;
+  }
+
+  const isFavoriteHome = favoriteTeamId === homeTeamId;
+  const favoriteAvg =
+    (isFavoriteHome ? homeTeam : awayTeam)?.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
+
+  const favoriteScore = Math.round(favoriteAvg);
+  let underdogScore = Math.ceil(favoriteScore - Math.abs(spread));
+
+  if (underdogScore >= favoriteScore) {
+    underdogScore = favoriteScore - 1;
+  }
+
+  if (isFavoriteHome) {
+    return { home: favoriteScore, away: underdogScore };
+  } else {
+    return { home: underdogScore, away: favoriteScore };
+  }
+};
+
 export const calculatePredictedScoreFromTeamAverages = (
   game: ReshapedGame,
   homeTeam: TeamForPrediction,
   awayTeam: TeamForPrediction
-): PredictedScore | undefined => {
-  const homeAvg = homeTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
-  const awayAvg = awayTeam.record?.stats?.avgPointsFor ?? DEFAULT_AVG;
-
-  if (game.odds.spread !== null && game.odds.favoriteTeamId) {
-    const isFavoriteHome = game.odds.favoriteTeamId === game.home.teamId;
-    const favoriteAvg = isFavoriteHome ? homeAvg : awayAvg;
-
-    const favoriteScore = Math.round(favoriteAvg);
-
-    const underdogScore = Math.ceil(favoriteScore - Math.abs(game.odds.spread));
-
-    if (isFavoriteHome) {
-      return { home: favoriteScore, away: underdogScore };
-    } else {
-      return { home: underdogScore, away: favoriteScore };
-    }
-  }
-
-  return undefined;
-};
+): PredictedScore | undefined =>
+  calculatePredictedScoreFromSpread(
+    game.odds.spread,
+    game.odds.favoriteTeamId,
+    game.home.teamId,
+    homeTeam,
+    awayTeam
+  );
 
 export const calculatePredictedScoreFromRanking = (
   game: ReshapedGame,
