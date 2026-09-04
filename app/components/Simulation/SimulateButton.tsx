@@ -18,10 +18,11 @@ import { buildSimulateInputKey } from '@/lib/client/input-hash';
 interface SimulateButtonProps {
   games: GameLean[];
   teams: TeamMetadata[];
+  dataLoading?: boolean;
   onSimulateComplete?: (response: SimulateResponse) => void;
 }
 
-const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProps) => {
+const SimulateButton = ({ games, teams, dataLoading, onSimulateComplete }: SimulateButtonProps) => {
   const params = useParams();
   const sportParam = params.sport as string;
   const confParam = params.conf as string;
@@ -92,7 +93,7 @@ const SimulateButton = ({ games, teams, onSimulateComplete }: SimulateButtonProp
       size="md"
       color="primary"
       onClick={handleSimulate}
-      disabled={season === null || games.length === 0}
+      disabled={dataLoading || season === null || games.length === 0 || teams.length === 0}
       loading={isLoading}
       className="w-1/2 text-xs sm:w-fit"
     >

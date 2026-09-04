@@ -49,7 +49,12 @@ const ConferencePage = () => {
   const sport = isValid ? (sportParam as SportSlug) : null;
   const conf = isValid ? (confParam as CFBConferenceAbbreviation) : null;
 
-  const { games, teams } = useGamesData({
+  const {
+    games,
+    teams,
+    isLoading: gamesLoading,
+    isUninitialized: gamesUninitialized,
+  } = useGamesData({
     sport: sport!,
     conf: conf!,
   });
@@ -134,19 +139,22 @@ const ConferencePage = () => {
 
       {simulateResponse && <SimulationDisclaimer />}
 
-      {simulateResponse && (
-        <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-6">
-          <ChampionshipMatchup
-            team1={
-              simulateResponse.standings.find((s) => s.teamId === simulateResponse.championship[0])!
-            }
-            team2={
-              simulateResponse.standings.find((s) => s.teamId === simulateResponse.championship[1])!
-            }
-          />
-          <ShareButton simulateResponse={simulateResponse} games={games} />
-        </div>
-      )}
+      {simulateResponse &&
+        (() => {
+          const team1 = simulateResponse.standings.find(
+            (s) => s.teamId === simulateResponse.championship[0]
+          );
+          const team2 = simulateResponse.standings.find(
+            (s) => s.teamId === simulateResponse.championship[1]
+          );
+          if (!team1 || !team2) return null;
+          return (
+            <div className="mx-auto flex w-full max-w-lg flex-col items-center gap-6">
+              <ChampionshipMatchup team1={team1} team2={team2} />
+              <ShareButton simulateResponse={simulateResponse} games={games} />
+            </div>
+          );
+        })()}
 
       <Standings simulateResponse={simulateResponse} />
 
@@ -170,7 +178,12 @@ const ConferencePage = () => {
           onReset={handleReset}
           className="w-1/2 sm:w-fit"
         />
-        <SimulateButton games={games} teams={teams} onSimulateComplete={handleSimulateComplete} />
+        <SimulateButton
+          games={games}
+          teams={teams}
+          dataLoading={gamesLoading || gamesUninitialized}
+          onSimulateComplete={handleSimulateComplete}
+        />
       </div>
 
       {hasConversation && !chatOpen && (

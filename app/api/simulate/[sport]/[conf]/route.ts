@@ -20,6 +20,10 @@ export const POST = async (
       return NextResponse.json({ error: 'season, games, and teams are required' }, { status: 400 });
     }
 
+    if (games.length === 0 || teams.length === 0) {
+      return NextResponse.json({ error: 'games and teams must not be empty' }, { status: 400 });
+    }
+
     const { sport: sportParam, conf: confParam } = await params;
 
     if (!isValidSport(sportParam)) {

@@ -10,7 +10,7 @@ export const POST = async (request: NextRequest) => {
     const body = await request.json();
     const { season, games, overrides = {} } = body;
 
-    if (!season || !games || !Array.isArray(games)) {
+    if (!season || !games || !Array.isArray(games) || games.length === 0) {
       return NextResponse.json({ error: 'season and games array are required' }, { status: 400 });
     }
 

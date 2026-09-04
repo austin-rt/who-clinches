@@ -292,7 +292,7 @@ const NflPage = () => {
             size="md"
             color="primary"
             onClick={handleSimulate}
-            disabled={season === null || games.length === 0}
+            disabled={isLoading || season === null || games.length === 0}
             loading={simLoading}
             className="w-1/2 text-xs sm:w-fit"
           >
