@@ -26,6 +26,8 @@ const DEFAULTS: RuntimeConfigData = {
 
 const PRODUCTION_CONFIG: RuntimeConfigData = {
   ...DEFAULTS,
+  fixtureYearOn: false,
+  fixtureYear: null,
   graphqlOn: false,
   redisOn: true,
   rateLimitOn: true,
