@@ -100,6 +100,9 @@ export const deriveFavoriteId = (
 
 type EnrichedGame = Game & { spread?: number; overUnder?: number; favoriteId?: number };
 
+const toUtcIsoString = (timestamp: string): string =>
+  /(?:Z|[+-]\d{2}:?\d{2})$/.test(timestamp) ? timestamp : `${timestamp}Z`;
+
 export const mapGqlGameToCfbdGame = (node: GqlGameNode): EnrichedGame => {
   const line = pickLine(node.lines);
   const spread = line?.spread ?? undefined;
@@ -109,7 +112,7 @@ export const mapGqlGameToCfbdGame = (node: GqlGameNode): EnrichedGame => {
     season: node.season,
     week: node.week,
     seasonType: node.seasonType as Game['seasonType'],
-    startDate: node.startDate,
+    startDate: toUtcIsoString(node.startDate),
     startTimeTBD: node.startTimeTbd ?? false,
     completed: isCompletedStatus(node.status),
     neutralSite: node.neutralSite ?? false,

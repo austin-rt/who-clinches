@@ -85,6 +85,12 @@ describe('buildSubscriptionPayload', () => {
     expect(payload.events[0].home.color).toBe('111111');
   });
 
+  it('normalizes suffix-less GraphQL timestamps to UTC so clients do not parse them as local time', () => {
+    const payload = buildSubscriptionPayload([node()], teams, new Map(), 2025);
+
+    expect(payload.events[0].date).toBe('2025-10-11T19:00:00Z');
+  });
+
   it('emits the conference roster alongside the games', () => {
     const payload = buildSubscriptionPayload([node()], teams, new Map(), 2025);
 
