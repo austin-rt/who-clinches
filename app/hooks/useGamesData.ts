@@ -42,30 +42,9 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
   const [subscriptionData, setSubscriptionData] = useState<GamesResponse | null>(null);
   const eventSourceRef = useRef<EventSource | null>(null);
 
-  const hasLiveGames = useMemo(() => {
-    const dataToCheck = subscriptionData || seasonData;
-    if (!dataToCheck?.events || dataToCheck.events.length === 0) {
-      return false;
-    }
-    return dataToCheck.events.some((game: GameLean) => game.state === 'in');
-  }, [subscriptionData, seasonData]);
+  const isInSeason = useAppSelector((state) => state.app.isInSeason);
 
-  const hasGamesStartingSoon = useMemo(() => {
-    const dataToCheck = subscriptionData || seasonData;
-    if (!dataToCheck?.events || dataToCheck.events.length === 0) {
-      return false;
-    }
-    const now = new Date().getTime();
-    const fiveMinutesInMs = 5 * 60 * 1000;
-    return dataToCheck.events.some((game: GameLean) => {
-      if (game.state !== 'pre') return false;
-      const gameDate = new Date(game.date).getTime();
-      const timeUntilGame = gameDate - now;
-      return timeUntilGame > 0 && timeUntilGame <= fiveMinutesInMs;
-    });
-  }, [subscriptionData, seasonData]);
-
-  const shouldSubscribe = hasLiveGames || hasGamesStartingSoon;
+  const shouldSubscribe = isInSeason === true;
 
   useEffect(() => {
     if (!shouldSubscribe || isLoading || isUninitialized || season === null) {
@@ -91,8 +70,10 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
     };
 
     eventSource.onerror = () => {
-      eventSource.close();
-      eventSourceRef.current = null;
+      if (eventSource.readyState === EventSource.CLOSED) {
+        eventSource.close();
+        eventSourceRef.current = null;
+      }
     };
 
     eventSourceRef.current = eventSource;
