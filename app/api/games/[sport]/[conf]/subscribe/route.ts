@@ -77,11 +77,16 @@ export const GET = async (
           conferenceMeta.cfbdId
         );
 
+        let lastEmittedPayload: string | null = null;
+
         const emitMerged = () => {
           if (!lastGameNodes) return;
           const merged = mergeScoreboardIntoGameNodes(lastGameNodes, liveScores);
           const response = buildSubscriptionPayload(merged, teams, venueMap, seasonYear);
-          safeEnqueue(`data: ${JSON.stringify(response)}\n\n`);
+          const payload = JSON.stringify(response);
+          if (payload === lastEmittedPayload) return;
+          lastEmittedPayload = payload;
+          safeEnqueue(`data: ${payload}\n\n`);
         };
 
         unsubscribeGames = cfbdGraphQLClient.subscribeToGames({

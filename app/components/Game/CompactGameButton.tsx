@@ -23,9 +23,17 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const defaultSelectedTeam = useMemo(() => getDefaultSelectedTeam(game), [game]);
 
   useEffect(() => {
-    if (!gamePick && defaultSelectedTeam) {
-      const scores = calculateScoresForPick(defaultSelectedTeam);
-      dispatch(setGamePick({ gameId: game.id, pick: scores }));
+    if (!defaultSelectedTeam) return;
+    const defaults = { ...calculateScoresForPick(defaultSelectedTeam), isDefault: true };
+    if (!gamePick) {
+      dispatch(setGamePick({ gameId: game.id, pick: defaults }));
+      return;
+    }
+    if (
+      gamePick.isDefault &&
+      (gamePick.homeScore !== defaults.homeScore || gamePick.awayScore !== defaults.awayScore)
+    ) {
+      dispatch(setGamePick({ gameId: game.id, pick: defaults }));
     }
   }, [gamePick, defaultSelectedTeam, game.id, dispatch, calculateScoresForPick]);
 

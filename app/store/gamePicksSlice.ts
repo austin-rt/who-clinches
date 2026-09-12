@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export interface GamePick {
   homeScore: number;
   awayScore: number;
+  isDefault?: boolean;
 }
 
 export interface GamePicksState {
@@ -36,4 +37,3 @@ const gamePicksSlice = createSlice({
 
 export const { setGamePick, clearGamePick, clearAllPicks, setPicks } = gamePicksSlice.actions;
 export default gamePicksSlice.reducer;
-
