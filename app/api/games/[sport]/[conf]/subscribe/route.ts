@@ -4,6 +4,8 @@ import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { getTeams } from '@/lib/cfb/cfbd-cached';
 import { getVenueMap } from '@/lib/cfb/venues-cached';
 import { buildSubscriptionPayload } from '@/lib/cfb/build-subscription-payload';
+import { mergeScoreboardIntoGameNodes } from '@/lib/cfb/helpers/merge-scoreboard';
+import type { GqlGameNode, GqlScoreboardNode } from '@/lib/cfb/graphql/map-to-cfbd';
 import type { CFBConferenceAbbreviation } from '@/lib/cfb/constants';
 import { getConferenceMetadata, isValidSport, isValidConference } from '@/lib/constants';
 import { isInSeasonFromCfbd } from '@/lib/cfb/helpers/season-check-cfbd';
@@ -54,7 +56,18 @@ export const GET = async (
   const encoder = new TextEncoder();
   const stream = new ReadableStream({
     async start(controller) {
-      let unsubscribe: (() => void) | null = null;
+      let unsubscribeGames: (() => void) | null = null;
+      let unsubscribeScoreboard: (() => void) | null = null;
+      let lastGameNodes: GqlGameNode[] | null = null;
+      const liveScores = new Map<number, GqlScoreboardNode>();
+
+      const safeEnqueue = (chunk: string) => {
+        try {
+          controller.enqueue(encoder.encode(chunk));
+        } catch {
+          // Stream already closed by the client.
+        }
+      };
 
       try {
         const teamsByConference = await getTeams(seasonYear);
@@ -64,16 +77,34 @@ export const GET = async (
           conferenceMeta.cfbdId
         );
 
-        unsubscribe = cfbdGraphQLClient.subscribeToGames({
+        const emitMerged = () => {
+          if (!lastGameNodes) return;
+          const merged = mergeScoreboardIntoGameNodes(lastGameNodes, liveScores);
+          const response = buildSubscriptionPayload(merged, teams, venueMap, seasonYear);
+          safeEnqueue(`data: ${JSON.stringify(response)}\n\n`);
+        };
+
+        unsubscribeGames = cfbdGraphQLClient.subscribeToGames({
           filter: { season: seasonYear, conference: conferenceMeta.cfbdId },
           onUpdate: (nodes) => {
-            const response = buildSubscriptionPayload(nodes, teams, venueMap, seasonYear);
-            controller.enqueue(encoder.encode(`data: ${JSON.stringify(response)}\n\n`));
+            lastGameNodes = nodes;
+            emitMerged();
           },
           onError: (error) => {
-            controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ error: error.message })}\n\n`)
-            );
+            safeEnqueue(`data: ${JSON.stringify({ error: error.message })}\n\n`);
+          },
+        });
+
+        unsubscribeScoreboard = cfbdGraphQLClient.subscribeToScoreboard({
+          onUpdate: (entries) => {
+            entries.forEach((entry) => liveScores.set(entry.id, entry));
+            emitMerged();
+          },
+          onError: (error) => {
+            void logError(error, {
+              endpoint: '/api/games/[sport]/[conf]/subscribe',
+              action: 'subscribe-to-scoreboard',
+            });
           },
         });
       } catch (error) {
@@ -82,15 +113,22 @@ export const GET = async (
           action: 'subscribe-to-games',
         });
         const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ error: errorMessage })}\n\n`));
+        safeEnqueue(`data: ${JSON.stringify({ error: errorMessage })}\n\n`);
         controller.close();
       }
 
       request.signal.addEventListener('abort', () => {
-        if (unsubscribe) {
-          unsubscribe();
+        if (unsubscribeGames) {
+          unsubscribeGames();
         }
-        controller.close();
+        if (unsubscribeScoreboard) {
+          unsubscribeScoreboard();
+        }
+        try {
+          controller.close();
+        } catch {
+          // Already closed.
+        }
       });
     },
   });

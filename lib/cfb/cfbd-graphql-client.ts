@@ -2,9 +2,14 @@ import { fetchWithTimeout } from '../fetch-with-timeout';
 import { createClient, Client } from 'graphql-ws';
 import { logError } from '../errorLogger';
 import { getActiveApiKey } from './cfbd-rest-client';
-import { CONFERENCE_GAMES, CONFERENCE_TEAMS, GAME_UPDATES } from './graphql/documents';
+import {
+  CONFERENCE_GAMES,
+  CONFERENCE_TEAMS,
+  GAME_UPDATES,
+  SCOREBOARD_UPDATES,
+} from './graphql/documents';
 import { buildGameWhere, buildTeamWhere, type GameFilter } from './graphql/where';
-import type { GqlGameNode, GqlTeamNode } from './graphql/map-to-cfbd';
+import type { GqlGameNode, GqlScoreboardNode, GqlTeamNode } from './graphql/map-to-cfbd';
 
 const REQUEST_TIMEOUT_MS = 30000;
 export const GRAPHQL_ENDPOINT = 'https://graphql.collegefootballdata.com/v1/graphql';
@@ -126,6 +131,37 @@ export class CFBDGraphQLClient {
         next: (data) => {
           if (data.data?.game) {
             params.onUpdate(data.data.game);
+          }
+        },
+        error: (err: unknown) => {
+          const error = err instanceof Error ? err : new Error(String(err));
+          if (params.onError) {
+            params.onError(error);
+          }
+        },
+        complete: () => {},
+      }
+    );
+
+    return () => {
+      unsubscribe();
+    };
+  }
+
+  subscribeToScoreboard(params: {
+    onUpdate: (entries: GqlScoreboardNode[]) => void;
+    onError?: (error: Error) => void;
+  }): () => void {
+    const client = this.getWsClient();
+
+    const unsubscribe = client.subscribe<{ scoreboard: GqlScoreboardNode[] }>(
+      {
+        query: SCOREBOARD_UPDATES,
+      },
+      {
+        next: (data) => {
+          if (data.data?.scoreboard) {
+            params.onUpdate(data.data.scoreboard);
           }
         },
         error: (err: unknown) => {

@@ -139,9 +139,32 @@ const fetchGamesFromCfbd = async (
       ratingReqs?.needsRatings ? getFpi({ year: season }) : Promise.resolve(null),
     ] as const);
 
-    const conferenceGamesOnly = cfbdGames.filter(
+    let conferenceGamesOnly = cfbdGames.filter(
       (game) => game.conferenceGame === true && !game.notes?.toLowerCase().includes('championship')
     );
+
+    const now = Date.now();
+    const liveWindowMs = 6 * 60 * 60 * 1000;
+    const hasLiveCandidates = conferenceGamesOnly.some((game) => {
+      if (game.completed) return false;
+      const start = new Date(game.startDate).getTime();
+      return Number.isFinite(start) && start <= now && now - start <= liveWindowMs;
+    });
+
+    if (hasLiveCandidates) {
+      try {
+        const { getScoreboardFromCfbd } = await import('@/lib/cfb/cfbd-rest-client');
+        const { overlayScoreboardOntoGames } = await import('@/lib/cfb/helpers/merge-scoreboard');
+        const scoreboard = await getScoreboardFromCfbd(conferenceMeta.cfbdId);
+        conferenceGamesOnly = overlayScoreboardOntoGames(conferenceGamesOnly, scoreboard);
+      } catch (error) {
+        const { logError } = await import('@/lib/errorLogger');
+        await logError(error, {
+          endpoint: '/api/games/[sport]/[conf]',
+          action: 'overlay-live-scoreboard',
+        });
+      }
+    }
 
     const cfbdTeams = teamsByConference[conferenceMeta.cfbdId] ?? [];
 

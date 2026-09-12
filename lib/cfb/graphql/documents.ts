@@ -75,3 +75,16 @@ export const GAME_UPDATES = `
     }
   }
 `;
+
+export const SCOREBOARD_UPDATES = `
+  subscription ScoreboardUpdates {
+    scoreboard {
+      id
+      status
+      currentPeriod
+      currentClock
+      homePoints
+      awayPoints
+    }
+  }
+`;

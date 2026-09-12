@@ -11,6 +11,15 @@ export interface GqlLine {
   overUnder: number | null;
 }
 
+export interface GqlScoreboardNode {
+  id: number;
+  status: string | null;
+  currentPeriod: number | null;
+  currentClock: string | null;
+  homePoints: number | null;
+  awayPoints: number | null;
+}
+
 export interface GqlGameNode {
   id: number;
   season: number;

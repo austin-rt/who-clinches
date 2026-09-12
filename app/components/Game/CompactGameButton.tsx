@@ -52,7 +52,13 @@ const CompactGameButton = ({ game }: CompactGameButtonProps) => {
   const isAwaySelected = selectedTeam === game.away.teamId;
 
   return (
-    <div className="flex w-36 items-center justify-around rounded-lg border border-stroke-alt bg-base-200 px-1 py-1 sm:py-2 dark:bg-base-300">
+    <div className="relative flex w-36 items-center justify-around rounded-lg border border-stroke-alt bg-base-200 px-1 py-1 sm:py-2 dark:bg-base-300">
+      {game.state === 'in' && (
+        <span
+          aria-label="Live game"
+          className="absolute -right-1 -top-1 h-2.5 w-2.5 animate-pulse rounded-full bg-red-500"
+        />
+      )}
       <CompactTeamSelector
         team={game.away}
         teamId={game.away.teamId}

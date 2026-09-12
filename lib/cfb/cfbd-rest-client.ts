@@ -7,9 +7,11 @@ import {
   getUserInfo,
   getVenues,
   getRankings,
+  getScoreboard,
   getSp,
   getFpi,
   type Game,
+  type ScoreboardGame,
   type BettingGame,
   type Team,
   type CalendarWeek,
@@ -213,6 +215,26 @@ export const getGamesFromCfbd = async (params: {
     await logError(errorObj, {
       action: 'get-games-from-cfbd',
       params,
+    });
+    throw errorObj;
+  }
+};
+
+export const getScoreboardFromCfbd = async (conference: string): Promise<ScoreboardGame[]> => {
+  await ensureBaseUrl();
+  try {
+    const result = await getScoreboard({
+      query: {
+        conference,
+      },
+    });
+    return result.data ?? [];
+  } catch (error) {
+    const errorObj =
+      error instanceof Error ? error : new Error(`Failed to fetch scoreboard: ${String(error)}`);
+    await logError(errorObj, {
+      action: 'get-scoreboard-from-cfbd',
+      conference,
     });
     throw errorObj;
   }
