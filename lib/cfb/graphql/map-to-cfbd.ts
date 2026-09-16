@@ -14,8 +14,6 @@ export interface GqlLine {
 export interface GqlScoreboardNode {
   id: number;
   status: string | null;
-  currentPeriod: number | null;
-  currentClock: string | null;
   homePoints: number | null;
   awayPoints: number | null;
 }

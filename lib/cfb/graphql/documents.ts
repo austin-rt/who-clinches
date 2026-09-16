@@ -81,8 +81,6 @@ export const SCOREBOARD_UPDATES = `
     scoreboard {
       id
       status
-      currentPeriod
-      currentClock
       homePoints
       awayPoints
     }

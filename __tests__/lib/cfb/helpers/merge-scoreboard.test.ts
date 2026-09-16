@@ -45,8 +45,6 @@ const gameNode = (overrides: Partial<GqlGameNode> = {}): GqlGameNode =>
 const scoreboardNode = (overrides: Partial<GqlScoreboardNode> = {}): GqlScoreboardNode => ({
   id: 401856674,
   status: 'in_progress',
-  currentPeriod: 2,
-  currentClock: '09:27',
   homePoints: 14,
   awayPoints: 10,
   ...overrides,

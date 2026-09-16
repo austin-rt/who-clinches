@@ -37,6 +37,8 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
   } = useGetSeasonGameDataQuery(queryArgs, {
     skip: season === null,
     refetchOnMountOrArgChange: true,
+    pollingInterval: 90_000,
+    skipPollingIfUnfocused: true,
   });
 
   const [subscriptionData, setSubscriptionData] = useState<GamesResponse | null>(null);
@@ -44,7 +46,32 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
 
   const isInSeason = useAppSelector((state) => state.app.isInSeason);
 
-  const shouldSubscribe = isInSeason === true;
+  const [hasLiveOrImminentGames, setHasLiveOrImminentGames] = useState(false);
+
+  useEffect(() => {
+    const evaluate = () => {
+      const dataToCheck = subscriptionData || seasonData;
+      if (!dataToCheck?.events || dataToCheck.events.length === 0) {
+        setHasLiveOrImminentGames(false);
+        return;
+      }
+      const now = Date.now();
+      const imminentWindowMs = 15 * 60 * 1000;
+      setHasLiveOrImminentGames(
+        dataToCheck.events.some((game: GameLean) => {
+          if (game.state === 'in') return true;
+          if (game.state !== 'pre') return false;
+          const timeUntilGame = new Date(game.date).getTime() - now;
+          return timeUntilGame > 0 && timeUntilGame <= imminentWindowMs;
+        })
+      );
+    };
+    evaluate();
+    const timer = setInterval(evaluate, 60_000);
+    return () => clearInterval(timer);
+  }, [subscriptionData, seasonData]);
+
+  const shouldSubscribe = isInSeason === true && hasLiveOrImminentGames;
 
   useEffect(() => {
     if (!shouldSubscribe || isLoading || isUninitialized || season === null) {
@@ -86,7 +113,7 @@ export const useGamesData = ({ sport, conf }: UseGamesDataParams): UseGamesDataR
     };
   }, [shouldSubscribe, isLoading, isUninitialized, sport, conf, season]);
 
-  const finalData = subscriptionData || seasonData;
+  const finalData = shouldSubscribe && subscriptionData ? subscriptionData : seasonData;
 
   const games = useMemo(() => {
     if (!finalData || !finalData.events) return [];

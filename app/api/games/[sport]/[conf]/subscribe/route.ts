@@ -14,6 +14,9 @@ import { graphqlSubscriptionsEnabled } from '@/lib/cfb/helpers/graphql-flags';
 import { logError } from '@/lib/errorLogger';
 
 export const runtime = 'nodejs';
+export const maxDuration = 300;
+
+const STREAM_LIFETIME_MS = 290 * 1000;
 export const dynamic = 'force-dynamic';
 
 export const GET = async (
@@ -122,18 +125,27 @@ export const GET = async (
         controller.close();
       }
 
-      request.signal.addEventListener('abort', () => {
+      const teardown = () => {
         if (unsubscribeGames) {
           unsubscribeGames();
+          unsubscribeGames = null;
         }
         if (unsubscribeScoreboard) {
           unsubscribeScoreboard();
+          unsubscribeScoreboard = null;
         }
         try {
           controller.close();
         } catch {
           // Already closed.
         }
+      };
+
+      const lifetimeTimer = setTimeout(teardown, STREAM_LIFETIME_MS);
+
+      request.signal.addEventListener('abort', () => {
+        clearTimeout(lifetimeTimer);
+        teardown();
       });
     },
   });
