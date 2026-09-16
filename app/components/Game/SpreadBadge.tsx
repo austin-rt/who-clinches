@@ -2,7 +2,7 @@
 
 import { useMemo } from 'react';
 import { GameLean } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { cn, isDarkHexColor } from '@/lib/utils';
 import { useUIState } from '@/app/store/useUI';
 
 interface SpreadBadgeProps {
@@ -33,7 +33,7 @@ const SpreadBadge = ({ game }: SpreadBadgeProps) => {
     }
     return {
       backgroundColor: `#${favoredTeamColor}`,
-      color: `#ffffff`,
+      color: `var(${isDarkHexColor(favoredTeamColor) ? '--color-content-on-dark' : '--color-content-on-light'})`,
     };
   }, [mode, favoredTeamColor]);
 

@@ -38,12 +38,16 @@ html:not([data-mode]) {
   --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
   --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
   --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
+  --color-content-on-dark: var(--color-base-100);
+  --color-content-on-light: var(--color-base-content);
 }
 
 html[data-mode='dark'] {
   --color-stroke: color-mix(in srgb, var(--color-base-content) 50%, transparent);
   --color-stroke-alt: color-mix(in srgb, var(--color-base-content) 30%, transparent);
   --color-text-secondary: color-mix(in srgb, var(--color-base-content) 60%, transparent);
+  --color-content-on-dark: var(--color-base-content);
+  --color-content-on-light: var(--color-base-100);
 }
 
 [data-env='local'] {
