@@ -5,10 +5,8 @@ import { createHash } from 'crypto';
 import { getTeamMatcher } from '@/lib/cfb/helpers/team-index';
 import {
   loadConferenceData,
-  loadTeamScenarios,
   formatStandingsContext,
   formatGamesContext,
-  formatScenarioContext,
   formatRagContext,
   resolveTeamConference,
   resolveConferenceFromMessage,
@@ -159,7 +157,6 @@ const buildUnifiedSystemPrompt = (
     `- For CFB: top 2 teams in conference standings make the championship game. Use simulate_scenario for hypotheticals only (NOT for likelihood questions).\n` +
     `- For NFL: 7 teams per conference make playoffs (4 division winners + 3 wild cards). Seed 1 gets bye.\n` +
     `- For likelihood/probability questions, use betting lines and analytics — NEVER run simulate for this.\n` +
-    `- NEVER cite counts or fractions of simulated scenarios (e.g. "X of 10,000") as odds. They are not probabilities.\n` +
     `- NEVER reference players, coaches, or roster members from memory — always look them up first.\n` +
     `- CRITICAL: When simulate_scenario returns results, report the EXACT output. It ran the real engine.\n` +
     `- Give definitive answers when the data supports it. Make predictions with reasoning when asked.\n\n` +
@@ -447,11 +444,6 @@ export const POST = async (request: NextRequest) => {
           `The user may be referring to one of these teams: ${ambiguousMatches.map((m) => `${m.school} (${m.conference})`).join(', ')}. ` +
             'Ask them to clarify which team they mean.'
         );
-      }
-
-      if (targetTeamId && targetTeamName) {
-        const scenarios = await loadTeamScenarios(conf, targetTeamId, data.games, data.teams);
-        contextParts.push(formatScenarioContext(targetTeamName, scenarios, data.games, data.teams));
       }
     } else if (ambiguousMatches) {
       contextParts.push(

@@ -2,7 +2,6 @@ import { getGames, getTeams } from '@/lib/cfb/cfbd-cached';
 import { reshapeCfbdGames } from '@/lib/reshape-games';
 import { extractTeamsFromCfbd } from '@/lib/reshape-teams-from-cfbd';
 import { runConferenceSimulation } from '@/lib/cfb/runConferenceSimulation';
-import { enumerateScenarios, type ScenarioPath } from '@/lib/cfb/enumerateScenarios';
 import {
   CFB_CONFERENCE_METADATA,
   CFBD_CONFERENCE_NAME_TO_ABBR,
@@ -149,35 +148,6 @@ export const loadConferenceData = async (
     teams,
     standings,
     championship,
-  };
-};
-
-interface ScenarioSummary {
-  pathCount: number;
-  exhaustive: boolean;
-  samplePaths: ScenarioPath[][];
-}
-
-export const loadTeamScenarios = async (
-  conf: CFBConferenceAbbreviation,
-  teamId: string,
-  games: GameLean[],
-  teams: TeamLean[]
-): Promise<ScenarioSummary> => {
-  const result = await enumerateScenarios({
-    conf,
-    teamId,
-    games,
-    teams,
-    overrides: {},
-    maxScenarios: 10_000,
-    maxMs: 10_000,
-  });
-
-  return {
-    pathCount: result.paths.length,
-    exhaustive: result.exhaustive,
-    samplePaths: result.paths.slice(0, 5),
   };
 };
 
@@ -364,49 +334,6 @@ export const formatGamesContext = (games: GameLean[], teams: TeamLean[]): string
   }
 
   return parts.join('\n\n');
-};
-
-export const formatScenarioContext = (
-  teamName: string,
-  scenarios: ScenarioSummary,
-  games: GameLean[],
-  teams: TeamLean[]
-): string => {
-  const teamMap = new Map(teams.map((t) => [t._id, t]));
-  const gameMap = new Map(games.map((g) => [g._id, g]));
-
-  if (scenarios.pathCount === 0) {
-    return scenarios.exhaustive
-      ? `${teamName} has been eliminated from conference championship contention.`
-      : `${teamName}'s championship-game status is undetermined. Too many games remain to check every outcome, so do not say they are eliminated and do not cite any scenario counts.`;
-  }
-
-  const remaining = games.filter((g) => !g.completed && g.conferenceGame);
-  if (remaining.length === 0) {
-    return `${teamName} has clinched a spot in the conference championship game.`;
-  }
-
-  let text =
-    `${teamName} can still reach the conference championship game. ` +
-    `The example paths below are possible outcomes, not a probability. ` +
-    `Never quote scenario counts or fractions of scenarios as odds. For likelihood, use betting lines and analytics.\n`;
-
-  for (let i = 0; i < scenarios.samplePaths.length; i++) {
-    const path = scenarios.samplePaths[i];
-    const outcomes = path.map((step) => {
-      const game = gameMap.get(step.gameId);
-      const winner = teamMap.get(step.winnerTeamId)?.shortDisplayName ?? step.winnerTeamId;
-      if (!game) return `${winner} wins`;
-      const opponent =
-        step.winnerTeamId === game.home.teamId
-          ? (teamMap.get(game.away.teamId)?.shortDisplayName ?? game.away.abbrev)
-          : (teamMap.get(game.home.teamId)?.shortDisplayName ?? game.home.abbrev);
-      return `${winner} beats ${opponent}`;
-    });
-    text += `\nExample path ${i + 1}: ${outcomes.join(', ')}`;
-  }
-
-  return text;
 };
 
 export const resolveTeamConference = (team: TeamIndexEntry): CFBConferenceAbbreviation | null => {
