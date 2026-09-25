@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { HiXMark } from 'react-icons/hi2';
 import { IconButton } from '../Common';
+import { useBodyScrollLock } from '@/app/hooks/useBodyScrollLock';
 
 interface FlowChartLightboxProps {
   isOpen: boolean;
@@ -13,23 +14,7 @@ interface FlowChartLightboxProps {
 }
 
 const FlowChartLightbox = ({ isOpen, onClose, title, children }: FlowChartLightboxProps) => {
-  const scrollYRef = useRef(0);
-
-  useEffect(() => {
-    if (!isOpen) return;
-    scrollYRef.current = window.scrollY;
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollYRef.current}px`;
-    document.body.style.width = '100%';
-    return () => {
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollYRef.current);
-    };
-  }, [isOpen]);
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return;

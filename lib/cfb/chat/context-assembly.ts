@@ -153,7 +153,6 @@ export const loadConferenceData = async (
 };
 
 interface ScenarioSummary {
-  totalScenarios: number;
   pathCount: number;
   exhaustive: boolean;
   samplePaths: ScenarioPath[][];
@@ -176,7 +175,6 @@ export const loadTeamScenarios = async (
   });
 
   return {
-    totalScenarios: result.scenariosChecked,
     pathCount: result.paths.length,
     exhaustive: result.exhaustive,
     samplePaths: result.paths.slice(0, 5),
@@ -378,7 +376,9 @@ export const formatScenarioContext = (
   const gameMap = new Map(games.map((g) => [g._id, g]));
 
   if (scenarios.pathCount === 0) {
-    return `${teamName} has been eliminated from conference championship contention.`;
+    return scenarios.exhaustive
+      ? `${teamName} has been eliminated from conference championship contention.`
+      : `${teamName}'s championship-game status is undetermined. Too many games remain to check every outcome, so do not say they are eliminated and do not cite any scenario counts.`;
   }
 
   const remaining = games.filter((g) => !g.completed && g.conferenceGame);
@@ -386,11 +386,10 @@ export const formatScenarioContext = (
     return `${teamName} has clinched a spot in the conference championship game.`;
   }
 
-  const total = scenarios.exhaustive
-    ? `Out of ${scenarios.totalScenarios} possible outcomes`
-    : `Of the ${scenarios.totalScenarios} scenarios checked (search was not exhaustive)`;
-
-  let text = `${total}, ${teamName} makes the championship game in ${scenarios.pathCount} scenario${scenarios.pathCount === 1 ? '' : 's'}.\n`;
+  let text =
+    `${teamName} can still reach the conference championship game. ` +
+    `The example paths below are possible outcomes, not a probability. ` +
+    `Never quote scenario counts or fractions of scenarios as odds. For likelihood, use betting lines and analytics.\n`;
 
   for (let i = 0; i < scenarios.samplePaths.length; i++) {
     const path = scenarios.samplePaths[i];
@@ -404,11 +403,7 @@ export const formatScenarioContext = (
           : (teamMap.get(game.home.teamId)?.shortDisplayName ?? game.home.abbrev);
       return `${winner} beats ${opponent}`;
     });
-    text += `\nScenario ${i + 1}: ${outcomes.join(', ')}`;
-  }
-
-  if (scenarios.pathCount > scenarios.samplePaths.length) {
-    text += `\n\n(${scenarios.pathCount - scenarios.samplePaths.length} more scenarios not shown)`;
+    text += `\nExample path ${i + 1}: ${outcomes.join(', ')}`;
   }
 
   return text;

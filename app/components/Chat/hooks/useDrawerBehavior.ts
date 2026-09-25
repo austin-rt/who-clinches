@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/app/hooks/useBodyScrollLock';
 
 export const useDrawerBehavior = (
   open: boolean,
@@ -17,22 +18,19 @@ export const useDrawerBehavior = (
     if (!open) setVisible(false);
   }
 
+  useBodyScrollLock(open);
+
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden';
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setVisible(true);
           setTimeout(() => inputRef.current?.focus(), 100);
         });
       });
-    } else {
-      document.body.style.overflow = '';
-      if (abortRef.current) abortRef.current.abort();
+    } else if (abortRef.current) {
+      abortRef.current.abort();
     }
-    return () => {
-      document.body.style.overflow = '';
-    };
   }, [open, inputRef, abortRef]);
 
   useEffect(() => {
