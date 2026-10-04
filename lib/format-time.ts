@@ -41,8 +41,10 @@ export const timeLeft = (input: TimeInput): string => {
   return buildParts(totalMinutes).join(' ');
 };
 
+export const TTL_NO_EXPIRY = -1;
+
 export const ttlLeft = (seconds: number): string => {
-  if (seconds < 0) return 'never';
+  if (seconds === TTL_NO_EXPIRY) return 'never';
   return timeLeft(Date.now() + seconds * 1000);
 };
 
