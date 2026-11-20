@@ -388,6 +388,26 @@ describe('a rule that advances more than one team out of a tie', () => {
     expect(tieFlowGraphs[0].nodes.find((node) => node.type === 'result')?.label).toBe('#1');
   });
 
+  it('summarizes a lone team advancing past several others', async () => {
+    const { tieFlowGraphs } = await calculateStandings(
+      [win('1', 'A', 'B'), win('2', 'B', 'C'), win('3', 'C', 'A')],
+      ['A', 'B', 'C'],
+      {
+        rules: [
+          {
+            name: 'Head-to-Head',
+            apply: winnersByPool({ 'A,B,C': ['A'], 'B,C': ['B'] }),
+          },
+        ],
+      },
+      ['A', 'B', 'C'].map((id) => createTeamLean({ teamId: id, abbrev: ABBREVS[id] }))
+    );
+
+    expect(tieFlowGraphs[0].summary).toContain(
+      'ALA advanced past UA and LSU based on head-to-head. A,B,C.'
+    );
+  });
+
   it('says only the last team in the group was placed last', async () => {
     const { tieFlowGraphs } = await simulate();
 
