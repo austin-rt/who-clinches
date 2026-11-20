@@ -5,6 +5,7 @@ import type { SimulateResponse } from '@/app/store/api';
 import type { TeamLean, GameLean } from '@/lib/types';
 import { ChampionshipMatchup, SimulatedStandings } from '@/app/components/Simulation';
 import { LinkButton } from '@/app/components/LinkButton';
+import { tieFlowGraphsForSnapshot } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
 
 interface SnapshotPayload {
   input: { overrides: Record<string, { homeScore: number; awayScore: number }> };
@@ -136,6 +137,7 @@ const ResultsPage = async ({ params }: Props) => {
   const [team1Id, team2Id] = output.championship;
   const team1 = output.standings.find((s) => s.teamId === team1Id);
   const team2 = output.standings.find((s) => s.teamId === team2Id);
+  const tieFlowGraphs = tieFlowGraphsForSnapshot(snapshot.sport, output, payload.games);
 
   return (
     <div className="container mx-auto flex min-h-full flex-col gap-6 px-4 py-8">
@@ -179,7 +181,7 @@ const ResultsPage = async ({ params }: Props) => {
           Simulated Standings
         </div>
         <div className="collapse-content">
-          <SimulatedStandings simulateResponse={output} />
+          <SimulatedStandings simulateResponse={{ ...output, tieFlowGraphs }} />
         </div>
       </div>
 
