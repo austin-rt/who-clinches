@@ -134,15 +134,6 @@ export const buildTieFlowGraphs = (
         teamIds: [...pool],
       });
 
-      if (!step.tieBroken) {
-        summary.push(`${step.rule} did not break the tie. ${step.detail}.`);
-        parentByPool.set(poolKey(pool), ruleId);
-        return;
-      }
-
-      const advanced = step.survivors;
-      const eliminated = pool.filter((t) => !advanced.includes(t));
-
       const place = (team: string, edgeLabel: string, detail: string) => {
         const resultId = nextId('res');
         resultNodes.push({
@@ -161,6 +152,20 @@ export const buildTieFlowGraphs = (
           teamIds: [team],
         });
       };
+
+      if (!step.tieBroken) {
+        summary.push(`${step.rule} did not break the tie. ${step.detail}.`);
+        parentByPool.set(poolKey(pool), ruleId);
+        if (step.rule === UNRESOLVED_RULE) {
+          pool.forEach((team) =>
+            place(team, 'Unresolved', `#${rankByTeam.get(team)} — unresolved`)
+          );
+        }
+        return;
+      }
+
+      const advanced = step.survivors;
+      const eliminated = pool.filter((t) => !advanced.includes(t));
 
       if (advanced.length === 1) {
         place(advanced[0], 'Advances', `#${rankByTeam.get(advanced[0])} via ${step.rule}`);

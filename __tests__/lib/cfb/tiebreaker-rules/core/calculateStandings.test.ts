@@ -362,6 +362,27 @@ describe('a rule that advances more than one team out of a tie', () => {
     ]);
   });
 
+  it('hangs each rule off the step that left its teams tied', async () => {
+    const { tieFlowGraphs } = await simulate();
+    const { nodes, edges } = tieFlowGraphs[0];
+    const describeNode = (id: string) => {
+      const node = nodes.find((candidate) => candidate.id === id);
+      return node?.type === 'root'
+        ? 'root'
+        : `${node?.rule}: ${[...(node?.teamIds ?? [])].sort().join(',')}`;
+    };
+    const ruleEdges = edges
+      .filter((edge) => nodes.find((node) => node.id === edge.target)?.type === 'rule')
+      .map((edge) => `${describeNode(edge.source)} -> ${describeNode(edge.target)}`);
+
+    expect(ruleEdges).toEqual([
+      'root -> Head-to-Head: ALA,LSU,UA,UGA',
+      'Head-to-Head: ALA,LSU,UA,UGA -> Head-to-Head: ALA,UA',
+      'Head-to-Head: ALA,UA -> Record Against Common Opponents: ALA,UA',
+      'Head-to-Head: ALA,LSU,UA,UGA -> Head-to-Head: LSU,UGA',
+    ]);
+  });
+
   it('explains the order between two teams the first rule eliminated together', async () => {
     const { standings } = await simulate();
 
@@ -437,6 +458,23 @@ describe('a rule that advances more than one team out of a tie', () => {
     ]);
   });
 
+  it('places the teams of an unresolved sub-tie at their standings ranks', async () => {
+    const { tieFlowGraphs } = await simulate({
+      rules: [
+        {
+          name: 'Head-to-Head',
+          apply: winnersByPool({ 'A,B,C,D': ['A', 'B'], 'C,D': ['C'] }),
+        },
+      ],
+    });
+
+    expect(
+      tieFlowGraphs[0].nodes
+        .filter((node) => node.type === 'result')
+        .map((node) => `${node.teamIds.join(',')} ${node.label}`)
+    ).toEqual(['ALA #1', 'UA #2', 'LSU #3', 'UGA #4']);
+  });
+
   describe('tieFlowGraphsForSnapshot', () => {
     const STALE_GRAPHS: TieFlowGraph[] = [{ nodes: [], edges: [], teams: {}, summary: ['stale'] }];
 
@@ -455,6 +493,15 @@ describe('a rule that advances more than one team out of a tie', () => {
 
     it('leaves a CFB snapshot saved without a graph without one', async () => {
       expect(tieFlowGraphsForSnapshot('cfb', await savedOutput([]), cycleGames())).toEqual([]);
+    });
+
+    it('leaves a CFB snapshot saved before charts existed without one', async () => {
+      const { standings, tieLogs, championship } = await savedOutput(STALE_GRAPHS);
+      const withoutField = { standings, tieLogs, championship };
+
+      expect(
+        tieFlowGraphsForSnapshot('cfb', withoutField as SimulateResponse, cycleGames())
+      ).toBeUndefined();
     });
 
     it('keeps the stored graph of an NFL snapshot', async () => {
