@@ -1,7 +1,9 @@
 import { GameLean, TeamLean } from '../../../types';
 import {
+  SimulateResponse,
   StandingEntry,
   TieLog,
+  TieStep,
   TieFlowGraph,
   TieFlowNode,
   TieFlowEdge,
@@ -9,9 +11,31 @@ import {
 } from '../../../api-types';
 import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord, formatList } from '../common/core-helpers';
-import { breakTie } from './breakTie';
+import { breakTie, UNRESOLVED_RULE } from './breakTie';
 
-const buildTieFlowGraphs = (
+const poolKey = (pool: string[]) => [...pool].sort().join(',');
+
+const getStepPools = (teams: string[], steps: TieStep[]): string[][] => {
+  const pools: string[][] = [];
+  const walk = (pool: string[]) => {
+    if (pool.length <= 1) return;
+    while (pools.length < steps.length) {
+      const step = steps[pools.length];
+      pools.push(pool);
+      if (step.tieBroken) {
+        const eliminated = pool.filter((t) => !step.survivors.includes(t));
+        if (step.survivors.length > 1) walk(step.survivors);
+        walk(eliminated);
+        return;
+      }
+      if (step.rule === UNRESOLVED_RULE) return;
+    }
+  };
+  walk(teams);
+  return pools;
+};
+
+export const buildTieFlowGraphs = (
   tieLogs: TieLog[],
   standings: StandingEntry[],
   games: GameLean[]
@@ -68,6 +92,8 @@ const buildTieFlowGraphs = (
     }
 
     const getName = (a: string) => teams[a]?.displayName || a;
+    const rankByTeam = new Map(group.entries.map((s) => [s.abbrev, s.rank]));
+    const lastRank = group.entries[group.entries.length - 1].rank;
 
     const groupId = nextId('group');
     nodes.push({
@@ -79,21 +105,21 @@ const buildTieFlowGraphs = (
       type: 'root',
     });
 
-    let prevNodeId = groupId;
-    let activeTeams = [...tieLog.teams];
-    let rankIdx = 0;
-
     summary.push(
-      `${formatList(activeTeams.map(getName))} were tied at ${group.record} in conference play.`
+      `${formatList(tieLog.teams.map(getName))} were tied at ${group.record} in conference play.`
     );
 
-    for (let i = 0; i < tieLog.steps.length; i++) {
+    const resultNodes: TieFlowNode[] = [];
+    const parentByPool = new Map([[poolKey(tieLog.teams), groupId]]);
+    const pools = getStepPools(tieLog.teams, tieLog.steps);
+
+    pools.forEach((pool, i) => {
       const step = tieLog.steps[i];
       const ruleId = nextId('rule');
 
       nodes.push({
         id: ruleId,
-        teamIds: [...activeTeams],
+        teamIds: [...pool],
         rule: step.rule,
         detail: step.detail,
         label: step.rule,
@@ -102,91 +128,97 @@ const buildTieFlowGraphs = (
 
       edges.push({
         id: nextId('e'),
-        source: prevNodeId,
+        source: parentByPool.get(poolKey(pool))!,
         target: ruleId,
         label: '',
-        teamIds: [...activeTeams],
+        teamIds: [...pool],
       });
 
-      if (!step.tieBroken) {
-        summary.push(`${step.rule} did not break the tie. ${step.detail}.`);
-        prevNodeId = ruleId;
-        continue;
-      }
-
-      const placed = step.survivors;
-      const remaining = activeTeams.filter((t) => !placed.includes(t));
-
-      for (const winner of placed) {
-        const rank = group.entries[rankIdx]?.rank ?? rankIdx + 1;
+      const place = (team: string, edgeLabel: string, detail: string) => {
         const resultId = nextId('res');
-        nodes.push({
+        resultNodes.push({
           id: resultId,
-          teamIds: [winner],
+          teamIds: [team],
           rule: null,
-          detail: `#${rank} via ${step.rule}`,
-          label: `#${rank}`,
+          detail,
+          label: `#${rankByTeam.get(team)}`,
           type: 'result',
         });
         edges.push({
           id: nextId('e'),
           source: ruleId,
           target: resultId,
-          label: 'Advances',
-          teamIds: [winner],
+          label: edgeLabel,
+          teamIds: [team],
         });
-        rankIdx++;
+      };
+
+      if (!step.tieBroken) {
+        summary.push(`${step.rule} did not break the tie. ${step.detail}.`);
+        parentByPool.set(poolKey(pool), ruleId);
+        if (step.rule === UNRESOLVED_RULE) {
+          pool.forEach((team) =>
+            place(team, 'Unresolved', `#${rankByTeam.get(team)} — unresolved`)
+          );
+        }
+        return;
       }
 
-      const placedNames = placed.map(getName);
-      const remainNames = remaining.map(getName);
+      const advanced = step.survivors;
+      const eliminated = pool.filter((t) => !advanced.includes(t));
 
-      if (placed.length === 1 && remaining.length === 1) {
+      if (advanced.length === 1) {
+        place(advanced[0], 'Advances', `#${rankByTeam.get(advanced[0])} via ${step.rule}`);
+      } else {
+        parentByPool.set(poolKey(advanced), ruleId);
+      }
+
+      if (eliminated.length === 1) {
+        place(eliminated[0], 'Remains', `#${rankByTeam.get(eliminated[0])} — last remaining`);
+      } else {
+        parentByPool.set(poolKey(eliminated), ruleId);
+      }
+
+      const advancedNames = advanced.map(getName);
+      const eliminatedNames = eliminated.map(getName);
+
+      if (advanced.length === 1 && eliminated.length === 1) {
         summary.push(
-          `${placedNames[0]} won the tiebreaker over ${remainNames[0]} based on ${step.rule.toLowerCase()}. ${step.detail}.`
+          `${advancedNames[0]} won the tiebreaker over ${eliminatedNames[0]} based on ${step.rule.toLowerCase()}. ${step.detail}.`
         );
-      } else if (placed.length === 1 && remaining.length > 1) {
+      } else if (advanced.length === 1 && eliminated.length > 1) {
         summary.push(
-          `${placedNames[0]} advanced past ${formatList(remainNames)} based on ${step.rule.toLowerCase()}. ${step.detail}.`
+          `${advancedNames[0]} advanced past ${formatList(eliminatedNames)} based on ${step.rule.toLowerCase()}. ${step.detail}.`
         );
-      } else if (placed.length > 1) {
+      } else if (advanced.length > 1) {
         summary.push(
-          `${formatList(placedNames)} advanced based on ${step.rule.toLowerCase()}, leaving ${formatList(remainNames)}. ${step.detail}.`
+          `${formatList(advancedNames)} advanced based on ${step.rule.toLowerCase()}, leaving ${formatList(eliminatedNames)}. ${step.detail}.`
         );
       }
 
-      activeTeams = remaining;
-
-      if (remaining.length === 1) {
-        const lastRank = group.entries[rankIdx]?.rank ?? rankIdx + 1;
-        const lastId = nextId('res');
-        nodes.push({
-          id: lastId,
-          teamIds: [remaining[0]],
-          rule: null,
-          detail: `#${lastRank} — last remaining`,
-          label: `#${lastRank}`,
-          type: 'result',
-        });
-        edges.push({
-          id: nextId('e'),
-          source: ruleId,
-          target: lastId,
-          label: 'Remains',
-          teamIds: remaining,
-        });
-        summary.push(`${getName(remaining[0])} was placed last in the group.`);
-        break;
+      if (eliminated.length === 1 && rankByTeam.get(eliminated[0]) === lastRank) {
+        summary.push(`${getName(eliminated[0])} was placed last in the group.`);
       }
+    });
 
-      if (remaining.length === 0) break;
-      prevNodeId = ruleId;
-    }
+    const rankOf = (node: TieFlowNode) => rankByTeam.get(node.teamIds[0])!;
+    nodes.push(...resultNodes.sort((a, b) => rankOf(a) - rankOf(b)));
 
     graphs.push({ nodes, edges, teams, summary });
   }
 
   return graphs;
+};
+
+export const tieFlowGraphsForSnapshot = (
+  sport: string,
+  output: SimulateResponse,
+  games: GameLean[]
+): TieFlowGraph[] => {
+  const savedWithFlowGraphs = Boolean(output.tieFlowGraphs?.length);
+  return sport === 'cfb' && savedWithFlowGraphs
+    ? buildTieFlowGraphs(output.tieLogs, output.standings, games)
+    : output.tieFlowGraphs;
 };
 
 export const calculateStandings = async (
@@ -326,24 +358,12 @@ export const calculateStandings = async (
         const team1Abbrev = getAbbrev(team1Id);
         const team2Abbrev = getAbbrev(team2Id);
 
-        let activeTeams = new Set(tieLog.teams);
-
         for (let i = 0; i < tieLog.steps.length; i++) {
-          const step = tieLog.steps[i];
-          const survivors = new Set(step.survivors);
+          const survivors = new Set(tieLog.steps[i].survivors);
 
-          const bothActive = activeTeams.has(team1Abbrev) && activeTeams.has(team2Abbrev);
-
-          if (bothActive) {
-            const team1Survived = survivors.has(team1Abbrev);
-            const team2Survived = survivors.has(team2Abbrev);
-
-            if (team1Survived !== team2Survived) {
-              return i;
-            }
+          if (survivors.has(team1Abbrev) !== survivors.has(team2Abbrev)) {
+            return i;
           }
-
-          activeTeams = survivors;
         }
 
         return null;

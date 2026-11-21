@@ -4,6 +4,8 @@ import { CFBConferenceTiebreakerConfig } from './types';
 import { getTeamRecord, getTeamAbbrev, formatList } from '../common/core-helpers';
 import { getTeamAvgPointsFor, getTeamAvgPointsAgainst } from '../sec/rule-e-sec-scoring-margin';
 
+export const UNRESOLVED_RULE = 'Unresolved';
+
 const ruleNeedsTeamData = (name: string): boolean =>
   name.includes('Team Rating Score') || name.includes('Highest Placed');
 
@@ -230,7 +232,7 @@ export const breakTie = async (
   }
 
   steps.push({
-    rule: 'Unresolved',
+    rule: UNRESOLVED_RULE,
     detail: 'All tiebreaker rules exhausted',
     survivors: remaining,
     tieBroken: false,

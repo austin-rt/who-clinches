@@ -1,4 +1,9 @@
-import { calculateStandings } from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import {
+  calculateStandings,
+  tieFlowGraphsForSnapshot,
+} from '@/lib/cfb/tiebreaker-rules/core/calculateStandings';
+import { UNRESOLVED_RULE } from '@/lib/cfb/tiebreaker-rules/core/breakTie';
+import { SimulateResponse, TieFlowGraph } from '@/lib/api-types';
 import { CFBConferenceTiebreakerConfig } from '@/lib/cfb/tiebreaker-rules/core/types';
 import {
   createGameLean,
@@ -283,6 +288,226 @@ describe('teams with no games in the filtered set', () => {
     expect(standings.find((entry) => entry.teamId === 'C')?.record).toEqual({
       wins: 0,
       losses: 0,
+    });
+  });
+});
+
+describe('a rule that advances more than one team out of a tie', () => {
+  const ABBREVS: Record<string, string> = { A: 'ALA', B: 'UA', C: 'LSU', D: 'UGA' };
+  const TEAM_IDS = ['A', 'B', 'C', 'D'];
+
+  const win = (gameId: string, winner: string, loser: string) =>
+    createGameLean({
+      gameId,
+      home: { teamId: winner, score: 28, abbrev: ABBREVS[winner] },
+      away: { teamId: loser, score: 14, abbrev: ABBREVS[loser] },
+    });
+
+  const winnersByPool =
+    (table: Record<string, string[]>) =>
+    (tiedTeams: string[]): Promise<{ winners: string[]; detail: string }> => {
+      const pool = [...tiedTeams].sort().join(',');
+      return Promise.resolve({ winners: table[pool] ?? tiedTeams, detail: pool });
+    };
+
+  const splitThenSubTieConfig = (): CFBConferenceTiebreakerConfig => ({
+    rules: [
+      {
+        name: 'Head-to-Head',
+        apply: winnersByPool({ 'A,B,C,D': ['A', 'B'], 'C,D': ['C'] }),
+      },
+      {
+        name: 'Record Against Common Opponents',
+        apply: winnersByPool({ 'A,B': ['A'] }),
+      },
+    ],
+  });
+
+  const cycleGames = () => [
+    win('1', 'A', 'B'),
+    win('2', 'B', 'C'),
+    win('3', 'C', 'D'),
+    win('4', 'D', 'A'),
+  ];
+
+  const simulate = (config = splitThenSubTieConfig()) =>
+    calculateStandings(
+      cycleGames(),
+      TEAM_IDS,
+      config,
+      TEAM_IDS.map((id) => createTeamLean({ teamId: id, abbrev: ABBREVS[id] }))
+    );
+
+  it('places each team once in the flow graph, at its standings rank', async () => {
+    const { tieFlowGraphs } = await simulate();
+    const placements = tieFlowGraphs[0].nodes
+      .filter((node) => node.type === 'result')
+      .map((node) => `${node.teamIds.join(',')} ${node.label}`)
+      .sort();
+
+    expect(placements).toEqual(['ALA #1', 'LSU #3', 'UA #2', 'UGA #4']);
+  });
+
+  it('draws each rule against the teams it compared', async () => {
+    const { tieFlowGraphs } = await simulate();
+    const ruleNodes = tieFlowGraphs[0].nodes
+      .filter((node) => node.type === 'rule')
+      .map((node) => `${node.rule}: ${[...node.teamIds].sort().join(',')}`);
+
+    expect(ruleNodes).toEqual([
+      'Head-to-Head: ALA,LSU,UA,UGA',
+      'Head-to-Head: ALA,UA',
+      'Record Against Common Opponents: ALA,UA',
+      'Head-to-Head: LSU,UGA',
+    ]);
+  });
+
+  it('hangs each rule off the step that left its teams tied', async () => {
+    const { tieFlowGraphs } = await simulate();
+    const { nodes, edges } = tieFlowGraphs[0];
+    const describeNode = (id: string) => {
+      const node = nodes.find((candidate) => candidate.id === id);
+      return node?.type === 'root'
+        ? 'root'
+        : `${node?.rule}: ${[...(node?.teamIds ?? [])].sort().join(',')}`;
+    };
+    const ruleEdges = edges
+      .filter((edge) => nodes.find((node) => node.id === edge.target)?.type === 'rule')
+      .map((edge) => `${describeNode(edge.source)} -> ${describeNode(edge.target)}`);
+
+    expect(ruleEdges).toEqual([
+      'root -> Head-to-Head: ALA,LSU,UA,UGA',
+      'Head-to-Head: ALA,LSU,UA,UGA -> Head-to-Head: ALA,UA',
+      'Head-to-Head: ALA,UA -> Record Against Common Opponents: ALA,UA',
+      'Head-to-Head: ALA,LSU,UA,UGA -> Head-to-Head: LSU,UGA',
+    ]);
+  });
+
+  it('explains the order between two teams the first rule eliminated together', async () => {
+    const { standings } = await simulate();
+
+    expect(standings.find((entry) => entry.teamId === 'C')?.explainPosition).toBe(
+      'Behind ALA and UA based on head-to-head record. Ahead of UGA based on head-to-head record.'
+    );
+  });
+
+  it('lists the top rank first when a lone team is eliminated beside an advancing pair', async () => {
+    const { tieFlowGraphs } = await calculateStandings(
+      [win('1', 'A', 'B'), win('2', 'B', 'C'), win('3', 'C', 'A')],
+      ['A', 'B', 'C'],
+      {
+        rules: [
+          {
+            name: 'Head-to-Head',
+            apply: winnersByPool({ 'A,B,C': ['A', 'B'], 'A,B': ['A'] }),
+          },
+        ],
+      },
+      ['A', 'B', 'C'].map((id) => createTeamLean({ teamId: id, abbrev: ABBREVS[id] }))
+    );
+
+    expect(tieFlowGraphs[0].nodes.find((node) => node.type === 'result')?.label).toBe('#1');
+  });
+
+  it('summarizes a lone team advancing past several others', async () => {
+    const { tieFlowGraphs } = await calculateStandings(
+      [win('1', 'A', 'B'), win('2', 'B', 'C'), win('3', 'C', 'A')],
+      ['A', 'B', 'C'],
+      {
+        rules: [
+          {
+            name: 'Head-to-Head',
+            apply: winnersByPool({ 'A,B,C': ['A'], 'B,C': ['B'] }),
+          },
+        ],
+      },
+      ['A', 'B', 'C'].map((id) => createTeamLean({ teamId: id, abbrev: ABBREVS[id] }))
+    );
+
+    expect(tieFlowGraphs[0].summary).toContain(
+      'ALA advanced past UA and LSU based on head-to-head. A,B,C.'
+    );
+  });
+
+  it('says only the last team in the group was placed last', async () => {
+    const { tieFlowGraphs } = await simulate();
+
+    expect(
+      tieFlowGraphs[0].summary.filter((line) => line.includes('was placed last in the group'))
+    ).toEqual(['UGA was placed last in the group.']);
+  });
+
+  it('draws the steps after an unresolved sub-tie against the next sub-tie', async () => {
+    const { tieFlowGraphs } = await simulate({
+      rules: [
+        {
+          name: 'Head-to-Head',
+          apply: winnersByPool({ 'A,B,C,D': ['A', 'B'], 'C,D': ['C'] }),
+        },
+      ],
+    });
+    const ruleNodes = tieFlowGraphs[0].nodes
+      .filter((node) => node.type === 'rule')
+      .map((node) => `${node.rule}: ${[...node.teamIds].sort().join(',')}`);
+
+    expect(ruleNodes).toEqual([
+      'Head-to-Head: ALA,LSU,UA,UGA',
+      'Head-to-Head: ALA,UA',
+      `${UNRESOLVED_RULE}: ALA,UA`,
+      'Head-to-Head: LSU,UGA',
+    ]);
+  });
+
+  it('places the teams of an unresolved sub-tie at their standings ranks', async () => {
+    const { tieFlowGraphs } = await simulate({
+      rules: [
+        {
+          name: 'Head-to-Head',
+          apply: winnersByPool({ 'A,B,C,D': ['A', 'B'], 'C,D': ['C'] }),
+        },
+      ],
+    });
+
+    expect(
+      tieFlowGraphs[0].nodes
+        .filter((node) => node.type === 'result')
+        .map((node) => `${node.teamIds.join(',')} ${node.label}`)
+    ).toEqual(['ALA #1', 'UA #2', 'LSU #3', 'UGA #4']);
+  });
+
+  describe('tieFlowGraphsForSnapshot', () => {
+    const STALE_GRAPHS: TieFlowGraph[] = [{ nodes: [], edges: [], teams: {}, summary: ['stale'] }];
+
+    const savedOutput = async (tieFlowGraphs: TieFlowGraph[]): Promise<SimulateResponse> => {
+      const { standings, tieLogs } = await simulate();
+      return { standings, tieLogs, tieFlowGraphs, championship: ['A', 'B'] };
+    };
+
+    it('rebuilds the graph of a CFB snapshot saved with one', async () => {
+      const { tieFlowGraphs } = await simulate();
+
+      expect(
+        tieFlowGraphsForSnapshot('cfb', await savedOutput(STALE_GRAPHS), cycleGames())
+      ).toEqual(tieFlowGraphs);
+    });
+
+    it('leaves a CFB snapshot saved without a graph without one', async () => {
+      expect(tieFlowGraphsForSnapshot('cfb', await savedOutput([]), cycleGames())).toEqual([]);
+    });
+
+    it('leaves a CFB snapshot saved before charts existed without one', async () => {
+      const { standings, tieLogs, championship } = await savedOutput(STALE_GRAPHS);
+      const withoutField = { standings, tieLogs, championship };
+
+      expect(
+        tieFlowGraphsForSnapshot('cfb', withoutField as SimulateResponse, cycleGames())
+      ).toBeUndefined();
+    });
+
+    it('keeps the stored graph of an NFL snapshot', async () => {
+      expect(tieFlowGraphsForSnapshot('nfl', await savedOutput(STALE_GRAPHS), cycleGames())).toBe(
+        STALE_GRAPHS
+      );
     });
   });
 });
